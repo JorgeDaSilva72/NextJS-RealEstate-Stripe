@@ -18,7 +18,12 @@ const signInPanel = async () => {
         id: user?.id,
       },
     });
-    return <>{user?.given_name} </>;
+    return (
+      <>
+        {user?.given_name}
+        <LogoutLink>Logout</LogoutLink>{" "}
+      </>
+    );
 
     // return <>{dbUser!! && <UserProfilePanel user={dbUser} />}</>;
   }
