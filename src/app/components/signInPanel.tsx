@@ -6,7 +6,7 @@ import {
 } from "@kinde-oss/kinde-auth-nextjs/server";
 import { Button } from "@nextui-org/react";
 import React from "react";
-// import UserProfilePanel from "./UserProfilePanel";
+import UserProfilePanel from "./UserProfilePanel";
 import prisma from "@/lib/prisma";
 
 const signInPanel = async () => {
@@ -18,14 +18,8 @@ const signInPanel = async () => {
         id: user?.id,
       },
     });
-    return (
-      <>
-        {user?.given_name}
-        <LogoutLink>Logout</LogoutLink>{" "}
-      </>
-    );
 
-    // return <>{dbUser!! && <UserProfilePanel user={dbUser} />}</>;
+    return <>{dbUser!! && <UserProfilePanel user={dbUser} />}</>;
   }
 
   return (

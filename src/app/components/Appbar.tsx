@@ -32,7 +32,10 @@ const Appbar = ({ children }: Props) => {
             className="flex items-center text-primary-400 hover:text-primary-600 transition-colors"
           >
             <HomeModernIcon className="w-16" />
-            <p className="font-bold text-inherit">KRIST Immo</p>
+            <div className="flex flex-col items-center ml-2">
+              <p className="font-bold text-inherit">KRIST</p>
+              <p className="font-bold text-inherit">IMMO</p>
+            </div>
           </Link>
         </NavbarBrand>
       </NavbarContent>
