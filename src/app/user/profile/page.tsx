@@ -4,7 +4,7 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import React, { ReactNode } from "react";
 import SectionTitle from "./_components/sectionTitle";
 import { Avatar, Button, Card } from "@nextui-org/react";
-// import UploadAvatar from "./_components/UploadAvatar";
+import UploadAvatar from "./_components/UploadAvatar";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 
@@ -24,12 +24,15 @@ const ProfilePage = async () => {
       <PageTitle title="Mon Profil" linkCaption="Retour à l'accueil" href="/" />
       <Card className="m-4 p-4  flex flex-col gap-5">
         <SectionTitle title="Informations" />
-        {/* <div className="flex">
+        <div className="flex">
           <div className="flex flex-col items-center ">
-            <Avatar className="w-20 h-20" src={dbUser?.avatarUrl ?? "/profile.png"} />
+            <Avatar
+              className="w-20 h-20"
+              src={dbUser?.avatarUrl ?? "/profile.png"}
+            />
             <UploadAvatar userId={dbUser?.id!} />
           </div>
-        </div> */}
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <Attribute

@@ -9,3 +9,14 @@ export async function getUserById(id: string) {
     },
   });
 }
+
+export async function updateUserAvatar(avatarUrl: string, userId: string) {
+  return await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      avatarUrl: avatarUrl,
+    },
+  });
+}
