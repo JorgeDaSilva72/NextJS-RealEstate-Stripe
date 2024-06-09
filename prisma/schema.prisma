@@ -33,6 +33,7 @@ model Property {
   statusId    Int
   status      PropertyStatus    @relation(fields: [statusId], references: [id])
   location    PropertyLocation?
+  feature     PropertyFeature?
 
   
 }
@@ -59,4 +60,17 @@ model PropertyLocation {
   landmark      String
   propertyId    Int      @unique
   property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+}
+
+model PropertyFeature {
+  id              Int      @id @default(autoincrement())
+  bedrooms        Int
+  bathrooms       Int
+  parkingSpots    Int
+  area            Int
+  hasSwimmingPool Boolean
+  hasGardenYard   Boolean
+  hasBalcony      Boolean
+  property        Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId      Int      @unique
 }
