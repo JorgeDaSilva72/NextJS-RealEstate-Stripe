@@ -1,4 +1,7 @@
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
+
 import {
+  Button,
   Card,
   Input,
   Select,
@@ -6,6 +9,7 @@ import {
   Textarea,
   cn,
 } from "@nextui-org/react";
+
 import { PropertyStatus, PropertyType } from "@prisma/client";
 import React from "react";
 
@@ -16,6 +20,9 @@ interface Props {
   next: () => void;
 }
 const Basic = (props: Props) => {
+  const handleNext = () => {
+    props.next();
+  };
   return (
     <Card
       className={cn(
@@ -45,6 +52,24 @@ const Basic = (props: Props) => {
         ))}
       </Select>
       <Input label="Prix" name="price" />
+      <div className="flex justify-center col-span-3 gap-3">
+        <Button
+          isDisabled
+          startContent={<ChevronLeftIcon className="w-6" />}
+          color="primary"
+          className="w-36"
+        >
+          Précédent
+        </Button>
+        <Button
+          onClick={handleNext}
+          endContent={<ChevronRightIcon className="w-6" />}
+          color="primary"
+          className="w-36"
+        >
+          Suivant
+        </Button>
+      </div>
     </Card>
   );
 };
