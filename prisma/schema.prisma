@@ -34,7 +34,7 @@ model Property {
   status      PropertyStatus    @relation(fields: [statusId], references: [id])
   location    PropertyLocation?
   feature     PropertyFeature?
-
+  images      PropertyImage[]
   
 }
 
@@ -73,4 +73,11 @@ model PropertyFeature {
   hasBalcony      Boolean
   property        Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   propertyId      Int      @unique
+}
+
+model PropertyImage {
+  id         Int      @id @default(autoincrement())
+  url        String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId Int
 }
