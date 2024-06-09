@@ -6,6 +6,7 @@ import Basic from "./basic";
 import Location from "./Location";
 import Features from "./Features";
 import Picture from "./Picture";
+import Contact from "./Contact";
 
 import { Prisma, PropertyStatus, PropertyType } from "@prisma/client";
 import { cn } from "@nextui-org/react";
@@ -67,6 +68,10 @@ const AddPropertyForm = (props: Props) => {
           className={cn({ hidden: step !== 3 })}
           images={images}
           setImages={setImages}
+        />
+        <Contact
+          prev={() => setStep((prev) => prev - 1)}
+          className={cn({ hidden: step !== 4 })}
         />
       </form>
     </div>
