@@ -32,6 +32,8 @@ model Property {
   type        PropertyType      @relation(fields: [typeId], references: [id])
   statusId    Int
   status      PropertyStatus    @relation(fields: [statusId], references: [id])
+  location    PropertyLocation?
+
   
 }
 
@@ -45,4 +47,16 @@ model PropertyStatus {
   id       Int        @id @default(autoincrement())
   value    String
   Property Property[]
+}
+
+model PropertyLocation {
+  id            Int      @id @default(autoincrement())
+  streetAddress String
+  city          String
+  state         String
+  zip           String
+  region        String
+  landmark      String
+  propertyId    Int      @unique
+  property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
