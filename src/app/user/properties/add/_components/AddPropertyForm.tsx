@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Stepper from "./Stepper";
 import Basic from "./basic";
 import Location from "./Location";
+import Features from "./Features";
 
 import { Prisma, PropertyStatus, PropertyType } from "@prisma/client";
 import { cn } from "@nextui-org/react";
@@ -52,6 +53,11 @@ const AddPropertyForm = (props: Props) => {
           next={() => setStep((prev) => prev + 1)}
           prev={() => setStep((prev) => prev - 1)}
           className={cn({ hidden: step !== 1 })}
+        />
+        <Features
+          next={() => setStep((prev) => prev + 1)}
+          prev={() => setStep((prev) => prev - 1)}
+          className={cn({ hidden: step !== 2 })}
         />
       </form>
     </div>
