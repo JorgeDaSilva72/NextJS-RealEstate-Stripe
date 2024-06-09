@@ -1,7 +1,8 @@
 import React from "react";
+import AddPropertyForm from "./_components/AddPropertyForm";
 
 const page = () => {
-  return <div>add page</div>;
+  return <AddPropertyForm />;
 };
 
 export default page;
