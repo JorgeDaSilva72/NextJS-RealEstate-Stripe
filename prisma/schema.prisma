@@ -17,4 +17,32 @@ model User {
   email         String
   avatarUrl     String?
   createdAt     DateTime        @default(now())
+  Property      Property[]
+
+}
+
+model Property {
+  id          Int               @id @default(autoincrement())
+  name        String
+  description String
+  price       Int
+  userId      String
+  user        User              @relation(fields: [userId], references: [id])
+  typeId      Int
+  type        PropertyType      @relation(fields: [typeId], references: [id])
+  statusId    Int
+  status      PropertyStatus    @relation(fields: [statusId], references: [id])
+  
+}
+
+model PropertyType {
+  id       Int        @id @default(autoincrement())
+  value    String
+  Property Property[]
+}
+
+model PropertyStatus {
+  id       Int        @id @default(autoincrement())
+  value    String
+  Property Property[]
 }
