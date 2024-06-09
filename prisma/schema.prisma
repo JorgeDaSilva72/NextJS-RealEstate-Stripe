@@ -35,6 +35,7 @@ model Property {
   location    PropertyLocation?
   feature     PropertyFeature?
   images      PropertyImage[]
+  contact     Contact?
   
 }
 
@@ -80,4 +81,13 @@ model PropertyImage {
   url        String
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   propertyId Int
+}
+
+model Contact {
+  id         Int      @id @default(autoincrement())
+  name       String
+  phone      String
+  email      String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId Int      @unique
 }
