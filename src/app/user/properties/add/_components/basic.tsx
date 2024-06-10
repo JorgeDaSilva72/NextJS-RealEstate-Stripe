@@ -25,9 +25,11 @@ const Basic = (props: Props) => {
   const {
     register,
     formState: { errors },
+    trigger,
   } = useFormContext<AddPropertyInputType>();
-  const handleNext = () => {
-    props.next();
+  const handleNext = async () => {
+    if (await trigger(["name", "description", "typeId", "statusId", "price"]))
+      props.next();
   };
   return (
     <Card

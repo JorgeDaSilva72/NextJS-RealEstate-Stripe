@@ -3,14 +3,14 @@ import { unknown, z } from "zod";
 
 export const AddPropertyFormSchema = z.object({
   name: z.string().min(1, "Veuillez indiquer un titre"),
-  description: z.string().min(2, "Veuillez indiquer une description"),
+  description: z.string().min(1, "Veuillez indiquer une description"),
   typeId: z
     .string()
-    .min(1, "Veuillez selectionner le type de votre annonce")
+    .min(1, "Veuillez selectionner un type")
     .transform((data: unknown) => Number(data)),
   statusId: z
     .string()
-    .min(1, "Veuillez selectionner le statut de votre annonce")
+    .min(1, "Veuillez selectionner un statut")
     .transform((data: unknown) => Number(data)),
   price: z
     .string()
