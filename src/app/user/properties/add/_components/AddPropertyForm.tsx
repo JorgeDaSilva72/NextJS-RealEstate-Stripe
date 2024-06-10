@@ -15,6 +15,9 @@ import { AddPropertyFormSchema } from "@/lib/zodSchema";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { uploadImages } from "@/lib/upload";
+import { saveProperty } from "@/lib/actions/property";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { useRouter } from "next/navigation";
 
 const steps = [
   {
@@ -42,16 +45,26 @@ interface Props {
 export type AddPropertyInputType = z.infer<typeof AddPropertyFormSchema>;
 
 const AddPropertyForm = (props: Props) => {
+  const router = useRouter();
+
   const methods = useForm<AddPropertyInputType>({
     resolver: zodResolver(AddPropertyFormSchema),
   });
   const [step, setStep] = useState(0);
   const [images, setImages] = useState<File[]>([]);
+  const { user } = useKindeBrowserClient();
 
   const onSubmit: SubmitHandler<AddPropertyInputType> = async (data) => {
     console.log("SUCCESS", { data });
     const imageUrls = await uploadImages(images);
     console.log("imageUrls:", { imageUrls });
+
+    try {
+      await saveProperty(data, imageUrls, user?.id!);
+      router.push("/user/properties");
+    } catch (error) {
+      console.error({ error });
+    }
   };
 
   return (
