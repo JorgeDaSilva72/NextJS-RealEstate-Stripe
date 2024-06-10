@@ -15,9 +15,18 @@ const Features = (props: Props) => {
     register,
     formState: { errors },
     control,
+    trigger,
   } = useFormContext<AddPropertyInputType>();
-  const handleNext = () => {
-    props.next();
+  const handleNext = async () => {
+    if (
+      await trigger([
+        "propertyFeature.area",
+        "propertyFeature.bathrooms",
+        "propertyFeature.bedrooms",
+        "propertyFeature.parkingSpots",
+      ])
+    )
+      props.next();
   };
   return (
     <Card
