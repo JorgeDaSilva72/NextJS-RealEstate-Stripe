@@ -1,6 +1,8 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
 import { Button, Card, Input, Textarea, cn } from "@nextui-org/react";
 import React from "react";
+import { useFormContext } from "react-hook-form";
+import { AddPropertyInputType } from "./AddPropertyForm";
 
 interface Props {
   next: () => void;
@@ -8,6 +10,11 @@ interface Props {
   className?: string;
 }
 const Location = (props: Props) => {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<AddPropertyInputType>();
+
   const handleNext = () => {
     props.next();
   };
@@ -18,17 +25,49 @@ const Location = (props: Props) => {
         props.className
       )}
     >
-      <Input label="Adresse" />
+      <Input
+        {...register("location.streetAddress")}
+        errorMessage={errors.location?.streetAddress?.message}
+        isInvalid={!!errors.location?.streetAddress}
+        label="Adresse"
+      />
 
-      <Input label="Numéro de boîte postale" />
+      <Input
+        {...register("location.zip")}
+        errorMessage={errors.location?.zip?.message}
+        isInvalid={!!errors.location?.zip}
+        label="Numéro de boîte postale"
+      />
 
-      <Input label="Ville" />
+      <Input
+        {...register("location.city")}
+        errorMessage={errors.location?.city?.message}
+        isInvalid={!!errors.location?.city}
+        label="Ville"
+      />
 
-      <Input label="Etat" />
+      <Input
+        {...register("location.state")}
+        errorMessage={errors.location?.state?.message}
+        isInvalid={!!errors.location?.state}
+        label="Etat"
+      />
 
-      <Input label="Région" className="col-span-2" />
+      <Input
+        {...register("location.region")}
+        errorMessage={errors.location?.region?.message}
+        isInvalid={!!errors.location?.region}
+        label="Région"
+        className="col-span-2"
+      />
 
-      <Textarea label="Informations complémentaires" className="col-span-2" />
+      <Textarea
+        {...register("location.landmark")}
+        errorMessage={errors.location?.landmark?.message}
+        isInvalid={!!errors.location?.landmark}
+        label="Informations complémentaires"
+        className="col-span-2"
+      />
       <div className="flex justify-center col-span-2 gap-3">
         <Button
           onClick={props.prev}

@@ -12,6 +12,8 @@ import {
 
 import { PropertyStatus, PropertyType } from "@prisma/client";
 import React from "react";
+import { useFormContext } from "react-hook-form";
+import { AddPropertyInputType } from "./AddPropertyForm";
 
 interface Props {
   className?: string;
@@ -20,6 +22,10 @@ interface Props {
   next: () => void;
 }
 const Basic = (props: Props) => {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<AddPropertyInputType>();
   const handleNext = () => {
     props.next();
   };
@@ -30,28 +36,58 @@ const Basic = (props: Props) => {
         props.className
       )}
     >
-      <Input label="Nom" className="md:col-span-3" name="name" />
+      <Input
+        {...register("name")}
+        errorMessage={errors.name?.message}
+        isInvalid={!!errors.name}
+        label="Titre de l'annonce"
+        className="md:col-span-3"
+        name="name"
+      />
       <Textarea
+        {...register("description")}
+        errorMessage={errors.description?.message}
+        isInvalid={!!errors.description}
         label="Description"
         className="md:col-span-3"
         name="description"
       />
 
-      <Select label="Type" selectionMode="single" name="typeId">
+      <Select
+        {...register("typeId")}
+        errorMessage={errors.typeId?.message}
+        isInvalid={!!errors.typeId}
+        label="Type"
+        selectionMode="single"
+        name="typeId"
+      >
         {props.types.map((item) => (
           <SelectItem key={item.id} value={item.id}>
             {item.value}
           </SelectItem>
         ))}
       </Select>
-      <Select label="Statut" selectionMode="single" name="statusId">
+      <Select
+        {...register("statusId")}
+        errorMessage={errors.statusId?.message}
+        isInvalid={!!errors.statusId}
+        label="Statut"
+        selectionMode="single"
+        name="statusId"
+      >
         {props.statuses.map((item) => (
           <SelectItem key={item.id} value={item.id}>
             {item.value}
           </SelectItem>
         ))}
       </Select>
-      <Input label="Prix" name="price" />
+      <Input
+        {...register("price")}
+        errorMessage={errors.price?.message}
+        isInvalid={!!errors.price}
+        label="Prix"
+        name="price"
+      />
       <div className="flex justify-center col-span-3 gap-3">
         <Button
           isDisabled
