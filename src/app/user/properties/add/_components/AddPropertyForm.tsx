@@ -18,6 +18,7 @@ import { uploadImages } from "@/lib/upload";
 import { saveProperty } from "@/lib/actions/property";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const steps = [
   {
@@ -61,6 +62,8 @@ const AddPropertyForm = (props: Props) => {
 
     try {
       await saveProperty(data, imageUrls, user?.id!);
+      toast.success("Annonce créée!");
+
       router.push("/user/properties");
     } catch (error) {
       console.error({ error });
