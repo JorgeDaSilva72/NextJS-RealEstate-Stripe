@@ -13,10 +13,20 @@ const Location = (props: Props) => {
   const {
     register,
     formState: { errors },
+    trigger,
   } = useFormContext<AddPropertyInputType>();
 
-  const handleNext = () => {
-    props.next();
+  const handleNext = async () => {
+    if (
+      await trigger([
+        "location.streetAddress",
+        "location.city",
+        "location.state",
+        "location.zip",
+        "location.region",
+      ])
+    )
+      props.next();
   };
   return (
     <Card

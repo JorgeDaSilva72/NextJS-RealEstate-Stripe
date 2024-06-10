@@ -21,7 +21,7 @@ export const AddPropertyFormSchema = z.object({
     streetAddress: z.string().min(1, "Veuillez indiquer l'adresse postale"),
     city: z.string().min(1, "Veuillez indiquer le nom de la ville"),
     state: z.string().min(1, "Veuillez indiquer le nom de l'état"),
-    zip: z.string(),
+    zip: z.string().min(1, "Veuillez indiquer le numéro de boîte postale"),
     // .refine(
     //   (data) => validator.isPostalCode(data, "US"),
     //   "Enter the zip code"
