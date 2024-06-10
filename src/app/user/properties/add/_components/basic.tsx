@@ -26,6 +26,7 @@ const Basic = (props: Props) => {
     register,
     formState: { errors },
     trigger,
+    getValues,
   } = useFormContext<AddPropertyInputType>();
   const handleNext = async () => {
     if (await trigger(["name", "description", "typeId", "statusId", "price"]))
@@ -45,6 +46,7 @@ const Basic = (props: Props) => {
         label="Titre de l'annonce"
         className="md:col-span-3"
         name="name"
+        defaultValue={getValues().name}
       />
       <Textarea
         {...register("description")}
@@ -53,6 +55,7 @@ const Basic = (props: Props) => {
         label="Description"
         className="md:col-span-3"
         name="description"
+        defaultValue={getValues().description}
       />
 
       <Select
@@ -62,6 +65,7 @@ const Basic = (props: Props) => {
         label="Type"
         selectionMode="single"
         name="typeId"
+        defaultSelectedKeys={[getValues().typeId.toString()]}
       >
         {props.types.map((item) => (
           <SelectItem key={item.id} value={item.id}>
@@ -76,6 +80,7 @@ const Basic = (props: Props) => {
         label="Statut"
         selectionMode="single"
         name="statusId"
+        defaultSelectedKeys={[getValues().statusId.toString()]}
       >
         {props.statuses.map((item) => (
           <SelectItem key={item.id} value={item.id}>
@@ -89,6 +94,7 @@ const Basic = (props: Props) => {
         isInvalid={!!errors.price}
         label="Prix"
         name="price"
+        defaultValue={getValues().price.toString()}
       />
       <div className="flex justify-center col-span-3 gap-3">
         <Button

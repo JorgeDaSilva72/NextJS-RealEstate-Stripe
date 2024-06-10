@@ -16,6 +16,7 @@ const Features = (props: Props) => {
     formState: { errors },
     control,
     trigger,
+    getValues,
   } = useFormContext<AddPropertyInputType>();
   const handleNext = async () => {
     if (
@@ -40,6 +41,7 @@ const Features = (props: Props) => {
         errorMessage={errors.propertyFeature?.bedrooms?.message}
         isInvalid={!!errors.propertyFeature?.bedrooms}
         label="Chambre(s)"
+        defaultValue={getValues().propertyFeature.bedrooms.toString()}
       />
 
       <Input
@@ -47,12 +49,14 @@ const Features = (props: Props) => {
         errorMessage={errors.propertyFeature?.bathrooms?.message}
         isInvalid={!!errors.propertyFeature?.bathrooms}
         label="Salle(s) de bain"
+        defaultValue={getValues().propertyFeature.bathrooms.toString()}
       />
       <Input
         {...register("propertyFeature.parkingSpots")}
         errorMessage={errors.propertyFeature?.parkingSpots?.message}
         isInvalid={!!errors.propertyFeature?.parkingSpots}
         label="Place(s) de stationnement"
+        defaultValue={getValues().propertyFeature.parkingSpots.toString()}
       />
 
       <Input
@@ -60,13 +64,20 @@ const Features = (props: Props) => {
         errorMessage={errors.propertyFeature?.area?.message}
         isInvalid={!!errors.propertyFeature?.area}
         label="Superficie en m²"
+        defaultValue={getValues().propertyFeature.area.toString()}
       />
       <div className="flex flex-col  md:flex-row  items-center justify-around ">
         <Controller
           control={control}
           name="propertyFeature.hasSwimmingPool"
           render={({ field }) => (
-            <Checkbox onChange={field.onChange} onBlur={field.onBlur}>
+            <Checkbox
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              defaultValue={
+                getValues().propertyFeature.hasSwimmingPool ? "true" : "false"
+              }
+            >
               Possède une piscine
             </Checkbox>
           )}
@@ -76,7 +87,13 @@ const Features = (props: Props) => {
           control={control}
           name="propertyFeature.hasGardenYard"
           render={({ field }) => (
-            <Checkbox onChange={field.onChange} onBlur={field.onBlur}>
+            <Checkbox
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              defaultValue={
+                getValues().propertyFeature.hasGardenYard ? "true" : "false"
+              }
+            >
               Possède un jardin/une cour
             </Checkbox>
           )}
@@ -86,7 +103,13 @@ const Features = (props: Props) => {
           control={control}
           name="propertyFeature.hasBalcony"
           render={({ field }) => (
-            <Checkbox onChange={field.onChange} onBlur={field.onBlur}>
+            <Checkbox
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              defaultValue={
+                getValues().propertyFeature.hasBalcony ? "true" : "false"
+              }
+            >
               Possède un balcon/terrasse
             </Checkbox>
           )}

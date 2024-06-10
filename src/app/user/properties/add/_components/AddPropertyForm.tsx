@@ -41,15 +41,34 @@ const steps = [
 interface Props {
   types: PropertyType[];
   statuses: PropertyStatus[];
+  property?: Prisma.PropertyGetPayload<{
+    include: {
+      location: true;
+      contact: true;
+      feature: true;
+      images: true;
+    };
+  }>;
+  isEdit?: boolean;
 }
 
 export type AddPropertyInputType = z.infer<typeof AddPropertyFormSchema>;
 
-const AddPropertyForm = (props: Props) => {
+const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
   const router = useRouter();
 
   const methods = useForm<AddPropertyInputType>({
     resolver: zodResolver(AddPropertyFormSchema),
+    defaultValues: {
+      contact: props.property?.contact ?? undefined,
+      location: props.property?.location ?? undefined,
+      propertyFeature: props.property?.feature ?? undefined,
+      description: props.property?.description ?? undefined,
+      name: props.property?.name ?? undefined,
+      price: props.property?.price ?? undefined,
+      statusId: props.property?.statusId ?? undefined,
+      typeId: props.property?.typeId ?? undefined,
+    },
   });
   const [step, setStep] = useState(0);
   const [images, setImages] = useState<File[]>([]);
