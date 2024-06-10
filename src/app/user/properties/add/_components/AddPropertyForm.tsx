@@ -14,6 +14,7 @@ import { z } from "zod";
 import { AddPropertyFormSchema } from "@/lib/zodSchema";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { uploadImages } from "@/lib/upload";
 
 const steps = [
   {
@@ -48,7 +49,9 @@ const AddPropertyForm = (props: Props) => {
   const [images, setImages] = useState<File[]>([]);
 
   const onSubmit: SubmitHandler<AddPropertyInputType> = async (data) => {
-    console.log({ data });
+    console.log("SUCCESS", { data });
+    const imageUrls = await uploadImages(images);
+    console.log("imageUrls:", { imageUrls });
   };
 
   return (
