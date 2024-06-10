@@ -3,7 +3,7 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import React from "react";
 import PropertiesTable from "./_components/PropertiesTable";
 
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 12;
 
 interface Props {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -37,7 +37,7 @@ const PropertiesPage = async ({ searchParams }: Props) => {
     totalPropertiesPromise,
   ]);
 
-  const totalPages = Math.floor(totalProperties / PAGE_SIZE);
+  const totalPages = Math.floor(totalProperties / PAGE_SIZE + 1);
 
   console.log({ properties });
 
