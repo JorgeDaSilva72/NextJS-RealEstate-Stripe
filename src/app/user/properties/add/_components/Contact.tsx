@@ -24,12 +24,14 @@ const Contact = ({ prev, className }: Props) => {
         errorMessage={errors.contact?.name?.message}
         isInvalid={!!errors.contact?.name}
         label="Nom du contact"
+        defaultValue={getValues("contact.name")}
       />
 
       <Input
         {...register("contact.phone")}
         errorMessage={errors.contact?.phone?.message}
         label="Téléphone"
+        defaultValue={getValues("contact.phone")}
       />
 
       <Input
@@ -37,6 +39,7 @@ const Contact = ({ prev, className }: Props) => {
         errorMessage={errors.contact?.email?.message}
         isInvalid={!!errors.contact?.email}
         label="Email"
+        defaultValue={getValues("contact.email")}
       />
       <div className="flex justify-center col-span-3 gap-3">
         <Button

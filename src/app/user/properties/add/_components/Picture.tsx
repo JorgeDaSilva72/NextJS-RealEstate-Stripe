@@ -24,22 +24,23 @@ const Picture = (props: Props) => {
         }
       />
       <div className="flex gap-3 flex-wrap">
-        {props.images.map((image, index) => {
-          const scrUrl = URL.createObjectURL(image);
-          return (
-            <PictureCard
-              key={scrUrl}
-              src={scrUrl}
-              index={index}
-              onDelete={(i) =>
-                props.setImages([
-                  ...props.images.slice(0, i),
-                  ...props.images.slice(i + 1),
-                ])
-              }
-            />
-          );
-        })}
+        {props.savedImagesUrl!! &&
+          props.setSavedImageUrl!! &&
+          props.savedImagesUrl.map((image, index) => {
+            return (
+              <PictureCard
+                key={image.id}
+                src={image.url}
+                index={index}
+                onDelete={(i) =>
+                  props.setSavedImageUrl!! &&
+                  props.setSavedImageUrl(
+                    props.savedImagesUrl!.filter((img) => img.id !== image.id)
+                  )
+                }
+              />
+            );
+          })}
       </div>
       <div className="flex justify-center col-span-2 gap-3 mt-3">
         <Button
