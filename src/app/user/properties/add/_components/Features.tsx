@@ -41,7 +41,7 @@ const Features = (props: Props) => {
         errorMessage={errors.propertyFeature?.bedrooms?.message}
         isInvalid={!!errors.propertyFeature?.bedrooms}
         label="Chambre(s)"
-        defaultValue={getValues().propertyFeature.bedrooms.toString()}
+        defaultValue={getValues().propertyFeature?.bedrooms?.toString()}
       />
 
       <Input
@@ -49,14 +49,14 @@ const Features = (props: Props) => {
         errorMessage={errors.propertyFeature?.bathrooms?.message}
         isInvalid={!!errors.propertyFeature?.bathrooms}
         label="Salle(s) de bain"
-        defaultValue={getValues().propertyFeature.bathrooms.toString()}
+        defaultValue={getValues().propertyFeature?.bathrooms?.toString()}
       />
       <Input
         {...register("propertyFeature.parkingSpots")}
         errorMessage={errors.propertyFeature?.parkingSpots?.message}
         isInvalid={!!errors.propertyFeature?.parkingSpots}
         label="Place(s) de stationnement"
-        defaultValue={getValues().propertyFeature.parkingSpots.toString()}
+        defaultValue={getValues().propertyFeature?.parkingSpots?.toString()}
       />
 
       <Input
@@ -64,7 +64,7 @@ const Features = (props: Props) => {
         errorMessage={errors.propertyFeature?.area?.message}
         isInvalid={!!errors.propertyFeature?.area}
         label="Superficie en m²"
-        defaultValue={getValues().propertyFeature.area.toString()}
+        defaultValue={getValues().propertyFeature?.area?.toString()}
       />
       <div className="flex flex-col  md:flex-row  items-center justify-around ">
         <Controller
@@ -75,7 +75,7 @@ const Features = (props: Props) => {
               onChange={field.onChange}
               onBlur={field.onBlur}
               defaultValue={
-                getValues().propertyFeature.hasSwimmingPool ? "true" : "false"
+                getValues().propertyFeature?.hasSwimmingPool ? "true" : "false"
               }
             >
               Possède une piscine
@@ -91,7 +91,7 @@ const Features = (props: Props) => {
               onChange={field.onChange}
               onBlur={field.onBlur}
               defaultValue={
-                getValues().propertyFeature.hasGardenYard ? "true" : "false"
+                getValues().propertyFeature?.hasGardenYard ? "true" : "false"
               }
             >
               Possède un jardin/une cour
@@ -107,7 +107,7 @@ const Features = (props: Props) => {
               onChange={field.onChange}
               onBlur={field.onBlur}
               defaultValue={
-                getValues().propertyFeature.hasBalcony ? "true" : "false"
+                getValues().propertyFeature?.hasBalcony ? "true" : "false"
               }
             >
               Possède un balcon/terrasse
