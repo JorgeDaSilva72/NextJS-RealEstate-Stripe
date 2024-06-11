@@ -82,6 +82,16 @@ export async function editProperty(
     },
   });
 
-  console.log("editProperty", { result });
+  console.log("editProperty:", { result });
+
+  return result;
+}
+
+export async function deleteProperty(id: number) {
+  const result = await prisma.property.delete({
+    where: {
+      id,
+    },
+  });
   return result;
 }
