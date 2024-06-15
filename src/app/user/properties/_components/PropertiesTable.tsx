@@ -27,7 +27,9 @@ type Props = {
   currentPage: number;
 };
 
-const PropertiesTable = ({ properties, totalPages, currentPage }: Props) => {
+// const PropertiesTable = ({ properties, totalPages, currentPage }: Props) => {
+const PropertiesTable = ({ properties, totalPages, currentPage }: any) => {
+  // To DEPLOY
   const router = useRouter();
   return (
     <div className="flex flex-col items-center gap-4">
