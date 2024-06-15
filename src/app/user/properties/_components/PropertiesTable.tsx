@@ -42,33 +42,40 @@ const PropertiesTable = ({ properties, totalPages, currentPage }: any) => {
           <TableColumn>ACTIONS</TableColumn>
         </TableHeader>
         <TableBody>
-          {properties.map((item, index) => (
-            <TableRow key={index}>
-              <TableCell>{item.name}</TableCell>
-              <TableCell>{item.price}</TableCell>
-              <TableCell>{item.type.value}</TableCell>
-              <TableCell>{item.status.value}</TableCell>
-              <TableCell>
-                <div className="flex items-center gap-4">
-                  <Tooltip content="Détails">
-                    <Link href={`/property/${item.id}`}>
-                      <EyeIcon className="w-5 text-slate-500" />
-                    </Link>
-                  </Tooltip>
-                  <Tooltip content="Editer" color="warning">
-                    <Link href={`/user/properties/${item.id}/edit`}>
-                      <PencilIcon className="w-5 text-yellow-500" />
-                    </Link>
-                  </Tooltip>
-                  <Tooltip content="Supprimer" color="danger">
-                    <Link href={`/user/properties/${item.id}/delete`}>
-                      <TrashIcon className="w-5 text-red-500" />
-                    </Link>
-                  </Tooltip>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
+          {properties.map(
+            (
+              item: any,
+              index: number // TO DEPLOY
+            ) => (
+              // {properties.map((item, index) => (
+
+              <TableRow key={index}>
+                <TableCell>{item.name}</TableCell>
+                <TableCell>{item.price}</TableCell>
+                <TableCell>{item.type.value}</TableCell>
+                <TableCell>{item.status.value}</TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-4">
+                    <Tooltip content="Détails">
+                      <Link href={`/property/${item.id}`}>
+                        <EyeIcon className="w-5 text-slate-500" />
+                      </Link>
+                    </Tooltip>
+                    <Tooltip content="Editer" color="warning">
+                      <Link href={`/user/properties/${item.id}/edit`}>
+                        <PencilIcon className="w-5 text-yellow-500" />
+                      </Link>
+                    </Tooltip>
+                    <Tooltip content="Supprimer" color="danger">
+                      <Link href={`/user/properties/${item.id}/delete`}>
+                        <TrashIcon className="w-5 text-red-500" />
+                      </Link>
+                    </Tooltip>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )
+          )}
         </TableBody>
       </Table>
       <Pagination
