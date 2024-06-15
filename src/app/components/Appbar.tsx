@@ -33,8 +33,8 @@ const Appbar = ({ children }: Props) => {
           >
             <HomeModernIcon className="w-16" />
             <div className="flex flex-col items-center ml-2">
-              <p className="font-bold text-inherit">KRIST</p>
-              <p className="font-bold text-inherit">IMMO</p>
+              <p className="font-bold text-inherit">AFRIQUE</p>
+              <p className="font-bold text-inherit">AVENIR</p>
             </div>
           </Link>
         </NavbarBrand>
@@ -45,7 +45,14 @@ const Appbar = ({ children }: Props) => {
         justify="center"
       ></NavbarContent>
       <NavbarContent justify="end">{children}</NavbarContent>
-      <NavbarMenu></NavbarMenu>
+      <NavbarMenu className="flex flex-col items-center justify-center">
+        <Link
+          href={"/"}
+          className="flex items-center text-primary-400 hover:text-primary-600 transition-colors"
+        >
+          <p> ACCUEIL</p>
+        </Link>
+      </NavbarMenu>
     </Navbar>
   );
 };

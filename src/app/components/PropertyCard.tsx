@@ -40,12 +40,13 @@ const PropertyCard = ({ property }: Props) => {
       <div className="flex flex-col mt-auto">
         <div className="p-4">
           <p className="text-primary-600 text-xl font-bold">{property.name}</p>
-          <p className="text-slate-600">
-            {property.location?.city}, {property.location?.state}
-          </p>
+          <p className="text-slate-600">{property.location?.city}</p>
+          <p className="text-slate-600">{property.location?.state}</p>
         </div>
         <div className="bg-gradient-to-br from-slate-50 to-slate-400 p-4 flex justify-between">
-          <p>{property.price.toLocaleString()} FCFA</p>
+          <p className="text-primary-600 text-xl font-bold">
+            {property.price.toLocaleString()} <span>FCFA</span>
+          </p>
           <Link
             className="hover:text-primary-500 transition-colors"
             href={`/property/${property.id}`}

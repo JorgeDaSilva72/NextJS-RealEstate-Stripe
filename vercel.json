@@ -1,0 +1,10 @@
+{
+  "name": "next-js-real-estate-stripe",
+  "build": {
+    "command": "npm run build",
+    "env": {}
+  },
+  "deploy": {
+    "ignoreWarnings": true
+  }
+}

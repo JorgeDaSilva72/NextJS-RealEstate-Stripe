@@ -10,7 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "KRIST IMMO",
+  title: "AFRIQUE AVENIR",
   description: "Site d'annonces immobilières au Cameroun",
 };
 
