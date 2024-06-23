@@ -48,9 +48,9 @@ const ProfilePage = async () => {
         </div>
       </Card>
 
-      {/* <Card className="m-4 p-4  flex flex-col gap-5">
-        <SectionTitle title="Subscription Details" />
-        {userSubcription ? (
+      <Card className="m-4 p-4  flex flex-col gap-5">
+        <SectionTitle title="Plans d'abonnement" />
+        {/* {userSubcription ? (
           <div>
             <Attribute title="Plan" value={userSubcription.plan.name} />
             <Attribute title="Price" value={userSubcription.plan.price} />
@@ -63,11 +63,11 @@ const ProfilePage = async () => {
           <div className="flex flex-col items-center">
             <p className="text-center">No Subscription Found!</p>
           </div>
-        )}
+        )} */}
         <Link href={"/user/subscription"}>
-          <Button color="secondary">Purchase Your Subscription</Button>
+          <Button color="secondary">Achetez votre abonnement</Button>
         </Link>
-      </Card> */}
+      </Card>
     </div>
   );
 };
