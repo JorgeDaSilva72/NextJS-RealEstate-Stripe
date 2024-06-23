@@ -13,11 +13,11 @@ const ProfilePage = async () => {
   const user = await getUser();
   const dbUser = await getUserById(user ? user.id : "");
 
-  // const userSubcription = await prisma.subscriptions.findFirst({
-  //   where: { userId: dbUser?.id },
-  //   include: { plan: true },
-  //   orderBy: { createdAt: "desc" },
-  // });
+  const userSubcription = await prisma.subscriptions.findFirst({
+    where: { userId: dbUser?.id },
+    include: { plan: true },
+    orderBy: { createdAt: "desc" },
+  });
 
   return (
     <div>
@@ -49,21 +49,24 @@ const ProfilePage = async () => {
       </Card>
 
       <Card className="m-4 p-4  flex flex-col gap-5">
-        <SectionTitle title="Plans d'abonnement" />
-        {/* {userSubcription ? (
+        <SectionTitle title="Abonnements" />
+        {userSubcription ? (
           <div>
-            <Attribute title="Plan" value={userSubcription.plan.name} />
-            <Attribute title="Price" value={userSubcription.plan.price} />
+            <Attribute title="Abonnement" value={userSubcription.plan.name} />
             <Attribute
-              title="Purchased On"
+              title="Prix en F CFA"
+              value={userSubcription.plan.price}
+            />
+            <Attribute
+              title="Acheté le"
               value={userSubcription.createdAt.toLocaleDateString()}
             />
           </div>
         ) : (
           <div className="flex flex-col items-center">
-            <p className="text-center">No Subscription Found!</p>
+            <p className="text-center">Aucun abonnement trouvé !</p>
           </div>
-        )} */}
+        )}
         <Link href={"/user/subscription"}>
           <Button color="secondary">Achetez votre abonnement</Button>
         </Link>
