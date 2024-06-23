@@ -2,6 +2,7 @@ import PageTitle from "@/app/components/pageTitle";
 import prisma from "@/lib/prisma";
 import { SubscriptionPlan } from "@prisma/client";
 import React from "react";
+import PurchasePlan from "./_components/PurchasePlan";
 
 const SubscriptionPage = async () => {
   const subscriptionPlansPromise = prisma.subscriptionPlan.findMany();
@@ -30,13 +31,13 @@ const Plan = ({ plan }: { plan: SubscriptionPlan }) => {
       </h1>
       <hr />
       <div className="flex flex-col gap-1 text-center">
-        {plan.features.split(",").map((feature) => (
-          <p key={plan.name} className="text-slate-500 text-sm">
+        {plan.features.split(",").map((feature, index) => (
+          <p key={index} className="text-slate-500 text-sm">
             {feature.trim()}
           </p>
         ))}
       </div>
-      {/* Put here PurchasePlan  */}
+      <PurchasePlan plan={plan} />
     </div>
   );
 };
