@@ -27,7 +27,7 @@ const Plan = ({ plan }: { plan: SubscriptionPlan }) => {
         {plan.name}
       </h1>
       <h1 className="text-2xl lg:text-4xl text-orange-600 font-bold text-center">
-        {plan.price.toString()} FCFA
+        {plan.price.toString()} F CFA
       </h1>
       <hr />
       <div className="flex flex-col gap-1 text-center">

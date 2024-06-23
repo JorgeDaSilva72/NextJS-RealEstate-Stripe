@@ -35,7 +35,7 @@ const PropertyPage = async ({ params }: Props) => {
           <div className="col-span-2">
             <ImagesSlider images={property.images.map((img) => img.url)} />
             <h2 className="text-2xl font-bold text-gray-700 mt-7">
-              {property.price} <span className="text-blue-700">FCFA</span> /{" "}
+              {property.price} <span className="text-blue-700">F CFA</span> /{" "}
               {property.status.value}
             </h2>
 
