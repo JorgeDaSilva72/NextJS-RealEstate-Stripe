@@ -3,13 +3,13 @@ import prisma from "@/lib/prisma";
 import PropertyCard from "./components/PropertyCard";
 import PropertyContainer from "./components/PropertyContainer";
 import Search from "./components/Search";
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 10;
 
 interface Props {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 export default async function Home({ searchParams }: Props) {
-  const pagenum = searchParams.pagenum ?? 0;
+  const pagenum = searchParams.pagenum ?? 1;
   const query = searchParams.query ?? "";
   const propertiesPromise = prisma.property.findMany({
     select: {
@@ -35,7 +35,7 @@ export default async function Home({ searchParams }: Props) {
         },
       },
     }),
-    skip: +pagenum * PAGE_SIZE,
+    skip: (+pagenum - 1) * PAGE_SIZE,
     take: PAGE_SIZE,
   });
   const totalPropertiesPromise = prisma.property.count({
@@ -53,7 +53,7 @@ export default async function Home({ searchParams }: Props) {
     totalPropertiesPromise,
   ]);
 
-  const totalPages = Math.floor(totalProperties / PAGE_SIZE);
+  const totalPages = Math.floor(totalProperties / PAGE_SIZE + 1);
 
   return (
     <div>

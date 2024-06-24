@@ -19,6 +19,12 @@ const ProfilePage = async () => {
     orderBy: { createdAt: "desc" },
   });
 
+  const totalPropertiesPromise = await prisma.property.count({
+    where: {
+      userId: user?.id,
+    },
+  });
+
   return (
     <div>
       <PageTitle title="Mon Profil" linkCaption="Retour à l'accueil" href="/" />
@@ -44,7 +50,10 @@ const ProfilePage = async () => {
             title="Compte créé le:"
             value={dbUser?.createdAt.toLocaleDateString()}
           />
-          <Attribute title="Nombre d'annonces" value={1} />
+          <Attribute title="Nombre d'annonces" value={totalPropertiesPromise} />
+          <Link href={"/user/properties"}>
+            <Button color="secondary">Voir mes annonces</Button>
+          </Link>
         </div>
       </Card>
 

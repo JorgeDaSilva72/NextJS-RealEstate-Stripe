@@ -33,7 +33,7 @@ const PurchasePlan = ({ plan }: Props) => {
     setShowCheckout(true);
     setIsLoading(false);
   };
-  if (plan.price === 0) return <Button>Try it for free!</Button>;
+  if (plan.price === 0) return <Button>Essayez-le gratuitement!</Button>;
   return (
     <>
       <Button
