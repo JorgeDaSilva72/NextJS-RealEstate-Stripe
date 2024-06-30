@@ -1,7 +1,7 @@
 import PageTitle from "@/app/components/pageTitle";
 import { getUserById } from "@/lib/actions/user";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import SectionTitle from "./_components/sectionTitle";
 import { Avatar, Button, Card } from "@nextui-org/react";
 import UploadAvatar from "./_components/UploadAvatar";
@@ -19,7 +19,7 @@ const ProfilePage = async () => {
     orderBy: { createdAt: "desc" },
   });
 
-  const totalPropertiesPromise = await prisma.property.count({
+  const totalPropertiesCount = await prisma.property.count({
     where: {
       userId: user?.id,
     },
@@ -50,7 +50,10 @@ const ProfilePage = async () => {
             title="Compte créé le:"
             value={dbUser?.createdAt.toLocaleDateString()}
           />
-          <Attribute title="Nombre d'annonces" value={totalPropertiesPromise} />
+          <Attribute
+            title="Nombre d'annonces"
+            value={totalPropertiesCount.toString()}
+          />
           <Link href={"/user/properties"}>
             <Button color="secondary">Voir mes annonces</Button>
           </Link>

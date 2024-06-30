@@ -5,21 +5,31 @@ import React from "react";
 import PurchasePlan from "./_components/PurchasePlan";
 
 const SubscriptionPage = async () => {
-  const subscriptionPlansPromise = prisma.subscriptionPlan.findMany();
-  const [subscriptionPlans] = await Promise.all([subscriptionPlansPromise]);
+  try {
+    const subscriptionPlansPromise = prisma.subscriptionPlan.findMany();
+    const [subscriptionPlans] = await Promise.all([subscriptionPlansPromise]);
 
-  return (
-    <div>
-      <PageTitle title="Plans d'abonnement" />
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 p-4">
-        {subscriptionPlans.map((item, index) => (
-          <Plan plan={item} key={index} />
-        ))}
+    // Vérifiez s'il existe des plans d'abonnement
+    if ([subscriptionPlans].length === 0) {
+      throw new Error("Something went wrong with subscription Plans");
+    }
+
+    return (
+      <div>
+        <PageTitle title="Plans d'abonnement" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 p-4">
+          {subscriptionPlans.map((item, index) => (
+            <Plan plan={item} key={index} />
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  } catch (error) {
+    return <></>;
+  }
 };
 export default SubscriptionPage;
+
 const Plan = ({ plan }: { plan: SubscriptionPlan }) => {
   return (
     <div className="border rounded shadow flex flex-col gap-5 justify-between p-5">
