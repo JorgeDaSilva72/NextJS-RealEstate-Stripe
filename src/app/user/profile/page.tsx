@@ -18,8 +18,9 @@ const ProfilePage = async () => {
 
     // Vérifiez si l'utilisateur est valide
     const dbUser = await getUserById(user ? user.id : "");
-    if (!dbUser || !dbUser.id)
+    if (!dbUser || !dbUser.id) {
       throw new Error("Something went wrong with authentication");
+    }
 
     // Cherchez le plan d'abonnement de l'utilisateur dans la base de données
     const userSubcription = await prisma.subscriptions.findFirst({

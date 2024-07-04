@@ -53,7 +53,9 @@ export async function GET() {
   const user = await getUser();
 
   if (!user || user === null || !user.id)
-    throw new Error("Something went wrong with authentication" + user);
+    throw new Error(
+      "Quelque chose s'est mal passé avec l'authentification" + user
+    );
 
   const dbUser = await prisma.user.findUnique({
     where: {
