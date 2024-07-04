@@ -35,7 +35,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.redirect("http://localhost:3000/");
     }
     // Retournez une réponse appropriée si l'utilisateur existe déjà
-    return NextResponse.json({ message: "User already exists", user: dbUser });
+    // return NextResponse.json({ message: "User already exists", user: dbUser });
+    return NextResponse.redirect("http://localhost:3000/");
   } catch (error) {
     // Gérez les erreurs et retournez une réponse d'erreur
     return NextResponse.json(
