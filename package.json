@@ -14,7 +14,7 @@
     "@kinde-oss/kinde-auth-nextjs": "^2.2.13",
     "@nextui-org/react": "^2.4.1",
     "@prisma/client": "^5.15.1",
-    "@stripe/react-stripe-js": "^2.7.1",
+    "@stripe/react-stripe-js": "^2.7.3",
     "@stripe/stripe-js": "^4.0.0",
     "@supabase/supabase-js": "^2.43.4",
     "framer-motion": "^11.2.10",

@@ -13,9 +13,9 @@ const ProfilePage = async () => {
   try {
     // Obtenez la session et l'utilisateur
     const { getUser } = await getKindeServerSession();
-    if (!getUser) throw new Error("Something went wrong with authentication");
+
     const user = await getUser();
-    if (!user) throw new Error("Something went wrong with authentication");
+
     // Vérifiez si l'utilisateur est valide
     const dbUser = await getUserById(user ? user.id : "");
     if (!dbUser || !dbUser.id)
@@ -28,8 +28,8 @@ const ProfilePage = async () => {
       orderBy: { createdAt: "desc" },
     });
 
-    if (!userSubcription || !userSubcription.id)
-      throw new Error("Something went wrong with user Subcription");
+    // if (!userSubcription || !userSubcription.id)
+    //   throw new Error("Something went wrong with user Subcription");
 
     const totalPropertiesCount = await prisma.property.count({
       where: {
@@ -108,11 +108,12 @@ const ProfilePage = async () => {
       </div>
     );
   } catch (error) {
+    console.log((error as Error).message);
     // Gérez les erreurs et retournez une réponse d'erreur
-    return NextResponse.json(
-      { error: (error as Error).message },
-      { status: 500 }
-    );
+    // return NextResponse.json(
+    //   { error: (error as Error).message },
+    //   { status: 500 }
+    // );
   }
 };
 
