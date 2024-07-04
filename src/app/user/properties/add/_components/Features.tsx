@@ -37,7 +37,10 @@ const Features = (props: Props) => {
       )}
     >
       <Input
-        {...register("propertyFeature.bedrooms")}
+        {...register("propertyFeature.bedrooms", {
+          setValueAs: (v: any) => v.toString(),
+        })}
+        // {...register("propertyFeature.bedrooms")}
         errorMessage={errors.propertyFeature?.bedrooms?.message}
         isInvalid={!!errors.propertyFeature?.bedrooms}
         label="Chambre(s)"
@@ -45,14 +48,20 @@ const Features = (props: Props) => {
       />
 
       <Input
-        {...register("propertyFeature.bathrooms")}
+        {...register("propertyFeature.bathrooms", {
+          setValueAs: (v: any) => v.toString(),
+        })}
+        // {...register("propertyFeature.bathrooms")}
         errorMessage={errors.propertyFeature?.bathrooms?.message}
         isInvalid={!!errors.propertyFeature?.bathrooms}
         label="Salle(s) de bain"
         defaultValue={getValues().propertyFeature?.bathrooms?.toString()}
       />
       <Input
-        {...register("propertyFeature.parkingSpots")}
+        {...register("propertyFeature.parkingSpots", {
+          setValueAs: (v: any) => v.toString(),
+        })}
+        // {...register("propertyFeature.parkingSpots")}
         errorMessage={errors.propertyFeature?.parkingSpots?.message}
         isInvalid={!!errors.propertyFeature?.parkingSpots}
         label="Place(s) de stationnement"
@@ -60,7 +69,10 @@ const Features = (props: Props) => {
       />
 
       <Input
-        {...register("propertyFeature.area")}
+        {...register("propertyFeature.area", {
+          setValueAs: (v: any) => v.toString(),
+        })}
+        // {...register("propertyFeature.area")}
         errorMessage={errors.propertyFeature?.area?.message}
         isInvalid={!!errors.propertyFeature?.area}
         label="Superficie en m²"
