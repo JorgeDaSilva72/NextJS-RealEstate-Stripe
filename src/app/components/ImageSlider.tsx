@@ -121,7 +121,7 @@ export const ImagesSlider = ({
   return (
     <Card
       className={cn(
-        "overflow-hidden h-full w-full relative flex items-center justify-center",
+        "overflow-hidden min-h-[450px]  w-full relative flex items-center justify-center",
         className
       )}
       style={{
