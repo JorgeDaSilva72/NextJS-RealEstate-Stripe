@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import PropertyCard from "./components/PropertyCard";
 import PropertyContainer from "./components/PropertyContainer";
 import Search from "./components/Search";
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 12;
 
 interface Props {
   searchParams: { [key: string]: string | string[] | undefined };

@@ -80,50 +80,56 @@ const Features = (props: Props) => {
       />
       <div className="flex flex-col  md:flex-row  items-center justify-around ">
         <Controller
+          {...register("propertyFeature.hasSwimmingPool")}
           control={control}
           name="propertyFeature.hasSwimmingPool"
           render={({ field }) => (
-            <Checkbox
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-              defaultValue={
-                getValues().propertyFeature?.hasSwimmingPool ? "true" : "false"
-              }
-            >
-              Possède une piscine
-            </Checkbox>
+            <>
+              {console.log("hasSwimmingPool value:", field.value)}
+
+              <Checkbox
+                checked={field.value || false}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+              >
+                Possède une piscine
+              </Checkbox>
+            </>
           )}
         />
 
         <Controller
+          {...register("propertyFeature.hasGardenYard")}
           control={control}
           name="propertyFeature.hasGardenYard"
           render={({ field }) => (
-            <Checkbox
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-              defaultValue={
-                getValues().propertyFeature?.hasGardenYard ? "true" : "false"
-              }
-            >
-              Possède un jardin/une cour
-            </Checkbox>
+            <>
+              {console.log("hasGardenYard value:", field.value)}
+              <Checkbox
+                onChange={field.onChange}
+                checked={field.value || false}
+              >
+                Possède un jardin/une cour
+              </Checkbox>
+            </>
           )}
         />
 
         <Controller
+          {...register("propertyFeature.hasBalcony")}
           control={control}
           name="propertyFeature.hasBalcony"
           render={({ field }) => (
-            <Checkbox
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-              defaultValue={
-                getValues().propertyFeature?.hasBalcony ? "true" : "false"
-              }
-            >
-              Possède un balcon/terrasse
-            </Checkbox>
+            <>
+              {console.log("hasBalcony value:", field.value)}
+              <Checkbox
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                checked={field.value || false}
+              >
+                Possède un balcon/terrasse
+              </Checkbox>
+            </>
           )}
         />
       </div>

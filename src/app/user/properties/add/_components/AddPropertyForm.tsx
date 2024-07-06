@@ -67,12 +67,21 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
     defaultValues: {
       contact: props.property?.contact ?? undefined,
       location: props.property?.location ?? undefined,
-      propertyFeature: props.property?.feature ?? undefined,
+      // propertyFeature: props.property?.feature ?? undefined,
       description: props.property?.description ?? undefined,
       name: props.property?.name ?? undefined,
       price: props.property?.price ?? undefined,
       statusId: props.property?.statusId ?? undefined,
       typeId: props.property?.typeId ?? undefined,
+      propertyFeature: {
+        bedrooms: props.property?.feature?.bedrooms ?? 0,
+        bathrooms: props.property?.feature?.bathrooms ?? 0,
+        parkingSpots: props.property?.feature?.parkingSpots ?? 0,
+        area: props.property?.feature?.area ?? 0,
+        hasSwimmingPool: props.property?.feature?.hasSwimmingPool ?? false,
+        hasGardenYard: props.property?.feature?.hasGardenYard ?? false,
+        hasBalcony: props.property?.feature?.hasBalcony ?? false,
+      },
     },
   });
   const [step, setStep] = useState(0);
