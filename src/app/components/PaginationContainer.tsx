@@ -10,7 +10,8 @@ interface Props {
 const PaginationContainer = ({
   totalPages,
   currentPage,
-  route = "/",
+  // route = "/", // before hero section
+  route = "/result",
 }: Props) => {
   const router = useRouter();
   if (totalPages <= 1) return null;
