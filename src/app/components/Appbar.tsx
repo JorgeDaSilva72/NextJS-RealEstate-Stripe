@@ -1,5 +1,5 @@
 "use client";
-import { HomeModernIcon } from "@heroicons/react/16/solid";
+
 import {
   Navbar,
   NavbarContent,
@@ -10,6 +10,7 @@ import {
   NavbarMenu,
   NavbarMenuItem,
 } from "@nextui-org/react";
+import Image from "next/image";
 import Link from "next/link";
 import React, { ReactNode } from "react";
 
@@ -19,39 +20,102 @@ interface Props {
 
 const Appbar = ({ children }: Props) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
   return (
-    <Navbar className="shadow-md" onMenuOpenChange={setIsMenuOpen}>
-      <NavbarContent>
+    <Navbar className="shadow-md bg-white" onMenuOpenChange={setIsMenuOpen}>
+      {/* Mobile Menu Toggle */}
+      <NavbarContent className="flex items-center">
         <NavbarMenuToggle
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          aria-label={isMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
           className="sm:hidden"
         />
+        {/* Brand */}
         <NavbarBrand>
           <Link
-            href={"/"}
-            className="flex items-center text-primary-400 hover:text-primary-600 transition-colors"
+            href="/"
+            className="flex items-center text-primary-500 hover:text-primary-700 transition duration-200"
           >
-            <HomeModernIcon className="w-16" />
-            <div className="flex flex-col items-center ml-2">
-              <p className="font-bold text-inherit">AFRIQUE</p>
-              <p className="font-bold text-inherit">AVENIR</p>
+            <Image
+              src="/logo-topaz-enhance-coupe.jpeg"
+              alt="Logo Afrique Avenir"
+              width={48}
+              height={48}
+              className="rounded-lg"
+            />
+            {/* Texte caché sur petit écran */}
+            <div className="ml-2 text-center hidden sm:block">
+              <p className="font-bold text-md text-primary">AFRIQUE</p>
+              <p className="font-bold text-md text-primary">AVENIR</p>
+              <p className="font-bold text-md text-primary">IMMO</p>
             </div>
           </Link>
         </NavbarBrand>
       </NavbarContent>
 
-      <NavbarContent
-        className="hidden sm:flex gap-4"
-        justify="center"
-      ></NavbarContent>
-      <NavbarContent justify="end">{children}</NavbarContent>
-      <NavbarMenu className="flex flex-col items-center justify-center">
-        <Link
-          href={"/"}
-          className="flex items-center text-primary-400 hover:text-primary-600 transition-colors"
-        >
-          <p> ACCUEIL</p>
-        </Link>
+      {/* Desktop Navigation Links */}
+      <NavbarContent className="hidden sm:flex gap-6">
+        {/* <NavbarItem>
+          <Link
+            href="/"
+            className="text-primary-500 hover:text-primary-700 transition duration-200"
+          >
+            Accueil
+          </Link>
+        </NavbarItem> */}
+        <NavbarItem>
+          <Link
+            href="/about"
+            className="text-primary-500 hover:text-primary-700 transition duration-200"
+          >
+            À Propos
+          </Link>
+        </NavbarItem>
+        <NavbarItem>
+          <Link
+            href="/contact"
+            className="text-primary-500 hover:text-primary-700 transition duration-200"
+          >
+            Contact
+          </Link>
+        </NavbarItem>
+      </NavbarContent>
+
+      {/* Actions */}
+      {/* <NavbarContent justify="end" className="hidden sm:flex"> */}
+      <NavbarContent justify="end" className="sm:flex">
+        {children}
+      </NavbarContent>
+
+      {/* Mobile Menu */}
+      <NavbarMenu
+        className={`sm:hidden ${
+          isMenuOpen ? "flex" : "hidden"
+        } flex-col items-center`}
+      >
+        <NavbarMenuItem>
+          <Link
+            href="/"
+            className="text-primary-500 hover:text-primary-700 transition duration-200"
+          >
+            Accueil
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem>
+          <Link
+            href="/about"
+            className="text-primary-500 hover:text-primary-700 transition duration-200"
+          >
+            À Propos
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem>
+          <Link
+            href="/contact"
+            className="text-primary-500 hover:text-primary-700 transition duration-200"
+          >
+            Contact
+          </Link>
+        </NavbarMenuItem>
       </NavbarMenu>
     </Navbar>
   );

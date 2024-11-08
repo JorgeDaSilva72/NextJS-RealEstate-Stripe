@@ -85,7 +85,7 @@ const Features = (props: Props) => {
           name="propertyFeature.hasSwimmingPool"
           render={({ field }) => (
             <>
-              {console.log("hasSwimmingPool value:", field.value)}
+              {/* {console.log("hasSwimmingPool value:", field.value)} */}
 
               <Checkbox
                 checked={field.value || false}
@@ -104,7 +104,7 @@ const Features = (props: Props) => {
           name="propertyFeature.hasGardenYard"
           render={({ field }) => (
             <>
-              {console.log("hasGardenYard value:", field.value)}
+              {/* {console.log("hasGardenYard value:", field.value)} */}
               <Checkbox
                 onChange={field.onChange}
                 checked={field.value || false}
@@ -121,7 +121,7 @@ const Features = (props: Props) => {
           name="propertyFeature.hasBalcony"
           render={({ field }) => (
             <>
-              {console.log("hasBalcony value:", field.value)}
+              {/* {console.log("hasBalcony value:", field.value)} */}
               <Checkbox
                 onChange={field.onChange}
                 onBlur={field.onBlur}

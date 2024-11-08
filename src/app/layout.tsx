@@ -10,8 +10,13 @@ import "react-toastify/dist/ReactToastify.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AFRIQUE AVENIR",
-  description: "Site d'annonces immobilières au Cameroun",
+  title: "AFRIQUE AVENIR IMMO",
+  description: "Site d'annonces immobilières pour l'AFRIQUE FRANCOPHONE",
+  icons: {
+    icon: "/favicon.ico", // Assurez-vous que ce fichier existe dans /public
+    // Vous pouvez également ajouter d'autres icônes si nécessaire
+    // apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
