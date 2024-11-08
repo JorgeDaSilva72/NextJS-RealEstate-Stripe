@@ -40,13 +40,19 @@ const Appbar = ({ children }: Props) => {
               alt="Logo Afrique Avenir"
               width={48}
               height={48}
-              className="rounded-lg"
+              className="rounded-lg object-contain"
             />
             {/* Texte caché sur petit écran */}
-            <div className="ml-2 text-center hidden sm:block">
-              <p className="font-bold text-md text-primary">AFRIQUE</p>
-              <p className="font-bold text-md text-primary">AVENIR</p>
-              <p className="font-bold text-md text-primary">IMMO</p>
+            <div className=" ml-2 hidden sm:flex sm:flex-col   text-center md:flex md:flex-row md:items-center md:text-left  ">
+              <p className="font-bold text-primary text-xs sm:text-sm md:text-md lg:text-lg">
+                AFRIQUE&nbsp;
+              </p>
+              <p className="font-bold text-primary text-xs sm:text-sm md:text-md lg:text-lg">
+                AVENIR&nbsp;
+              </p>
+              <p className="font-bold text-primary text-xs sm:text-sm md:text-md lg:text-lg">
+                IMMO&nbsp;
+              </p>
             </div>
           </Link>
         </NavbarBrand>
