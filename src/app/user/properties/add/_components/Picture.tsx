@@ -28,17 +28,19 @@
 //           props.setSavedImageUrl!! &&
 //           props.savedImagesUrl.map((image, index) => {
 //             return (
-//               <PictureCard
-//                 key={image.id}
-//                 src={image.url}
-//                 index={index}
-//                 onDelete={(i) =>
-//                   props.setSavedImageUrl!! &&
-//                   props.setSavedImageUrl(
-//                     props.savedImagesUrl!.filter((img) => img.id !== image.id)
-//                   )
-//                 }
-//               />
+{
+  /* <PictureCard
+  key={image.id}
+  src={image.url}
+  index={index}
+  onDelete={(i) =>
+    props.setSavedImageUrl!! &&
+    props.setSavedImageUrl(
+      props.savedImagesUrl!.filter((img) => img.id !== image.id)
+    )
+  }
+/>; */
+}
 //             );
 //           })}
 //       </div>
@@ -98,9 +100,10 @@ const Picture = (props: Props) => {
               key={image.id}
               src={image.url}
               index={index}
-              onDelete={() =>
+              onDelete={(i) =>
+                props.setSavedImageUrl!! &&
                 props.setSavedImageUrl(
-                  props.savedImagesUrl.filter((img) => img.id !== image.id)
+                  props.savedImagesUrl!.filter((img) => img.id !== image.id)
                 )
               }
             />
