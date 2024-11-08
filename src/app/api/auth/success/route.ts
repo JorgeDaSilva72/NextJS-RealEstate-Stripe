@@ -33,13 +33,13 @@ export async function GET(req: NextRequest) {
       });
       // Redirigez vers la page d'accueil après la création de l'utilisateur
 
-      // return NextResponse.redirect("http://localhost:3000/");// DEVELOPMENT MODE
-      return NextResponse.redirect("https://afrique-avenir.vercel.app/"); // PRODCTION MODE
+      return NextResponse.redirect("http://localhost:3000/"); // DEVELOPMENT MODE
+      // return NextResponse.redirect("https://afrique-avenir-immo.vercel.app/"); // PRODCTION MODE
     }
     // Retournez une réponse appropriée si l'utilisateur existe déjà
     // return NextResponse.json({ message: "User already exists", user: dbUser });
-    // return NextResponse.redirect("http://localhost:3000/");// DEVELOPMENT MODE
-    return NextResponse.redirect("https://afrique-avenir.vercel.app/"); // PRODCTION MODE
+    return NextResponse.redirect("http://localhost:3000/"); // DEVELOPMENT MODE
+    // return NextResponse.redirect("https://afrique-avenir-immo.vercel.app/"); // PRODCTION MODE
   } catch (error) {
     // Gérez les erreurs et retournez une réponse d'erreur
     return NextResponse.json(
