@@ -7,13 +7,11 @@ import { Avatar, Button, Card } from "@nextui-org/react";
 import UploadAvatar from "./_components/UploadAvatar";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
-import { NextResponse } from "next/server";
 
 const ProfilePage = async () => {
   try {
     // Obtenez la session et l'utilisateur
     const { getUser } = await getKindeServerSession();
-
     const user = await getUser();
 
     // Vérifiez si l'utilisateur est valide
@@ -23,23 +21,23 @@ const ProfilePage = async () => {
     }
 
     // Cherchez le plan d'abonnement de l'utilisateur dans la base de données
-    const userSubcription = await prisma.subscriptions.findFirst({
+    const userSubscription = await prisma.subscriptions.findFirst({
       where: { userId: dbUser?.id },
       include: { plan: true },
       orderBy: { createdAt: "desc" },
     });
 
-    // if (!userSubcription || !userSubcription.id)
-    //   throw new Error("Something went wrong with user Subcription");
+    // Vérifiez si l'abonnement a expiré
+    const currentDate = new Date();
+    const isSubscriptionExpired = userSubscription?.endDate
+      ? new Date(userSubscription.endDate) < currentDate
+      : true;
 
     const totalPropertiesCount = await prisma.property.count({
       where: {
         userId: user?.id,
       },
     });
-
-    // if (!totalPropertiesCount)
-    //   throw new Error("Something went wrong with total Properties Count");
 
     return (
       <div>
@@ -48,7 +46,7 @@ const ProfilePage = async () => {
           linkCaption="Retour à l'accueil"
           href="/"
         />
-        <Card className="m-4 p-4  flex flex-col gap-5">
+        <Card className="m-4 p-4 flex flex-col gap-5">
           <SectionTitle title="Informations" />
           <div className="flex">
             <div className="flex flex-col items-center ">
@@ -80,21 +78,33 @@ const ProfilePage = async () => {
           </div>
         </Card>
 
-        <Card className="m-4 p-4  flex flex-col gap-5">
-          <SectionTitle title="Abonnements" />
-          {userSubcription ? (
+        <Card className="m-4 p-4 flex flex-col gap-5">
+          <SectionTitle title="Abonnement" />
+          {userSubscription ? (
             <div>
               <Attribute
                 title="Abonnement"
-                value={userSubcription?.plan?.name}
+                value={userSubscription?.plan?.name}
               />
               <Attribute
                 title="Prix en F CFA"
-                value={userSubcription?.plan?.price}
+                value={userSubscription?.plan?.price}
               />
               <Attribute
                 title="Acheté le"
-                value={userSubcription?.createdAt.toLocaleDateString()}
+                value={userSubscription?.createdAt.toLocaleDateString()}
+              />
+              <Attribute
+                title="Expire le"
+                value={
+                  <span
+                    className={
+                      isSubscriptionExpired ? "text-red-500" : "text-slate-600"
+                    }
+                  >
+                    {userSubscription?.endDate.toLocaleDateString()}
+                  </span>
+                }
               />
             </div>
           ) : (
@@ -102,19 +112,17 @@ const ProfilePage = async () => {
               <p className="text-center">Aucun abonnement trouvé !</p>
             </div>
           )}
-          <Link href={"/user/subscription"}>
-            <Button color="secondary">Achetez votre abonnement</Button>
-          </Link>
+
+          {(isSubscriptionExpired || !userSubscription) && (
+            <Link href={"/user/subscription"}>
+              <Button color="secondary">Achetez votre abonnement</Button>
+            </Link>
+          )}
         </Card>
       </div>
     );
   } catch (error) {
     console.log((error as Error).message);
-    // Gérez les erreurs et retournez une réponse d'erreur
-    // return NextResponse.json(
-    //   { error: (error as Error).message },
-    //   { status: 500 }
-    // );
   }
 };
 
