@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import Search from "../components/Search";
 import PropertyContainer from "../components/PropertyContainer";
 import PropertyCard from "../components/PropertyCard";
+import NoPropertiesFound from "./_components/noPropertiesFound";
 // import PropertyCard from "./components/PropertyCard";
 // import PropertyContainer from "./components/PropertyContainer";
 // import Search from "./components/Search";
@@ -61,11 +62,15 @@ export default async function Home({ searchParams }: Props) {
   return (
     <div>
       <Search />
-      <PropertyContainer totalPages={totalPages} currentPage={+pagenum}>
-        {properties.map((propertyItem) => (
-          <PropertyCard property={propertyItem} key={propertyItem.id} />
-        ))}
-      </PropertyContainer>
+      {properties.length > 0 ? (
+        <PropertyContainer totalPages={totalPages} currentPage={+pagenum}>
+          {properties.map((propertyItem) => (
+            <PropertyCard property={propertyItem} key={propertyItem.id} />
+          ))}
+        </PropertyContainer>
+      ) : (
+        <NoPropertiesFound /> // Affichage du composant NoPropertiesFound si aucune propriété n'est trouvée
+      )}
     </div>
   );
 }
