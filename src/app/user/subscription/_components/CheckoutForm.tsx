@@ -51,12 +51,13 @@ const CheckoutForm = (props: Props) => {
         toast.error(result.error.message);
       } else {
         // Date de début de l'abonnement
-        const startDate = new Date().toISOString();
+        const startDate = new Date();
+        // const startDate = new Date().toISOString();
 
         // Date de fin de l'abonnement (par exemple, un mois après la date de début)
         const endDate = new Date();
         endDate.setMonth(endDate.getMonth() + 1); // Ajouter un mois
-        const endDateISOString = endDate.toISOString();
+        // const endDateISOString = endDate.toISOString();
 
         await saveSubscription({
           paymentId: result.paymentIntent.id,
