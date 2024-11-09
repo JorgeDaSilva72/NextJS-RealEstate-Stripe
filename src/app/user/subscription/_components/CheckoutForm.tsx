@@ -40,9 +40,9 @@ const CheckoutForm = (props: Props) => {
       const result = await stripe?.confirmPayment({
         elements,
         confirmParams: {
-          return_url: "https://afrique-avenir.vercel.app/user/profile",
+          // return_url: "https://afrique-avenir.vercel.app/user/profile",
 
-          // return_url: "http://localhost:3000/user/profile",
+          return_url: "http://localhost:3000/user/profile",
         },
         redirect: "if_required",
       });
@@ -50,10 +50,20 @@ const CheckoutForm = (props: Props) => {
       if (result.error) {
         toast.error(result.error.message);
       } else {
+        // Date de début de l'abonnement
+        const startDate = new Date().toISOString();
+
+        // Date de fin de l'abonnement (par exemple, un mois après la date de début)
+        const endDate = new Date();
+        endDate.setMonth(endDate.getMonth() + 1); // Ajouter un mois
+        const endDateISOString = endDate.toISOString();
+
         await saveSubscription({
           paymentId: result.paymentIntent.id,
           planId: props.plan.id,
           userId: user?.id,
+          startDate: startDate,
+          endDate: endDate,
         });
         toast.success("Merci pour votre abonnement.");
         router.push("/user/profile");

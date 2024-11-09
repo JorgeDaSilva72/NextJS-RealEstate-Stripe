@@ -24,8 +24,8 @@ const Hero = () => {
         <Image
           src="/hero-image.jpg"
           alt="Immobilier de rêve"
-          layout="fill"
-          objectFit="cover"
+          fill
+          style={{ objectFit: "cover" }}
           className="opacity-80"
           priority
         />

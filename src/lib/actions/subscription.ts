@@ -6,15 +6,21 @@ export const saveSubscription = async ({
   paymentId,
   planId,
   userId,
+  startDate,
+  endDate,
 }: {
   paymentId: string;
   planId: number;
   userId: string;
+  startDate: Date;
+  endDate: Date;
 }) => {
   try {
     await prisma.subscriptions.create({
       data: {
         paymentID: paymentId,
+        startDate: startDate,
+        endDate: endDate,
         user: {
           connect: {
             id: userId,
