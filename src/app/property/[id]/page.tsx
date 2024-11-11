@@ -1,4 +1,4 @@
-import { ImagesSlider } from "@/app/components/ImageSlider";
+import { ImagesSliderHero } from "@/app/components/ImageSliderHero";
 import PageTitle from "@/app/components/pageTitle";
 import prisma from "@/lib/prisma";
 import { Card } from "@nextui-org/react";
@@ -33,7 +33,7 @@ const PropertyPage = async ({ params }: Props) => {
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <div className="col-span-1 lg:col-span-2 ">
-            <ImagesSlider images={property.images.map((img) => img.url)} />
+            <ImagesSliderHero images={property.images.map((img) => img.url)} />
             <h2 className="text-2xl font-bold text-gray-700 mt-7">
               {property.price} <span className="text-blue-700">F CFA</span> /{" "}
               {property.status.value}

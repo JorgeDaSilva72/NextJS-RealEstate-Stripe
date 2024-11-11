@@ -25,12 +25,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <head>
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
         {/* Lien direct vers la favicon */}
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.className} h-full`}>
         <Providers>
           <Appbar>
             <SignInPanel />

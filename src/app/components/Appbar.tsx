@@ -12,17 +12,43 @@ import {
 } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { ReactNode } from "react";
-
+import { useRouter } from "next/navigation";
+import React, { ReactNode, useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 interface Props {
   children: ReactNode;
 }
 
 const Appbar = ({ children }: Props) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isTransparent, setIsTransparent] = useState(false);
+
+  const pathname = usePathname(); // Utilisation de usePathname pour obtenir le chemin actuel
+  useEffect(() => {
+    // Vérifie si on est dans la page d'accueil
+    // Vérifie si on est sur la page d'accueil
+    const isHeroPage = pathname === "/";
+    setIsTransparent(isHeroPage);
+    const handleScroll = () => {
+      const heroElement = document.getElementById("hero");
+      if (heroElement) {
+        // Ajuste ici la hauteur du Hero pour déclencher le changement de style
+        const heroHeight = heroElement.offsetHeight;
+        setIsTransparent(window.scrollY < heroHeight);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [pathname]);
 
   return (
-    <Navbar className="shadow-md bg-white" onMenuOpenChange={setIsMenuOpen}>
+    <Navbar
+      // className=" bg-transparent shadow-md z-50 "
+      className={`${
+        isTransparent ? "fixed top-0 left-0 w-full bg-transparent" : "bg-white "
+      } z-50 shadow-md transition duration-300 ease-in-out`}
+      onMenuOpenChange={setIsMenuOpen}
+    >
       {/* Mobile Menu Toggle */}
       <NavbarContent className="flex items-center">
         <NavbarMenuToggle
