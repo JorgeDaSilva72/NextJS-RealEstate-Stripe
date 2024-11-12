@@ -72,7 +72,7 @@ const Hero = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Rechercher un lieu, quartier ou ville"
+              placeholder="Rechercher dans les titres des annonces"
               className="w-full sm:w-2/3 p-3 text-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
             <button

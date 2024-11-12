@@ -105,7 +105,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 import { Input, Spinner } from "@nextui-org/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
-import { PropertyStatus } from "@prisma/client"; // Importez le type PropertyStatus si défini dans Prisma
+import { PropertyStatus, PropertyType } from "@prisma/client"; // Importez le type PropertyStatus si défini dans Prisma
 
 // Exemples de valeurs de status
 // const statusOptions = [
@@ -130,6 +130,11 @@ const Search = () => {
   );
   const [statuses, setStatuses] = useState<PropertyStatus[]>([]); // Définition explicite du type
 
+  const [selectedType, setSelectedType] = useState(
+    searchParams.get("queryType") ?? ""
+  );
+  const [types, setTypes] = useState<PropertyType[]>([]); // Définition explicite du type
+
   const fetchStatuses = async () => {
     try {
       const response = await fetch("/api/searchStatuses");
@@ -140,8 +145,19 @@ const Search = () => {
     }
   };
 
+  const fetchTypes = async () => {
+    try {
+      const response = await fetch("/api/searchTypes");
+      const data: PropertyType[] = await response.json();
+      setTypes(data);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des types:", error);
+    }
+  };
+
   useEffect(() => {
     fetchStatuses();
+    fetchTypes();
   }, []);
 
   const handleChange = useDebouncedCallback(async (query: string) => {
@@ -172,6 +188,20 @@ const Search = () => {
     router.replace(`${pathName}?${params.toString()}`);
   };
 
+  // Gestion du changement de type
+  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const type = e.target.value;
+    setSelectedType(type);
+
+    const params = new URLSearchParams(searchParams);
+    if (type) {
+      params.set("queryType", type);
+    } else {
+      params.delete("queryType");
+    }
+
+    router.replace(`${pathName}?${params.toString()}`);
+  };
   return (
     <div className="p-4 flex flex-col items-center justify-center bg-gradient-to-br from-sky-400 to-indigo-500 space-y-4">
       <Input
@@ -197,6 +227,20 @@ const Search = () => {
         {statuses.map((status) => (
           <option key={status.id} value={status.value}>
             {status.value}
+          </option>
+        ))}
+      </select>
+
+      {/* Select pour le choix du type */}
+      <select
+        value={selectedType}
+        onChange={handleTypeChange}
+        className="w-96 p-2 shadow rounded bg-white text-gray-700"
+      >
+        <option value="">Type de bien</option>
+        {types.map((type) => (
+          <option key={type.id} value={type.value}>
+            {type.value}
           </option>
         ))}
       </select>
