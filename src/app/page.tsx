@@ -46,6 +46,10 @@ const Hero = () => {
         <div className="absolute inset-0 z-0 h-full w-full">
           <ImagesSlider
             className="h-full w-full object-cover"
+            direction="down"
+            overlay={false}
+            autoplay={false}
+            overlayClassName=""
             images={images.map((img) => img.url)}
           />
         </div>

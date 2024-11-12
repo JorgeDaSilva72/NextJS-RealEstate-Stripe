@@ -15,6 +15,8 @@ interface Props {
 export default async function Home({ searchParams }: Props) {
   const pagenum = searchParams.pagenum ?? 1;
   const query = searchParams.query ?? "";
+  const queryStatus = searchParams.queryStatus ?? "";
+
   const propertiesPromise = prisma.property.findMany({
     select: {
       id: true,
@@ -31,6 +33,7 @@ export default async function Home({ searchParams }: Props) {
           state: true,
         },
       },
+      status: true,
     },
     ...(!!query && {
       where: {
@@ -39,17 +42,37 @@ export default async function Home({ searchParams }: Props) {
         },
       },
     }),
+    ...(!!queryStatus && {
+      where: {
+        status: {
+          is: {
+            value: {
+              equals: String(queryStatus),
+            },
+          },
+        },
+      },
+    }),
     skip: (+pagenum - 1) * PAGE_SIZE,
     take: PAGE_SIZE,
   });
   const totalPropertiesPromise = prisma.property.count({
-    ...(!!query && {
-      where: {
+    where: {
+      ...(!!query && {
         name: {
           contains: String(query),
         },
-      },
-    }),
+      }),
+      ...(!!queryStatus && {
+        status: {
+          is: {
+            value: {
+              equals: String(queryStatus),
+            },
+          },
+        },
+      }),
+    },
   });
 
   const [properties, totalProperties] = await Promise.all([
