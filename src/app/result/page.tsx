@@ -37,15 +37,13 @@ export default async function Home({ searchParams }: Props) {
       status: true,
       type: true,
     },
-    ...(!!query && {
-      where: {
+    where: {
+      ...(!!query && {
         name: {
           contains: String(query),
         },
-      },
-    }),
-    ...(!!queryStatus && {
-      where: {
+      }),
+      ...(!!queryStatus && {
         status: {
           is: {
             value: {
@@ -53,10 +51,8 @@ export default async function Home({ searchParams }: Props) {
             },
           },
         },
-      },
-    }),
-    ...(!!queryType && {
-      where: {
+      }),
+      ...(!!queryType && {
         type: {
           is: {
             value: {
@@ -64,8 +60,8 @@ export default async function Home({ searchParams }: Props) {
             },
           },
         },
-      },
-    }),
+      }),
+    },
     skip: (+pagenum - 1) * PAGE_SIZE,
     take: PAGE_SIZE,
   });
