@@ -102,7 +102,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
-import { Input, Spinner } from "@nextui-org/react";
+import { Input, Select, SelectItem, Spinner } from "@nextui-org/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { PropertyStatus, PropertyType } from "@prisma/client"; // Importez le type PropertyStatus si défini dans Prisma
@@ -124,7 +124,6 @@ const Search = () => {
   const pathName = usePathname();
   const router = useRouter();
 
-  // Utilisation de state pour le status
   const [selectedStatus, setSelectedStatus] = useState(
     searchParams.get("queryStatus") ?? ""
   );
@@ -134,6 +133,18 @@ const Search = () => {
     searchParams.get("queryType") ?? ""
   );
   const [types, setTypes] = useState<PropertyType[]>([]); // Définition explicite du type
+
+  // Ajoutez l'option "Aucun type" au début de `types`
+  const typesWithNoneOption = [
+    { id: "none", value: "Tout Type de bien" },
+    ...types,
+  ];
+
+  // Ajoutez l'option "Aucun type" au début de `types`
+  const statusWithNoneOption = [
+    { id: "none", value: "Toute opération" },
+    ...statuses,
+  ];
 
   const fetchStatuses = async () => {
     try {
@@ -174,34 +185,132 @@ const Search = () => {
   }, 1000);
 
   // Gestion du changement de statut
-  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const status = e.target.value;
-    setSelectedStatus(status);
+  // const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const status = e.target.value;
+  //   setSelectedStatus(status);
 
-    const params = new URLSearchParams(searchParams);
-    if (status) {
-      params.set("queryStatus", status);
-    } else {
-      params.delete("queryStatus");
+  //   const params = new URLSearchParams(searchParams);
+  //   if (status) {
+  //     params.set("queryStatus", status);
+  //   } else {
+  //     params.delete("queryStatus");
+  //   }
+
+  //   router.replace(`${pathName}?${params.toString()}`);
+  // };
+
+  const handleStatusChange = (type: string) => {
+    // Convertit le Set en tableau et récupère le premier élément sélectionné
+    const selectedId = Array.from(type)[0] as string;
+
+    // Si l'ID sélectionné est "none", on retire le paramètre `queryStatus`
+    if (selectedId === "none") {
+      setSelectedStatus(""); // Réinitialise le status sélectionné
+      const params = new URLSearchParams(searchParams);
+      params.delete("queryStatus"); // Supprime `queryStatus` de l'URL
+      router.replace(`${pathName}?${params.toString()}`);
+      return;
     }
 
-    router.replace(`${pathName}?${params.toString()}`);
+    // Recherche de l'élément dans `statuses` en comparant correctement les status
+    const selectedStatus = statuses.find(
+      (item) => String(item.id) === selectedId
+    );
+
+    if (selectedStatus) {
+      setSelectedStatus(selectedStatus.value);
+
+      const params = new URLSearchParams(searchParams);
+      params.set("queryStatus", selectedStatus.value); // Ajoute la `value` au lieu de l'ID dans l'URL
+
+      router.replace(`${pathName}?${params.toString()}`);
+    } else {
+      // Si aucune sélection, on supprime `queryType` des paramètres
+      const params = new URLSearchParams(searchParams);
+      params.delete("queryStatus");
+
+      router.replace(`${pathName}?${params.toString()}`);
+    }
   };
+  // const handleTypeChange = (type: string) => {
+  //   // Convertit le Set en tableau et récupère le premier élément sélectionné
+  //   const selectedId = Array.from(type)[0] as string;
+
+  //   // Si l'ID sélectionné est "none", on retire le paramètre `queryType`
+  //   if (selectedId === "none") {
+  //     setSelectedType(""); // Réinitialise le type sélectionné
+  //     const params = new URLSearchParams(searchParams);
+  //     params.delete("queryType"); // Supprime `queryType` de l'URL
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //     return;
+  //   }
+
+  //   // Recherche de l'élément dans `types` en comparant correctement les types
+  //   const selectedType = types.find((item) => String(item.id) === selectedId);
+
+  //   if (selectedType) {
+  //     setSelectedType(selectedType.value);
+
+  //     const params = new URLSearchParams(searchParams);
+  //     params.set("queryType", selectedType.value); // Ajoute la `value` au lieu de l'ID dans l'URL
+
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //   } else {
+  //     // Si aucune sélection, on supprime `queryType` des paramètres
+  //     const params = new URLSearchParams(searchParams);
+  //     params.delete("queryType");
+
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //   }
+  // };
 
   // Gestion du changement de type
-  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const type = e.target.value;
-    setSelectedType(type);
+  // const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const type = e.target.value;
+  //   setSelectedType(type);
 
-    const params = new URLSearchParams(searchParams);
-    if (type) {
-      params.set("queryType", type);
-    } else {
-      params.delete("queryType");
+  //   const params = new URLSearchParams(searchParams);
+  //   if (type) {
+  //     params.set("queryType", type);
+  //   } else {
+  //     params.delete("queryType");
+  //   }
+
+  //   router.replace(`${pathName}?${params.toString()}`);
+  // };
+
+  const handleTypeChange = (type: string) => {
+    // Convertit le Set en tableau et récupère le premier élément sélectionné
+    const selectedId = Array.from(type)[0] as string;
+
+    // Si l'ID sélectionné est "none", on retire le paramètre `queryType`
+    if (selectedId === "none") {
+      setSelectedType(""); // Réinitialise le type sélectionné
+      const params = new URLSearchParams(searchParams);
+      params.delete("queryType"); // Supprime `queryType` de l'URL
+      router.replace(`${pathName}?${params.toString()}`);
+      return;
     }
 
-    router.replace(`${pathName}?${params.toString()}`);
+    // Recherche de l'élément dans `types` en comparant correctement les types
+    const selectedType = types.find((item) => String(item.id) === selectedId);
+
+    if (selectedType) {
+      setSelectedType(selectedType.value);
+
+      const params = new URLSearchParams(searchParams);
+      params.set("queryType", selectedType.value); // Ajoute la `value` au lieu de l'ID dans l'URL
+
+      router.replace(`${pathName}?${params.toString()}`);
+    } else {
+      // Si aucune sélection, on supprime `queryType` des paramètres
+      const params = new URLSearchParams(searchParams);
+      params.delete("queryType");
+
+      router.replace(`${pathName}?${params.toString()}`);
+    }
   };
+
   return (
     <div className="p-4 flex flex-col items-center justify-center bg-gradient-to-br from-sky-400 to-indigo-500 space-y-4">
       <Input
@@ -218,7 +327,7 @@ const Search = () => {
       />
 
       {/* Select pour le choix du status */}
-      <select
+      {/* <select
         value={selectedStatus}
         onChange={handleStatusChange}
         className="w-96 p-2 shadow rounded bg-white text-gray-700"
@@ -229,10 +338,26 @@ const Search = () => {
             {status.value}
           </option>
         ))}
-      </select>
+      </select> */}
+
+      {/* Select pour le choix du status avec onSelectionChange */}
+      <Select
+        placeholder="Opération"
+        value={selectedStatus}
+        className=" w-96 p-2 shadow rounded bg-white text-gray-700"
+        selectionMode="single"
+        onSelectionChange={(value) => handleStatusChange(value as string)}
+      >
+        {/* Utilisation de `typesWithNoneOption` */}
+        {statusWithNoneOption.map((item) => (
+          <SelectItem key={item.id} value={item.id}>
+            {item.value}
+          </SelectItem>
+        ))}
+      </Select>
 
       {/* Select pour le choix du type */}
-      <select
+      {/* <select
         value={selectedType}
         onChange={handleTypeChange}
         className="w-96 p-2 shadow rounded bg-white text-gray-700"
@@ -243,7 +368,22 @@ const Search = () => {
             {type.value}
           </option>
         ))}
-      </select>
+      </select> */}
+      {/* Select pour le choix du type avec onSelectionChange */}
+      <Select
+        placeholder="Type de bien"
+        value={selectedType}
+        className="w-96 p-2 shadow rounded bg-white text-gray-700"
+        selectionMode="single"
+        onSelectionChange={(value) => handleTypeChange(value as string)}
+      >
+        {/* Utilisation de `typesWithNoneOption` */}
+        {typesWithNoneOption.map((item) => (
+          <SelectItem key={item.id} value={item.id}>
+            {item.value}
+          </SelectItem>
+        ))}
+      </Select>
     </div>
   );
 };
