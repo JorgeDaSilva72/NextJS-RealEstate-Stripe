@@ -54,8 +54,8 @@ const PropertyCard = ({ property }: Props) => {
         </div>
         <div className="bg-gradient-to-br from-slate-50 to-slate-400 p-4 flex justify-between">
           <p className="text-primary-600 text-xl font-bold">
-            <span>$ </span>
             {property?.price.toLocaleString()}
+            <span> €</span>
           </p>
           <Link
             className="hover:text-primary-500 transition-colors"

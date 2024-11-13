@@ -14,6 +14,7 @@ export default async function Home({ searchParams }: Props) {
   const query = searchParams.query ?? "";
   const queryStatus = searchParams.queryStatus ?? "";
   const queryType = searchParams.queryType ?? "";
+
   const minPrice = searchParams.minPrice
     ? Number(searchParams.minPrice)
     : undefined;
@@ -26,6 +27,13 @@ export default async function Home({ searchParams }: Props) {
     : undefined;
   const maxArea = searchParams.maxArea
     ? Number(searchParams.maxArea)
+    : undefined;
+
+  const minBedrooms = searchParams.minBedrooms
+    ? Number(searchParams.minBedrooms)
+    : undefined;
+  const maxBedrooms = searchParams.maxBedrooms
+    ? Number(searchParams.maxBedrooms)
     : undefined;
 
   const propertiesPromise = prisma.property.findMany({
@@ -77,32 +85,22 @@ export default async function Home({ searchParams }: Props) {
           },
         },
       }),
-      // ...(minPrice !== undefined &&
-      //   !isNaN(minPrice) && {
-      //     price: {
-      //       gte: minPrice,
-      //     },
-      //   }),
-      // ...(maxPrice !== undefined &&
-      //   !isNaN(maxPrice) && {
-      //     price: { lte: maxPrice },
-      //   }),
+
       price: {
         ...(minPrice !== undefined &&
           !isNaN(minPrice) && { gte: minPrice || 0 }),
         ...(maxPrice !== undefined &&
           !isNaN(maxPrice) && { lte: maxPrice || 1000000 }),
       },
-      // feature: {
-      //   ...(minArea !== undefined &&
-      //     !isNaN(minArea) && { area: { gte: minArea } }),
-      //   ...(maxArea !== undefined &&
-      //     !isNaN(maxArea) && { area: { lte: maxArea } }),
-      // },
+
       feature: {
         area: {
           ...(minArea !== undefined && { gte: minArea }),
           ...(maxArea !== undefined && { lte: maxArea }),
+        },
+        bedrooms: {
+          ...(minBedrooms !== undefined && { gte: minBedrooms }),
+          ...(maxBedrooms !== undefined && { lte: maxBedrooms }),
         },
       },
     },
@@ -135,27 +133,22 @@ export default async function Home({ searchParams }: Props) {
           },
         },
       }),
-      // ...(minPrice !== undefined &&
-      //   !isNaN(minPrice) && {
-      //     price: { gte: minPrice },
-      //   }),
-      //
+
       price: {
         ...(minPrice !== undefined &&
           !isNaN(minPrice) && { gte: minPrice || 0 }),
         ...(maxPrice !== undefined &&
           !isNaN(maxPrice) && { lte: maxPrice || 1000000 }),
       },
-      // feature: {
-      //   ...(minArea !== undefined &&
-      //     !isNaN(minArea) && { area: { gte: minArea } }),
-      //   ...(maxArea !== undefined &&
-      //     !isNaN(maxArea) && { area: { lte: maxArea } }),
-      // },
+
       feature: {
         area: {
           ...(minArea !== undefined && { gte: minArea }),
           ...(maxArea !== undefined && { lte: maxArea }),
+        },
+        bedrooms: {
+          ...(minBedrooms !== undefined && { gte: minBedrooms }),
+          ...(maxBedrooms !== undefined && { lte: maxBedrooms }),
         },
       },
     },
