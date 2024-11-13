@@ -36,6 +36,7 @@ const Search = () => {
   ];
 
   const [priceRange, setPriceRange] = useState([0, 1000000]);
+  const [areaRange, setAreaRange] = useState([0, 1000]);
 
   const fetchStatuses = async () => {
     try {
@@ -70,6 +71,17 @@ const Search = () => {
     // Si les valeurs sont présentes, met à jour l'état du priceRange avec celles-ci
     if (minPrice && maxPrice) {
       setPriceRange([Number(minPrice), Number(maxPrice)]);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    // Récupère les valeurs de minArea et maxArea des paramètres de recherche dans l'URL
+    const minArea = searchParams.get("minArea");
+    const maxArea = searchParams.get("maxArea");
+
+    // Si les valeurs sont présentes, met à jour l'état du areaRange avec celles-ci
+    if (minArea && maxArea) {
+      setAreaRange([Number(minArea), Number(maxArea)]);
     }
   }, [searchParams]);
 
@@ -165,6 +177,17 @@ const Search = () => {
     }
   };
 
+  // Gestion du changement de area
+  const handleAreaChange = (value: number | number[]) => {
+    if (Array.isArray(value)) {
+      setAreaRange(value);
+      const params = new URLSearchParams(searchParams);
+      params.set("minArea", value[0].toString());
+      params.set("maxArea", value[1].toString());
+      router.replace(`${pathName}?${params.toString()}`); //pour mettre à jour l'URL sans recharger la page.
+    }
+  };
+
   return (
     <div className="p-4 flex flex-col items-center justify-center bg-gradient-to-br from-sky-400 to-indigo-500 space-y-4">
       <Input
@@ -256,6 +279,26 @@ const Search = () => {
         // defaultValue={[100000, 500000]}
         formatOptions={{ style: "currency", currency: "USD" }}
         className="max-w-md"
+        showTooltip
+      />
+      <Slider
+        label="Surface Habitable en m²"
+        value={areaRange}
+        step={10}
+        minValue={0}
+        maxValue={1000}
+        // onChange={(value) => {
+        //   if (Array.isArray(value)) {
+        //     setPriceRange(value);
+        //   } else {
+        //     setPriceRange([value, value]); // Par exemple, si ce n'est pas un tableau, définissez les deux bornes avec la même valeur
+        //   }
+        // }}
+        onChange={handleAreaChange}
+        // defaultValue={[100000, 500000]}
+        // formatOptions={{ style: "area", currency: "" }}
+        className="max-w-md"
+        showTooltip
       />
     </div>
   );

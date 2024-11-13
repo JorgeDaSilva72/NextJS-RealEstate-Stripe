@@ -3,9 +3,6 @@ import Search from "../components/Search";
 import PropertyContainer from "../components/PropertyContainer";
 import PropertyCard from "../components/PropertyCard";
 import NoPropertiesFound from "./_components/noPropertiesFound";
-// import PropertyCard from "./components/PropertyCard";
-// import PropertyContainer from "./components/PropertyContainer";
-// import Search from "./components/Search";
 
 const PAGE_SIZE = 12;
 
@@ -24,6 +21,13 @@ export default async function Home({ searchParams }: Props) {
     ? Number(searchParams.maxPrice)
     : undefined;
 
+  const minArea = searchParams.minArea
+    ? Number(searchParams.minArea)
+    : undefined;
+  const maxArea = searchParams.maxArea
+    ? Number(searchParams.maxArea)
+    : undefined;
+
   const propertiesPromise = prisma.property.findMany({
     select: {
       id: true,
@@ -38,6 +42,12 @@ export default async function Home({ searchParams }: Props) {
         select: {
           city: true,
           state: true,
+        },
+      },
+      feature: {
+        select: {
+          area: true,
+          bedrooms: true,
         },
       },
       status: true,
@@ -83,6 +93,18 @@ export default async function Home({ searchParams }: Props) {
         ...(maxPrice !== undefined &&
           !isNaN(maxPrice) && { lte: maxPrice || 1000000 }),
       },
+      // feature: {
+      //   ...(minArea !== undefined &&
+      //     !isNaN(minArea) && { area: { gte: minArea } }),
+      //   ...(maxArea !== undefined &&
+      //     !isNaN(maxArea) && { area: { lte: maxArea } }),
+      // },
+      feature: {
+        area: {
+          ...(minArea !== undefined && { gte: minArea }),
+          ...(maxArea !== undefined && { lte: maxArea }),
+        },
+      },
     },
     skip: (+pagenum - 1) * PAGE_SIZE,
     take: PAGE_SIZE,
@@ -123,6 +145,18 @@ export default async function Home({ searchParams }: Props) {
           !isNaN(minPrice) && { gte: minPrice || 0 }),
         ...(maxPrice !== undefined &&
           !isNaN(maxPrice) && { lte: maxPrice || 1000000 }),
+      },
+      // feature: {
+      //   ...(minArea !== undefined &&
+      //     !isNaN(minArea) && { area: { gte: minArea } }),
+      //   ...(maxArea !== undefined &&
+      //     !isNaN(maxArea) && { area: { lte: maxArea } }),
+      // },
+      feature: {
+        area: {
+          ...(minArea !== undefined && { gte: minArea }),
+          ...(maxArea !== undefined && { lte: maxArea }),
+        },
       },
     },
   });
