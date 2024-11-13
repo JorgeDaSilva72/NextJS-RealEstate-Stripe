@@ -17,6 +17,12 @@ export default async function Home({ searchParams }: Props) {
   const query = searchParams.query ?? "";
   const queryStatus = searchParams.queryStatus ?? "";
   const queryType = searchParams.queryType ?? "";
+  const minPrice = searchParams.minPrice
+    ? Number(searchParams.minPrice)
+    : undefined;
+  const maxPrice = searchParams.maxPrice
+    ? Number(searchParams.maxPrice)
+    : undefined;
 
   const propertiesPromise = prisma.property.findMany({
     select: {
@@ -61,6 +67,22 @@ export default async function Home({ searchParams }: Props) {
           },
         },
       }),
+      // ...(minPrice !== undefined &&
+      //   !isNaN(minPrice) && {
+      //     price: {
+      //       gte: minPrice,
+      //     },
+      //   }),
+      // ...(maxPrice !== undefined &&
+      //   !isNaN(maxPrice) && {
+      //     price: { lte: maxPrice },
+      //   }),
+      price: {
+        ...(minPrice !== undefined &&
+          !isNaN(minPrice) && { gte: minPrice || 0 }),
+        ...(maxPrice !== undefined &&
+          !isNaN(maxPrice) && { lte: maxPrice || 1000000 }),
+      },
     },
     skip: (+pagenum - 1) * PAGE_SIZE,
     take: PAGE_SIZE,
@@ -91,8 +113,32 @@ export default async function Home({ searchParams }: Props) {
           },
         },
       }),
+      // ...(minPrice !== undefined &&
+      //   !isNaN(minPrice) && {
+      //     price: { gte: minPrice },
+      //   }),
+      //
+      price: {
+        ...(minPrice !== undefined &&
+          !isNaN(minPrice) && { gte: minPrice || 0 }),
+        ...(maxPrice !== undefined &&
+          !isNaN(maxPrice) && { lte: maxPrice || 1000000 }),
+      },
     },
   });
+
+  // console.log(
+  //   "query",
+  //   query,
+  //   "queryType",
+  //   queryType,
+  //   "minPrice:",
+  //   minPrice,
+  //   "maxPrice:",
+  //   maxPrice,
+  //   "queryStatus,",
+  //   queryStatus
+  // );
 
   const [properties, totalProperties] = await Promise.all([
     propertiesPromise,
@@ -104,6 +150,13 @@ export default async function Home({ searchParams }: Props) {
   return (
     <div>
       <Search />
+      {/* <div>
+        <p>Query: {query}</p>
+        <p>QueryType: {queryType}</p>
+        <p>Min Price: {minPrice}</p>
+        <p>Max Price: {maxPrice}</p>
+        <p>QueryStatus: {queryStatus}</p>
+      </div> */}
       {properties.length > 0 ? (
         <PropertyContainer totalPages={totalPages} currentPage={+pagenum}>
           {properties.map((propertyItem) => (
