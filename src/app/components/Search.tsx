@@ -35,6 +35,7 @@ const Search = () => {
   const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [areaRange, setAreaRange] = useState([0, 1000]);
   const [bedroomsRange, setBedroomsRange] = useState([0, 10]);
+  const [bathroomsRange, setBathroomsRange] = useState([0, 10]);
 
   const fetchStatuses = async () => {
     try {
@@ -78,6 +79,12 @@ const Search = () => {
     const maxBedrooms = searchParams.get("maxBedrooms");
     if (minBedrooms && maxBedrooms) {
       setBedroomsRange([Number(minBedrooms), Number(maxBedrooms)]);
+    }
+
+    const minBathrooms = searchParams.get("minBathrooms");
+    const maxBathrooms = searchParams.get("maxBathrooms");
+    if (minBathrooms && maxBathrooms) {
+      setBathroomsRange([Number(minBathrooms), Number(maxBathrooms)]);
     }
   }, [searchParams]);
 
@@ -169,6 +176,16 @@ const Search = () => {
     }
   };
 
+  const handleBathroomsChange = (value: number | number[]) => {
+    if (Array.isArray(value)) {
+      setBathroomsRange(value);
+      const params = new URLSearchParams(searchParams);
+      params.set("minBathrooms", value[0].toString());
+      params.set("maxBathrooms", value[1].toString());
+      router.replace(`${pathName}?${params.toString()}`);
+    }
+  };
+
   return (
     <div className="p-4 flex flex-col items-center justify-center bg-gradient-to-br from-sky-400 to-indigo-500 space-y-4 sm:space-y-6 lg:space-y-8">
       <Input
@@ -238,6 +255,17 @@ const Search = () => {
         minValue={0}
         maxValue={10}
         onChange={handleBedroomsChange}
+        className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
+        showTooltip
+      />
+
+      <Slider
+        label="Nombre de salles de bain"
+        value={bathroomsRange}
+        step={1}
+        minValue={0}
+        maxValue={10}
+        onChange={handleBathroomsChange}
         className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
         showTooltip
       />

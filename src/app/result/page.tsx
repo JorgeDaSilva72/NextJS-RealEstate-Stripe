@@ -36,6 +36,13 @@ export default async function Home({ searchParams }: Props) {
     ? Number(searchParams.maxBedrooms)
     : undefined;
 
+  const minBathrooms = searchParams.minBathrooms
+    ? Number(searchParams.minBathrooms)
+    : undefined;
+  const maxBathrooms = searchParams.maxBathrooms
+    ? Number(searchParams.maxBathrooms)
+    : undefined;
+
   const propertiesPromise = prisma.property.findMany({
     select: {
       id: true,
@@ -56,6 +63,7 @@ export default async function Home({ searchParams }: Props) {
         select: {
           area: true,
           bedrooms: true,
+          bathrooms: true,
         },
       },
       status: true,
@@ -101,6 +109,10 @@ export default async function Home({ searchParams }: Props) {
         bedrooms: {
           ...(minBedrooms !== undefined && { gte: minBedrooms }),
           ...(maxBedrooms !== undefined && { lte: maxBedrooms }),
+        },
+        bathrooms: {
+          ...(minBathrooms !== undefined && { gte: minBathrooms }),
+          ...(maxBathrooms !== undefined && { lte: maxBathrooms }),
         },
       },
     },
@@ -149,6 +161,10 @@ export default async function Home({ searchParams }: Props) {
         bedrooms: {
           ...(minBedrooms !== undefined && { gte: minBedrooms }),
           ...(maxBedrooms !== undefined && { lte: maxBedrooms }),
+        },
+        bathrooms: {
+          ...(minBathrooms !== undefined && { gte: minBathrooms }),
+          ...(maxBathrooms !== undefined && { lte: maxBathrooms }),
         },
       },
     },
