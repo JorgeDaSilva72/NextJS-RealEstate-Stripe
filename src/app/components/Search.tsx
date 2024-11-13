@@ -186,89 +186,192 @@ const Search = () => {
     }
   };
 
+  // return (
+  //   <div className="p-4 flex flex-col items-center justify-center bg-gradient-to-br from-sky-400 to-indigo-500 space-y-4 sm:space-y-6 lg:space-y-8">
+  //     <Input
+  //       onChange={(e) => handleChange(e.target.value)}
+  //       className=" w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl shadow"
+  //       endContent={
+  //         loading ? (
+  //           <Spinner />
+  //         ) : (
+  //           <MagnifyingGlassIcon className="w-4 text-slate-500" />
+  //         )
+  //       }
+  //       defaultValue={searchParams.get("query") ?? ""}
+  //     />
+  //     <Select
+  //       placeholder="Opération"
+  //       value={selectedStatus}
+  //       className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-2 shadow rounded bg-white text-gray-700"
+  //       selectionMode="single"
+  //       onSelectionChange={(value) => handleStatusChange(value as string)}
+  //     >
+  //       {statusWithNoneOption.map((item) => (
+  //         <SelectItem key={item.id} value={item.id}>
+  //           {item.value}
+  //         </SelectItem>
+  //       ))}
+  //     </Select>
+  //     <Select
+  //       placeholder="Type de bien"
+  //       value={selectedType}
+  //       className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-2 shadow rounded bg-white text-gray-700"
+  //       selectionMode="single"
+  //       onSelectionChange={(value) => handleTypeChange(value as string)}
+  //     >
+  //       {typesWithNoneOption.map((item) => (
+  //         <SelectItem key={item.id} value={item.id}>
+  //           {item.value}
+  //         </SelectItem>
+  //       ))}
+  //     </Select>
+  //     <Slider
+  //       label="Prix"
+  //       value={priceRange}
+  //       step={10000}
+  //       minValue={0}
+  //       maxValue={1000000}
+  //       onChange={handlePriceChange}
+  //       formatOptions={{ style: "currency", currency: "EUR" }}
+  //       className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
+  //       showTooltip
+  //     />
+  //     <Slider
+  //       label="Surface Habitable en m²"
+  //       value={areaRange}
+  //       step={10}
+  //       minValue={0}
+  //       maxValue={1000}
+  //       onChange={handleAreaChange}
+  //       className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
+  //       showTooltip
+  //     />
+
+  //     <Slider
+  //       label="Nombre de chambres"
+  //       value={bedroomsRange}
+  //       step={1}
+  //       minValue={0}
+  //       maxValue={10}
+  //       onChange={handleBedroomsChange}
+  //       className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
+  //       showTooltip
+  //     />
+
+  //     <Slider
+  //       label="Nombre de salles de bain"
+  //       value={bathroomsRange}
+  //       step={1}
+  //       minValue={0}
+  //       maxValue={10}
+  //       onChange={handleBathroomsChange}
+  //       className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
+  //       showTooltip
+  //     />
+  //   </div>
+  // );
+
   return (
-    <div className="p-4 flex flex-col items-center justify-center bg-gradient-to-br from-sky-400 to-indigo-500 space-y-4 sm:space-y-6 lg:space-y-8">
-      <Input
-        onChange={(e) => handleChange(e.target.value)}
-        className=" w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl shadow"
-        endContent={
-          loading ? (
-            <Spinner />
-          ) : (
-            <MagnifyingGlassIcon className="w-4 text-slate-500" />
-          )
-        }
-        defaultValue={searchParams.get("query") ?? ""}
-      />
-      <Select
-        placeholder="Opération"
-        value={selectedStatus}
-        className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-2 shadow rounded bg-white text-gray-700"
-        selectionMode="single"
-        onSelectionChange={(value) => handleStatusChange(value as string)}
-      >
-        {statusWithNoneOption.map((item) => (
-          <SelectItem key={item.id} value={item.id}>
-            {item.value}
-          </SelectItem>
-        ))}
-      </Select>
-      <Select
-        placeholder="Type de bien"
-        value={selectedType}
-        className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-2 shadow rounded bg-white text-gray-700"
-        selectionMode="single"
-        onSelectionChange={(value) => handleTypeChange(value as string)}
-      >
-        {typesWithNoneOption.map((item) => (
-          <SelectItem key={item.id} value={item.id}>
-            {item.value}
-          </SelectItem>
-        ))}
-      </Select>
-      <Slider
-        label="Prix"
-        value={priceRange}
-        step={10000}
-        minValue={0}
-        maxValue={1000000}
-        onChange={handlePriceChange}
-        formatOptions={{ style: "currency", currency: "EUR" }}
-        className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
-        showTooltip
-      />
-      <Slider
-        label="Surface Habitable en m²"
-        value={areaRange}
-        step={10}
-        minValue={0}
-        maxValue={1000}
-        onChange={handleAreaChange}
-        className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
-        showTooltip
-      />
+    <div className="p-6 bg-gradient-to-br from-sky-400 to-indigo-500 rounded-lg shadow-lg max-w-4xl mx-auto space-y-6">
+      <h2 className="text-2xl text-white font-semibold">
+        Critères de sélection
+      </h2>
 
-      <Slider
-        label="Nombre de chambres"
-        value={bedroomsRange}
-        step={1}
-        minValue={0}
-        maxValue={10}
-        onChange={handleBedroomsChange}
-        className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
-        showTooltip
-      />
+      <div className="flex flex-col lg:flex-row lg:space-x-8 lg:items-start w-full">
+        {/* Section 1 : Filtres de base */}
+        <div className="flex flex-col w-full lg:w-1/2 space-y-4">
+          <Input
+            placeholder="Recherche..."
+            onChange={(e) => handleChange(e.target.value)}
+            className="w-full max-w-md shadow-lg"
+            endContent={
+              loading ? (
+                <Spinner />
+              ) : (
+                <MagnifyingGlassIcon className="w-4 text-slate-500" />
+              )
+            }
+            defaultValue={searchParams.get("query") ?? ""}
+          />
 
-      <Slider
-        label="Nombre de salles de bain"
-        value={bathroomsRange}
-        step={1}
-        minValue={0}
-        maxValue={10}
-        onChange={handleBathroomsChange}
-        className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
-        showTooltip
-      />
+          <Select
+            placeholder="Opération"
+            value={selectedStatus}
+            className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
+            selectionMode="single"
+            onSelectionChange={(value) => handleStatusChange(value as string)}
+          >
+            {statusWithNoneOption.map((item) => (
+              <SelectItem key={item.id} value={item.id}>
+                {item.value}
+              </SelectItem>
+            ))}
+          </Select>
+
+          <Select
+            placeholder="Type de bien"
+            value={selectedType}
+            className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
+            selectionMode="single"
+            onSelectionChange={(value) => handleTypeChange(value as string)}
+          >
+            {typesWithNoneOption.map((item) => (
+              <SelectItem key={item.id} value={item.id}>
+                {item.value}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
+
+        {/* Section 2 : Filtres avancés avec sliders */}
+        <div className="flex flex-col w-full lg:w-1/2 space-y-4 mt-6 lg:mt-0">
+          <Slider
+            label="Prix (€)"
+            value={priceRange}
+            step={10000}
+            minValue={0}
+            maxValue={1000000}
+            onChange={handlePriceChange}
+            formatOptions={{ style: "currency", currency: "EUR" }}
+            className="w-full shadow-lg bg-white p-2 rounded"
+            showTooltip
+          />
+
+          <Slider
+            label="Surface habitable (m²)"
+            value={areaRange}
+            step={10}
+            minValue={0}
+            maxValue={1000}
+            onChange={handleAreaChange}
+            className="w-full shadow-lg bg-white p-2 rounded"
+            showTooltip
+          />
+
+          <Slider
+            label="Chambres"
+            value={bedroomsRange}
+            step={1}
+            minValue={0}
+            maxValue={10}
+            onChange={handleBedroomsChange}
+            className="w-full shadow-lg bg-white p-2 rounded"
+            showTooltip
+          />
+
+          <Slider
+            label="Salles de bain"
+            value={bathroomsRange}
+            step={1}
+            minValue={0}
+            maxValue={10}
+            onChange={handleBathroomsChange}
+            className="w-full shadow-lg bg-white p-2 rounded"
+            showTooltip
+          />
+        </div>
+      </div>
     </div>
   );
 };
