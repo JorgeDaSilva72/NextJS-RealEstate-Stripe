@@ -3,6 +3,7 @@ import Search from "../components/Search";
 import PropertyContainer from "../components/PropertyContainer";
 import PropertyCard from "../components/PropertyCard";
 import NoPropertiesFound from "./_components/noPropertiesFound";
+import { Prisma } from "@prisma/client";
 
 const PAGE_SIZE = 12;
 
@@ -43,10 +44,72 @@ export default async function Home({ searchParams }: Props) {
     ? Number(searchParams.maxBathrooms)
     : undefined;
 
-  const sortOrder =
-    searchParams.sortOrder === "desc" || searchParams.sortOrder === "asc"
-      ? searchParams.sortOrder
-      : undefined;
+  // const sortOrder =
+  //   searchParams.sortOrder === "desc" || searchParams.sortOrder === "asc"
+  //     ? searchParams.sortOrder
+  //     : undefined;
+
+  // const sortOrder = searchParams.sortOrder ?? "date-desc"; // Valeur par défaut
+
+  type SortOrder =
+    | "price-asc"
+    | "price-desc"
+    | "date-asc"
+    | "date-desc"
+    | "surface-asc"
+    | "surface-desc";
+
+  const sortOrder = (
+    Array.isArray(searchParams.sortOrder)
+      ? searchParams.sortOrder[0]
+      : searchParams.sortOrder
+  ) as SortOrder;
+
+  // const sortOrder = Array.isArray(searchParams.sortOrder)
+  //   ? searchParams.sortOrder[0]
+  //   : searchParams.sortOrder;
+
+  // let orderBy = [];
+  const orderBy: Prisma.PropertyOrderByWithRelationInput[] = [];
+
+  // Définir le champ et l'ordre de tri
+  // if (sortOrder && sortOrder.startsWith("price")) {
+  //   orderBy.push({
+  //     price: sortOrder.endsWith("asc") ? "asc" : "desc",
+  //   });
+  // } else if (sortOrder && sortOrder.startsWith("surface")) {
+  //   orderBy.push({
+  //     feature: {
+  //       area: sortOrder.endsWith("asc") ? "asc" : "desc",
+  //     },
+  //   });
+  // } else if (sortOrder && sortOrder.startsWith("date")) {
+  //   orderBy.push({
+  //     createdAt: sortOrder.endsWith("asc") ? "asc" : "desc",
+  //   });
+  // }
+
+  if (typeof sortOrder === "string" && sortOrder.startsWith("price")) {
+    orderBy.push({
+      price: sortOrder.endsWith("asc") ? "asc" : "desc",
+    });
+  } else if (typeof sortOrder === "string" && sortOrder.startsWith("surface")) {
+    orderBy.push({
+      feature: {
+        area: sortOrder.endsWith("asc") ? "asc" : "desc",
+      },
+    });
+  } else if (typeof sortOrder === "string" && sortOrder.startsWith("date")) {
+    orderBy.push({
+      createdAt: sortOrder.endsWith("asc") ? "asc" : "desc",
+    });
+  }
+
+  // Si aucun tri n'est défini, triez par date décroissante par défaut
+  if (orderBy.length === 0) {
+    // orderBy.push({ createdAt: "desc" });
+    orderBy.push({ price: "desc" });
+  }
 
   const propertiesPromise = prisma.property.findMany({
     select: {
@@ -121,7 +184,8 @@ export default async function Home({ searchParams }: Props) {
         },
       },
     },
-    ...(sortOrder && { orderBy: { price: sortOrder } }), // Inclure seulement si sortOrder est défini
+    // ...(sortOrder && { orderBy: { price: sortOrder } }), // Inclure seulement si sortOrder est défini
+    orderBy, // Ajoutez la liste des critères de tri
     skip: (+pagenum - 1) * PAGE_SIZE,
     take: PAGE_SIZE,
   });

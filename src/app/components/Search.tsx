@@ -37,7 +37,7 @@ const Search = () => {
   const [bedroomsRange, setBedroomsRange] = useState([0, 10]);
   const [bathroomsRange, setBathroomsRange] = useState([0, 10]);
 
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortOrder, setSortOrder] = useState("");
 
   const fetchStatuses = async () => {
     try {
@@ -203,7 +203,6 @@ const Search = () => {
   // };
 
   const handleSortOrderChange = (value: string | Set<string>) => {
-    // const sortOrder = value === "asc" || value === "desc" ? value : "asc"; // Valeur par défaut si non valide
     const sortOrder = value instanceof Set ? Array.from(value)[0] : value; // Conversion du Set en chaîne
     console.log("Sort order selected:", sortOrder); // Debugging
     const params = new URLSearchParams(searchParams);
@@ -212,7 +211,7 @@ const Search = () => {
       params.delete("sortOrder"); // Supprime le tri de l'URL
       setSortOrder(""); // Réinitialise l'état du tri
     } else {
-      params.set("sortOrder", sortOrder); // Définit la valeur du tri
+      params.set("sortOrder", sortOrder); // Définit le critère de tri
       setSortOrder(sortOrder); // Met à jour l'état
     }
 
@@ -271,7 +270,7 @@ const Search = () => {
           </Select>
 
           <Select
-            placeholder="Trier par le prix"
+            placeholder="Trier par"
             value={sortOrder}
             className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
             selectionMode="single"
@@ -283,11 +282,23 @@ const Search = () => {
             <SelectItem key={"none"} value="none">
               Aucun tri
             </SelectItem>
-            <SelectItem key={"asc"} value="asc">
+            <SelectItem key={"price-asc"} value="price-asc">
               Prix croissant
             </SelectItem>
-            <SelectItem key={"desc"} value="desc">
+            <SelectItem key={"price-desc"} value="price-desc">
               Prix décroissant
+            </SelectItem>
+            <SelectItem key={"surface-asc"} value="surface-asc">
+              Surface croissante
+            </SelectItem>
+            <SelectItem key={"surface-desc"} value="surface-desc">
+              Surface décroissante
+            </SelectItem>
+            <SelectItem key={"date-asc"} value="date-asc">
+              Plus ancien
+            </SelectItem>
+            <SelectItem key={"date-desc"} value="date-desc">
+              Plus récent
             </SelectItem>
           </Select>
         </div>

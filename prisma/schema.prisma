@@ -54,7 +54,7 @@ model Property {
   feature     PropertyFeature?
   images      PropertyImage[]
   contact     Contact?
-  
+  createdAt   DateTime @default(now()) // Nouvelle colonne
 }
 
 model PropertyType {
