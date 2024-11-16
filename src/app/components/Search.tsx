@@ -36,8 +36,8 @@ const Search = () => {
   const [areaRange, setAreaRange] = useState([0, 1000]);
   const [bedroomsRange, setBedroomsRange] = useState([0, 10]);
   const [bathroomsRange, setBathroomsRange] = useState([0, 10]);
-
   const [sortOrder, setSortOrder] = useState("");
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false); // Gestion de l'affichage des filtres avancés
 
   const fetchStatuses = async () => {
     try {
@@ -195,13 +195,6 @@ const Search = () => {
     }
   };
 
-  // const handleSortOrderChange = (value: string) => {
-  //   setSortOrder(value);
-  //   const params = new URLSearchParams(searchParams);
-  //   params.set("sortOrder", value);
-  //   router.replace(`${pathName}?${params.toString()}`);
-  // };
-
   const handleSortOrderChange = (value: string | Set<string>) => {
     const sortOrder = value instanceof Set ? Array.from(value)[0] : value; // Conversion du Set en chaîne
     console.log("Sort order selected:", sortOrder); // Debugging
@@ -218,6 +211,24 @@ const Search = () => {
     router.replace(`${pathName}?${params.toString()}`);
   };
 
+  const toggleAdvancedFilters = () => {
+    setShowAdvancedFilters((prev) => !prev); // Toggle de l'affichage
+  };
+
+  // Fonction pour réinitialiser tous les filtres
+  const resetFilters = () => {
+    setSelectedStatus("");
+    setSelectedType("");
+    setSortOrder("");
+    setPriceRange([0, 1000000]);
+    setAreaRange([0, 1000]);
+    setBedroomsRange([0, 10]);
+    setBathroomsRange([0, 10]);
+
+    // Supprime tous les paramètres de l'URL
+    router.replace(pathName);
+  };
+
   return (
     <div className="p-6 bg-gradient-to-br from-sky-400 to-indigo-500 rounded-lg shadow-lg max-w-4xl mx-auto space-y-6">
       <h2 className="text-2xl text-white font-semibold">
@@ -225,10 +236,10 @@ const Search = () => {
       </h2>
 
       <div className="flex flex-col lg:flex-row lg:space-x-8 lg:items-start w-full">
-        {/* Section 1 : Filtres de base */}
+        {/* Section 1 : Filtres principaux */}
         <div className="flex flex-col w-full lg:w-1/2 space-y-4">
           <Input
-            placeholder="Recherche..."
+            placeholder="Recherche dans les titres"
             onChange={(e) => handleChange(e.target.value)}
             className="w-full max-w-md shadow-lg"
             endContent={
@@ -301,55 +312,71 @@ const Search = () => {
               Plus récent
             </SelectItem>
           </Select>
+          <button
+            className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded shadow-lg hover:bg-indigo-700"
+            onClick={toggleAdvancedFilters}
+          >
+            {showAdvancedFilters
+              ? "Masquer les filtres avancés"
+              : "Plus de critères"}
+          </button>
+          <button
+            className="mt-4 px-4 py-2 bg-red-600 text-white rounded shadow-lg hover:bg-red-700"
+            onClick={resetFilters}
+          >
+            Réinitialiser les filtres
+          </button>
         </div>
 
-        {/* Section 2 : Filtres avancés avec sliders */}
-        <div className="flex flex-col w-full lg:w-1/2 space-y-4 mt-6 lg:mt-0">
-          <Slider
-            label="Prix (€)"
-            value={priceRange}
-            step={10000}
-            minValue={0}
-            maxValue={1000000}
-            onChange={handlePriceChange}
-            formatOptions={{ style: "currency", currency: "EUR" }}
-            className="w-full shadow-lg bg-white p-2 rounded"
-            showTooltip
-          />
+        {/* Section 2 : Filtres avancés (affichage conditionnel) */}
+        {showAdvancedFilters && (
+          <div className="flex flex-col w-full lg:w-1/2 space-y-4 mt-6 lg:mt-0">
+            <Slider
+              label="Prix (€)"
+              value={priceRange}
+              step={10000}
+              minValue={0}
+              maxValue={1000000}
+              onChange={handlePriceChange}
+              formatOptions={{ style: "currency", currency: "EUR" }}
+              className="w-full shadow-lg bg-white p-2 rounded"
+              showTooltip
+            />
 
-          <Slider
-            label="Surface habitable (m²)"
-            value={areaRange}
-            step={10}
-            minValue={0}
-            maxValue={1000}
-            onChange={handleAreaChange}
-            className="w-full shadow-lg bg-white p-2 rounded"
-            showTooltip
-          />
+            <Slider
+              label="Surface habitable (m²)"
+              value={areaRange}
+              step={10}
+              minValue={0}
+              maxValue={1000}
+              onChange={handleAreaChange}
+              className="w-full shadow-lg bg-white p-2 rounded"
+              showTooltip
+            />
 
-          <Slider
-            label="Chambres"
-            value={bedroomsRange}
-            step={1}
-            minValue={0}
-            maxValue={10}
-            onChange={handleBedroomsChange}
-            className="w-full shadow-lg bg-white p-2 rounded"
-            showTooltip
-          />
+            <Slider
+              label="Chambres"
+              value={bedroomsRange}
+              step={1}
+              minValue={0}
+              maxValue={10}
+              onChange={handleBedroomsChange}
+              className="w-full shadow-lg bg-white p-2 rounded"
+              showTooltip
+            />
 
-          <Slider
-            label="Salles de bain"
-            value={bathroomsRange}
-            step={1}
-            minValue={0}
-            maxValue={10}
-            onChange={handleBathroomsChange}
-            className="w-full shadow-lg bg-white p-2 rounded"
-            showTooltip
-          />
-        </div>
+            <Slider
+              label="Salles de bain"
+              value={bathroomsRange}
+              step={1}
+              minValue={0}
+              maxValue={10}
+              onChange={handleBathroomsChange}
+              className="w-full shadow-lg bg-white p-2 rounded"
+              showTooltip
+            />
+          </div>
+        )}
       </div>
     </div>
   );

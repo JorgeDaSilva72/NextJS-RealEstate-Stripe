@@ -47,8 +47,8 @@ const Hero = () => {
           <ImagesSlider
             className="h-full w-full object-cover"
             direction="down"
-            overlay={false}
-            autoplay={false}
+            overlay={true}
+            autoplay={true}
             overlayClassName=""
             images={images.map((img) => img.url)}
           />
@@ -68,18 +68,18 @@ const Hero = () => {
 
           {/* Search Form */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <input
+            {/* <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Rechercher dans les titres des annonces"
               className="w-full sm:w-2/3 p-3 text-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-            />
+            /> */}
             <button
               onClick={handleSearch}
               className="w-full sm:w-auto bg-primary-500 text-white py-3 px-6 rounded-md font-semibold hover:bg-primary-600 transition"
             >
-              Rechercher
+              Explorer
             </button>
           </div>
         </div>
