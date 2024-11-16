@@ -39,6 +39,10 @@ const Search = () => {
   const [sortOrder, setSortOrder] = useState("");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false); // Gestion de l'affichage des filtres avancés
 
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("query") ?? ""
+  );
+
   const fetchStatuses = async () => {
     try {
       const response = await fetch("/api/searchStatuses");
@@ -97,6 +101,26 @@ const Search = () => {
     }
   }, [searchParams]);
 
+  useEffect(() => {
+    // Afficher les filtres avancés si des critères avancés sont présents dans l'URL
+    const hasAdvancedFilters =
+      searchParams.get("minPrice") ||
+      searchParams.get("maxPrice") ||
+      searchParams.get("minArea") ||
+      searchParams.get("maxArea") ||
+      searchParams.get("minBedrooms") ||
+      searchParams.get("maxBedrooms") ||
+      searchParams.get("minBathrooms") ||
+      searchParams.get("maxBathrooms");
+
+    setShowAdvancedFilters(Boolean(hasAdvancedFilters));
+  }, [searchParams]);
+
+  const handleInputChange = (query: string) => {
+    setSearchQuery(query); // Met à jour l'état local
+    handleChange(query); // Débounced callback pour l'URL
+  };
+
   const handleChange = useDebouncedCallback(async (query: string) => {
     const params = new URLSearchParams(searchParams);
     if (query) {
@@ -107,7 +131,7 @@ const Search = () => {
     }
     router.replace(`${pathName}?${params.toString()}`);
     setLoading(false);
-  }, 1000);
+  }, 500);
 
   const handleStatusChange = (type: string) => {
     const selectedId = Array.from(type)[0] as string;
@@ -215,10 +239,14 @@ const Search = () => {
     setShowAdvancedFilters((prev) => !prev); // Toggle de l'affichage
   };
 
+  // j utilise une clé dynamique pour synchroniser les select avec les states
+  const [resetKey, setResetKey] = useState(0);
   // Fonction pour réinitialiser tous les filtres
   const resetFilters = () => {
+    setSearchQuery(""); // Réinitialise la recherche
     setSelectedStatus("");
     setSelectedType("");
+    setResetKey((prev) => prev + 1);
     setSortOrder("");
     setPriceRange([0, 1000000]);
     setAreaRange([0, 1000]);
@@ -235,12 +263,15 @@ const Search = () => {
         Critères de sélection
       </h2>
 
-      <div className="flex flex-col lg:flex-row lg:space-x-8 lg:items-start w-full">
+      <div
+        key={resetKey}
+        className="flex flex-col lg:flex-row lg:space-x-8 lg:items-start w-full"
+      >
         {/* Section 1 : Filtres principaux */}
         <div className="flex flex-col w-full lg:w-1/2 space-y-4">
           <Input
             placeholder="Recherche dans les titres"
-            onChange={(e) => handleChange(e.target.value)}
+            onChange={(e) => handleInputChange(e.target.value)}
             className="w-full max-w-md shadow-lg"
             endContent={
               loading ? (
@@ -249,12 +280,14 @@ const Search = () => {
                 <MagnifyingGlassIcon className="w-4 text-slate-500" />
               )
             }
-            defaultValue={searchParams.get("query") ?? ""}
+            value={searchQuery} // Utilise value au lieu de defaultValue
+            // defaultValue={searchParams.get("query") ?? ""}
           />
 
           <Select
+            aria-label="Choisir l'opération"
             placeholder="Opération"
-            value={selectedStatus}
+            value={selectedStatus || ""}
             className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
             selectionMode="single"
             onSelectionChange={(value) => handleStatusChange(value as string)}
@@ -267,6 +300,7 @@ const Search = () => {
           </Select>
 
           <Select
+            aria-label="Choisir le type de bien"
             placeholder="Type de bien"
             value={selectedType}
             className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
@@ -281,6 +315,7 @@ const Search = () => {
           </Select>
 
           <Select
+            aria-label="Trier par"
             placeholder="Trier par"
             value={sortOrder}
             className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
