@@ -15,6 +15,7 @@ export async function saveProperty(
     price: propertyData.price,
     statusId: propertyData.statusId,
     typeId: propertyData.typeId,
+    createdAt: new Date(), // Modif apés l ajout de la colonne dans la table
     userId,
   };
   const result = await prisma.property.create({
