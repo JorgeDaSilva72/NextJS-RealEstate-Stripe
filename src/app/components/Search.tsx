@@ -37,6 +37,8 @@ const Search = () => {
   const [bedroomsRange, setBedroomsRange] = useState([0, 10]);
   const [bathroomsRange, setBathroomsRange] = useState([0, 10]);
 
+  const [sortOrder, setSortOrder] = useState("asc");
+
   const fetchStatuses = async () => {
     try {
       const response = await fetch("/api/searchStatuses");
@@ -85,6 +87,13 @@ const Search = () => {
     const maxBathrooms = searchParams.get("maxBathrooms");
     if (minBathrooms && maxBathrooms) {
       setBathroomsRange([Number(minBathrooms), Number(maxBathrooms)]);
+    }
+
+    const sortOrder = searchParams.get("sortOrder");
+    if (sortOrder) {
+      setSortOrder(sortOrder);
+    } else {
+      setSortOrder(""); // Pas de tri
     }
   }, [searchParams]);
 
@@ -186,91 +195,29 @@ const Search = () => {
     }
   };
 
-  // return (
-  //   <div className="p-4 flex flex-col items-center justify-center bg-gradient-to-br from-sky-400 to-indigo-500 space-y-4 sm:space-y-6 lg:space-y-8">
-  //     <Input
-  //       onChange={(e) => handleChange(e.target.value)}
-  //       className=" w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl shadow"
-  //       endContent={
-  //         loading ? (
-  //           <Spinner />
-  //         ) : (
-  //           <MagnifyingGlassIcon className="w-4 text-slate-500" />
-  //         )
-  //       }
-  //       defaultValue={searchParams.get("query") ?? ""}
-  //     />
-  //     <Select
-  //       placeholder="Opération"
-  //       value={selectedStatus}
-  //       className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-2 shadow rounded bg-white text-gray-700"
-  //       selectionMode="single"
-  //       onSelectionChange={(value) => handleStatusChange(value as string)}
-  //     >
-  //       {statusWithNoneOption.map((item) => (
-  //         <SelectItem key={item.id} value={item.id}>
-  //           {item.value}
-  //         </SelectItem>
-  //       ))}
-  //     </Select>
-  //     <Select
-  //       placeholder="Type de bien"
-  //       value={selectedType}
-  //       className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-2 shadow rounded bg-white text-gray-700"
-  //       selectionMode="single"
-  //       onSelectionChange={(value) => handleTypeChange(value as string)}
-  //     >
-  //       {typesWithNoneOption.map((item) => (
-  //         <SelectItem key={item.id} value={item.id}>
-  //           {item.value}
-  //         </SelectItem>
-  //       ))}
-  //     </Select>
-  //     <Slider
-  //       label="Prix"
-  //       value={priceRange}
-  //       step={10000}
-  //       minValue={0}
-  //       maxValue={1000000}
-  //       onChange={handlePriceChange}
-  //       formatOptions={{ style: "currency", currency: "EUR" }}
-  //       className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
-  //       showTooltip
-  //     />
-  //     <Slider
-  //       label="Surface Habitable en m²"
-  //       value={areaRange}
-  //       step={10}
-  //       minValue={0}
-  //       maxValue={1000}
-  //       onChange={handleAreaChange}
-  //       className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
-  //       showTooltip
-  //     />
+  // const handleSortOrderChange = (value: string) => {
+  //   setSortOrder(value);
+  //   const params = new URLSearchParams(searchParams);
+  //   params.set("sortOrder", value);
+  //   router.replace(`${pathName}?${params.toString()}`);
+  // };
 
-  //     <Slider
-  //       label="Nombre de chambres"
-  //       value={bedroomsRange}
-  //       step={1}
-  //       minValue={0}
-  //       maxValue={10}
-  //       onChange={handleBedroomsChange}
-  //       className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
-  //       showTooltip
-  //     />
+  const handleSortOrderChange = (value: string | Set<string>) => {
+    // const sortOrder = value === "asc" || value === "desc" ? value : "asc"; // Valeur par défaut si non valide
+    const sortOrder = value instanceof Set ? Array.from(value)[0] : value; // Conversion du Set en chaîne
+    console.log("Sort order selected:", sortOrder); // Debugging
+    const params = new URLSearchParams(searchParams);
 
-  //     <Slider
-  //       label="Nombre de salles de bain"
-  //       value={bathroomsRange}
-  //       step={1}
-  //       minValue={0}
-  //       maxValue={10}
-  //       onChange={handleBathroomsChange}
-  //       className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
-  //       showTooltip
-  //     />
-  //   </div>
-  // );
+    if (sortOrder === "none") {
+      params.delete("sortOrder"); // Supprime le tri de l'URL
+      setSortOrder(""); // Réinitialise l'état du tri
+    } else {
+      params.set("sortOrder", sortOrder); // Définit la valeur du tri
+      setSortOrder(sortOrder); // Met à jour l'état
+    }
+
+    router.replace(`${pathName}?${params.toString()}`);
+  };
 
   return (
     <div className="p-6 bg-gradient-to-br from-sky-400 to-indigo-500 rounded-lg shadow-lg max-w-4xl mx-auto space-y-6">
@@ -321,6 +268,27 @@ const Search = () => {
                 {item.value}
               </SelectItem>
             ))}
+          </Select>
+
+          <Select
+            placeholder="Trier par le prix"
+            value={sortOrder}
+            className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
+            selectionMode="single"
+            // onSelectionChange retourne un objet Set dans lequel se trouve la valeur sélectionnée ("desc") au lieu de simplement renvoyer la chaîne elle-même.
+            onSelectionChange={(value) =>
+              handleSortOrderChange(value as string)
+            }
+          >
+            <SelectItem key={"none"} value="none">
+              Aucun tri
+            </SelectItem>
+            <SelectItem key={"asc"} value="asc">
+              Prix croissant
+            </SelectItem>
+            <SelectItem key={"desc"} value="desc">
+              Prix décroissant
+            </SelectItem>
           </Select>
         </div>
 

@@ -43,6 +43,11 @@ export default async function Home({ searchParams }: Props) {
     ? Number(searchParams.maxBathrooms)
     : undefined;
 
+  const sortOrder =
+    searchParams.sortOrder === "desc" || searchParams.sortOrder === "asc"
+      ? searchParams.sortOrder
+      : undefined;
+
   const propertiesPromise = prisma.property.findMany({
     select: {
       id: true,
@@ -116,6 +121,7 @@ export default async function Home({ searchParams }: Props) {
         },
       },
     },
+    ...(sortOrder && { orderBy: { price: sortOrder } }), // Inclure seulement si sortOrder est défini
     skip: (+pagenum - 1) * PAGE_SIZE,
     take: PAGE_SIZE,
   });
