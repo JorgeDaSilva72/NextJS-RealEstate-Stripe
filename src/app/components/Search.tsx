@@ -335,18 +335,202 @@ const Search = () => {
     router.replace(pathName);
   };
 
-  return (
-    <div className="p-6 bg-gradient-to-br from-sky-400 to-indigo-500 rounded-lg shadow-lg max-w-4xl mx-auto space-y-6">
-      <h2 className="text-2xl text-white font-semibold">
-        Critères de sélection
-      </h2>
+  // return (
+  //   <div className="p-6 bg-gradient-to-br from-sky-400 to-indigo-500 rounded-lg shadow-lg w-full mx-auto space-y-6">
+  //     {/* <h2 className="text-2xl text-white font-semibold">
+  //       Critères de sélection
+  //     </h2> */}
 
+  //     <div
+  //       key={resetKey}
+  //       className="flex flex-col lg:flex-row lg:space-x-8 lg:items-start w-full"
+  //     >
+  //       {/* Section 1 : Filtres principaux */}
+  //       <div className="flex flex-col w-full lg:flex-row space-4">
+  //         <Input
+  //           placeholder="Recherche dans les titres"
+  //           onChange={(e) => handleInputChange(e.target.value)}
+  //           className="w-full max-w-md shadow-lg"
+  //           endContent={
+  //             loading ? (
+  //               <Spinner />
+  //             ) : (
+  //               <MagnifyingGlassIcon className="w-4 text-slate-500" />
+  //             )
+  //           }
+  //           value={searchQuery} // Utilise value au lieu de defaultValue
+  //           // defaultValue={searchParams.get("query") ?? ""}
+  //         />
+
+  //         <Select
+  //           aria-label="Choisir l'opération"
+  //           placeholder="Opération"
+  //           value={selectedStatus || ""}
+  //           className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
+  //           selectionMode="single"
+  //           onSelectionChange={(value) => handleStatusChange(value as string)}
+  //         >
+  //           {statusWithNoneOption.map((item) => (
+  //             <SelectItem key={item.id} value={item.id}>
+  //               {item.value}
+  //             </SelectItem>
+  //           ))}
+  //         </Select>
+
+  //         <Select
+  //           aria-label="Choisir le type de bien"
+  //           placeholder="Type de bien"
+  //           value={selectedType}
+  //           className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
+  //           selectionMode="single"
+  //           onSelectionChange={(value) => handleTypeChange(value as string)}
+  //         >
+  //           {typesWithNoneOption.map((item) => (
+  //             <SelectItem key={item.id} value={item.id}>
+  //               {item.value}
+  //             </SelectItem>
+  //           ))}
+  //         </Select>
+
+  //         <Select
+  //           aria-label="Pays"
+  //           placeholder="Choisir un pays"
+  //           value={selectedCountry}
+  //           className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
+  //           selectionMode="single"
+  //           onSelectionChange={(value) => handleCountryChange(value as string)}
+  //         >
+  //           {countries.map((item) => (
+  //             <SelectItem key={item.id} value={item.id}>
+  //               {item.value}
+  //             </SelectItem>
+  //           ))}
+  //         </Select>
+
+  //         <Select
+  //           aria-label="Villes"
+  //           placeholder="Choisir une ville"
+  //           value={selectedCity}
+  //           className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
+  //           selectionMode="single"
+  //           onSelectionChange={(value) => handleCityChange(value as string)}
+  //         >
+  //           {citiesOfMorocco.map((item) => (
+  //             <SelectItem key={item.id} value={item.id}>
+  //               {item.value}
+  //             </SelectItem>
+  //           ))}
+  //         </Select>
+
+  //         <Select
+  //           aria-label="Trier par"
+  //           placeholder="Trier par"
+  //           value={sortOrder}
+  //           className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
+  //           selectionMode="single"
+  //           // onSelectionChange retourne un objet Set dans lequel se trouve la valeur sélectionnée ("desc") au lieu de simplement renvoyer la chaîne elle-même.
+  //           onSelectionChange={(value) =>
+  //             handleSortOrderChange(value as string)
+  //           }
+  //         >
+  //           <SelectItem key={"none"} value="none">
+  //             Aucun tri
+  //           </SelectItem>
+  //           <SelectItem key={"price-asc"} value="price-asc">
+  //             Prix croissant
+  //           </SelectItem>
+  //           <SelectItem key={"price-desc"} value="price-desc">
+  //             Prix décroissant
+  //           </SelectItem>
+  //           <SelectItem key={"surface-asc"} value="surface-asc">
+  //             Surface croissante
+  //           </SelectItem>
+  //           <SelectItem key={"surface-desc"} value="surface-desc">
+  //             Surface décroissante
+  //           </SelectItem>
+  //           <SelectItem key={"date-asc"} value="date-asc">
+  //             Plus ancien
+  //           </SelectItem>
+  //           <SelectItem key={"date-desc"} value="date-desc">
+  //             Plus récent
+  //           </SelectItem>
+  //         </Select>
+  //         <button
+  //           className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded shadow-lg hover:bg-indigo-700"
+  //           onClick={toggleAdvancedFilters}
+  //         >
+  //           {showAdvancedFilters
+  //             ? "Masquer les filtres avancés"
+  //             : "Plus de critères"}
+  //         </button>
+  //         <button
+  //           className="mt-4 px-4 py-2 bg-red-600 text-white rounded shadow-lg hover:bg-red-700"
+  //           onClick={resetFilters}
+  //         >
+  //           Réinitialiser les filtres
+  //         </button>
+  //       </div>
+
+  //       {/* Section 2 : Filtres avancés (affichage conditionnel) */}
+  //       {showAdvancedFilters && (
+  //         <div className="flex flex-col w-full lg:w-1/2 space-y-4 mt-6 lg:mt-0">
+  //           <Slider
+  //             label="Prix (€)"
+  //             value={priceRange}
+  //             step={10000}
+  //             minValue={0}
+  //             maxValue={1000000}
+  //             onChange={handlePriceChange}
+  //             formatOptions={{ style: "currency", currency: "EUR" }}
+  //             className="w-full shadow-lg bg-white p-2 rounded"
+  //             showTooltip
+  //           />
+
+  //           <Slider
+  //             label="Surface habitable (m²)"
+  //             value={areaRange}
+  //             step={10}
+  //             minValue={0}
+  //             maxValue={1000}
+  //             onChange={handleAreaChange}
+  //             className="w-full shadow-lg bg-white p-2 rounded"
+  //             showTooltip
+  //           />
+
+  //           <Slider
+  //             label="Chambres"
+  //             value={bedroomsRange}
+  //             step={1}
+  //             minValue={0}
+  //             maxValue={10}
+  //             onChange={handleBedroomsChange}
+  //             className="w-full shadow-lg bg-white p-2 rounded"
+  //             showTooltip
+  //           />
+
+  //           <Slider
+  //             label="Salles de bain"
+  //             value={bathroomsRange}
+  //             step={1}
+  //             minValue={0}
+  //             maxValue={10}
+  //             onChange={handleBathroomsChange}
+  //             className="w-full shadow-lg bg-white p-2 rounded"
+  //             showTooltip
+  //           />
+  //         </div>
+  //       )}
+  //     </div>
+  //   </div>
+  // );
+  return (
+    <div className="p-6 bg-gradient-to-br from-sky-400 to-indigo-500 rounded-lg shadow-lg w-full mx-auto space-y-6">
+      {/* Section 1 : Filtres principaux */}
       <div
         key={resetKey}
-        className="flex flex-col lg:flex-row lg:space-x-8 lg:items-start w-full"
+        className="flex flex-col space-y-4  lg:space-y-8  w-full"
       >
-        {/* Section 1 : Filtres principaux */}
-        <div className="flex flex-col w-full lg:w-1/2 space-y-4">
+        <div className="flex flex-col space-y-4">
           <Input
             placeholder="Recherche dans les titres"
             onChange={(e) => handleInputChange(e.target.value)}
@@ -361,12 +545,15 @@ const Search = () => {
             value={searchQuery} // Utilise value au lieu de defaultValue
             // defaultValue={searchParams.get("query") ?? ""}
           />
+        </div>
 
+        {/* Filtres principaux */}
+        <div className="flex flex-wrap gap-4 justify-start">
           <Select
             aria-label="Choisir l'opération"
             placeholder="Opération"
             value={selectedStatus || ""}
-            className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
+            className="flex-grow max-w-xs p-2 shadow-lg bg-white text-gray-700 rounded"
             selectionMode="single"
             onSelectionChange={(value) => handleStatusChange(value as string)}
           >
@@ -381,7 +568,7 @@ const Search = () => {
             aria-label="Choisir le type de bien"
             placeholder="Type de bien"
             value={selectedType}
-            className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
+            className="flex-grow max-w-xs p-2 shadow-lg bg-white text-gray-700 rounded"
             selectionMode="single"
             onSelectionChange={(value) => handleTypeChange(value as string)}
           >
@@ -396,7 +583,7 @@ const Search = () => {
             aria-label="Pays"
             placeholder="Choisir un pays"
             value={selectedCountry}
-            className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
+            className="flex-grow max-w-xs p-2 shadow-lg bg-white text-gray-700 rounded"
             selectionMode="single"
             onSelectionChange={(value) => handleCountryChange(value as string)}
           >
@@ -411,7 +598,7 @@ const Search = () => {
             aria-label="Villes"
             placeholder="Choisir une ville"
             value={selectedCity}
-            className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
+            className="flex-grow max-w-xs p-2 shadow-lg bg-white text-gray-700 rounded"
             selectionMode="single"
             onSelectionChange={(value) => handleCityChange(value as string)}
           >
@@ -426,7 +613,7 @@ const Search = () => {
             aria-label="Trier par"
             placeholder="Trier par"
             value={sortOrder}
-            className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
+            className="flex-grow max-w-xs p-2 shadow-lg bg-white text-gray-700 rounded"
             selectionMode="single"
             // onSelectionChange retourne un objet Set dans lequel se trouve la valeur sélectionnée ("desc") au lieu de simplement renvoyer la chaîne elle-même.
             onSelectionChange={(value) =>
@@ -455,25 +642,11 @@ const Search = () => {
               Plus récent
             </SelectItem>
           </Select>
-          <button
-            className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded shadow-lg hover:bg-indigo-700"
-            onClick={toggleAdvancedFilters}
-          >
-            {showAdvancedFilters
-              ? "Masquer les filtres avancés"
-              : "Plus de critères"}
-          </button>
-          <button
-            className="mt-4 px-4 py-2 bg-red-600 text-white rounded shadow-lg hover:bg-red-700"
-            onClick={resetFilters}
-          >
-            Réinitialiser les filtres
-          </button>
         </div>
 
         {/* Section 2 : Filtres avancés (affichage conditionnel) */}
         {showAdvancedFilters && (
-          <div className="flex flex-col w-full lg:w-1/2 space-y-4 mt-6 lg:mt-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Slider
               label="Prix (€)"
               value={priceRange}
@@ -520,6 +693,23 @@ const Search = () => {
             />
           </div>
         )}
+
+        <div className="flex flex-col md:flex-row justify-center md:justify-between items-center gap-4">
+          <button
+            className="w-full md:w-auto px-4 py-2 bg-indigo-600 text-white rounded shadow-lg hover:bg-indigo-700 text-center"
+            onClick={toggleAdvancedFilters}
+          >
+            {showAdvancedFilters
+              ? "Masquer les filtres avancés"
+              : "Plus de critères"}
+          </button>
+          <button
+            className="w-full md:w-auto px-4 py-2 bg-red-600 text-white rounded shadow-lg hover:bg-red-700 text-center"
+            onClick={resetFilters}
+          >
+            Réinitialiser les filtres
+          </button>
+        </div>
       </div>
     </div>
   );
