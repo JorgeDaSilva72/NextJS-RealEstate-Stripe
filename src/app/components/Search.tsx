@@ -5,6 +5,7 @@ import { Input, Select, SelectItem, Spinner, Slider } from "@nextui-org/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { PropertyStatus, PropertyType } from "@prisma/client";
+import { citiesOfMorocco } from "../data/cities";
 
 const Search = () => {
   const [loading, setLoading] = useState(false);
@@ -42,6 +43,19 @@ const Search = () => {
   const [searchQuery, setSearchQuery] = useState(
     searchParams.get("query") ?? ""
   );
+
+  const [selectedCountry, setSelectedCountry] = useState(
+    searchParams.get("country") ?? ""
+  );
+
+  const [selectedCity, setSelectedCity] = useState(
+    searchParams.get("city") ?? ""
+  );
+
+  const countries = [
+    { id: "maroc", value: "Maroc" },
+    { id: "none", value: "Tous les pays" },
+  ];
 
   const fetchStatuses = async () => {
     try {
@@ -98,6 +112,20 @@ const Search = () => {
       setSortOrder(sortOrder);
     } else {
       setSortOrder(""); // Pas de tri
+    }
+
+    const country = searchParams.get("country");
+    if (country) {
+      setSelectedCountry(country);
+    } else {
+      setSelectedCountry("");
+    }
+
+    const city = searchParams.get("city");
+    if (city) {
+      setSelectedCity(city);
+    } else {
+      setSelectedCity("");
     }
   }, [searchParams]);
 
@@ -175,6 +203,56 @@ const Search = () => {
     } else {
       const params = new URLSearchParams(searchParams);
       params.delete("queryType");
+      router.replace(`${pathName}?${params.toString()}`);
+    }
+  };
+
+  const handleCountryChange = (type: string) => {
+    const selectedId = Array.from(type)[0] as string;
+    if (selectedId === "none") {
+      setSelectedCountry("");
+      const params = new URLSearchParams(searchParams);
+      params.delete("country");
+      router.replace(`${pathName}?${params.toString()}`);
+      return;
+    }
+    const selectedCountry = countries.find(
+      (item) => String(item.id) === selectedId
+    );
+
+    if (selectedCountry) {
+      setSelectedCountry(selectedCountry.value);
+      const params = new URLSearchParams(searchParams);
+      params.set("country", selectedCountry.value);
+      router.replace(`${pathName}?${params.toString()}`);
+    } else {
+      const params = new URLSearchParams(searchParams);
+      params.delete("country");
+      router.replace(`${pathName}?${params.toString()}`);
+    }
+  };
+
+  const handleCityChange = (type: string) => {
+    const selectedId = Array.from(type)[0] as string;
+    if (selectedId === "none") {
+      setSelectedCity("");
+      const params = new URLSearchParams(searchParams);
+      params.delete("city");
+      router.replace(`${pathName}?${params.toString()}`);
+      return;
+    }
+    const selectedCity = citiesOfMorocco.find(
+      (item) => String(item.id) === selectedId
+    );
+
+    if (selectedCity) {
+      setSelectedCity(selectedCity.value);
+      const params = new URLSearchParams(searchParams);
+      params.set("city", selectedCity.value);
+      router.replace(`${pathName}?${params.toString()}`);
+    } else {
+      const params = new URLSearchParams(searchParams);
+      params.delete("city");
       router.replace(`${pathName}?${params.toString()}`);
     }
   };
@@ -308,6 +386,36 @@ const Search = () => {
             onSelectionChange={(value) => handleTypeChange(value as string)}
           >
             {typesWithNoneOption.map((item) => (
+              <SelectItem key={item.id} value={item.id}>
+                {item.value}
+              </SelectItem>
+            ))}
+          </Select>
+
+          <Select
+            aria-label="Pays"
+            placeholder="Choisir un pays"
+            value={selectedCountry}
+            className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
+            selectionMode="single"
+            onSelectionChange={(value) => handleCountryChange(value as string)}
+          >
+            {countries.map((item) => (
+              <SelectItem key={item.id} value={item.id}>
+                {item.value}
+              </SelectItem>
+            ))}
+          </Select>
+
+          <Select
+            aria-label="Villes"
+            placeholder="Choisir une ville"
+            value={selectedCity}
+            className="w-full max-w-md p-2 shadow-lg bg-white text-gray-700 rounded"
+            selectionMode="single"
+            onSelectionChange={(value) => handleCityChange(value as string)}
+          >
+            {citiesOfMorocco.map((item) => (
               <SelectItem key={item.id} value={item.id}>
                 {item.value}
               </SelectItem>

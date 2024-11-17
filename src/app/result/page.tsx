@@ -15,6 +15,7 @@ export default async function Home({ searchParams }: Props) {
   const query = searchParams.query ?? "";
   const queryStatus = searchParams.queryStatus ?? "";
   const queryType = searchParams.queryType ?? "";
+  const city = searchParams.city ?? "";
 
   const minPrice = searchParams.minPrice
     ? Number(searchParams.minPrice)
@@ -44,13 +45,6 @@ export default async function Home({ searchParams }: Props) {
     ? Number(searchParams.maxBathrooms)
     : undefined;
 
-  // const sortOrder =
-  //   searchParams.sortOrder === "desc" || searchParams.sortOrder === "asc"
-  //     ? searchParams.sortOrder
-  //     : undefined;
-
-  // const sortOrder = searchParams.sortOrder ?? "date-desc"; // Valeur par défaut
-
   type SortOrder =
     | "price-asc"
     | "price-desc"
@@ -65,29 +59,7 @@ export default async function Home({ searchParams }: Props) {
       : searchParams.sortOrder
   ) as SortOrder;
 
-  // const sortOrder = Array.isArray(searchParams.sortOrder)
-  //   ? searchParams.sortOrder[0]
-  //   : searchParams.sortOrder;
-
-  // let orderBy = [];
   const orderBy: Prisma.PropertyOrderByWithRelationInput[] = [];
-
-  // Définir le champ et l'ordre de tri
-  // if (sortOrder && sortOrder.startsWith("price")) {
-  //   orderBy.push({
-  //     price: sortOrder.endsWith("asc") ? "asc" : "desc",
-  //   });
-  // } else if (sortOrder && sortOrder.startsWith("surface")) {
-  //   orderBy.push({
-  //     feature: {
-  //       area: sortOrder.endsWith("asc") ? "asc" : "desc",
-  //     },
-  //   });
-  // } else if (sortOrder && sortOrder.startsWith("date")) {
-  //   orderBy.push({
-  //     createdAt: sortOrder.endsWith("asc") ? "asc" : "desc",
-  //   });
-  // }
 
   if (typeof sortOrder === "string" && sortOrder.startsWith("price")) {
     orderBy.push({
@@ -161,6 +133,14 @@ export default async function Home({ searchParams }: Props) {
           },
         },
       }),
+      ...(!!city && {
+        // Ajout du filtre pour la ville
+        location: {
+          city: {
+            equals: String(city), // Vérifie si la ville correspond
+          },
+        },
+      }),
 
       price: {
         ...(minPrice !== undefined &&
@@ -212,6 +192,14 @@ export default async function Home({ searchParams }: Props) {
             value: {
               equals: String(queryType),
             },
+          },
+        },
+      }),
+      ...(!!city && {
+        // Ajout du filtre pour la ville
+        location: {
+          city: {
+            equals: String(city), // Vérifie si la ville correspond
           },
         },
       }),
