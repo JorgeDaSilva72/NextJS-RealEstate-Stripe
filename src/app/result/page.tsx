@@ -16,6 +16,7 @@ export default async function Home({ searchParams }: Props) {
   const queryStatus = searchParams.queryStatus ?? "";
   const queryType = searchParams.queryType ?? "";
   const city = searchParams.city ?? "";
+  const country = searchParams.country ?? "";
 
   const minPrice = searchParams.minPrice
     ? Number(searchParams.minPrice)
