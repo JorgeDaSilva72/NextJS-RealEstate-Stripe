@@ -164,6 +164,8 @@
 // };
 
 // export default DiamondPack;
+//
+
 "use client";
 import React from "react";
 
@@ -192,26 +194,25 @@ const DiamondPack: React.FC<DiamondPackProps> = ({
   shortVideos = 25,
   youtubeVideoDuration = "30-45 MIN",
   zoneRadius = 30,
-  onSubscribe = () => alert("Souscription effectuée !"),
+  onSubscribe = () => alert("Souscription au Pack diamand effectuée !"),
 }) => {
   return (
-    <div className="bg-black text-white max-w-sm mx-auto p-6 rounded-lg shadow-lg">
+    <div className="bg-black text-white mx-auto p-6 rounded-2xl shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
       {/* Title */}
-      {/* <h1 className="text-3xl font-extrabold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-cyan-300 to-yellow-400 drop-shadow-lg"> */}
-      <h1 className="text-4xl text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-cyan-400 to-yellow-500 drop-shadow-[0_0_20px_rgba(255,255,255,1)] animate-glow">
+      <h1 className="text-3xl sm:text-4xl text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-cyan-400 to-yellow-500 drop-shadow-[0_0_20px_rgba(255,255,255,1)] animate-glow">
         PACK DIAMANT
       </h1>
 
       {/* Price and Duration */}
-      <h2 className="text-xl font-bold text-center mt-4">
+      <h2 className="text-lg sm:text-xl font-bold text-center mt-4">
         {price} EURO / {duration}
       </h2>
-      <p className="text-sm text-gray-400 text-center mt-2">
+      <p className="text-xs sm:text-sm text-gray-400 text-center mt-2">
         Offre spéciale {country} valable du {startDate} au {endDate}
       </p>
 
       {/* Features List */}
-      <ul className="mt-6 space-y-3 text-sm">
+      <ul className="mt-6 space-y-3 text-xs sm:text-sm">
         <li>
           💎 <strong>Visibilité maximale et notoriété renforcée</strong>
         </li>
@@ -240,15 +241,16 @@ const DiamondPack: React.FC<DiamondPackProps> = ({
       </ul>
 
       {/* Footer and Subscribe Button */}
-      <p className="text-xs text-gray-400 mt-6 text-center">
+      <p className="text-[10px] sm:text-xs text-gray-400 mt-6 text-center">
         Suivi personnalisé tout au long de la collaboration. Une visibilité
         accrue sur le marché immobilier, des ventes plus rapides grâce à des
         annonces de qualité, un retour sur investissement rapide.
       </p>
 
       <button
+        aria-label="Souscrire au Pack Diamant"
         onClick={onSubscribe}
-        className="mt-6 w-full bg-gradient-to-r from-blue-500 to-yellow-500 text-black font-bold py-2 rounded-lg shadow-lg hover:from-blue-600 hover:to-yellow-600 transition duration-300"
+        className="mt-6 w-full bg-gradient-to-r from-blue-500 to-yellow-500 text-black font-bold py-2 rounded-lg shadow-lg hover:from-blue-600 hover:to-yellow-600 transition duration-300 text-sm sm:text-base"
       >
         Souscrire
       </button>

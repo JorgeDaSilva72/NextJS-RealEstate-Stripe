@@ -111,10 +111,19 @@
 // export default Location;
 
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
-import { Button, Card, Input, Textarea, cn } from "@nextui-org/react";
+import {
+  Button,
+  Card,
+  Input,
+  Select,
+  SelectItem,
+  Textarea,
+  cn,
+} from "@nextui-org/react";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 import { AddPropertyInputType } from "./AddPropertyForm";
+import { citiesOfMorocco } from "@/app/data/cities";
 
 interface Props {
   next: () => void;
@@ -127,6 +136,7 @@ const Location = (props: Props) => {
     register,
     formState: { errors },
     trigger,
+    setValue,
     getValues,
   } = useFormContext<AddPropertyInputType>();
 
@@ -168,13 +178,48 @@ const Location = (props: Props) => {
         defaultValue={getValues().location?.zip}
       />
 
-      <Input
+      {/* <Input
         {...register("location.city")}
         errorMessage={errors.location?.city?.message}
         isInvalid={!!errors.location?.city}
         label="Ville"
         defaultValue={getValues().location?.city}
-      />
+      /> */}
+
+      {/* Select pour la ville */}
+      <Select
+        // {...register("cityId", { setValueAs: (v: any) => v.toString() })}
+        {...register("location.city")}
+        errorMessage={errors.location?.city?.message}
+        isInvalid={!!errors.location?.city}
+        label="Ville"
+        placeholder="Choisissez une ville"
+        selectionMode="single"
+        value={
+          citiesOfMorocco.find(
+            (city) => city.value === getValues().location?.city
+          )?.id || "" // Trouve l'id correspondant à la valeur stockée dans la base
+        } // Assure que l'id correspondant à la value soit sélectionné
+        onChange={(event) => {
+          const selectedId = event.target.value; // Récupérer l id de l'élément sélectionné
+          const city = citiesOfMorocco.find(
+            (city) => city.id === selectedId // Trouver la ville par id
+          );
+          if (city) {
+            setValue("location.city", city.value); // Enregistre le nom de la ville et non l id
+          }
+        }}
+        // onChange={(event) => setValue("location.city", event.target.value)}
+        // defaultSelectedKeys={[
+        //   getValues().cityId ? getValues().cityId.toString() : "0",
+        // ]}
+      >
+        {citiesOfMorocco.map((city) => (
+          <SelectItem key={city.id} value={city.id}>
+            {city.value}
+          </SelectItem>
+        ))}
+      </Select>
 
       <Input
         {...register("location.state")}

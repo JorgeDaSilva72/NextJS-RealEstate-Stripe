@@ -53,11 +53,57 @@
 // };
 import React from "react";
 import DiamondPack from "./_components/DiamondPack";
+import GoldPack from "./_components/GoldPack";
+import SilverPack from "./_components/SilverPack";
+import BronzePack from "./_components/BronzePack";
+
+import Image from "next/image";
+import bronzeImg from "/public/pricing/bronze.jpg";
+import silverImg from "/public/pricing/argent.jpg";
+import goldImg from "/public/pricing/or.jpg";
+import diamondImg from "/public/pricing/diamant.jpg";
 
 function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-200">
-      <DiamondPack />
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-200">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <BronzePack />
+        <SilverPack />
+        <GoldPack />
+        <DiamondPack />
+      </div>
+
+      {/* Images optimisées */}
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <Image
+          src={bronzeImg}
+          alt="Pack Bronze"
+          width={600}
+          height={800}
+          className="rounded-lg shadow"
+        />
+        <Image
+          src={silverImg}
+          alt="Pack Argent"
+          width={600}
+          height={800}
+          className="rounded-lg shadow"
+        />
+        <Image
+          src={goldImg}
+          alt="Pack Or"
+          width={600}
+          height={800}
+          className="rounded-lg shadow"
+        />
+        <Image
+          src={diamondImg}
+          alt="Pack Diamant"
+          width={600}
+          height={800}
+          className="rounded-lg shadow"
+        />
+      </div>
     </div>
   );
 }
