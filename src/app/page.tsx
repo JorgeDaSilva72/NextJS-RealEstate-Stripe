@@ -68,10 +68,10 @@ const Hero = () => {
           <h1 className="text-3xl md:text-5xl font-bold mb-4">
             Trouvez la propriété de vos rêves
           </h1>
-          {/* <p className="text-lg md:text-xl mb-8">
+          <p className="text-lg md:text-xl mb-8">
             Parcourez des centaines d&apos;annonces pour trouver l&apos;endroit
             parfait où vivre
-          </p> */}
+          </p>
 
           {/* Search Form */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -87,12 +87,6 @@ const Hero = () => {
               className="w-full sm:w-auto bg-primary-500 text-white py-3 px-6 rounded-md font-semibold hover:bg-primary-600 transition"
             >
               Explorer
-            </button>
-            <button
-              onClick={handlePricing}
-              className="w-full sm:w-auto bg-primary-500 text-white py-3 px-6 rounded-md font-semibold hover:bg-primary-600 transition"
-            >
-              Voir le pricing
             </button>
           </div>
         </div>

@@ -170,6 +170,7 @@
 import React from "react";
 
 interface DiamondPackProps {
+  namePlan?: string;
   price?: number;
   duration?: string;
   country?: string;
@@ -177,13 +178,14 @@ interface DiamondPackProps {
   endDate?: string;
   premiumAds?: number;
   photosPerAd?: number;
-  shortVideos?: number;
+  shortVideosPerAd?: number;
   youtubeVideoDuration?: string;
   zoneRadius?: number;
   onSubscribe?: () => void;
 }
 
 const DiamondPack: React.FC<DiamondPackProps> = ({
+  namePlan = "diamand",
   price = 1500,
   duration = "AN",
   country = "Maroc",
@@ -191,7 +193,7 @@ const DiamondPack: React.FC<DiamondPackProps> = ({
   endDate = "31/01/2025",
   premiumAds = 25,
   photosPerAd = 15,
-  shortVideos = 25,
+  shortVideosPerAd = 1,
   youtubeVideoDuration = "30-45 MIN",
   zoneRadius = 30,
   onSubscribe = () => alert("Souscription au Pack diamand effectuée !"),
@@ -199,13 +201,13 @@ const DiamondPack: React.FC<DiamondPackProps> = ({
   return (
     <div className="bg-black text-white mx-auto p-6 rounded-2xl shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
       {/* Title */}
-      <h1 className="text-3xl sm:text-4xl text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-cyan-400 to-yellow-500 drop-shadow-[0_0_20px_rgba(255,255,255,1)] animate-glow">
-        PACK DIAMANT
+      <h1 className="uppercase text-3xl sm:text-4xl text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-cyan-400 to-yellow-500 drop-shadow-[0_0_20px_rgba(255,255,255,1)] animate-glow">
+        PACK ELITE <span className="text-5xl">{namePlan} </span>
       </h1>
 
       {/* Price and Duration */}
       <h2 className="text-lg sm:text-xl font-bold text-center mt-4">
-        {price} EURO / {duration}
+        <span className="text-6xl">{price} €</span> / {duration}
       </h2>
       <p className="text-xs sm:text-sm text-gray-400 text-center mt-2">
         Offre spéciale {country} valable du {startDate} au {endDate}
@@ -225,18 +227,25 @@ const DiamondPack: React.FC<DiamondPackProps> = ({
           : Des visuels de qualité pour séduire les acquéreurs.
         </li>
         <li>
-          💎 <strong>{shortVideos} vidéos courtes et impactantes (1mn)</strong>{" "}
+          💎{" "}
+          <strong>
+            {shortVideosPerAd} vidéo courte et impactante (1mn) par annonce
+          </strong>{" "}
           : Présentez vos biens sous tous les angles.
         </li>
         <li>
           💎{" "}
           <strong>
-            Vidéo de présentation YouTube ({youtubeVideoDuration})
+            1 Vidéo de présentation YouTube ({youtubeVideoDuration})
           </strong>{" "}
           : Renforcez votre image de marque.
         </li>
         <li>
-          💎 <strong>Zone de chalandise exclusive de {zoneRadius} km</strong>
+          💎{" "}
+          <strong>
+            Zone de chalandise exclusive de {zoneRadius} km ou 100 000
+            habitants.
+          </strong>
         </li>
       </ul>
 
