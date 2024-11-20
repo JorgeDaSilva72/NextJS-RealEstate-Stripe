@@ -185,7 +185,7 @@ interface DiamondPackProps {
 }
 
 const DiamondPack: React.FC<DiamondPackProps> = ({
-  namePlan = "diamand",
+  namePlan = "diamant",
   price = 1500,
   duration = "AN",
   country = "Maroc",
@@ -199,7 +199,7 @@ const DiamondPack: React.FC<DiamondPackProps> = ({
   onSubscribe = () => alert("Souscription au Pack diamand effectuée !"),
 }) => {
   return (
-    <div className="bg-black text-white mx-auto p-6 rounded-2xl shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
+    <div className="bg-black text-white mx-auto p-6 rounded-2xl shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg h-full">
       {/* Title */}
       <h1 className="uppercase text-3xl sm:text-4xl text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-cyan-400 to-yellow-500 drop-shadow-[0_0_20px_rgba(255,255,255,1)] animate-glow">
         PACK ELITE <span className="text-5xl">{namePlan} </span>

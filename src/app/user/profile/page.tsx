@@ -84,7 +84,7 @@ const ProfilePage = async () => {
             <div>
               <Attribute
                 title="Abonnement"
-                value={userSubscription?.plan?.name}
+                value={userSubscription?.plan?.namePlan}
               />
               <Attribute
                 title="Prix en F CFA"

@@ -27,7 +27,7 @@ const PurchasePlan = ({ plan }: Props) => {
     setIsLoading(true);
     const paymentIntent = await createPaymentIntent(
       plan.price * 100,
-      `Payment of the user ${user?.given_name} ${user?.family_name} for buying ${plan.name}. `
+      `Payment of the user ${user?.given_name} ${user?.family_name} for buying ${plan.namePlan}. `
     );
     setClientSecret(paymentIntent.client_secret);
     setShowCheckout(true);

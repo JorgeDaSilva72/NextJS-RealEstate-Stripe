@@ -44,7 +44,7 @@ const SubscriptionPage = async () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
           {subscriptionPlans.map((plan) => {
-            switch (plan.name.toLowerCase()) {
+            switch (plan.namePlan.toLowerCase()) {
               case "bronze":
                 // return <BronzePack key={plan.id} data={plan} />;
                 return <BronzePack key={plan.id} />;
@@ -57,7 +57,7 @@ const SubscriptionPage = async () => {
                 // return <GoldPack key={plan.id} data={plan} />;
                 return <GoldPack key={plan.id} />;
 
-              case "diamand":
+              case "diamant":
                 // return <DiamondPack key={plan.id} data={plan} />;
                 return <DiamondPack key={plan.id} />;
 
@@ -82,41 +82,41 @@ const SubscriptionPage = async () => {
 export default SubscriptionPage;
 
 // Individual plan component
-const Plan = ({ plan }: { plan: SubscriptionPlan }) => {
-  return (
-    <div className="bg-white border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6 flex flex-col justify-between">
-      {/* Plan name */}
-      <h2 className="text-2xl font-bold text-center text-primary-500 mb-4">
-        {plan.name}
-      </h2>
+// const Plan = ({ plan }: { plan: SubscriptionPlan }) => {
+//   return (
+//     <div className="bg-white border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6 flex flex-col justify-between">
+//       {/* Plan name */}
+//       <h2 className="text-2xl font-bold text-center text-primary-500 mb-4">
+//         {plan.namePlan}
+//       </h2>
 
-      {/* Plan price */}
-      <div className="text-center">
-        {/* <p className="text-gray-600 text-sm">À partir de</p> */}
-        <p className="text-4xl font-extrabold text-orange-600">
-          {plan.price.toLocaleString()} F CFA
-          <span className="text-lg">/mois</span>
-        </p>
-      </div>
+//       {/* Plan price */}
+//       <div className="text-center">
+//         {/* <p className="text-gray-600 text-sm">À partir de</p> */}
+//         <p className="text-4xl font-extrabold text-orange-600">
+//           {plan.price.toLocaleString()} F CFA
+//           <span className="text-lg">/mois</span>
+//         </p>
+//       </div>
 
-      <hr className="my-4" />
+//       <hr className="my-4" />
 
-      {/* Plan features */}
-      <ul className="space-y-2 text-gray-600 text-sm text-center">
-        {plan.features.split(",").map((feature, index) => (
-          <li key={index} className="before:content-['✔️'] before:mr-2">
-            {feature.trim()}
-          </li>
-        ))}
-      </ul>
+//       {/* Plan features */}
+//       <ul className="space-y-2 text-gray-600 text-sm text-center">
+//         {plan.features.split(",").map((feature, index) => (
+//           <li key={index} className="before:content-['✔️'] before:mr-2">
+//             {feature.trim()}
+//           </li>
+//         ))}
+//       </ul>
 
-      {/* Purchase button */}
-      <div className="mt-6 text-center">
-        <PurchasePlan plan={plan} />
-      </div>
-    </div>
-  );
-};
+//       {/* Purchase button */}
+//       <div className="mt-6 text-center">
+//         <PurchasePlan plan={plan} />
+//       </div>
+//     </div>
+//   );
+// };
 
 // import React from "react";
 // import DiamondPack from "./_components/DiamondPack";

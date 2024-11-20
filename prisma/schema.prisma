@@ -112,11 +112,20 @@ model Contact {
 
 model SubscriptionPlan {
   id                    Int             @id @default(autoincrement())
-  name                  String
-  price                 Float
-  propertyLimit         Int
-  imagePerPropertyLimit Int
+  namePlan              String
+  price                 Float // Prix en euros
+  duration           String   @default("AN")// Durée, ex: "AN" ou"Mois"
+  country            String   // Pays concerné
+  startDate          DateTime // Date de début
+  endDate            DateTime // Date de fin
+  premiumAds         Int      // Nombre d'annonces premium incluses
+  photosPerAd        Int      // Nombre de photos par annonce
+  shortVideosPerAd   Int      // Nombre de vidéos courtes par annonce
+  youtubeVideoDuration String // Durée des vidéos YouTube
+  zoneRadius         Int      // Zone de couverture (en km)
   features              String
+  createdAt          DateTime @default(now()) // Date de création du plan
+  updatedAt          DateTime @updatedAt // Dernière mise à jour
   subscriptions         Subscriptions[]
 }
 
