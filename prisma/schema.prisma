@@ -65,7 +65,7 @@ model PropertyType {
 
 model PropertyStatus {
   id       Int        @id @default(autoincrement())
-  value    String
+  value    String @unique
   Property Property[]
 }
 

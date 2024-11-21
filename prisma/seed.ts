@@ -78,11 +78,28 @@ const propertyTypes = [
   { value: "Programme neuf" },
 ];
 
+const propertyStatuses = [
+  { value: "Vente" },
+  { value: "Location" },
+  { value: "Location saisonnière" },
+  { value: "Location meublée" },
+];
+
 async function main() {
   for (const plan of plans) {
     await prisma.subscriptionPlan.create({ data: plan });
     console.log(`Seed completed: Plan ${plan.namePlan} has been added.`);
   }
+
+  for (const status of propertyStatuses) {
+    await prisma.propertyStatus.upsert({
+      where: { value: status.value }, // Si 'value' est défini comme unique dans le modèle
+      update: {}, // Aucune mise à jour nécessaire
+      create: { value: status.value }, // Crée un nouvel enregistrement si non trouvé
+    });
+  }
+
+  console.log("PropertyType data seeded successfully!");
 
   for (const type of propertyTypes) {
     await prisma.propertyType.upsert({
@@ -93,44 +110,6 @@ async function main() {
   }
 
   console.log("PropertyType data seeded successfully!");
-  //   await prisma.subscriptionPlan.create({
-  //     data: {
-  //       namePlan: "Or",
-  //       price: 400,
-  //       duration: "AN",
-  //       country: "",
-  //       startDate: new Date("2024-12-01"),
-  //       endDate: new Date("2025-01-31"),
-  //       premiumAds: 20,
-  //       photosPerAd: 10,
-  //       shortVideosPerAd: 0,
-  //       youtubeVideoDuration: "",
-  //       zoneRadius: 0,
-  //       features:
-  //         "Visibilité élevée, 20 annonces premium, 10 photos/annonce, pas de vidéos",
-  //     },
-  //   });
-  //   console.log("Seed completed: Plan Or has been added.");
-  //   // Ajoute le plan Diamant
-
-  //   await prisma.subscriptionPlan.create({
-  //     data: {
-  //       namePlan: "Diamant",
-  //       price: 1500,
-  //       duration: "AN",
-  //       country: "Maroc",
-  //       startDate: new Date("2024-12-01"),
-  //       endDate: new Date("2025-01-31"),
-  //       premiumAds: 25,
-  //       photosPerAd: 15,
-  //       shortVideosPerAd: 1,
-  //       youtubeVideoDuration: "30-45 MIN",
-  //       zoneRadius: 30,
-  //       features: "Visibilité maximale",
-  //     },
-  //   });
-
-  //   console.log("Seed completed: Plan Diamant has been added.");
 }
 
 main()
