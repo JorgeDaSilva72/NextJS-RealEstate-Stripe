@@ -30,15 +30,22 @@ const SubscriptionPage = async (): Promise<JSX.Element> => {
       throw new Error("Aucun plan d'abonnement disponible.");
     }
 
+    // Définir l'ordre des plans
+    const PLAN_ORDER: PlanName[] = ["bronze", "argent", "or", "diamant"];
+
+    // Trier les plans selon l'ordre défini
+    const sortedPlans = subscriptionPlans.sort((a, b) => {
+      const orderA = PLAN_ORDER.indexOf(a.namePlan.toLowerCase() as PlanName);
+      const orderB = PLAN_ORDER.indexOf(b.namePlan.toLowerCase() as PlanName);
+      return orderA - orderB;
+    });
+
     return (
       <div className="min-h-screen bg-gray-50 p-6">
-        <PageTitle title="Choisissez votre plan d'abonnement" />
-        <p className="text-center text-gray-600 mt-4 mb-8 text-lg">
-          Sélectionnez un plan pour bénéficier de nos offres exclusives.
-        </p>
+        <PageTitle title="Sélectionnez un plan pour bénéficier de nos offres exclusives:" />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          {subscriptionPlans.map((plan) => {
+          {sortedPlans.map((plan) => {
             const PackComponent =
               COMPONENT_MAPPING[plan.namePlan.toLowerCase() as PlanName];
             return PackComponent ? (
@@ -46,31 +53,6 @@ const SubscriptionPage = async (): Promise<JSX.Element> => {
             ) : null;
           })}
         </div>
-
-        {/* <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          {subscriptionPlans.map((plan) => {
-            switch (plan.namePlan.toLowerCase()) {
-              case "bronze":
-                // return <BronzePack key={plan.id} data={plan} />;
-                return <BronzePack key={plan.id} />;
-
-              case "argent":
-                // return <SilverPack key={plan.id} data={plan} />;
-                return <SilverPack key={plan.id} />;
-
-              case "or":
-                // return <GoldPack key={plan.id} data={plan} />;
-                return <GoldPack key={plan.id} />;
-
-              case "diamant":
-                // return <DiamondPack key={plan.id} data={plan} />;
-                return <DiamondPack key={plan.id} />;
-
-              default:
-                return null;
-            }
-          })}
-        </div> */}
       </div>
     );
   } catch (error) {
