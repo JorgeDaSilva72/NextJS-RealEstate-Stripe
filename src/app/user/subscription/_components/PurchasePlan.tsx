@@ -16,8 +16,9 @@ const stripePromise = loadStripe(
 
 type Props = {
   plan: SubscriptionPlan;
+  buttonClassName?: string; // Nouvelle prop pour personnaliser le bouton
 };
-const PurchasePlan = ({ plan }: Props) => {
+const PurchasePlan = ({ plan, buttonClassName }: Props) => {
   const [showCheckout, setShowCheckout] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>("");
   const [isLoading, setIsLoading] = useState(false);
@@ -37,12 +38,13 @@ const PurchasePlan = ({ plan }: Props) => {
   return (
     <>
       <Button
+        aria-label={`Souscrire au Pack ${plan.namePlan}`}
         onClick={intiatePayment}
-        color="secondary"
         endContent={<ShoppingBagIcon className="w-4" />}
         isLoading={isLoading}
+        className={`w-full text-white font-bold py-3 rounded-lg shadow-lg transition duration-300 ${buttonClassName}`}
       >
-        Acheter cet abonnement.
+        Souscrire
       </Button>
       {clientSecret!! && (
         <Elements

@@ -2,16 +2,17 @@
 
 import React from "react";
 import { SubscriptionPlan } from "@prisma/client";
+import PurchasePlan from "./PurchasePlan";
 
 interface SilverPackProps {
   data: SubscriptionPlan;
-  onSubscribe?: () => void; // Ajout d'une action personnalisée au clic
+  // onSubscribe?: () => void; // Ajout d'une action personnalisée au clic
 }
 
 const SilverPack: React.FC<SilverPackProps> = ({
   data,
-  onSubscribe = () =>
-    alert(`Souscription au Pack ${data.namePlan} effectuée !`),
+  // onSubscribe = () =>
+  //   alert(`Souscription au Pack ${data.namePlan} effectuée !`),
 }) => {
   const {
     namePlan,
@@ -90,13 +91,17 @@ const SilverPack: React.FC<SilverPackProps> = ({
 
       {/* Bouton de souscription */}
       <div className="mt-6">
-        <button
+        {/* <button
           aria-label={`Souscrire au Pack ${namePlan}`}
           onClick={onSubscribe}
           className="w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white font-bold py-3 rounded-lg shadow-lg hover:from-gray-500 hover:to-gray-600 transition duration-300"
         >
           Souscrire
-        </button>
+        </button> */}
+        <PurchasePlan
+          plan={data}
+          buttonClassName="bg-gradient-to-r from-gray-600 to-gray-700  hover:from-gray-500 hover:to-gray-600"
+        />
       </div>
     </div>
   );

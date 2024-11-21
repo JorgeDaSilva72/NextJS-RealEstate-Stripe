@@ -3,6 +3,7 @@ import Stripe from "stripe";
 
 export const createPaymentIntent = async (
   amount: number,
+
   description: string
 ) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -13,7 +14,7 @@ export const createPaymentIntent = async (
   const paymentIntent = await stripe.paymentIntents.create({
     amount,
     description,
-    currency: "USD",
+    currency: "EUR",
   });
   return paymentIntent;
 };

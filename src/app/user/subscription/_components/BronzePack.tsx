@@ -2,16 +2,17 @@
 
 import React from "react";
 import { SubscriptionPlan } from "@prisma/client";
+import PurchasePlan from "./PurchasePlan";
 
 interface BronzePackProps {
   data: SubscriptionPlan;
-  onSubscribe?: () => void; // Ajout d'une action personnalisée au clic
+  // onSubscribe?: () => void; // Ajout d'une action personnalisée au clic
 }
 
 const BronzePack: React.FC<BronzePackProps> = ({
   data,
-  onSubscribe = () =>
-    alert(`Souscription au Pack ${data.namePlan} effectuée !`),
+  // onSubscribe = () =>
+  //   alert(`Souscription au Pack ${data.namePlan} effectuée !`),
 }) => {
   const {
     namePlan,
@@ -90,13 +91,18 @@ const BronzePack: React.FC<BronzePackProps> = ({
 
       {/* Bouton de souscription */}
       <div className="mt-6">
-        <button
+        {/* <button
           aria-label={`Souscrire au Pack ${namePlan}`}
           onClick={onSubscribe}
           className="w-full bg-gradient-to-r from-orange-600 to-orange-700 text-white font-bold py-3 rounded-lg shadow-lg hover:from-orange-500 hover:to-orange-600 transition duration-300"
         >
           Souscrire
-        </button>
+        </button> */}
+
+        <PurchasePlan
+          plan={data}
+          buttonClassName="bg-gradient-to-r from-orange-600 to-orange-700  hover:from-orange-500 hover:to-orange-600"
+        />
       </div>
     </div>
   );
