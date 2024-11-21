@@ -59,7 +59,7 @@ model Property {
 
 model PropertyType {
   id       Int        @id @default(autoincrement())
-  value    String
+  value    String @unique
   Property Property[]
 }
 

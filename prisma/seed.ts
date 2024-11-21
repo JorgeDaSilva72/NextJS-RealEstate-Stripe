@@ -64,11 +64,35 @@ const plans = [
   },
 ];
 
+const propertyTypes = [
+  { value: "Appartement" },
+  { value: "Maison" },
+  { value: "Villa" },
+  { value: "Commerce" },
+  { value: "Riad" },
+  { value: "Bureau" },
+  { value: "Terrain" },
+  { value: "Ferme" },
+  { value: "Entrepôt" },
+  { value: "Hôtel" },
+  { value: "Programme neuf" },
+];
+
 async function main() {
   for (const plan of plans) {
     await prisma.subscriptionPlan.create({ data: plan });
     console.log(`Seed completed: Plan ${plan.namePlan} has been added.`);
   }
+
+  for (const type of propertyTypes) {
+    await prisma.propertyType.upsert({
+      where: { value: type.value }, // Si 'value' est défini comme unique dans le modèle
+      update: {}, // Aucune mise à jour nécessaire pour ce seed
+      create: { value: type.value }, // Crée un nouvel enregistrement si non trouvé
+    });
+  }
+
+  console.log("PropertyType data seeded successfully!");
   //   await prisma.subscriptionPlan.create({
   //     data: {
   //       namePlan: "Or",
