@@ -26,7 +26,7 @@ const Appbar = ({ children }: Props) => {
   const pathname = usePathname(); // Utilisation de usePathname pour obtenir le chemin actuel
   useEffect(() => {
     // Vérifie si on est dans la page d'accueil
-    // Vérifie si on est sur la page d'accueil
+
     const isHeroPage = pathname === "/";
     setIsTransparent(isHeroPage);
     const handleScroll = () => {

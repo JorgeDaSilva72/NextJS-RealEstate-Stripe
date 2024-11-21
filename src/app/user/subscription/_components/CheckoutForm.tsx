@@ -54,9 +54,9 @@ const CheckoutForm = (props: Props) => {
         const startDate = new Date();
         // const startDate = new Date().toISOString();
 
-        // Date de fin de l'abonnement (par exemple, un mois après la date de début)
+        // Date de fin de l'abonnement (par exemple, 12 mois après la date de début)
         const endDate = new Date();
-        endDate.setMonth(endDate.getMonth() + 1); // Ajouter un mois
+        endDate.setMonth(endDate.getMonth() + 12); // Ajouter un mois
         // const endDateISOString = endDate.toISOString();
 
         await saveSubscription({

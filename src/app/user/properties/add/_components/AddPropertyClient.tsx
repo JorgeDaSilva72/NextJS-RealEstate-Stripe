@@ -10,20 +10,31 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
-import { PropertyType, PropertyStatus } from "@prisma/client";
+import { PropertyType, PropertyStatus, SubscriptionPlan } from "@prisma/client";
 import AddPropertyForm from "./AddPropertyForm";
 import Link from "next/link";
 
 interface AddPropertyClientProps {
   showModal: boolean;
+  modalMessage: string;
   types: PropertyType[];
   statuses: PropertyStatus[];
+  planDetails?: Pick<
+    SubscriptionPlan,
+    | "namePlan"
+    | "premiumAds"
+    | "photosPerAd"
+    | "shortVideosPerAd"
+    | "youtubeVideoDuration"
+  > | null; // Ajout de `null`;
 }
 
 const AddPropertyClient: React.FC<AddPropertyClientProps> = ({
   showModal,
+  modalMessage,
   types,
   statuses,
+  planDetails,
 }) => {
   const { isOpen, onOpen } = useDisclosure();
 
@@ -42,9 +53,7 @@ const AddPropertyClient: React.FC<AddPropertyClientProps> = ({
             Abonnement requis
           </ModalHeader>
           <ModalBody>
-            <p>
-              Vous devez souscrire à un abonnement pour ajouter des annonces.
-            </p>
+            <p>{modalMessage}</p>
           </ModalBody>
           <ModalFooter>
             {/* Bouton qui redirige vers la page d'abonnement sans possibilité de fermer la modale autrement */}
@@ -54,7 +63,37 @@ const AddPropertyClient: React.FC<AddPropertyClientProps> = ({
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <AddPropertyForm types={types} statuses={statuses} />
+      <div>
+        {planDetails && (
+          <div className="mb-6 bg-gray-100 p-4 rounded shadow">
+            <h3 className="font-semibold text-lg">
+              Détails de votre abonnement
+            </h3>
+            <p>
+              <strong>Plan :</strong> {planDetails.namePlan}
+            </p>
+            <p>
+              <strong>Annonces premium autorisées :</strong>{" "}
+              {planDetails.premiumAds || 1}
+            </p>
+            <p>
+              <strong>Photos par annonce :</strong>{" "}
+              {planDetails.photosPerAd || "Illimité"}
+            </p>
+            <p>
+              <strong>Vidéos courtes par annonce :</strong>{" "}
+              {planDetails.shortVideosPerAd || "Non autorisé"}
+            </p>
+            {planDetails.youtubeVideoDuration && (
+              <p>
+                <strong>Durée max. vidéo YouTube :</strong>{" "}
+                {planDetails.youtubeVideoDuration} minutes
+              </p>
+            )}
+          </div>
+        )}
+        <AddPropertyForm types={types} statuses={statuses} />
+      </div>
     </>
   );
 };
