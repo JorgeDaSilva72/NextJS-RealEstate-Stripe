@@ -1,41 +1,36 @@
 "use client";
+
 import React from "react";
+import { SubscriptionPlan } from "@prisma/client";
 
 interface SilverPackProps {
-  namePlan?: string;
-  price?: number;
-  duration?: string;
-  country?: string;
-  startDate?: string;
-  endDate?: string;
-  premiumAds?: number;
-  photosPerAd?: number;
-  shortVideosPerAd?: number;
-  youtubeVideoDuration?: string;
-  zoneRadius?: number;
-  onSubscribe?: () => void;
+  data: SubscriptionPlan;
+  onSubscribe?: () => void; // Ajout d'une action personnalisée au clic
 }
 
 const SilverPack: React.FC<SilverPackProps> = ({
-  namePlan = "argent",
-  price = 250,
-  duration = "AN",
-  country = "",
-  startDate = "",
-  endDate = "",
-  premiumAds = 10,
-  photosPerAd = 8,
-  shortVideosPerAd = 0,
-  youtubeVideoDuration = "",
-  zoneRadius = 0,
-  onSubscribe = () => alert("Souscription au Pack Prestige ARGENT effectuée !"),
+  data,
+  onSubscribe = () =>
+    alert(`Souscription au Pack ${data.namePlan} effectuée !`),
 }) => {
+  const {
+    namePlan,
+    price,
+    duration,
+    premiumAds,
+    photosPerAd,
+    shortVideosPerAd,
+    youtubeVideoDuration,
+    zoneRadius,
+  } = data;
+
   return (
-    <div className="bg-gradient-to-b from-blue-200 to-blue-400 text-black mx-auto p-6 rounded-2xl shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md flex flex-col justify-between h-full">
-      {/* Title */}
+    <div className="bg-gradient-to-b from-gray-200 via-gray-300 to-gray-400 text-black mx-auto p-6 rounded-2xl shadow-2xl w-full max-w-xs sm:max-w-sm md:max-w-md flex flex-col justify-between h-full">
+      {/* Titre */}
       <div>
-        <h1 className="text-3xl sm:text-4xl text-center  text-gray-500 font-extrabold bg-clip-text">
-          PACK PRESTIGE{" "}
+        <h1 className="text-3xl sm:text-4xl text-center text-gray-500 font-extrabold bg-clip-text">
+          PACK PRESTIGE
+          <br />
           <span
             className="uppercase bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900 text-transparent bg-clip-text font-extrabold text-5xl drop-shadow-[0_0_15px_rgba(192,192,192,0.8)]"
             style={{
@@ -47,16 +42,16 @@ const SilverPack: React.FC<SilverPackProps> = ({
           </span>
         </h1>
 
-        {/* Price and Duration */}
+        {/* Prix */}
         <h2 className="text-2xl font-bold text-center mt-4">
           <span className="text-6xl">{price} €</span> / {duration}
         </h2>
 
-        {/* Features List */}
+        {/* Liste des caractéristiques */}
         <ul className="mt-6 space-y-4 text-lg">
           <li className="flex items-center">
-            <span className="mr-2">💰</span> {premiumAds} annonces pour une
-            visibilité accrue
+            <span className="mr-2">💰</span> {premiumAds} annonces pour un
+            démarrage en douceur
           </li>
           <li className="flex items-center">
             <span className="mr-2">📸</span> {photosPerAd} photos
@@ -66,6 +61,24 @@ const SilverPack: React.FC<SilverPackProps> = ({
             <span className="mr-2">📂</span> Espace dédié pour gérer vos
             annonces
           </li>
+          {shortVideosPerAd > 0 && (
+            <li className="flex items-center">
+              <span className="mr-2">🎥</span> {shortVideosPerAd} vidéo courte
+              (1mn) par annonce.
+            </li>
+          )}
+          {youtubeVideoDuration && (
+            <li className="flex items-center">
+              <span className="mr-2">⏳</span> 1 Vidéo de présentation YouTube
+              de {youtubeVideoDuration}
+            </li>
+          )}
+          {zoneRadius > 0 && (
+            <li className="flex items-center">
+              <span className="mr-2">📍</span> Zone de chalandise exclusive de:{" "}
+              {zoneRadius} km
+            </li>
+          )}
         </ul>
 
         {/* Footer */}
@@ -75,10 +88,10 @@ const SilverPack: React.FC<SilverPackProps> = ({
         </p>
       </div>
 
-      {/* Subscribe Button */}
-      <div className="mt-auto">
+      {/* Bouton de souscription */}
+      <div className="mt-6">
         <button
-          aria-label="Souscrire au Pack Prestige ARGENT"
+          aria-label={`Souscrire au Pack ${namePlan}`}
           onClick={onSubscribe}
           className="w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white font-bold py-3 rounded-lg shadow-lg hover:from-gray-500 hover:to-gray-600 transition duration-300"
         >
