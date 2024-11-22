@@ -13,6 +13,7 @@ import {
   PropertyImage,
   PropertyStatus,
   PropertyType,
+  SubscriptionPlan,
 } from "@prisma/client";
 import { cn } from "@nextui-org/react";
 import { z } from "zod";
@@ -55,6 +56,14 @@ interface Props {
     };
   }>;
   isEdit?: boolean;
+  planDetails?: Pick<
+    SubscriptionPlan,
+    | "namePlan"
+    | "premiumAds"
+    | "photosPerAd"
+    | "shortVideosPerAd"
+    | "youtubeVideoDuration"
+  > | null; // Ajout de `null`;
 }
 
 export type AddPropertyInputType = z.infer<typeof AddPropertyFormSchema>;
@@ -159,11 +168,25 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
             prev={() => setStep((prev) => prev - 1)}
             className={cn({ hidden: step !== 3 })}
             images={images}
-            setImages={setImages}
-            {...(props.property!! && {
-              savedImagesUrl: savedImagesUrl,
-              setSavedImageUrl: setSavedImagesUrl,
-            })}
+            // setImages={setImages}
+            // {...(props.property!! && {
+            //   savedImagesUrl: savedImagesUrl,
+            //   setSavedImageUrl: setSavedImagesUrl,
+            // })}
+            setImages={(newImages) => {
+              if (
+                newImages.length > (props.planDetails?.photosPerAd || Infinity)
+              ) {
+                toast.error(
+                  `Vous avez dépassé la limite de ${
+                    props.planDetails?.photosPerAd || "Illimité"
+                  } photos.`
+                );
+                return;
+              }
+              setImages(newImages);
+            }}
+            maxImages={props.planDetails?.photosPerAd || Infinity}
           />
           <Contact
             prev={() => setStep((prev) => prev - 1)}

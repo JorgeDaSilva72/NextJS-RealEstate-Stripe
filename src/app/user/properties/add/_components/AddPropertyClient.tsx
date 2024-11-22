@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   Modal,
   ModalContent,
@@ -38,11 +38,15 @@ const AddPropertyClient: React.FC<AddPropertyClientProps> = ({
 }) => {
   const { isOpen, onOpen } = useDisclosure();
 
-  useEffect(() => {
+  const handleOpen = useCallback(() => {
     if (showModal) {
       onOpen();
     }
   }, [showModal, onOpen]);
+
+  useEffect(() => {
+    handleOpen();
+  }, [handleOpen]);
 
   return (
     <>
@@ -92,7 +96,11 @@ const AddPropertyClient: React.FC<AddPropertyClientProps> = ({
             )}
           </div>
         )}
-        <AddPropertyForm types={types} statuses={statuses} />
+        <AddPropertyForm
+          types={types}
+          statuses={statuses}
+          planDetails={planDetails}
+        />
       </div>
     </>
   );
