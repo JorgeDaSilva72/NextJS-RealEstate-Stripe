@@ -150,6 +150,7 @@ import { Button, Card } from "@nextui-org/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
 import { PropertyImage } from "@prisma/client";
 import Image from "next/image";
+import PictureCard from "./PictureCard";
 
 interface Props {
   next: () => void;
@@ -157,7 +158,7 @@ interface Props {
   className?: string;
   images: File[];
   setImages: (images: File[]) => void;
-  savedImagesUrl?: PropertyImage[];
+  savedImagesUrl?: PropertyImage[]; // Images déjà sauvegardées
   setSavedImageUrl?: (propertyImages: PropertyImage[]) => void;
   maxImages: number;
 }
@@ -228,7 +229,7 @@ const Picture = ({
       {error && <p className="text-red-500 mt-2">{error}</p>}
 
       <div className="flex flex-wrap gap-4 mt-4">
-        {savedImagesUrl.map((image) => (
+        {/* {savedImagesUrl.map((image) => (
           <div key={image.id} className="relative">
             <Image
               width={300}
@@ -244,9 +245,27 @@ const Picture = ({
               &times;
             </button>
           </div>
-        ))}
+        ))} */}
+        {/* Afficher les images sauvegardées */}
+        {savedImagesUrl &&
+          setSavedImageUrl &&
+          savedImagesUrl.map((image, index) => (
+            <PictureCard
+              key={`saved-${image.id}`} // Utilisez un key unique pour éviter des conflits
+              src={image.url}
+              index={index}
+              onDelete={() => {
+                if (setSavedImageUrl!!) {
+                  setSavedImageUrl(
+                    savedImagesUrl.filter((img) => img.id !== image.id)
+                  );
+                }
+              }}
+            />
+          ))}
+        {/* Afficher les nouvelles images */}
         {images.map((file, index) => (
-          <div key={index} className="relative">
+          <div key={`new-${index}`} className="relative">
             <Image
               width={300}
               height={200}

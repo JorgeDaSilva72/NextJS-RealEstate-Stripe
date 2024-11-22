@@ -169,10 +169,10 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
             className={cn({ hidden: step !== 3 })}
             images={images}
             // setImages={setImages}
-            // {...(props.property!! && {
-            //   savedImagesUrl: savedImagesUrl,
-            //   setSavedImageUrl: setSavedImagesUrl,
-            // })}
+            {...(props.property!! && {
+              savedImagesUrl: savedImagesUrl, // Transmet bien les images sauvegardées
+              setSavedImageUrl: setSavedImagesUrl,
+            })}
             setImages={(newImages) => {
               if (
                 newImages.length > (props.planDetails?.photosPerAd || Infinity)
