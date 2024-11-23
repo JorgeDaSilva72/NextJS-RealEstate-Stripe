@@ -53,6 +53,7 @@ model Property {
   location    PropertyLocation?
   feature     PropertyFeature?
   images      PropertyImage[]
+  videos      PropertyVideo[]   // Nouvelle relation pour les vidéos
   contact     Contact?
   createdAt   DateTime @default(now()) // Nouvelle colonne
 }
@@ -100,6 +101,15 @@ model PropertyImage {
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   propertyId Int
 }
+
+model PropertyVideo {
+  id          Int      @id @default(autoincrement())
+  url         String   // Lien YouTube de la vidéo
+  propertyId  Int      // Référence à la propriété associée
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now()) // Date d'ajout
+}
+
 
 model Contact {
   id         Int      @id @default(autoincrement())

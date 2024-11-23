@@ -20,6 +20,7 @@ const EditPropertyPage = async ({ params }: Props) => {
         feature: true,
         contact: true,
         images: true,
+        videos: true,
       },
     }),
   ]);

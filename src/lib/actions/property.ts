@@ -105,6 +105,7 @@ import { Property } from "@prisma/client";
 export async function saveProperty(
   propertyData: AddPropertyInputType,
   imagesUrls: string[],
+  videoUrls: string[], // Ajouter les vidéos
   userId: string
 ) {
   if (!userId) {
@@ -156,6 +157,9 @@ export async function saveProperty(
           images: {
             create: imagesUrls.map((url) => ({ url })),
           },
+          videos: {
+            create: videoUrls.map((url) => ({ url })), // Ajout des vidéos
+          },
         },
       });
       return property;
@@ -173,8 +177,13 @@ export async function editProperty(
   propertyId: number,
   propertyData: AddPropertyInputType,
   newImagesUrls: string[],
-  deletedImageIDs: number[]
+  newVideosUrls: string[],
+  deletedImageIDs: number[],
+  deletedvideoIDs: number[]
 ) {
+  console.log("newVideosUrls:", newVideosUrls);
+  console.log("deletedvideoIDs:", deletedvideoIDs);
+
   if (!propertyId) {
     throw new Error("L'identifiant de la propriété est requis.");
   }
@@ -204,7 +213,21 @@ export async function editProperty(
           id: { in: deletedImageIDs },
         },
       },
+      videos: {
+        create: newVideosUrls.map((vid) => ({
+          url: vid,
+        })),
+        deleteMany: {
+          id: { in: deletedvideoIDs },
+        },
+      },
     };
+
+    // Log pour débogage
+    console.log(
+      "editProperty: données à mettre à jour",
+      JSON.stringify(dataToUpdate, null, 2)
+    );
     // Exécuter la requête Prisma
     const result = await prisma.property.update({
       where: {

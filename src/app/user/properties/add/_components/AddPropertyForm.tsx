@@ -13,6 +13,7 @@ import {
   PropertyImage,
   PropertyStatus,
   PropertyType,
+  PropertyVideo,
   SubscriptionPlan,
 } from "@prisma/client";
 import { cn } from "@nextui-org/react";
@@ -53,6 +54,7 @@ interface Props {
       contact: true;
       feature: true;
       images: true;
+      videos: true; // Ajout
     };
   }>;
   isEdit?: boolean;
@@ -95,14 +97,18 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
   });
   const [step, setStep] = useState(0);
   const [images, setImages] = useState<File[]>([]);
+  const [videos, setVideos] = useState<string[]>([]);
   const [savedImagesUrl, setSavedImagesUrl] = useState<PropertyImage[]>(
     props.property?.images ?? []
   );
+  const [savedVideosUrl, setSavedVideosUrl] = useState<PropertyVideo[]>(
+    props.property?.videos ?? []
+  ); // Ajout
 
   const { user } = useKindeBrowserClient();
 
   const onSubmit: SubmitHandler<AddPropertyInputType> = async (data) => {
-    console.log({ data });
+    console.log("data from addPropertyInputType:", { data });
     const imageUrls = await uploadImages(images);
 
     try {
@@ -111,16 +117,22 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
           .filter((item) => !savedImagesUrl.includes(item))
           .map((item) => item.id);
 
+        const deletedVideosIDs = props.property?.videos
+          .filter((item) => !savedVideosUrl.includes(item))
+          .map((item) => item.id);
+
         await editProperty(
           props.property?.id,
           data,
           imageUrls,
-          deletedImageIDs
+          deletedImageIDs,
+          videos,
+          deletedVideosIDs
         );
 
         toast.success("Annonce modifiée!");
       } else {
-        await saveProperty(data, imageUrls, user?.id!);
+        await saveProperty(data, imageUrls, videos, user?.id!); //ajout
 
         toast.success("Annonce ajoutée !");
       }
@@ -172,6 +184,8 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
             {...(props.property!! && {
               savedImagesUrl: savedImagesUrl, // Transmet bien les images sauvegardées
               setSavedImageUrl: setSavedImagesUrl,
+              savedVideosUrl: savedVideosUrl, // Ajout
+              setVideosVideoUrl: setSavedVideosUrl, // Ajout
             })}
             setImages={(newImages) => {
               if (
@@ -187,6 +201,24 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
               setImages(newImages);
             }}
             maxImages={props.planDetails?.photosPerAd || Infinity}
+            isPremium={
+              props.planDetails?.namePlan?.toLowerCase() === "diamant" || false
+            }
+            maxVideos={props.planDetails?.shortVideosPerAd || 0}
+            setVideos={(newVideos) => {
+              if (
+                newVideos.length > (props.planDetails?.shortVideosPerAd || 0)
+              ) {
+                toast.error(
+                  `Vous avez dépassé la limite de ${
+                    props.planDetails?.shortVideosPerAd || "0"
+                  } vidéo.`
+                );
+                return;
+              }
+              setVideos(newVideos);
+            }}
+            videos={videos}
           />
           <Contact
             prev={() => setStep((prev) => prev - 1)}
