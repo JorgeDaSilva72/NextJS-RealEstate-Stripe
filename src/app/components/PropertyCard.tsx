@@ -1,3 +1,4 @@
+"use client";
 import { Card, Image } from "@nextui-org/react";
 import { Prisma } from "@prisma/client";
 import Link from "next/link";
@@ -25,7 +26,13 @@ interface Props {
 
 const PropertyCard = ({ property }: Props) => {
   return (
-    <Card className="w-72 flex flex-col hover:scale-105" shadow="md">
+    <Card
+      className="w-72 flex flex-col hover:scale-105"
+      shadow="md"
+      // isHoverable
+      // isPressable
+      // onPress={() => console.log("item pressed")}
+    >
       {property?.images[0]?.url ? (
         <Image
           radius="none"

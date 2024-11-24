@@ -121,7 +121,7 @@ export const ImagesSliderHero = ({
   return (
     <Card
       className={cn(
-        "overflow-hidden h-screen  w-full relative flex items-center justify-center",
+        "overflow-hidden h-screen w-full relative flex items-center justify-center",
         className
       )}
       style={{
@@ -148,6 +148,22 @@ export const ImagesSliderHero = ({
           />
         </AnimatePresence>
       )}
+
+      {/* Flèche précédente */}
+      <button
+        onClick={handlePrevious}
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full z-50"
+      >
+        ❮
+      </button>
+
+      {/* Flèche suivante */}
+      <button
+        onClick={handleNext}
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full z-50"
+      >
+        ❯
+      </button>
     </Card>
   );
 };
