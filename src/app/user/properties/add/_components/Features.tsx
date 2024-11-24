@@ -201,19 +201,32 @@ const Features = (props: Props) => {
         {...register("propertyFeature.bedrooms", {
           setValueAs: (v: any) => v.toString(),
         })}
+        type="number"
         errorMessage={errors.propertyFeature?.bedrooms?.message}
         isInvalid={!!errors.propertyFeature?.bedrooms}
         label="Chambre(s)"
-        defaultValue={getValues().propertyFeature?.bedrooms?.toString()}
+        // labelPlacement="outside"
+        startContent={
+          <div className="pointer-events-none flex items-center">
+            <span className="text-default-400 text-small">🛏️</span>
+          </div>
+        }
+        defaultValue={getValues().propertyFeature?.bedrooms?.toString() || ""}
       />
 
       <Input
         {...register("propertyFeature.bathrooms", {
           setValueAs: (v: any) => v.toString(),
         })}
+        type="number"
         errorMessage={errors.propertyFeature?.bathrooms?.message}
         isInvalid={!!errors.propertyFeature?.bathrooms}
         label="Salle(s) de bain"
+        startContent={
+          <div className="pointer-events-none flex items-center">
+            <span className="text-default-400 text-small">🚿</span>
+          </div>
+        }
         defaultValue={getValues().propertyFeature?.bathrooms?.toString()}
       />
 
@@ -221,9 +234,15 @@ const Features = (props: Props) => {
         {...register("propertyFeature.parkingSpots", {
           setValueAs: (v: any) => v.toString(),
         })}
+        type="number"
         errorMessage={errors.propertyFeature?.parkingSpots?.message}
         isInvalid={!!errors.propertyFeature?.parkingSpots}
         label="Place(s) de stationnement"
+        startContent={
+          <div className="pointer-events-none flex items-center">
+            <span className="text-default-400 text-small">🚗</span>
+          </div>
+        }
         defaultValue={getValues().propertyFeature?.parkingSpots?.toString()}
       />
 
@@ -231,9 +250,15 @@ const Features = (props: Props) => {
         {...register("propertyFeature.area", {
           setValueAs: (v: any) => v.toString(),
         })}
+        type="number"
         errorMessage={errors.propertyFeature?.area?.message}
         isInvalid={!!errors.propertyFeature?.area}
-        label="Superficie en m²"
+        label="Surface habitable en m²"
+        startContent={
+          <div className="pointer-events-none flex items-center">
+            <span className="text-default-400 text-small">📏</span>
+          </div>
+        }
         defaultValue={getValues().propertyFeature?.area?.toString()}
       />
 
