@@ -117,17 +117,24 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
           .filter((item) => !savedImagesUrl.includes(item))
           .map((item) => item.id);
 
+        // const deletedVideosIDs = props.property?.videos
+        //   .filter((item) => !savedVideosUrl.includes(item))
+        //   .map((item) => item.id);
+
+        // Pour les vidéos - Modification ici
         const deletedVideosIDs = props.property?.videos
-          .filter((item) => !savedVideosUrl.includes(item))
+          .filter(
+            (item) => !savedVideosUrl.some((saved) => saved.id === item.id)
+          )
           .map((item) => item.id);
 
         await editProperty(
           props.property?.id,
           data,
           imageUrls,
-          deletedImageIDs,
-          videos,
-          deletedVideosIDs
+          deletedImageIDs
+          // videos
+          // deletedVideosIDs
         );
 
         toast.success("Annonce modifiée!");

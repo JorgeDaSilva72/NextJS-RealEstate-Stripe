@@ -177,12 +177,12 @@ export async function editProperty(
   propertyId: number,
   propertyData: AddPropertyInputType,
   newImagesUrls: string[],
-  newVideosUrls: string[],
-  deletedImageIDs: number[],
-  deletedvideoIDs: number[]
+  // newVideosUrls: string[],
+  deletedImageIDs: number[]
+  // deletedvideoIDs: number[]
 ) {
-  console.log("newVideosUrls:", newVideosUrls);
-  console.log("deletedvideoIDs:", deletedvideoIDs);
+  // console.log("newVideosUrls:", newVideosUrls);
+  // console.log("deletedvideoIDs:", deletedvideoIDs);
 
   if (!propertyId) {
     throw new Error("L'identifiant de la propriété est requis.");
@@ -213,14 +213,14 @@ export async function editProperty(
           id: { in: deletedImageIDs },
         },
       },
-      videos: {
-        create: newVideosUrls.map((vid) => ({
-          url: vid,
-        })),
-        deleteMany: {
-          id: { in: deletedvideoIDs },
-        },
-      },
+      // videos: {
+      //   create: newVideosUrls.map((vid) => ({
+      //     url: vid,
+      //   })),
+      //   deleteMany: {
+      //     id: { in: deletedvideoIDs },
+      //   },
+      // },
     };
 
     // Log pour débogage
