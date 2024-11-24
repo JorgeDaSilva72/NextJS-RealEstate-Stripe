@@ -286,6 +286,22 @@ const PropertyPage = async ({ params }: Props) => {
                   label="Surface"
                   value={`${property.feature?.area} m²`}
                 />
+                {/* Nouveaux attributs */}
+                <FeatureCard
+                  icon="🏊‍♂️"
+                  label="Piscine"
+                  value={property.feature?.hasSwimmingPool ? "Oui" : "Non"}
+                />
+                <FeatureCard
+                  icon="🌳"
+                  label="Jardin/Cour"
+                  value={property.feature?.hasGardenYard ? "Oui" : "Non"}
+                />
+                <FeatureCard
+                  icon="☀️"
+                  label="Balcon/Terrasse"
+                  value={property.feature?.hasBalcony ? "Oui" : "Non"}
+                />
               </div>
             </Card>
 
