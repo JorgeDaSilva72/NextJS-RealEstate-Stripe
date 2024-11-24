@@ -173,7 +173,7 @@ const Location = (props: Props) => {
         />
 
         <Input
-          {...register("location.state")}
+          {...register("location.zip")}
           errorMessage={errors.location?.zip?.message}
           isInvalid={!!errors.location?.zip}
           label="Numéro de boîte postale"
@@ -267,13 +267,13 @@ const Location = (props: Props) => {
             </SelectItem>
           ))}
         </Select> */}
-        <Input
+        {/* <Input
           {...register("location.state")}
           errorMessage={errors.location?.state?.message}
           isInvalid={!!errors.location?.state}
           label="Etat"
           defaultValue={getValues().location?.state}
-        />
+        /> */}
 
         <Input
           {...register("location.region")}
