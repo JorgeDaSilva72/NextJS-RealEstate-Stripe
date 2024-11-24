@@ -6,6 +6,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { PropertyStatus, PropertyType } from "@prisma/client";
 import { citiesOfMorocco } from "../data/cities";
+import { countries } from "../data/countries";
 
 const Search = () => {
   const [loading, setLoading] = useState(false);
@@ -37,6 +38,11 @@ const Search = () => {
     ...citiesOfMorocco,
   ];
 
+  const countriesWithNoneOption = [
+    { id: "none", value: "Tous les pays" },
+    ...countries,
+  ];
+
   const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [areaRange, setAreaRange] = useState([0, 1000]);
   const [bedroomsRange, setBedroomsRange] = useState([0, 10]);
@@ -55,11 +61,6 @@ const Search = () => {
   const [selectedCity, setSelectedCity] = useState(
     searchParams.get("city") ?? ""
   );
-
-  const countries = [
-    { id: "maroc", value: "Maroc" },
-    { id: "none", value: "Tous les pays" },
-  ];
 
   const fetchStatuses = async () => {
     try {
@@ -220,7 +221,7 @@ const Search = () => {
       router.replace(`${pathName}?${params.toString()}`);
       return;
     }
-    const selectedCountry = countries.find(
+    const selectedCountry = countriesWithNoneOption.find(
       (item) => String(item.id) === selectedId
     );
 
@@ -591,7 +592,7 @@ const Search = () => {
             selectionMode="single"
             onSelectionChange={(value) => handleCountryChange(value as string)}
           >
-            {countries.map((item) => (
+            {countriesWithNoneOption.map((item) => (
               <SelectItem key={item.id} value={item.id}>
                 {item.value}
               </SelectItem>

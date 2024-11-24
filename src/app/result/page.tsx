@@ -142,7 +142,14 @@ export default async function Home({ searchParams }: Props) {
           },
         },
       }),
-
+      ...(!!country && {
+        // Ajout du filtre pour le pays
+        location: {
+          state: {
+            equals: String(country), // Vérifie si la ville correspond
+          },
+        },
+      }),
       price: {
         ...(minPrice !== undefined &&
           !isNaN(minPrice) && { gte: minPrice || 0 }),
@@ -201,6 +208,14 @@ export default async function Home({ searchParams }: Props) {
         location: {
           city: {
             equals: String(city), // Vérifie si la ville correspond
+          },
+        },
+      }),
+      ...(!!country && {
+        // Ajout du filtre pour le pays
+        location: {
+          state: {
+            equals: String(country), // Vérifie si la ville correspond
           },
         },
       }),

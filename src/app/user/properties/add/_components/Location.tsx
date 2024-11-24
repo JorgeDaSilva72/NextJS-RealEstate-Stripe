@@ -124,6 +124,7 @@ import React from "react";
 import { useFormContext } from "react-hook-form";
 import { AddPropertyInputType } from "./AddPropertyForm";
 import { citiesOfMorocco } from "@/app/data/cities";
+import { countries } from "@/app/data/countries";
 
 interface Props {
   next: () => void;
@@ -172,7 +173,7 @@ const Location = (props: Props) => {
         />
 
         <Input
-          {...register("location.zip")}
+          {...register("location.state")}
           errorMessage={errors.location?.zip?.message}
           isInvalid={!!errors.location?.zip}
           label="Numéro de boîte postale"
@@ -186,6 +187,33 @@ const Location = (props: Props) => {
         label="Ville"
         defaultValue={getValues().location?.city}
       /> */}
+
+        {/* Select pour le pays */}
+
+        <Select
+          {...register("location.state")}
+          errorMessage={errors.location?.state?.message}
+          isInvalid={!!errors.location?.state}
+          label="Pays"
+          placeholder="Choisissez un pays"
+          // Plus besoin de conversion toString() car les IDs sont déjà des strings
+          value={getValues().location?.state || ""}
+          onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+            const selectedId = event.target.value;
+            const country = countries.find(
+              (country) => country.id === selectedId // Comparaison directe car les deux sont des strings
+            );
+            if (country) {
+              setValue("location.state", country.id);
+            }
+          }}
+        >
+          {countries.map((country) => (
+            <SelectItem key={country.id} value={country.id}>
+              {country.value}
+            </SelectItem>
+          ))}
+        </Select>
 
         {/* Select pour la ville */}
 
