@@ -194,7 +194,7 @@ const Basic = (props: Props) => {
         {...register("typeId", { setValueAs: (v: any) => v.toString() })}
         errorMessage={errors.typeId?.message}
         isInvalid={!!errors.typeId}
-        label="Type"
+        label="Type de bien recherché"
         selectionMode="single"
         name="typeId"
         defaultSelectedKeys={[
@@ -211,7 +211,7 @@ const Basic = (props: Props) => {
         {...register("statusId", { setValueAs: (v: any) => v.toString() })}
         errorMessage={errors.statusId?.message}
         isInvalid={!!errors.statusId}
-        label="Statut"
+        label="Type de transaction"
         selectionMode="single"
         name="statusId"
         defaultSelectedKeys={[
@@ -228,7 +228,7 @@ const Basic = (props: Props) => {
         {...register("price", { setValueAs: (v: any) => v.toString() })}
         errorMessage={errors.price?.message}
         isInvalid={!!errors.price}
-        label="Prix"
+        label="Prix en €"
         name="price"
         defaultValue={getValues().price ? getValues().price.toString() : "0"}
       />
