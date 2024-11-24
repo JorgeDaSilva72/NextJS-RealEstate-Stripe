@@ -32,6 +32,10 @@ const Search = () => {
     { id: "none", value: "Toute opération" },
     ...statuses,
   ];
+  const citiesOfMoroccoWithNoneOption = [
+    { id: "none", value: "Toutes les villes" },
+    ...citiesOfMorocco,
+  ];
 
   const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [areaRange, setAreaRange] = useState([0, 1000]);
@@ -241,7 +245,7 @@ const Search = () => {
       router.replace(`${pathName}?${params.toString()}`);
       return;
     }
-    const selectedCity = citiesOfMorocco.find(
+    const selectedCity = citiesOfMoroccoWithNoneOption.find(
       (item) => String(item.id) === selectedId
     );
 
@@ -602,7 +606,7 @@ const Search = () => {
             selectionMode="single"
             onSelectionChange={(value) => handleCityChange(value as string)}
           >
-            {citiesOfMorocco.map((item) => (
+            {citiesOfMoroccoWithNoneOption.map((item) => (
               <SelectItem key={item.id} value={item.id}>
                 {item.value}
               </SelectItem>
