@@ -239,18 +239,18 @@ const PropertyPage = async ({ params }: Props) => {
               <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-4">
                 {property.name}
               </h2>
-              <div className="flex items-baseline gap-2">
+              <div className="flex gap-2 text-sm text-gray-600">
+                <span className="px-2 py-1 bg-blue-100 rounded-full">
+                  {property.status.value}
+                </span>
+                <span className="px-2 py-1 bg-green-100 rounded-full">
+                  {property.type.value}
+                </span>
+              </div>
+              <div className="mt-4 flex items-baseline ">
                 <span className="text-2xl sm:text-3xl font-bold text-primary">
                   {property.price}€
                 </span>
-                <div className="flex gap-2 text-sm text-gray-600">
-                  <span className="px-2 py-1 bg-blue-100 rounded-full">
-                    {property.status.value}
-                  </span>
-                  <span className="px-2 py-1 bg-green-100 rounded-full">
-                    {property.type.value}
-                  </span>
-                </div>
               </div>
             </Card>
 
