@@ -562,7 +562,7 @@ const Search = () => {
               scrollbar-thin scrollbar-thumb-transparent scrollbar-track-transparent"
             > */}
             <div
-              className="p-6 overflow-y-auto overflow-x-hidden max-h-[calc(90vh-100px)] 
+              className="p-6 overflow-y-auto overflow-x-hidden max-h-[calc(90vh-200px)] 
   [&::-webkit-scrollbar]:hidden 
   [-ms-overflow-style:none] 
   [scrollbar-width:none]"
@@ -727,18 +727,18 @@ const Search = () => {
               </div>
             </div>
             {/* <div className="flex mt-3 justify-between items-center w-full px-8 max-440:px-6"> */}
-            <div className="flex justify-between p-4 bg-white/10 backdrop-blur-sm">
+            <div className="flex flex-col md:flex-row justify-between p-4 bg-white/10 backdrop-blur-sm">
               <button
                 onClick={() => handleModalOpen(setOpenModal, "auto", false)}
-                className="px-4 py-2 bg-indigo-600 text-white rounded shadow-lg hover:bg-indigo-700 text-center"
+                className="px-4 py-2 bg-indigo-600 text-white rounded shadow-lg hover:bg-indigo-700 mb-4 md:mb-0 text-center"
               >
                 Accepter
               </button>
               <button
-                className="px-4 py-2 bg-red-600 text-white rounded shadow-lg hover:bg-red-700 text-center"
+                className="px-4 py-2 bg-red-600 text-white rounded shadow-lg hover:bg-red-700  text-center"
                 onClick={resetFilters}
               >
-                Réinitialiser les filtres
+                Effacer les filtres
               </button>
             </div>
           </div>
