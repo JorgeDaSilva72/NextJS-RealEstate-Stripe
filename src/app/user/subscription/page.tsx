@@ -8,10 +8,12 @@ import DiamondPack from "./_components/DiamondPack";
 import GoldPack from "./_components/GoldPack";
 import SilverPack from "./_components/SilverPack";
 import BronzePack from "./_components/BronzePack";
+import GratuitPack from "./_components/GratuitPack";
 
-type PlanName = "bronze" | "argent" | "or" | "diamant";
+type PlanName = "gratuit" | "bronze" | "argent" | "or" | "diamant";
 
 const COMPONENT_MAPPING: Record<PlanName, React.FC<any>> = {
+  gratuit: GratuitPack,
   bronze: BronzePack,
   argent: SilverPack,
   or: GoldPack,
@@ -31,7 +33,13 @@ const SubscriptionPage = async (): Promise<JSX.Element> => {
     }
 
     // Définir l'ordre des plans
-    const PLAN_ORDER: PlanName[] = ["bronze", "argent", "or", "diamant"];
+    const PLAN_ORDER: PlanName[] = [
+      "gratuit",
+      "bronze",
+      "argent",
+      "or",
+      "diamant",
+    ];
 
     // Trier les plans selon l'ordre défini
     const sortedPlans = subscriptionPlans.sort((a, b) => {
