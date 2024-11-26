@@ -16,7 +16,7 @@ const Search = () => {
   const searchParams = useSearchParams();
   const pathName = usePathname();
   const router = useRouter();
-  const [openModal, setOpenModal] = useState(true); // ajout
+  const [openModal, setOpenModal] = useState(false); // ajout
   const handleModalOpen = useModalOpen(); // ajout
 
   const [selectedStatus, setSelectedStatus] = useState(
