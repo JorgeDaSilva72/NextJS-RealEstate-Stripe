@@ -540,7 +540,7 @@ const Search = () => {
         // <div className="w-full h-screen flex absolute top-0 backdrop-filter backdrop-brightness-75 backdrop-blur-md z-50 items-center justify-center">
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           {/* <div className="relative max-1024:h-3/5 max-440:h-4/5 max-440:w-9/10 h-full rounded-lg w-500px pt-8 pb-5 bg-gradient-to-br from-sky-400 to-indigo-500 animate-fadeDown"> */}
-          <div className="p-4 relative w-full max-w-md mx-4 sm:mx-auto max-h-[90vh] bg-gradient-to-br from-sky-400 to-indigo-500 rounded-lg shadow-2xl overflow-hidden animate-fadeDown">
+          <div className="p-4 relative w-full max-w-md mx-4 sm:mx-auto max-h-[90vh] bg-gradient-to-br from-sky-400 to-indigo-500 rounded-lg shadow-2xl  animate-fadeDown">
             {/* Close Button */}
             {/* <span
               onClick={() => handleModalOpen(setOpenModal, "auto", false)}
@@ -557,10 +557,20 @@ const Search = () => {
             {/* Filtres principaux */}
             {/* <div className="mt-5 overflow-y-scroll overflow-hidden h-88% pl-8 pr-6 scroll-blue max-440:pl-6 max-440:pr-4"> */}
             {/* Scrollable Content */}
+            {/* <div
+              className="p-6 overflow-y-auto overflow-x-hidden max-h-[calc(90vh-100px)] 
+              scrollbar-thin scrollbar-thumb-transparent scrollbar-track-transparent"
+            > */}
             <div
               className="p-6 overflow-y-auto overflow-x-hidden max-h-[calc(90vh-100px)] 
-  scrollbar-hide lg:scrollbar-default"
+  [&::-webkit-scrollbar]:hidden 
+  [-ms-overflow-style:none] 
+  [scrollbar-width:none]"
             >
+              <div
+                className="p-6 overflow-y-auto overflow-x-hidden max-h-[calc(90vh-100px)] 
+              scrollbar-thin scrollbar-thumb-transparent scrollbar-track-transparent"
+              ></div>
               <div className="flex flex-col gap-4 justify-center items-center">
                 <Select
                   aria-label="Choisir l'opération"

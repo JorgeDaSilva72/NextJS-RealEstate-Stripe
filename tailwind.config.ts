@@ -23,6 +23,7 @@
 // export default config;
 import { nextui } from "@nextui-org/react";
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
 
 const config: Config = {
   content: [
@@ -73,6 +74,19 @@ const config: Config = {
     },
   },
   darkMode: "class",
-  plugins: [nextui()],
+  plugins: [
+    plugin(({ addUtilities }) => {
+      addUtilities({
+        ".scrollbar-hide": {
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+          "scrollbar-width": "none",
+          "-ms-overflow-style": "none",
+        },
+      });
+    }),
+    nextui(),
+  ],
 };
 export default config;
