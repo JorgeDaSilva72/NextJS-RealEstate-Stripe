@@ -205,7 +205,7 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
         )}
 
         {/* Status Badge - Top Left */}
-        <div className=" absolute top-2 left-2 z-50   p-2 rounded-full     bg-white/80">
+        <div className=" absolute top-2 left-2 z-10   p-2 rounded-full     bg-white/80">
           <div
             className={`${getStatusColor(
               property.status?.value
@@ -222,7 +222,7 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
             e.preventDefault();
             onFavorite?.(property.id);
           }}
-          className="z-50 absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
+          className="z-10 absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
         >
           <Heart
             className={`w-5 h-5 transition-colors ${
@@ -232,7 +232,7 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
         </button>
 
         {/* Type de bien Badge - Bottom Right  */}
-        <div className="z-40 absolute bottom-2 right-2 flex items-center gap-2z-50  p-2 rounded-full bg-white/80 ">
+        <div className="z-40 absolute bottom-2 right-2 flex items-center gap-2z-10  p-2 rounded-full bg-white/80 ">
           <div className=" text-gray-800 flex items-center gap-1 ">
             {/* <Home className="w-4 h-4 text-primary-900" /> */}
             <span className="text-sm font-medium text-primary-900">
@@ -243,7 +243,7 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
 
         {/* Location Badge - - Bottom Left */}
 
-        <div className="z-50 absolute bottom-2 left-2 flex items-center gap-2z-50  p-2 rounded-full bg-white/80 ">
+        <div className="z-10 absolute bottom-2 left-2 flex items-center gap-2z-10  p-2 rounded-full bg-white/80 ">
           <div className=" text-gray-800 flex items-center gap-1 ">
             {/* <Navigation className="w-3 h-3" /> */}
             <span className="text-sm font-medium text-primary-900">

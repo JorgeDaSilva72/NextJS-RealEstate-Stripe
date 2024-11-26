@@ -7,12 +7,17 @@ import { useDebouncedCallback } from "use-debounce";
 import { PropertyStatus, PropertyType } from "@prisma/client";
 import { citiesOfMorocco } from "../data/cities";
 import { countries } from "../data/countries";
+import FilterSVG from "../assets/svg/FilterSVG";
+import "./search.css";
+import useModalOpen from "../hooks/useModalOpen";
 
 const Search = () => {
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const pathName = usePathname();
   const router = useRouter();
+  const [openModal, setOpenModal] = useState(false)
+  const handleModalOpen = useModalOpen();
 
   const [selectedStatus, setSelectedStatus] = useState(
     searchParams.get("queryStatus") ?? ""
@@ -529,31 +534,201 @@ const Search = () => {
   //   </div>
   // );
   return (
-    <div className="p-6 bg-gradient-to-br from-sky-400 to-indigo-500 rounded-lg shadow-lg w-full mx-auto space-y-6">
-      {/* Section 1 : Filtres principaux */}
-      <div
-        key={resetKey}
-        className="flex flex-col space-y-4  lg:space-y-8  w-full"
-      >
-        <div className="flex flex-col space-y-4">
-          <Input
-            placeholder="Recherche dans les titres"
-            onChange={(e) => handleInputChange(e.target.value)}
-            className="w-full max-w-md shadow-lg"
-            endContent={
-              loading ? (
-                <Spinner />
-              ) : (
-                <MagnifyingGlassIcon className="w-4 text-slate-500" />
-              )
-            }
-            value={searchQuery} // Utilise value au lieu de defaultValue
-            // defaultValue={searchParams.get("query") ?? ""}
-          />
-        </div>
+    <>
+      {/* Modal fenêtre filtre */}
+      {openModal && <div className="w-full h-full flex absolute top-0 backdrop-filter backdrop-brightness-75 backdrop-blur-md z-50 items-center justify-center">
+        <div className="relative max-1024:h-3/5 max-440:h-4/5 max-440:w-9/10 h-88% rounded-lg w-500px pt-8 pb-5 bg-gradient-to-br from-sky-400 to-indigo-500 animate-fadeDown">
+          <span onClick={() => handleModalOpen(setOpenModal, "auto", false)} className="text-white absolute top-0 right-0 rounded-tr-lg text-[18px] cursor-pointer font-normal bg-[rgb(203,59,59)] text-aliceblue p-1 transition duration-150 ease-in-out hover:bg-[rgb(253,1,1)]" >X</span>
+          {/* Filtres principaux */}
+          <div className="mt-5 overflow-y-scroll overflow-hidden h-88% pl-8 pr-6 scroll-blue max-440:pl-6 max-440:pr-4">
+            <div className="flex flex-col gap-4 justify-center items-center">
+              <Select
+                aria-label="Choisir l'opération"
+                placeholder="Opération"
+                value={selectedStatus || ""}
+                className="flex-grow max-w-full p-2 shadow-lg bg-white text-gray-700 rounded"
+                selectionMode="single"
+                onSelectionChange={(value) => handleStatusChange(value as string)}
+              >
+                {statusWithNoneOption.map((item) => (
+                  <SelectItem key={item.id} value={item.id}>
+                    {item.value}
+                  </SelectItem>
+                ))}
+              </Select>
 
-        {/* Filtres principaux */}
-        <div className="flex flex-wrap gap-4 justify-start">
+              <Select
+                aria-label="Choisir le type de bien"
+                placeholder="Type de bien"
+                value={selectedType}
+                className="flex-grow max-w-full p-2 shadow-lg bg-white text-gray-700 rounded"
+                selectionMode="single"
+                onSelectionChange={(value) => handleTypeChange(value as string)}
+              >
+                {typesWithNoneOption.map((item) => (
+                  <SelectItem key={item.id} value={item.id}>
+                    {item.value}
+                  </SelectItem>
+                ))}
+              </Select>
+
+              <Select
+                aria-label="Pays"
+                placeholder="Choisir un pays"
+                value={selectedCountry}
+                className="flex-grow max-w-full p-2 shadow-lg bg-white text-gray-700 rounded"
+                selectionMode="single"
+                onSelectionChange={(value) => handleCountryChange(value as string)}
+              >
+                {countriesWithNoneOption.map((item) => (
+                  <SelectItem key={item.id} value={item.id}>
+                    {item.value}
+                  </SelectItem>
+                ))}
+              </Select>
+
+              <Select
+                aria-label="Villes"
+                placeholder="Choisir une ville"
+                value={selectedCity}
+                className="flex-grow max-w-full p-2 shadow-lg bg-white text-gray-700 rounded"
+                selectionMode="single"
+                onSelectionChange={(value) => handleCityChange(value as string)}
+              >
+                {citiesOfMoroccoWithNoneOption.map((item) => (
+                  <SelectItem key={item.id} value={item.id}>
+                    {item.value}
+                  </SelectItem>
+                ))}
+              </Select>
+
+              <Select
+                aria-label="Trier par"
+                placeholder="Trier par"
+                value={sortOrder}
+                className="flex-grow max-w-full p-2 shadow-lg bg-white text-gray-700 rounded"
+                selectionMode="single"
+                // onSelectionChange retourne un objet Set dans lequel se trouve la valeur sélectionnée ("desc") au lieu de simplement renvoyer la chaîne elle-même.
+                onSelectionChange={(value) =>
+                  handleSortOrderChange(value as string)
+                }
+              >
+                <SelectItem key={"none"} value="none">
+                  Aucun tri
+                </SelectItem>
+                <SelectItem key={"price-asc"} value="price-asc">
+                  Prix croissant
+                </SelectItem>
+                <SelectItem key={"price-desc"} value="price-desc">
+                  Prix décroissant
+                </SelectItem>
+                <SelectItem key={"surface-asc"} value="surface-asc">
+                  Surface croissante
+                </SelectItem>
+                <SelectItem key={"surface-desc"} value="surface-desc">
+                  Surface décroissante
+                </SelectItem>
+                <SelectItem key={"date-asc"} value="date-asc">
+                  Plus ancien
+                </SelectItem>
+                <SelectItem key={"date-desc"} value="date-desc">
+                  Plus récent
+                </SelectItem>
+              </Select>
+              {/* Section 2 : Filtres avancés (affichage conditionnel) */}
+              {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4"> */}
+              <Slider
+                label="Prix (€)"
+                value={priceRange}
+                step={10000}
+                minValue={0}
+                maxValue={1000000}
+                onChange={handlePriceChange}
+                formatOptions={{ style: "currency", currency: "EUR" }}
+                className="w-full shadow-lg bg-white p-2 rounded"
+                showTooltip
+              />
+
+              <Slider
+                label="Surface habitable (m²)"
+                value={areaRange}
+                step={10}
+                minValue={0}
+                maxValue={1000}
+                onChange={handleAreaChange}
+                className="w-full shadow-lg bg-white p-2 rounded"
+                showTooltip
+              />
+
+              <Slider
+                label="Chambres"
+                value={bedroomsRange}
+                step={1}
+                minValue={0}
+                maxValue={10}
+                onChange={handleBedroomsChange}
+                className="w-full shadow-lg bg-white p-2 rounded"
+                showTooltip
+              />
+
+              <Slider
+                label="Salles de bain"
+                value={bathroomsRange}
+                step={1}
+                minValue={0}
+                maxValue={10}
+                onChange={handleBathroomsChange}
+                className="w-full shadow-lg bg-white p-2 rounded"
+                showTooltip
+              />
+              {/* </div> */}
+            </div>
+          </div>
+
+          <div className="flex mt-3 justify-between items-center w-full px-8 max-440:px-6">
+            <button onClick={() => handleModalOpen(setOpenModal, "auto", false)}
+              className="px-4 py-2 bg-indigo-600 text-white rounded shadow-lg hover:bg-indigo-700 text-center"
+            >
+              Accepter
+            </button>
+            <button
+              className="px-4 py-2 bg-red-600 text-white rounded shadow-lg hover:bg-red-700 text-center"
+              onClick={resetFilters}
+            >
+              Réinitialiser les filtres
+            </button>
+          </div>
+        </div>
+      </div>}
+      <div className="p-2 pl-20 bg-gradient-to-br max-820:p-3 from-sky-400 to-indigo-500 shadow-lg w-full mx-auto">
+        {/* Section 1 : Filtres principaux */}
+        <div
+          key={resetKey}
+          className="flex flex-col space-y-4  lg:space-y-8  w-full"
+        >
+          <div className="flex flex-row gap-2 items-center max-820:justify-center">
+            <Input
+              placeholder="Recherche dans les titres"
+              onChange={(e) => handleInputChange(e.target.value)}
+              className="w-full max-w-md shadow-lg"
+              endContent={
+                loading ? (
+                  <Spinner />
+                ) : (
+                  <MagnifyingGlassIcon className="w-4 text-slate-500" />
+                )
+              }
+              value={searchQuery} // Utilise value au lieu de defaultValue
+            // defaultValue={searchParams.get("query") ?? ""}
+            />
+            <div onClick={() => handleModalOpen(setOpenModal, "hidden", true)} className="flex flex-row text-white gap-2 mt-0 border border-[#717273] p-1 rounded-lg cursor-pointer transition duration-200 ease-in-out hover:border-white hover:text-[#717273] hover:bg-[#e2e4e6]">
+              <span>Filtres</span>
+              <FilterSVG width="30" height="30" />
+            </div>
+          </div>
+
+          {/* Filtres principaux */}
+          {/* <div className="flex flex-wrap gap-4 justify-start">
           <Select
             aria-label="Choisir l'opération"
             placeholder="Opération"
@@ -647,10 +822,10 @@ const Search = () => {
               Plus récent
             </SelectItem>
           </Select>
-        </div>
+        </div> */}
 
-        {/* Section 2 : Filtres avancés (affichage conditionnel) */}
-        {showAdvancedFilters && (
+          {/* Section 2 : Filtres avancés (affichage conditionnel) */}
+          {/* {showAdvancedFilters && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Slider
               label="Prix (€)"
@@ -697,9 +872,9 @@ const Search = () => {
               showTooltip
             />
           </div>
-        )}
+        )} */}
 
-        <div className="flex flex-col md:flex-row justify-center md:justify-between items-center gap-4">
+          {/* <div className="flex flex-col md:flex-row justify-center md:justify-between items-center gap-4">
           <button
             className="w-full md:w-auto px-4 py-2 bg-indigo-600 text-white rounded shadow-lg hover:bg-indigo-700 text-center"
             onClick={toggleAdvancedFilters}
@@ -714,9 +889,10 @@ const Search = () => {
           >
             Réinitialiser les filtres
           </button>
+        </div> */}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
