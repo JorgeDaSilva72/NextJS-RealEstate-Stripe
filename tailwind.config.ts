@@ -33,15 +33,27 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      // screens: {
+      //   // ajout
+      //   // "max-820": { max: "820px" }, // Custom small breakpoint
+      //   // "max-1024": { max: "1024px" }, // Custom small breakpoint
+      //   // "max-440": { max: "440px" }, // Custom small breakpoint
+      // },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
-
+      // spacing: {
+      //   // ajout
+      //   "500px": "500px",
+      //   "88%": "88%",
+      //   "9/10": "90%",
+      // },
       animation: {
         shine: "shine 1.5s linear infinite",
         glow: "glow 1.5s infinite alternate",
+        fadeDown: "fadeDown 0.5s ease-out", // ajout 0.5s est la durée par défaut
       },
       keyframes: {
         shine: {
@@ -52,6 +64,10 @@ const config: Config = {
         glow: {
           "0%": { textShadow: "0 0 10px rgba(255, 255, 255, 0.5)" },
           "100%": { textShadow: "0 0 20px rgba(255, 255, 255, 1)" },
+        },
+        fadeDown: {
+          "0%": { opacity: "0", transform: "translateY(-50px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },
     },

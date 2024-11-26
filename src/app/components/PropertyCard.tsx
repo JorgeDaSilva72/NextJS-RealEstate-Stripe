@@ -157,13 +157,13 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
                 <>
                   <button
                     onClick={prevImage}
-                    className="z-50 absolute left-2 top-1/2 transform -translate-y-1/2 p-1 rounded-full bg-white/80 hover:bg-white transition-colors  opacity-0 group-hover:opacity-100"
+                    className="z-10 absolute left-2 top-1/2 transform -translate-y-1/2 p-1 rounded-full bg-white/80 hover:bg-white transition-colors  opacity-0 group-hover:opacity-100"
                   >
                     <ChevronLeft className=" w-5 h-5 text-gray-800" />
                   </button>
                   <button
                     onClick={nextImage}
-                    className="z-50 absolute right-2 top-1/2 transform -translate-y-1/2 p-1 rounded-full bg-white/80 hover:bg-white transition-colors  opacity-0 group-hover:opacity-100"
+                    className="z-10 absolute right-2 top-1/2 transform -translate-y-1/2 p-1 rounded-full bg-white/80 hover:bg-white transition-colors  opacity-0 group-hover:opacity-100"
                   >
                     <ChevronRight className="w-5 h-5 text-gray-800" />
                   </button>
@@ -172,7 +172,7 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
 
               {/* Image counter */}
               {property.images.length > 1 && (
-                <div className="z-50 absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-xs ">
+                <div className="z-10 absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-xs ">
                   {currentImageIndex + 1} / {property.images.length}
                 </div>
               )}
@@ -180,7 +180,7 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
           )}
 
           {/* Status Badge - Top Left */}
-          <div className="absolute top-2 left-2 z-20  rounded-full bg-white/80">
+          <div className="absolute top-2 left-2 z-10  rounded-full bg-white/80">
             <div
               className={`${getStatusColor(
                 property.status?.value || ""
@@ -196,7 +196,7 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
               e.preventDefault();
               onFavorite?.(property.id);
             }}
-            className="z-20 absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
+            className="z-10 absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
           >
             <Heart
               className={`w-5 h-5 transition-colors ${
@@ -206,7 +206,7 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
           </button>
 
           {/* Type de bien Badge - Bottom Right  */}
-          <div className="z-20 absolute bottom-2 right-2 p-2 rounded-full bg-white/80">
+          <div className="z-10 absolute bottom-2 right-2 p-2 rounded-full bg-white/80">
             <div className="text-gray-800 flex items-center gap-1">
               <span className="text-sm font-medium">
                 {property.type?.value || "N/A"}
@@ -215,7 +215,7 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
           </div>
 
           {/* Location Badge - Bottom Left */}
-          <div className="z-20 absolute bottom-2 left-2 p-2 rounded-full bg-white/80">
+          <div className="z-10 absolute bottom-2 left-2 p-2 rounded-full bg-white/80">
             <div className="text-gray-800 flex items-center gap-1">
               <span className="text-sm font-medium">
                 {property.location?.city || "N/A"}
