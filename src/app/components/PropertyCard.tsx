@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 // import { Prisma } from "@prisma/client";
 import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
+import { formatPrice } from "@/lib/formatPrice";
 
 interface Property {
   id: number;
@@ -80,13 +81,13 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
     }
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("fr-FR", {
-      style: "currency",
-      currency: "EUR",
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
+  // const formatPrice = (price: number) => {
+  //   return new Intl.NumberFormat("fr-FR", {
+  //     style: "currency",
+  //     currency: "EUR",
+  //     maximumFractionDigits: 0,
+  //   }).format(price);
+  // };
 
   const formatArea = (area: number) => {
     return `${area.toLocaleString("fr-FR")} m²`;

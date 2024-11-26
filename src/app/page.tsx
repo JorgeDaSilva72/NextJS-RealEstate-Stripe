@@ -64,11 +64,11 @@ const Hero = () => {
         {/* <div className="absolute inset-0 bg-black opacity-40"></div> */}
 
         {/* Content */}
-        <div className="relative z-10 text-center text-white px-6 max-w-3xl">
+        <div className="relative z-10 text-center text-white px-6 w-[80%] max-w-3xl">
           <h1 className="text-3xl md:text-5xl font-bold mb-4">
             Trouvez la propriété de vos rêves
           </h1>
-          <p className="text-lg md:text-xl mb-8">
+          <p className="hidden lg:block text-lg md:text-xl mb-8">
             Parcourez des centaines d&apos;annonces pour trouver l&apos;endroit
             parfait où vivre
           </p>
@@ -84,7 +84,7 @@ const Hero = () => {
             /> */}
             <button
               onClick={handleSearch}
-              className="w-full sm:w-auto bg-primary-500 text-white py-3 px-6 rounded-md font-semibold hover:bg-primary-600 transition"
+              className="w-full sm:w-auto bg-transparent/50 lg:bg-primary-500 text-white py-3 px-6 rounded-md font-semibold hover:bg-primary-600 transition"
             >
               Explorer
             </button>
