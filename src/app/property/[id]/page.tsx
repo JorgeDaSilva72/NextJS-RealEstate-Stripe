@@ -1,180 +1,10 @@
-// import { ImagesSliderHero } from "@/app/components/ImageSliderHero";
-// import PageTitle from "@/app/components/pageTitle";
-// import prisma from "@/lib/prisma";
-// import { Card } from "@nextui-org/react";
-// import { notFound } from "next/navigation";
-
-// interface Props {
-//   params: {
-//     id: string;
-//   };
-// }
-
-// const PropertyPage = async ({ params }: Props) => {
-//   const property = await prisma.property.findUnique({
-//     where: {
-//       id: +params.id,
-//     },
-//     include: {
-//       status: true,
-//       type: true,
-//       feature: true,
-//       location: true,
-//       contact: true,
-//       images: true,
-//       videos: true,
-//     },
-//   });
-
-//   if (!property) return notFound();
-
-//   const transformToEmbedUrl = (url: string): string => {
-//     const urlObj = new URL(url);
-//     if (urlObj.hostname === "www.youtube.com" && urlObj.searchParams.has("v")) {
-//       return `https://www.youtube.com/embed/${urlObj.searchParams.get("v")}`;
-//     }
-//     return url;
-//   };
-
-//   return (
-//     <div>
-//       <PageTitle
-//         title="Annonce"
-//         href="/result"
-//         linkCaption="Retour aux annonces"
-//       />
-//       <div className="p-4">
-//         {/* Grille principale */}
-//         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-//           {/* Slider - 2/3 */}
-//           <div className="col-span-1 lg:col-span-2">
-//             <ImagesSliderHero images={property.images.map((img) => img.url)} />
-//           </div>
-
-//           {/* Détails - 1/3 */}
-//           <div className="col-span-1 flex flex-col gap-5">
-//             {/* Titre et prix */}
-//             <div>
-//               <h2 className="">
-//                 <span className="">
-//                   <span className="text-3xl font-bold text-primary">
-//                     {property.name}
-//                   </span>
-//                 </span>
-//               </h2>
-//               <h2 className="text-xl font-semibold text-gray-700 mt-3">
-//                 <span className="text-3xl font-bold text-primary">
-//                   {property.price}
-//                 </span>{" "}
-//                 <span className="text-blue-700">€</span> /{" "}
-//                 {property.status.value}/ {property.type.value}
-//               </h2>
-//             </div>
-
-//             {/* Caractéristiques et contact */}
-//             <Card className="p-5 flex flex-col gap-4">
-//               <Title title="Caractéristiques" />
-//               <div className="grid grid-cols-2 gap-2">
-//                 <Attribute
-//                   label="Chambre(s)"
-//                   value={property.feature?.bedrooms}
-//                 />
-//                 <Attribute
-//                   label="Salle(s) de bain"
-//                   value={property.feature?.bathrooms}
-//                 />
-//                 <Attribute
-//                   label="Place(s) de stationnement"
-//                   value={property.feature?.parkingSpots}
-//                 />
-//                 <Attribute
-//                   label="Superficie (m²)"
-//                   value={property.feature?.area}
-//                 />
-//               </div>
-
-//               <Title title="Adresse" className="mt-7" />
-//               <div className="grid grid-cols-2 gap-2">
-//                 <Attribute
-//                   label="Adresse"
-//                   value={property.location?.streetAddress}
-//                 />
-//                 <Attribute label="Ville" value={property.location?.city} />
-//                 <Attribute label="Code postal" value={property.location?.zip} />
-//                 <Attribute
-//                   label="Informations"
-//                   value={property.location?.landmark}
-//                 />
-//               </div>
-
-//               <Title title="Contact" className="mt-7" />
-//               <Attribute label="Nom" value={property.contact?.name} />
-//               <Attribute label="Email" value={property.contact?.email} />
-//               <Attribute label="Téléphone" value={property.contact?.phone} />
-//             </Card>
-
-//             {/* Vidéos */}
-//             <div className="p-5 border rounded-md">
-//               <h2 className="text-xl font-bold text-gray-700">
-//                 Vidéos associées
-//               </h2>
-//               {property.videos.length > 0 ? (
-//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
-//                   {property.videos.map((video) => (
-//                     <div
-//                       key={video.id}
-//                       className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-md"
-//                     >
-//                       <iframe
-//                         className="w-full h-full"
-//                         src={transformToEmbedUrl(video.url)}
-//                         title={`Vidéo ${video.id}`}
-//                         allowFullScreen
-//                         aria-label={`Vidéo ${video.id}`}
-//                       ></iframe>
-//                     </div>
-//                   ))}
-//                 </div>
-//               ) : (
-//                 <p className="text-sm text-slate-600 mt-5">
-//                   Aucune vidéo disponible.
-//                 </p>
-//               )}
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default PropertyPage;
-
-// /* Titres pour les sections */
-// const Title = ({ title, className }: { title: string; className?: string }) => (
-//   <div className={className}>
-//     <h2 className="text-xl font-bold text-slate-700">{title}</h2>
-//     <hr className="border-t border-slate-300 mt-2" />
-//   </div>
-// );
-
-// /* Attribut générique */
-// const Attribute = ({
-//   label,
-//   value,
-// }: {
-//   label: string;
-//   value?: string | number;
-// }) => (
-//   <div className="flex justify-between">
-//     <span className="text-sm text-slate-600 font-medium">{label}</span>
-//     <span className="text-sm text-slate-600">{value || "N/A"}</span>
-//   </div>
-// );
+import DescriptionCard from "@/app/components/DescriptionCard ";
 import { ImagesSliderHero } from "@/app/components/ImageSliderHero";
+import ImageThumbnails from "@/app/components/ImageThumbnailsProps";
 import PageTitle from "@/app/components/pageTitle";
+import { formatPrice } from "@/lib/formatPrice";
 import prisma from "@/lib/prisma";
-import { Card } from "@nextui-org/react";
+import { Card, Image } from "@nextui-org/react";
 import { notFound } from "next/navigation";
 
 interface Props {
@@ -223,9 +53,10 @@ const PropertyPage = async ({ params }: Props) => {
           {/* Vérifiez s'il y a des images */}
           {property.images.length > 0 && (
             <div className="col-span-1 lg:col-span-2 rounded-2xl overflow-hidden shadow-lg">
-              <ImagesSliderHero
+              {/* <ImagesSliderHero
                 images={property.images.map((img) => img.url)}
-              />
+              /> */}
+              <ImageThumbnails images={property.images.map((img) => img.url)} />
             </div>
           )}
           {/* Détails - 1/3  - Prend toute la largeur si pas de slider */}
@@ -239,26 +70,33 @@ const PropertyPage = async ({ params }: Props) => {
               <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-4">
                 {property.name}
               </h2>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl sm:text-3xl font-bold text-primary">
-                  {property.price}€
+              <div className="flex gap-2 text-sm text-gray-600">
+                <span className="px-2 py-1 bg-blue-100 rounded-full">
+                  {property.status.value}
                 </span>
-                <div className="flex gap-2 text-sm text-gray-600">
-                  <span className="px-2 py-1 bg-blue-100 rounded-full">
-                    {property.status.value}
-                  </span>
-                  <span className="px-2 py-1 bg-green-100 rounded-full">
-                    {property.type.value}
-                  </span>
-                </div>
+                <span className="px-2 py-1 bg-green-100 rounded-full">
+                  {property.type.value}
+                </span>
+              </div>
+              <div className="mt-4 flex items-baseline ">
+                <span className="text-2xl sm:text-3xl font-bold text-primary">
+                  {formatPrice(property.price)}
+                </span>
+              </div>
+              <div className="mt-4 flex items-baseline ">
+                <p className="">
+                  Réf :{" "}
+                  <span className="text-sm sm:text-sm ">{property.id}</span>
+                </p>
               </div>
             </Card>
 
             {/* Description */}
             <Card className="p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
               <Title title="Description" />
-              <div className="grid grid-cols-2 gap-4 mt-4">
-                <FeatureCard icon="📝" label="" value={property.description} />
+              <div className=" mt-4">
+                {/* <FeatureCard icon="📝" label="" value={property.description} /> */}
+                <DescriptionCard description={property.description} />
               </div>
             </Card>
 

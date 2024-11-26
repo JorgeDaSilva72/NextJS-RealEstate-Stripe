@@ -76,7 +76,7 @@ export const ImagesSlider = ({
     if (autoplay) {
       interval = setInterval(() => {
         handleNext();
-      }, 2000);
+      }, 10000);
     }
 
     return () => {
@@ -148,6 +148,23 @@ export const ImagesSlider = ({
           />
         </AnimatePresence>
       )}
+      {/* Bouton gauche (Responsive) */}
+      <button
+        onClick={handlePrevious}
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white rounded-full p-2 md:p-3 lg:p-4 hover:bg-black/70 z-50"
+        style={{ fontSize: "clamp(1.5rem, 2vw, 3rem)" }}
+      >
+        &#8249;
+      </button>
+
+      {/* Bouton droit (Responsive) */}
+      <button
+        onClick={handleNext}
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white rounded-full p-2 md:p-3 lg:p-4 hover:bg-black/70 z-50"
+        style={{ fontSize: "clamp(1.5rem, 2vw, 3rem)" }}
+      >
+        &#8250;
+      </button>
     </Card>
   );
 };

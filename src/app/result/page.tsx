@@ -105,6 +105,7 @@ export default async function Home({ searchParams }: Props) {
           area: true,
           bedrooms: true,
           bathrooms: true,
+          parkingSpots: true,
         },
       },
       status: true,
