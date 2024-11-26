@@ -556,7 +556,11 @@ const Search = () => {
             </button>
             {/* Filtres principaux */}
             {/* <div className="mt-5 overflow-y-scroll overflow-hidden h-88% pl-8 pr-6 scroll-blue max-440:pl-6 max-440:pr-4"> */}
-            <div className="p-6 overflow-y-auto max-h-[calc(90vh-100px)]">
+            {/* Scrollable Content */}
+            <div
+              className="p-6 overflow-y-auto overflow-x-hidden max-h-[calc(90vh-100px)] 
+  scrollbar-hide lg:scrollbar-default"
+            >
               <div className="flex flex-col gap-4 justify-center items-center">
                 <Select
                   aria-label="Choisir l'opération"
