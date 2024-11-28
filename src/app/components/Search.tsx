@@ -1,15 +1,18 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 import { Input, Select, SelectItem, Spinner, Slider } from "@nextui-org/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
-import { PropertyStatus, PropertyType } from "@prisma/client";
-import { citiesOfMorocco } from "../data/cities";
-import { countries } from "../data/countries";
+// import { PropertyStatus, PropertyType } from "@prisma/client";
+// import { citiesOfMorocco } from "../data/cities";
+// import { countries } from "../data/countries";
 import FilterSVG from "../assets/svg/FilterSVG"; // ajout
-// import "./search.css"; // ajout
 import useModalOpen from "../hooks/useModalOpen"; // ajout
+// import { selectFilters } from "../data/filters";
+import SearchSlider from "./SearchSlider";
+import SearchSelect from "./SearchSelect";
+import useFilterDatas from "../hooks/useFilterDatas";
 
 const Search = () => {
   const [loading, setLoading] = useState(false);
@@ -18,141 +21,167 @@ const Search = () => {
   const router = useRouter();
   const [openModal, setOpenModal] = useState(false); // ajout
   const handleModalOpen = useModalOpen(); // ajout
+  const selectFilters = useFilterDatas();
+  // const [selectedStatus, setSelectedStatus] = useState(
+  //   searchParams.get("queryStatus") ?? ""
+  // );
+  // const [statuses, setStatuses] = useState<PropertyStatus[]>([]);
+  // const [selectedType, setSelectedType] = useState(
+  //   searchParams.get("queryType") ?? ""
+  // );
+  // const [types, setTypes] = useState<PropertyType[]>([]);
+  // const typesWithNoneOption = [
+  //   { id: "none", value: "Tout Type de bien" },
+  //   ...types,
+  // ];
+  // const statusWithNoneOption = [
+  //   { id: "none", value: "Toute opération" },
+  //   ...statuses,
+  // ];
+  // const citiesOfMoroccoWithNoneOption = [
+  //   { id: "none", value: "Toutes les villes" },
+  //   ...citiesOfMorocco,
+  // ];
 
-  const [selectedStatus, setSelectedStatus] = useState(
-    searchParams.get("queryStatus") ?? ""
-  );
-  const [statuses, setStatuses] = useState<PropertyStatus[]>([]);
-
-  const [selectedType, setSelectedType] = useState(
-    searchParams.get("queryType") ?? ""
-  );
-  const [types, setTypes] = useState<PropertyType[]>([]);
-
-  const typesWithNoneOption = [
-    { id: "none", value: "Tout Type de bien" },
-    ...types,
-  ];
-
-  const statusWithNoneOption = [
-    { id: "none", value: "Toute opération" },
-    ...statuses,
-  ];
-  const citiesOfMoroccoWithNoneOption = [
-    { id: "none", value: "Toutes les villes" },
-    ...citiesOfMorocco,
-  ];
-
-  const countriesWithNoneOption = [
-    { id: "none", value: "Tous les pays" },
-    ...countries,
-  ];
-
-  const [priceRange, setPriceRange] = useState([0, 1000000]);
-  const [areaRange, setAreaRange] = useState([0, 1000]);
-  const [bedroomsRange, setBedroomsRange] = useState([0, 10]);
-  const [bathroomsRange, setBathroomsRange] = useState([0, 10]);
-  const [sortOrder, setSortOrder] = useState("");
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false); // Gestion de l'affichage des filtres avancés
+  // const countriesWithNoneOption = [
+  //   { id: "none", value: "Tous les pays" },
+  //   ...countries,
+  // ];
+  // const [priceRange, setPriceRange] = useState([0, 1000000]);
+  // const [areaRange, setAreaRange] = useState([0, 1000]);
+  // const [bedroomsRange, setBedroomsRange] = useState([0, 10]);
+  // const [bathroomsRange, setBathroomsRange] = useState([0, 10]);
+  // const [sortOrder, setSortOrder] = useState("");
+  // const [showAdvancedFilters, setShowAdvancedFilters] = useState(false); // Gestion de l'affichage des filtres avancés
 
   const [searchQuery, setSearchQuery] = useState(
     searchParams.get("query") ?? ""
   );
 
-  const [selectedCountry, setSelectedCountry] = useState(
-    searchParams.get("country") ?? ""
-  );
+  // const [selectedCountry, setSelectedCountry] = useState(
+  //   searchParams.get("country") ?? ""
+  // );
 
-  const [selectedCity, setSelectedCity] = useState(
-    searchParams.get("city") ?? ""
-  );
+  // const [selectedCity, setSelectedCity] = useState(
+  //   searchParams.get("city") ?? ""
+  // );
 
-  const fetchStatuses = async () => {
-    try {
-      const response = await fetch("/api/searchStatuses");
-      const data: PropertyStatus[] = await response.json();
-      setStatuses(data);
-    } catch (error) {
-      console.error("Erreur lors de la récupération des statuts:", error);
-    }
-  };
+  // const fetchStatuses = async () => {
+  //   try {
+  //     const response = await fetch("/api/searchStatuses");
+  //     const data: PropertyStatus[] = await response.json();
+  //     setStatuses(data);
+  //   } catch (error) {
+  //     console.error("Erreur lors de la récupération des statuts:", error);
+  //   }
+  // };
 
-  const fetchTypes = async () => {
-    try {
-      const response = await fetch("/api/searchTypes");
-      const data: PropertyType[] = await response.json();
-      setTypes(data);
-    } catch (error) {
-      console.error("Erreur lors de la récupération des types:", error);
-    }
-  };
+  // const fetchTypes = async () => {
+  //   try {
+  //     const response = await fetch("/api/searchTypes");
+  //     const data: PropertyType[] = await response.json();
+  //     setTypes(data);
+  //   } catch (error) {
+  //     console.error("Erreur lors de la récupération des types:", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchStatuses();
-    fetchTypes();
-  }, []);
-
-  useEffect(() => {
-    const minPrice = searchParams.get("minPrice");
-    const maxPrice = searchParams.get("maxPrice");
-    if (minPrice && maxPrice) {
-      setPriceRange([Number(minPrice), Number(maxPrice)]);
-    }
-
-    const minArea = searchParams.get("minArea");
-    const maxArea = searchParams.get("maxArea");
-    if (minArea && maxArea) {
-      setAreaRange([Number(minArea), Number(maxArea)]);
-    }
-
-    const minBedrooms = searchParams.get("minBedrooms");
-    const maxBedrooms = searchParams.get("maxBedrooms");
-    if (minBedrooms && maxBedrooms) {
-      setBedroomsRange([Number(minBedrooms), Number(maxBedrooms)]);
-    }
-
-    const minBathrooms = searchParams.get("minBathrooms");
-    const maxBathrooms = searchParams.get("maxBathrooms");
-    if (minBathrooms && maxBathrooms) {
-      setBathroomsRange([Number(minBathrooms), Number(maxBathrooms)]);
-    }
-
-    const sortOrder = searchParams.get("sortOrder");
-    if (sortOrder) {
-      setSortOrder(sortOrder);
-    } else {
-      setSortOrder(""); // Pas de tri
-    }
-
-    const country = searchParams.get("country");
-    if (country) {
-      setSelectedCountry(country);
-    } else {
-      setSelectedCountry("");
-    }
-
-    const city = searchParams.get("city");
-    if (city) {
-      setSelectedCity(city);
-    } else {
-      setSelectedCity("");
-    }
-  }, [searchParams]);
+  // useEffect(() => {
+  //   fetchStatuses();
+  //   fetchTypes();
+  // }, []);
 
   useEffect(() => {
-    // Afficher les filtres avancés si des critères avancés sont présents dans l'URL
-    const hasAdvancedFilters =
-      searchParams.get("minPrice") ||
-      searchParams.get("maxPrice") ||
-      searchParams.get("minArea") ||
-      searchParams.get("maxArea") ||
-      searchParams.get("minBedrooms") ||
-      searchParams.get("maxBedrooms") ||
-      searchParams.get("minBathrooms") ||
-      searchParams.get("maxBathrooms");
+    if (!openModal) {
+      selectFilters.map((item) => {
+        if (item.rangeName && item.setRange) {
+          const minRange = searchParams.get(item.rangeName[0]);
+          const maxRange = searchParams.get(item.rangeName[1]);
+          if (minRange && maxRange) {
+            item.setRange([Number(minRange), Number(maxRange)]);
+          }
+        } else if (
+          item.name &&
+          item.setValue &&
+          item.type !== "slider" &&
+          item.items
+        ) {
+          const searchString = searchParams.get(item.name);
+          let matchItem = item.items.find(
+            (value) => value.value == searchString
+          );
+          if (item.name == "sortOrder")
+            matchItem = matchItem = item.items.find(
+              (value) => value.id == searchString
+            );
+          if (matchItem) {
+            item.setValue(matchItem?.id.toString());
+          } else {
+            item.setValue(""); // Pas de tri
+          }
+        }
+      });
+    }
+    //   // const minPrice = searchParams.get("minPrice");
+    //   // const maxPrice = searchParams.get("maxPrice");
+    //   // if (minPrice && maxPrice) {
+    //   //   setPriceRange([Number(minPrice), Number(maxPrice)]);
+    //   // }
 
-    setShowAdvancedFilters(Boolean(hasAdvancedFilters));
-  }, [searchParams]);
+    //   // const minArea = searchParams.get("minArea");
+    //   // const maxArea = searchParams.get("maxArea");
+    //   // if (minArea && maxArea) {
+    //   //   setAreaRange([Number(minArea), Number(maxArea)]);
+    //   // }
+
+    //   // const minBedrooms = searchParams.get("minBedrooms");
+    //   // const maxBedrooms = searchParams.get("maxBedrooms");
+    //   // if (minBedrooms && maxBedrooms) {
+    //   //   setBedroomsRange([Number(minBedrooms), Number(maxBedrooms)]);
+    //   // }
+
+    //   // const minBathrooms = searchParams.get("minBathrooms");
+    //   // const maxBathrooms = searchParams.get("maxBathrooms");
+    //   // if (minBathrooms && maxBathrooms) {
+    //   //   setBathroomsRange([Number(minBathrooms), Number(maxBathrooms)]);
+    //   // }
+
+    //   // const sortOrder = searchParams.get("sortOrder");
+    //   // if (sortOrder) {
+    //   //   setSortOrder(sortOrder);
+    //   // } else {
+    //   //   setSortOrder(""); // Pas de tri
+    //   // }
+
+    //   // const country = searchParams.get("country");
+    //   // if (country) {
+    //   //   setSelectedCountry(country);
+    //   // } else {
+    //   //   setSelectedCountry("");
+    //   // }
+
+    //   // const city = searchParams.get("city");
+    //   // if (city) {
+    //   //   setSelectedCity(city);
+    //   // } else {
+    //   //   setSelectedCity("");
+    //   // }
+  }, [searchParams, selectFilters, openModal]);
+
+  // useEffect(() => {
+  //   // Afficher les filtres avancés si des critères avancés sont présents dans l'URL
+  //   const hasAdvancedFilters =
+  //     searchParams.get("minPrice") ||
+  //     searchParams.get("maxPrice") ||
+  //     searchParams.get("minArea") ||
+  //     searchParams.get("maxArea") ||
+  //     searchParams.get("minBedrooms") ||
+  //     searchParams.get("maxBedrooms") ||
+  //     searchParams.get("minBathrooms") ||
+  //     searchParams.get("maxBathrooms");
+
+  //   setShowAdvancedFilters(Boolean(hasAdvancedFilters));
+  // }, [searchParams]);
 
   const handleInputChange = (query: string) => {
     setSearchQuery(query); // Met à jour l'état local
@@ -171,176 +200,183 @@ const Search = () => {
     setLoading(false);
   }, 500);
 
-  const handleStatusChange = (type: string) => {
-    const selectedId = Array.from(type)[0] as string;
-    if (selectedId === "none") {
-      setSelectedStatus("");
-      const params = new URLSearchParams(searchParams);
-      params.delete("queryStatus");
-      router.replace(`${pathName}?${params.toString()}`);
-      return;
-    }
-    const selectedStatus = statuses.find(
-      (item) => String(item.id) === selectedId
-    );
-    if (selectedStatus) {
-      setSelectedStatus(selectedStatus.value);
-      const params = new URLSearchParams(searchParams);
-      params.set("queryStatus", selectedStatus.value);
-      router.replace(`${pathName}?${params.toString()}`);
-    } else {
-      const params = new URLSearchParams(searchParams);
-      params.delete("queryStatus");
-      router.replace(`${pathName}?${params.toString()}`);
-    }
-  };
+  // const handleStatusChange = (type: string) => {
+  //   const selectedId = Array.from(type)[0] as string;
+  //   if (selectedId === "none") {
+  //     setSelectedStatus("");
+  //     const params = new URLSearchParams(searchParams);
+  //     params.delete("queryStatus");
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //     return;
+  //   }
+  //   const selectedStatus = statuses.find(
+  //     (item) => String(item.id) === selectedId
+  //   );
+  //   if (selectedStatus) {
+  //     setSelectedStatus(selectedStatus.id.toString());
+  //     const params = new URLSearchParams(searchParams);
+  //     params.set("queryStatus", selectedStatus.value);
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //   } else {
+  //     const params = new URLSearchParams(searchParams);
+  //     params.delete("queryStatus");
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //   }
+  // };
 
-  const handleTypeChange = (type: string) => {
-    const selectedId = Array.from(type)[0] as string;
-    if (selectedId === "none") {
-      setSelectedType("");
-      const params = new URLSearchParams(searchParams);
-      params.delete("queryType");
-      router.replace(`${pathName}?${params.toString()}`);
-      return;
-    }
-    const selectedType = types.find((item) => String(item.id) === selectedId);
-    if (selectedType) {
-      setSelectedType(selectedType.value);
-      const params = new URLSearchParams(searchParams);
-      params.set("queryType", selectedType.value);
-      router.replace(`${pathName}?${params.toString()}`);
-    } else {
-      const params = new URLSearchParams(searchParams);
-      params.delete("queryType");
-      router.replace(`${pathName}?${params.toString()}`);
-    }
-  };
+  // const handleTypeChange = (type: string) => {
+  //   const selectedId = Array.from(type)[0] as string;
+  //   if (selectedId === "none") {
+  //     setSelectedType("");
+  //     const params = new URLSearchParams(searchParams);
+  //     params.delete("queryType");
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //     return;
+  //   }
+  //   const selectedType = types.find((item) => String(item.id) === selectedId);
+  //   if (selectedType) {
+  //     setSelectedType(selectedType.value);
+  //     const params = new URLSearchParams(searchParams);
+  //     params.set("queryType", selectedType.value);
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //   } else {
+  //     const params = new URLSearchParams(searchParams);
+  //     params.delete("queryType");
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //   }
+  // };
 
-  const handleCountryChange = (type: string) => {
-    const selectedId = Array.from(type)[0] as string;
-    if (selectedId === "none") {
-      setSelectedCountry("");
-      const params = new URLSearchParams(searchParams);
-      params.delete("country");
-      router.replace(`${pathName}?${params.toString()}`);
-      return;
-    }
-    const selectedCountry = countriesWithNoneOption.find(
-      (item) => String(item.id) === selectedId
-    );
+  // const handleCountryChange = (type: string) => {
+  //   const selectedId = Array.from(type)[0] as string;
+  //   if (selectedId === "none") {
+  //     setSelectedCountry("");
+  //     const params = new URLSearchParams(searchParams);
+  //     params.delete("country");
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //     return;
+  //   }
+  //   const selectedCountry = countriesWithNoneOption.find(
+  //     (item) => String(item.id) === selectedId
+  //   );
 
-    if (selectedCountry) {
-      setSelectedCountry(selectedCountry.value);
-      const params = new URLSearchParams(searchParams);
-      params.set("country", selectedCountry.value);
-      router.replace(`${pathName}?${params.toString()}`);
-    } else {
-      const params = new URLSearchParams(searchParams);
-      params.delete("country");
-      router.replace(`${pathName}?${params.toString()}`);
-    }
-  };
+  //   if (selectedCountry) {
+  //     setSelectedCountry(selectedCountry.value);
+  //     const params = new URLSearchParams(searchParams);
+  //     params.set("country", selectedCountry.value);
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //   } else {
+  //     const params = new URLSearchParams(searchParams);
+  //     params.delete("country");
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //   }
+  // };
 
-  const handleCityChange = (type: string) => {
-    const selectedId = Array.from(type)[0] as string;
-    if (selectedId === "none") {
-      setSelectedCity("");
-      const params = new URLSearchParams(searchParams);
-      params.delete("city");
-      router.replace(`${pathName}?${params.toString()}`);
-      return;
-    }
-    const selectedCity = citiesOfMoroccoWithNoneOption.find(
-      (item) => String(item.id) === selectedId
-    );
+  // const handleCityChange = (type: string) => {
+  //   const selectedId = Array.from(type)[0] as string;
+  //   if (selectedId === "none") {
+  //     setSelectedCity("");
+  //     const params = new URLSearchParams(searchParams);
+  //     params.delete("city");
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //     return;
+  //   }
+  //   const selectedCity = citiesOfMoroccoWithNoneOption.find(
+  //     (item) => String(item.id) === selectedId
+  //   );
 
-    if (selectedCity) {
-      setSelectedCity(selectedCity.value);
-      const params = new URLSearchParams(searchParams);
-      params.set("city", selectedCity.value);
-      router.replace(`${pathName}?${params.toString()}`);
-    } else {
-      const params = new URLSearchParams(searchParams);
-      params.delete("city");
-      router.replace(`${pathName}?${params.toString()}`);
-    }
-  };
+  //   if (selectedCity) {
+  //     setSelectedCity(selectedCity.value);
+  //     const params = new URLSearchParams(searchParams);
+  //     params.set("city", selectedCity.value);
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //   } else {
+  //     const params = new URLSearchParams(searchParams);
+  //     params.delete("city");
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //   }
+  // };
 
-  const handlePriceChange = (value: number | number[]) => {
-    if (Array.isArray(value)) {
-      setPriceRange(value);
-      const params = new URLSearchParams(searchParams);
-      params.set("minPrice", value[0].toString());
-      params.set("maxPrice", value[1].toString());
-      router.replace(`${pathName}?${params.toString()}`);
-    }
-  };
+  // const handlePriceChange = (value: number | number[]) => {
+  //   if (Array.isArray(value)) {
+  //     setPriceRange(value);
+  //     const params = new URLSearchParams(searchParams);
+  //     params.set("minPrice", value[0].toString());
+  //     params.set("maxPrice", value[1].toString());
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //   }
+  // };
 
-  const handleAreaChange = (value: number | number[]) => {
-    if (Array.isArray(value)) {
-      setAreaRange(value);
-      const params = new URLSearchParams(searchParams);
-      params.set("minArea", value[0].toString());
-      params.set("maxArea", value[1].toString());
-      router.replace(`${pathName}?${params.toString()}`);
-    }
-  };
+  // const handleAreaChange = (value: number | number[]) => {
+  //   if (Array.isArray(value)) {
+  //     setAreaRange(value);
+  //     const params = new URLSearchParams(searchParams);
+  //     params.set("minArea", value[0].toString());
+  //     params.set("maxArea", value[1].toString());
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //   }
+  // };
 
-  const handleBedroomsChange = (value: number | number[]) => {
-    if (Array.isArray(value)) {
-      setBedroomsRange(value);
-      const params = new URLSearchParams(searchParams);
-      params.set("minBedrooms", value[0].toString());
-      params.set("maxBedrooms", value[1].toString());
-      router.replace(`${pathName}?${params.toString()}`);
-    }
-  };
+  // const handleBedroomsChange = (value: number | number[]) => {
+  //   if (Array.isArray(value)) {
+  //     setBedroomsRange(value);
+  //     const params = new URLSearchParams(searchParams);
+  //     params.set("minBedrooms", value[0].toString());
+  //     params.set("maxBedrooms", value[1].toString());
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //   }
+  // };
 
-  const handleBathroomsChange = (value: number | number[]) => {
-    if (Array.isArray(value)) {
-      setBathroomsRange(value);
-      const params = new URLSearchParams(searchParams);
-      params.set("minBathrooms", value[0].toString());
-      params.set("maxBathrooms", value[1].toString());
-      router.replace(`${pathName}?${params.toString()}`);
-    }
-  };
+  // const handleBathroomsChange = (value: number | number[]) => {
+  //   if (Array.isArray(value)) {
+  //     setBathroomsRange(value);
+  //     const params = new URLSearchParams(searchParams);
+  //     params.set("minBathrooms", value[0].toString());
+  //     params.set("maxBathrooms", value[1].toString());
+  //     router.replace(`${pathName}?${params.toString()}`);
+  //   }
+  // };
 
-  const handleSortOrderChange = (value: string | Set<string>) => {
-    const sortOrder = value instanceof Set ? Array.from(value)[0] : value; // Conversion du Set en chaîne
-    console.log("Sort order selected:", sortOrder); // Debugging
-    const params = new URLSearchParams(searchParams);
+  // const handleSortOrderChange = (value: string | Set<string>) => {
+  //   const sortOrder = value instanceof Set ? Array.from(value)[0] : value; // Conversion du Set en chaîne
+  //   console.log("Sort order selected:", sortOrder); // Debugging
+  //   const params = new URLSearchParams(searchParams);
 
-    if (sortOrder === "none") {
-      params.delete("sortOrder"); // Supprime le tri de l'URL
-      setSortOrder(""); // Réinitialise l'état du tri
-    } else {
-      params.set("sortOrder", sortOrder); // Définit le critère de tri
-      setSortOrder(sortOrder); // Met à jour l'état
-    }
+  //   if (sortOrder === "none") {
+  //     params.delete("sortOrder"); // Supprime le tri de l'URL
+  //     setSortOrder(""); // Réinitialise l'état du tri
+  //   } else {
+  //     params.set("sortOrder", sortOrder); // Définit le critère de tri
+  //     setSortOrder(sortOrder); // Met à jour l'état
+  //   }
 
-    router.replace(`${pathName}?${params.toString()}`);
-  };
+  //   router.replace(`${pathName}?${params.toString()}`);
+  // };
 
-  const toggleAdvancedFilters = () => {
-    setShowAdvancedFilters((prev) => !prev); // Toggle de l'affichage
-  };
+  // const toggleAdvancedFilters = () => {
+  //   setShowAdvancedFilters((prev) => !prev); // Toggle de l'affichage
+  // };
 
   // j utilise une clé dynamique pour synchroniser les select avec les states
   const [resetKey, setResetKey] = useState(0);
   // Fonction pour réinitialiser tous les filtres
   const resetFilters = () => {
-    setSearchQuery(""); // Réinitialise la recherche
-    setSelectedStatus("");
-    setSelectedType("");
-    setResetKey((prev) => prev + 1);
-    setSortOrder("");
-    setPriceRange([0, 1000000]);
-    setAreaRange([0, 1000]);
-    setBedroomsRange([0, 10]);
-    setBathroomsRange([0, 10]);
+    selectFilters.map((item) => {
+      if (item.type === "slider" && item.setRange && item.rangeValue) {
+        item.setRange(item.rangeValue);
+      } else if (item.type !== "slider" && item.setValue) {
+        item.setValue("");
+      }
+    });
+    // setSearchQuery(""); // Réinitialise la recherche
+    // setSelectedStatus("");
+    // setSelectedType("");
+    // setSortOrder("");
+    // setPriceRange([0, 1000000]);
+    // setAreaRange([0, 1000]);
+    // setBedroomsRange([0, 10]);
+    // setBathroomsRange([0, 10]);
 
+    setResetKey((prev) => prev + 1);
     // Supprime tous les paramètres de l'URL
     router.replace(pathName);
   };
@@ -562,21 +598,45 @@ const Search = () => {
               scrollbar-thin scrollbar-thumb-transparent scrollbar-track-transparent"
             > */}
             <div
-              className="p-6 overflow-y-auto overflow-x-hidden max-h-[calc(90vh-200px)] 
+              className="px-6 mt-8 overflow-y-auto overflow-x-hidden max-h-[calc(90vh-200px)] 
   [&::-webkit-scrollbar]:hidden 
   [-ms-overflow-style:none] 
   [scrollbar-width:none]"
             >
-              <div
-                className="p-6 overflow-y-auto overflow-x-hidden max-h-[calc(90vh-100px)] 
-              scrollbar-thin scrollbar-thumb-transparent scrollbar-track-transparent"
-              ></div>
               <div className="flex flex-col gap-4 justify-center items-center">
-                <Select
+                {selectFilters.map((item, index) => (
+                  <Fragment key={index}>
+                    {item.type === "slider" ? (
+                      <SearchSlider
+                        ariaLabel={item.ariaLabel}
+                        value={item.range || []}
+                        step={item.step || 1}
+                        rangeValue={item.rangeValue || [0, 10]}
+                        searchParams={searchParams}
+                        setValue={item.setRange}
+                        name={item.name}
+                        formatOptions={item.formatOptions}
+                        rangeName={item.rangeName || []}
+                      />
+                    ) : (
+                      <SearchSelect
+                        ariaLabel={item.ariaLabel}
+                        placeholder={item.placeholder || ""}
+                        value={item.value || ""}
+                        setValue={item.setValue}
+                        values={item.items || []}
+                        searchParams={searchParams}
+                        name={item.name}
+                      />
+                    )}
+                  </Fragment>
+                ))}
+                {/* <Select
                   aria-label="Choisir l'opération"
                   placeholder="Opération"
                   variant="bordered"
-                  value={selectedStatus || ""}
+                  value={selectedStatus}
+                  defaultSelectedKeys={[selectedStatus]}
                   className="flex-grow max-w-full p-2 shadow-lg bg-white text-gray-700 rounded"
                   selectionMode="single"
                   onSelectionChange={(value) =>
@@ -677,11 +737,11 @@ const Search = () => {
                   <SelectItem key={"date-desc"} value="date-desc">
                     Plus récent
                   </SelectItem>
-                </Select>
+                </Select> */}
 
                 {/* Section 2 : Filtres avancés (affichage conditionnel) */}
                 {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4"> */}
-                <Slider
+                {/* <Slider
                   label="Prix (€)"
                   value={priceRange}
                   step={10000}
@@ -723,7 +783,7 @@ const Search = () => {
                   onChange={handleBathroomsChange}
                   className="w-full shadow-lg bg-white p-2 rounded"
                   showTooltip
-                />
+                /> */}
               </div>
             </div>
             {/* <div className="flex mt-3 justify-between items-center w-full px-8 max-440:px-6"> */}
@@ -763,7 +823,7 @@ const Search = () => {
                 )
               }
               value={searchQuery} // Utilise value au lieu de defaultValue
-              // defaultValue={searchParams.get("query") ?? ""}
+            // defaultValue={searchParams.get("query") ?? ""}
             />
             <div
               onClick={() => handleModalOpen(setOpenModal, "hidden", true)}
