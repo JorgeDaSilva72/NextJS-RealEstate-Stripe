@@ -1,4 +1,6 @@
 "use client";
+import { getProperty } from "@/lib/actions/property";
+import { removeImages } from "@/lib/upload";
 import { deleteProperty } from "@/lib/actions/property";
 import {
   Button,
@@ -24,6 +26,11 @@ const ModalDeletePropertyPage = ({ params }: Props) => {
 
   const handldeDelete = async () => {
     try {
+      const property = await getProperty(+params.id);
+      if (property) {
+        const deletedImageURLs = property.images.map(item => item.url.split("/").at(-1)).filter(item => item !== undefined);
+        await removeImages(deletedImageURLs);
+      }
       await deleteProperty(Number(params.id));
 
       router.push("/user/properties");

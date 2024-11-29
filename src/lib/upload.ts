@@ -41,7 +41,7 @@ export async function removeImages(images: string[]) {
     return;
   }
 
-  console.log('Fichier supprimé avec succès:', data[0].name);
+  data.map(item =>console.log('Fichier supprimé avec succès:', item.name))
 }
 
 export async function uploadAvatar(image: File) {

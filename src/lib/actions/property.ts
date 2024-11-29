@@ -261,3 +261,20 @@ export async function deleteProperty(id: number) {
     throw new Error("Une erreur est survenue lors de la suppression.");
   }
 }
+
+export async function getProperty(id: number) {
+  if (!id) {
+    throw new Error("L'identifiant de la propriété est requis.");
+  }
+  try {
+    const property = await prisma.property.findUnique({
+      where: { id },
+      include: { images: true }
+    });
+
+    return property;
+  } catch (error) {
+    console.error("Erreur lors de la récupération de la propriété:", error)
+    throw new Error("Une erreur est survenue lors de la récupération.")
+  }
+}
