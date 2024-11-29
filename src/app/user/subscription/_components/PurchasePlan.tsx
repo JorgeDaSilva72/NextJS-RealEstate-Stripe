@@ -200,6 +200,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import { createPaymentIntent } from "@/lib/actions/payment";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import ModalCity from "./ModalCity";
+import useModalOpen from "@/app/hooks/useModalOpen";
 
 // Stripe promise
 const stripePromise = loadStripe(
@@ -223,6 +225,8 @@ const PurchasePlan = ({
   const [paymentProvider, setPaymentProvider] = useState<"paypal" | "stripe">(
     defaultPaymentProvider
   );
+  const [openModal, setOpenModal] = useState(false);
+  const handleModalOpen = useModalOpen();
 
   const { user } = useKindeBrowserClient();
 
@@ -331,12 +335,16 @@ const PurchasePlan = ({
   // If plan is free
   if (plan.price === 0) {
     return (
+      <>
+      {openModal && <ModalCity setOpenModal={setOpenModal} plan={plan} />}
       <Button
         aria-label={`Essayez-le gratuitement! ${plan.namePlan}`}
         className="w-full text-gray-800 font-bold py-3 rounded-lg shadow-lg transition duration-300"
-      >
+        onClick={()=> {handleModalOpen(setOpenModal, "hidden", true)}}
+      > 
         Essayez-le gratuitement!
       </Button>
+      </>
     );
   }
 
