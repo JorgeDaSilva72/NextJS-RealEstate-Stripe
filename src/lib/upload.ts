@@ -24,6 +24,26 @@ export async function uploadImages(images: File[]) {
   return urls;
 }
 
+export async function removeImages(images: string[]) {
+  if (!images || images.length == 0) return;
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  const { data, error } = await supabase.storage
+    .from("propertyImages")
+    .remove(images);
+
+  if (error) {
+    console.error('Erreur lors de la suppression du fichier :', error.message);
+    return;
+  }
+
+  console.log('Fichier supprimé avec succès:', data[0].name);
+}
+
 export async function uploadAvatar(image: File) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;

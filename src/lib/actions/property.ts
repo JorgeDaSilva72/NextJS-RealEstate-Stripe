@@ -177,9 +177,9 @@ export async function editProperty(
   propertyId: number,
   propertyData: AddPropertyInputType,
   newImagesUrls: string[],
-  // newVideosUrls: string[],
-  deletedImageIDs: number[]
-  // deletedvideoIDs: number[]
+  deletedImageIDs: number[],
+  newVideosUrls: string[],
+  deletedvideoIDs: number[]
 ) {
   // console.log("newVideosUrls:", newVideosUrls);
   // console.log("deletedvideoIDs:", deletedvideoIDs);
@@ -213,14 +213,14 @@ export async function editProperty(
           id: { in: deletedImageIDs },
         },
       },
-      // videos: {
-      //   create: newVideosUrls.map((vid) => ({
-      //     url: vid,
-      //   })),
-      //   deleteMany: {
-      //     id: { in: deletedvideoIDs },
-      //   },
-      // },
+      videos: {
+        create: newVideosUrls.map((vid) => ({
+          url: vid,
+        })),
+        deleteMany: {
+          id: { in: deletedvideoIDs },
+        },
+      },
     };
 
     // Log pour débogage

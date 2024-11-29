@@ -21,7 +21,7 @@ import { z } from "zod";
 import { AddPropertyFormSchema } from "@/lib/zodSchema";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { uploadImages } from "@/lib/upload";
+import { removeImages, uploadImages } from "@/lib/upload";
 import { editProperty, saveProperty } from "@/lib/actions/property";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useRouter } from "next/navigation";
@@ -113,10 +113,12 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
 
     try {
       if (isEdit && props.property) {
-        const deletedImageIDs = props.property?.images
+        const deletedImages = props.property?.images
           .filter((item) => !savedImagesUrl.includes(item))
-          .map((item) => item.id);
 
+        const deletedImageIDs = deletedImages.map((item) => item.id);
+        const deletedImageURLs = deletedImages.map(item => item.url.split("/").at(-1)).filter(item => item !== undefined);
+        await removeImages(deletedImageURLs);
         // const deletedVideosIDs = props.property?.videos
         //   .filter((item) => !savedVideosUrl.includes(item))
         //   .map((item) => item.id);
@@ -132,9 +134,9 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
           props.property?.id,
           data,
           imageUrls,
-          deletedImageIDs
-          // videos
-          // deletedVideosIDs
+          deletedImageIDs,
+          videos,
+          deletedVideosIDs
         );
 
         toast.success("Annonce modifiée!");
@@ -192,15 +194,14 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
               savedImagesUrl: savedImagesUrl, // Transmet bien les images sauvegardées
               setSavedImageUrl: setSavedImagesUrl,
               savedVideosUrl: savedVideosUrl, // Ajout
-              setVideosVideoUrl: setSavedVideosUrl, // Ajout
+              setSavedVideoUrl: setSavedVideosUrl, // Ajout
             })}
             setImages={(newImages) => {
               if (
                 newImages.length > (props.planDetails?.photosPerAd || Infinity)
               ) {
                 toast.error(
-                  `Vous avez dépassé la limite de ${
-                    props.planDetails?.photosPerAd || "Illimité"
+                  `Vous avez dépassé la limite de ${props.planDetails?.photosPerAd || "Illimité"
                   } photos.`
                 );
                 return;
@@ -217,8 +218,7 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
                 newVideos.length > (props.planDetails?.shortVideosPerAd || 0)
               ) {
                 toast.error(
-                  `Vous avez dépassé la limite de ${
-                    props.planDetails?.shortVideosPerAd || "0"
+                  `Vous avez dépassé la limite de ${props.planDetails?.shortVideosPerAd || "0"
                   } vidéo.`
                 );
                 return;

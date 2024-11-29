@@ -5,6 +5,7 @@ import { PropertyImage, PropertyVideo } from "@prisma/client";
 import Image from "next/image";
 import PictureCard from "./PictureCard";
 import { toast } from "react-toastify";
+import ButtonClose from "@/app/components/ButtonClose";
 
 interface Props {
   next: () => void;
@@ -101,7 +102,7 @@ const Picture = ({
       return;
     }
 
-    if (videos.length >= maxVideos) {
+    if (savedVideosUrl.length >= maxVideos) {
       setError(`Vous ne pouvez pas ajouter plus de ${maxVideos} vidéos.`);
       return;
     }
@@ -116,9 +117,10 @@ const Picture = ({
     setVideos?.(videos.filter((_, i) => i !== index));
   };
 
-  // const handleVideoDelete = (videoToDelete: PropertyVideo) => {
-  //   setSavedVideoUrl(prev => prev.filter(video => video.id !== videoToDelete.id));
-  // };
+  const removeSavedVideo = (id: number) => {
+    const videos = savedVideosUrl.filter((video) => video.id !== id)
+    setSavedVideoUrl?.(videos);
+  };
 
   return (
     <Card className={`p-4 ${className}`}>
@@ -159,12 +161,13 @@ const Picture = ({
                 alt={file.name}
                 className="w-24 h-24 object-cover rounded-lg"
               />
-              <button
+              <ButtonClose top="top-1" right="right-1" width="w-6" height="h-6" onClick={() => removeImage(index)} />
+              {/* <button
                 onClick={() => removeImage(index)}
-                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+                className="absolute z-50 top-1 right-1 w-6 h-6 flex items-center justify-center bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
               >
-                &times;
-              </button>
+                ✕
+              </button> */}
             </div>
           ))}
         </div>
@@ -207,12 +210,13 @@ const Picture = ({
                 allowFullScreen
                 className="w-full h-full object-contain rounded"
               />
-              <button
+              <ButtonClose top="top-1" right="right-1" width="w-6" height="h-6" onClick={() => removeSavedVideo(savedVideosUrl[index].id)} />
+              {/* <button
                 onClick={() => removeVideo(index)}
                 className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
               >
                 &times;
-              </button>
+              </button> */}
             </div>
           ))}
 
@@ -226,12 +230,13 @@ const Picture = ({
                 allowFullScreen
                 className="w-full h-full object-contain rounded"
               />
-              <button
+              <ButtonClose top="top-1" right="right-1" width="w-6" height="h-6" onClick={() => removeVideo(index)} />
+              {/* <button
                 onClick={() => removeVideo(index)}
                 className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
               >
                 &times;
-              </button>
+              </button> */}
             </div>
           ))}
         </div>

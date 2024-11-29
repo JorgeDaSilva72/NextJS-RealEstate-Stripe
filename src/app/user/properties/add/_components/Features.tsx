@@ -269,7 +269,7 @@ const Features = (props: Props) => {
             name="propertyFeature.hasSwimmingPool"
             render={({ field }) => (
               <Checkbox
-                checked={field.value || false}
+                isSelected={field.value || false}
                 onChange={field.onChange}
                 className="mr-2"
               >
@@ -285,7 +285,7 @@ const Features = (props: Props) => {
             name="propertyFeature.hasGardenYard"
             render={({ field }) => (
               <Checkbox
-                checked={field.value || false}
+                isSelected={field.value || false}
                 onChange={field.onChange}
                 className="mr-2"
               >
@@ -301,7 +301,7 @@ const Features = (props: Props) => {
             name="propertyFeature.hasBalcony"
             render={({ field }) => (
               <Checkbox
-                checked={field.value || false}
+                isSelected={field.value || false}
                 onChange={field.onChange}
                 className="mr-2"
               >

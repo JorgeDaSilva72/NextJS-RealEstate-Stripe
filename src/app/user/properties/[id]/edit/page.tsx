@@ -2,13 +2,22 @@ import prisma from "@/lib/prisma";
 import AddPropertyForm from "../../add/_components/AddPropertyForm";
 import { notFound, redirect } from "next/navigation";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getUserById } from "@/lib/actions/user";
 
 interface Props {
   params: { id: string };
 }
 
 const EditPropertyPage = async ({ params }: Props) => {
-  const [propertyTypes, propertyStatuses, property] = await Promise.all([
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+  // Vérifiez si l'utilisateur est valide
+  const dbUser = await getUserById(user ? user.id : "");
+  if (!dbUser || !dbUser.id) {
+    throw new Error("Something went wrong with authentication");
+  }
+
+  const [propertyTypes, propertyStatuses, property, plan] = await Promise.all([
     prisma.propertyType.findMany(),
     prisma.propertyStatus.findMany(),
     prisma.property.findUnique({
@@ -23,10 +32,11 @@ const EditPropertyPage = async ({ params }: Props) => {
         videos: true,
       },
     }),
+    prisma.subscriptions.findFirst({
+      where: { userId: dbUser?.id },
+      include: { plan: true },
+    }),
   ]);
-
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
 
   if (!property) return notFound();
   if (!user || property.userId !== user.id) redirect("/unauthorized");
@@ -35,6 +45,7 @@ const EditPropertyPage = async ({ params }: Props) => {
       types={propertyTypes}
       statuses={propertyStatuses}
       property={property}
+      planDetails={plan?.plan}
       isEdit={true}
     />
   );

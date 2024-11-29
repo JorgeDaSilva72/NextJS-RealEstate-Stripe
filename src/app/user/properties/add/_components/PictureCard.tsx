@@ -24,6 +24,7 @@
 
 // export default PictureCard;
 
+import ButtonClose from "@/app/components/ButtonClose";
 import { TrashIcon } from "@heroicons/react/16/solid";
 import { Card, Image } from "@nextui-org/react";
 import React from "react";
@@ -54,12 +55,13 @@ const PictureCard = ({ src, onDelete, index }: Props) => {
           alt="property picture"
         />
       )}
-      <button
-        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+      {/* <button
+        className="absolute z-50 top-1 right-1 w-6 h-6 flex items-center justify-center bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
         onClick={() => onDelete(index)}
       >
-        <TrashIcon className="text-danger-400 w-4" />
-      </button>
+        ✕
+      </button> */}
+      <ButtonClose top="top-1" right="right-1" width="w-6" height="h-6" onClick={() => onDelete(index)} />
     </Card>
   );
 };
