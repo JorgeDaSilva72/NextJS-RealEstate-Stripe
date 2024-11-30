@@ -781,7 +781,7 @@
 // };
 
 // export default Search;
-
+// ---------------------------------------------------------------------
 // Refactoring du composant search
 
 "use client";
