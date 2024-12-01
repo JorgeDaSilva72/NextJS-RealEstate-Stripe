@@ -974,6 +974,10 @@ const Search = () => {
     handleChange(query); // Débounced callback pour l'URL
   };
 
+  const saveSearch = () => {
+
+  }
+
   const handleChange = useDebouncedCallback(async (query: string) => {
     const params = new URLSearchParams(searchParams);
     if (query) {
@@ -1574,27 +1578,31 @@ const Search = () => {
             </div>
             {/* <div className="flex mt-3 justify-between items-center w-full px-8 max-440:px-6"> */}
             <div className="flex flex-col md:flex-row justify-between p-4 bg-white/10 backdrop-blur-sm">
+              {/* Bouton Accepter */}
               <button
                 onClick={() => handleModalOpen(setOpenModal, "auto", false)}
-                className="px-4 py-2 mr-4 bg-indigo-600 text-white rounded shadow-lg hover:bg-indigo-700 mb-4 md:mb-0 text-center"
+                className="px-4 py-2 bg-indigo-600 text-white rounded shadow-lg hover:bg-indigo-700 mb-4 md:mb-0 text-center mr-4"
               >
                 Accepter
               </button>
 
+              {/* Bouton Save Search */}
               <button
-                onClick={() => handleModalOpen(setOpenModal, "auto", false)}
-                className="px-4 py-2 mr-4 bg-orange-400 text-white rounded shadow-lg hover:bg-indigo-700 mb-4 md:mb-0 text-center"
+                onClick={saveSearch} // Appeler la fonction pour sauvegarder les filtres
+                className="px-4 py-2 bg-green-600 text-white rounded shadow-lg hover:bg-green-700 mb-4 md:mb-0 text-center mr-4"
               >
-                Sauvegarder
+                Enregistrer
               </button>
 
+              {/* Bouton Effacer les filtres */}
               <button
-                className="px-4 py-2 bg-red-600 text-white rounded shadow-lg hover:bg-red-700  text-center"
+                className="px-4 py-2 bg-red-600 text-white rounded shadow-lg hover:bg-red-700 text-center"
                 onClick={resetFilters}
               >
                 Effacer les filtres
               </button>
             </div>
+
           </div>
         </div>
       )}
