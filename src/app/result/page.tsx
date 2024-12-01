@@ -83,8 +83,12 @@ export default async function Home({ searchParams }: Props) {
     // orderBy.push({ createdAt: "desc" });
     orderBy.push({ price: "desc" });
   }
-
-
+  try {
+    const propertiesTest = await prisma.property.findMany();
+    console.log('Properties:', propertiesTest);
+  } catch (error) {
+    console.error('Error fetching properties:', error);
+  }
   const propertiesPromise = prisma.property.findMany({
     select: {
       id: true,
@@ -264,7 +268,6 @@ export default async function Home({ searchParams }: Props) {
     totalPropertiesPromise,
   ]);
 
-  console.log('Properties:', properties);
   const totalPages = Math.floor(totalProperties / PAGE_SIZE + 1);
 
   return (
