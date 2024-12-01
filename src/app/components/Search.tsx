@@ -1576,10 +1576,18 @@ const Search = () => {
             <div className="flex flex-col md:flex-row justify-between p-4 bg-white/10 backdrop-blur-sm">
               <button
                 onClick={() => handleModalOpen(setOpenModal, "auto", false)}
-                className="px-4 py-2 bg-indigo-600 text-white rounded shadow-lg hover:bg-indigo-700 mb-4 md:mb-0 text-center"
+                className="px-4 py-2 mr-4 bg-indigo-600 text-white rounded shadow-lg hover:bg-indigo-700 mb-4 md:mb-0 text-center"
               >
                 Accepter
               </button>
+
+              <button
+                onClick={() => handleModalOpen(setOpenModal, "auto", false)}
+                className="px-4 py-2 mr-4 bg-orange-400 text-white rounded shadow-lg hover:bg-indigo-700 mb-4 md:mb-0 text-center"
+              >
+                Sauvegarder
+              </button>
+
               <button
                 className="px-4 py-2 bg-red-600 text-white rounded shadow-lg hover:bg-red-700  text-center"
                 onClick={resetFilters}
@@ -1609,7 +1617,7 @@ const Search = () => {
                 )
               }
               value={searchQuery} // Utilise value au lieu de defaultValue
-              // defaultValue={searchParams.get("query") ?? ""}
+            // defaultValue={searchParams.get("query") ?? ""}
             />
             <div
               onClick={() => handleModalOpen(setOpenModal, "hidden", true)}

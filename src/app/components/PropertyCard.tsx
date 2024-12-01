@@ -144,9 +144,8 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
                   property.images[currentImageIndex]?.url ??
                   "/imageNotFound.jpg"
                 }
-                className={`w-full h-full object-cover transition-transform duration-300 ${
-                  isHovered ? "scale-110" : "scale-100"
-                }`}
+                className={`w-full h-full object-cover transition-transform duration-300 ${isHovered ? "scale-110" : "scale-100"
+                  }`}
                 alt={`${property.name} - Image ${currentImageIndex + 1}`}
                 onLoad={handleImageLoad}
                 onError={handleImageError}
@@ -199,9 +198,8 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
             className="z-10 absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
           >
             <Heart
-              className={`w-5 h-5 transition-colors ${
-                isFavorite ? "fill-red-500 text-red-500" : "text-gray-600"
-              }`}
+              className={`w-5 h-5 transition-colors ${isFavorite ? "fill-red-500 text-red-500" : "text-gray-600"
+                }`}
             />
           </button>
 
