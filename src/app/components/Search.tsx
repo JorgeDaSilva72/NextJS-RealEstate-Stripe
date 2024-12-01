@@ -974,9 +974,6 @@ const Search = () => {
     handleChange(query); // Débounced callback pour l'URL
   };
 
-  const saveSearch = () => {
-
-  }
 
   const handleChange = useDebouncedCallback(async (query: string) => {
     const params = new URLSearchParams(searchParams);
@@ -1170,6 +1167,33 @@ const Search = () => {
     // Supprime tous les paramètres de l'URL
     router.replace(pathName);
   };
+
+  //Riv
+  const saveSearch = () => {
+    const savedFilters = selectFilters.map((filter) => {
+      if (filter.type === "slider") {
+        return {
+          name: filter.name,
+          type: filter.type,
+          range: filter.range || [],
+        };
+      } else {
+        return {
+          name: filter.name,
+          type: filter.type,
+          value: filter.value || "",
+        };
+      }
+    });
+
+    // Sauvegarder dans LocalStorage (ou une API backend)
+    const previousSearches = JSON.parse(localStorage.getItem("savedSearches") || "[]");
+    localStorage.setItem("savedSearches", JSON.stringify([...previousSearches, savedFilters]));
+
+    // Notifier l'utilisateur
+    alert("Votre recherche a été enregistrée !");
+
+  }
 
   return (
     // <div className="p-6 bg-gradient-to-br from-sky-400 to-indigo-500 rounded-lg shadow-lg w-full mx-auto space-y-6">
@@ -1421,159 +1445,6 @@ const Search = () => {
                     )}
                   </Fragment>
                 ))}
-                {/* <Select
-                  aria-label="Choisir l'opération"
-                  placeholder="Opération"
-                  variant="bordered"
-                  value={selectedStatus}
-                  defaultSelectedKeys={[selectedStatus]}
-                  className="flex-grow max-w-full p-2 shadow-lg bg-white text-gray-700 rounded"
-                  selectionMode="single"
-                  onSelectionChange={(value) =>
-                    handleStatusChange(value as string)
-                  }
-                >
-                  {statusWithNoneOption.map((item) => (
-                    <SelectItem key={item.id} value={item.id}>
-                      {item.value}
-                    </SelectItem>
-                  ))}
-                </Select>
-
-                <Select
-                  aria-label="Choisir le type de bien"
-                  variant="bordered"
-                  placeholder="Type de bien"
-                  value={selectedType}
-                  className="flex-grow max-w-full p-2 shadow-lg bg-white text-gray-700 rounded"
-                  selectionMode="single"
-                  onSelectionChange={(value) =>
-                    handleTypeChange(value as string)
-                  }
-                >
-                  {typesWithNoneOption.map((item) => (
-                    <SelectItem key={item.id} value={item.id}>
-                      {item.value}
-                    </SelectItem>
-                  ))}
-                </Select>
-
-                <Select
-                  aria-label="Pays"
-                  variant="bordered"
-                  placeholder="Choisir un pays"
-                  value={selectedCountry}
-                  className="flex-grow max-w-full p-2 shadow-lg bg-white text-gray-700 rounded"
-                  selectionMode="single"
-                  onSelectionChange={(value) =>
-                    handleCountryChange(value as string)
-                  }
-                >
-                  {countriesWithNoneOption.map((item) => (
-                    <SelectItem key={item.id} value={item.id}>
-                      {item.value}
-                    </SelectItem>
-                  ))}
-                </Select>
-
-                <Select
-                  aria-label="Villes"
-                  variant="bordered"
-                  placeholder="Choisir une ville"
-                  value={selectedCity}
-                  className="flex-grow max-w-full p-2 shadow-lg bg-white text-gray-700 rounded"
-                  selectionMode="single"
-                  onSelectionChange={(value) =>
-                    handleCityChange(value as string)
-                  }
-                >
-                  {citiesOfMoroccoWithNoneOption.map((item) => (
-                    <SelectItem key={item.id} value={item.id}>
-                      {item.value}
-                    </SelectItem>
-                  ))}
-                </Select>
-
-                <Select
-                  aria-label="Trier par"
-                  variant="bordered"
-                  placeholder="Trier par"
-                  value={sortOrder}
-                  className="flex-grow max-w-full p-2 shadow-lg bg-white text-gray-700 rounded"
-                  selectionMode="single"
-                  // onSelectionChange retourne un objet Set dans lequel se trouve la valeur sélectionnée ("desc") au lieu de simplement renvoyer la chaîne elle-même.
-                  onSelectionChange={(value) =>
-                    handleSortOrderChange(value as string)
-                  }
-                >
-                  <SelectItem key={"none"} value="none">
-                    Aucun tri
-                  </SelectItem>
-                  <SelectItem key={"price-asc"} value="price-asc">
-                    Prix croissant
-                  </SelectItem>
-                  <SelectItem key={"price-desc"} value="price-desc">
-                    Prix décroissant
-                  </SelectItem>
-                  <SelectItem key={"surface-asc"} value="surface-asc">
-                    Surface croissante
-                  </SelectItem>
-                  <SelectItem key={"surface-desc"} value="surface-desc">
-                    Surface décroissante
-                  </SelectItem>
-                  <SelectItem key={"date-asc"} value="date-asc">
-                    Plus ancien
-                  </SelectItem>
-                  <SelectItem key={"date-desc"} value="date-desc">
-                    Plus récent
-                  </SelectItem>
-                </Select> */}
-
-                {/* Section 2 : Filtres avancés (affichage conditionnel) */}
-                {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4"> */}
-                {/* <Slider
-                  label="Prix (€)"
-                  value={priceRange}
-                  step={10000}
-                  minValue={0}
-                  maxValue={1000000}
-                  onChange={handlePriceChange}
-                  formatOptions={{ style: "currency", currency: "EUR" }}
-                  className="w-full shadow-lg bg-white p-2 rounded"
-                  showTooltip
-                />
-
-                <Slider
-                  label="Surface habitable (m²)"
-                  value={areaRange}
-                  step={10}
-                  minValue={0}
-                  maxValue={1000}
-                  onChange={handleAreaChange}
-                  className="w-full shadow-lg bg-white p-2 rounded"
-                  showTooltip
-                />
-
-                <Slider
-                  label="Chambres"
-                  value={bedroomsRange}
-                  step={1}
-                  minValue={0}
-                  maxValue={10}
-                  onChange={handleBedroomsChange}
-                  className="w-full shadow-lg bg-white p-2 rounded"
-                  showTooltip
-                />
-                <Slider
-                  label="Salles de bain"
-                  value={bathroomsRange}
-                  step={1}
-                  minValue={0}
-                  maxValue={10}
-                  onChange={handleBathroomsChange}
-                  className="w-full shadow-lg bg-white p-2 rounded"
-                  showTooltip
-                /> */}
               </div>
             </div>
             {/* <div className="flex mt-3 justify-between items-center w-full px-8 max-440:px-6"> */}
