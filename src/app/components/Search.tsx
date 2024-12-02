@@ -977,6 +977,11 @@ const Search = () => {
     }
   }, [searchParams, selectFilters, openModal]);
 
+  const handleInputChange = (query: string) => {
+    setSearchQuery(query); // Met à jour l'état local
+    handleChange(query); // Débounced callback pour l'URL
+  };
+
 
   const handleChange = useDebouncedCallback(async (query: string) => {
     const params = new URLSearchParams(searchParams);
