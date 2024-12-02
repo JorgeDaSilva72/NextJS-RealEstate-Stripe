@@ -124,10 +124,21 @@ const useFilterDatas = () => {
     { id: "none", value: "Tout Type de bien" },
     ...types,
   ];
+
+  const [statutestsesTest, setStatusesTest] = useState<any[]>([
+    { id: "Statut_1", value: "Statut 1" },
+    { id: "Statut_2", value: "Statut 2" }
+  ]);
+
+  const statusWithNoneOptionTest = [
+    { id: "none", value: "Toute opération Test" },
+    ...statutestsesTest,
+  ];
   const statusWithNoneOption = [
     { id: "none", value: "Toute opération" },
     ...statuses,
   ];
+
   const citiesOfMoroccoWithNoneOption = [
     { id: "none", value: "Toutes les villes" },
     ...citiesOfMorocco,
@@ -176,6 +187,18 @@ const useFilterDatas = () => {
   useEffect(() => {
     console.log('status updated', selectedCity);
     const selectFilters: SelectFilterTypes = [
+
+      //Rivah
+      // {
+      //   ariaLabel: "Opération",
+      //   placeholder: "Test",
+      //   name: "queryStatus",
+      //   items: statusWithNoneOptionTest,
+      //   value: selectedStatus,
+      //   setValue: setSelectedStatus,
+      // },
+
+
       {
         ariaLabel: "Opération",
         placeholder: "Choisir l'opération",
