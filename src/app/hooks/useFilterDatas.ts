@@ -185,7 +185,6 @@ const useFilterDatas = () => {
   }, []);
 
   useEffect(() => {
-    console.log('status updated', selectedCity);
     const selectFilters: SelectFilterTypes = [
 
       //Rivah

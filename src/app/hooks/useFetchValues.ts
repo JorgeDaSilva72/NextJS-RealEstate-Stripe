@@ -12,7 +12,7 @@ const useFetchValues = () => {
       const response = await fetch(url);
       const data: PropertyStatus[] = await response.json();
       setValues(data);
-      console.log('data', data)
+      // console.log('data', data)
     } catch (error) {
       console.error(errorMessage, error);
     }

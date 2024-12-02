@@ -1136,195 +1136,37 @@ const Search = () => {
 
   }
 
+  const getSavedSearches = () => {
+    const savedSearches = localStorage.getItem("savedSearches");
+    if (savedSearches) {
+      try {
+        const parsedSearches = JSON.parse(savedSearches);
+        // Vérifier que c'est bien un tableau et qu'il contient les bonnes informations
+        if (Array.isArray(parsedSearches) && parsedSearches.length > 0) {
+          return parsedSearches;
+        }
+        return []; // Retourner un tableau vide si la structure est incorrecte
+      } catch (error) {
+        console.error("Erreur lors de la lecture des recherches sauvegardées", error);
+        return []; // Retourner un tableau vide si JSON.parse échoue
+      }
+    }
+    return []; // Retourner un tableau vide si aucun élément n'est trouvé
+  };
+  interface Filter {
+    name: string;
+    value: string;
+    type?: string;
+    range?: number[];
+  }
+  const savedFilters: Filter[][] = getSavedSearches() || [];
+
+  // Accédez à l'élément dans le sous-tableau à l'index 0
+  const filters = savedFilters[0] || [];
+  console.log('get data local', filters)
+
   return (
-    // <div className="p-6 bg-gradient-to-br from-sky-400 to-indigo-500 rounded-lg shadow-lg w-full mx-auto space-y-6">
-    //   {/* Section 1 : Filtres principaux */}
-    //   <div
-    //     key={resetKey}
-    //     className="flex flex-col space-y-4  lg:space-y-8  w-full"
-    //   >
-    //     <div className="flex flex-col space-y-4">
-    //       <Input
-    //         placeholder="Recherche dans les titres"
-    //         onChange={(e) => handleInputChange(e.target.value)}
-    //         className="w-full max-w-md shadow-lg"
-    //         endContent={
-    //           loading ? (
-    //             <Spinner />
-    //           ) : (
-    //             <MagnifyingGlassIcon className="w-4 text-slate-500" />
-    //           )
-    //         }
-    //         value={searchQuery} // Utilise value au lieu de defaultValue
-    //         // defaultValue={searchParams.get("query") ?? ""}
-    //       />
-    //     </div>
 
-    //     {/* Filtres principaux */}
-    //     <div className="flex flex-wrap gap-4 justify-start">
-    //       <Select
-    //         aria-label="Choisir l'opération"
-    //         placeholder="Opération"
-    //         value={selectedStatus || ""}
-    //         className="flex-grow max-w-xs p-2 shadow-lg bg-white text-gray-700 rounded"
-    //         selectionMode="single"
-    //         onSelectionChange={(value) => handleStatusChange(value as string)}
-    //       >
-    //         {statusWithNoneOption.map((item) => (
-    //           <SelectItem key={item.id} value={item.id}>
-    //             {item.value}
-    //           </SelectItem>
-    //         ))}
-    //       </Select>
-
-    //       <Select
-    //         aria-label="Choisir le type de bien"
-    //         placeholder="Type de bien"
-    //         value={selectedType}
-    //         className="flex-grow max-w-xs p-2 shadow-lg bg-white text-gray-700 rounded"
-    //         selectionMode="single"
-    //         onSelectionChange={(value) => handleTypeChange(value as string)}
-    //       >
-    //         {typesWithNoneOption.map((item) => (
-    //           <SelectItem key={item.id} value={item.id}>
-    //             {item.value}
-    //           </SelectItem>
-    //         ))}
-    //       </Select>
-
-    //       <Select
-    //         aria-label="Pays"
-    //         placeholder="Choisir un pays"
-    //         value={selectedCountry}
-    //         className="flex-grow max-w-xs p-2 shadow-lg bg-white text-gray-700 rounded"
-    //         selectionMode="single"
-    //         onSelectionChange={(value) => handleCountryChange(value as string)}
-    //       >
-    //         {countriesWithNoneOption.map((item) => (
-    //           <SelectItem key={item.id} value={item.id}>
-    //             {item.value}
-    //           </SelectItem>
-    //         ))}
-    //       </Select>
-
-    //       <Select
-    //         aria-label="Villes"
-    //         placeholder="Choisir une ville"
-    //         value={selectedCity}
-    //         className="flex-grow max-w-xs p-2 shadow-lg bg-white text-gray-700 rounded"
-    //         selectionMode="single"
-    //         onSelectionChange={(value) => handleCityChange(value as string)}
-    //       >
-    //         {citiesOfMoroccoWithNoneOption.map((item) => (
-    //           <SelectItem key={item.id} value={item.id}>
-    //             {item.value}
-    //           </SelectItem>
-    //         ))}
-    //       </Select>
-
-    //       <Select
-    //         aria-label="Trier par"
-    //         placeholder="Trier par"
-    //         value={sortOrder}
-    //         className="flex-grow max-w-xs p-2 shadow-lg bg-white text-gray-700 rounded"
-    //         selectionMode="single"
-    //         // onSelectionChange retourne un objet Set dans lequel se trouve la valeur sélectionnée ("desc") au lieu de simplement renvoyer la chaîne elle-même.
-    //         onSelectionChange={(value) =>
-    //           handleSortOrderChange(value as string)
-    //         }
-    //       >
-    //         <SelectItem key={"none"} value="none">
-    //           Aucun tri
-    //         </SelectItem>
-    //         <SelectItem key={"price-asc"} value="price-asc">
-    //           Prix croissant
-    //         </SelectItem>
-    //         <SelectItem key={"price-desc"} value="price-desc">
-    //           Prix décroissant
-    //         </SelectItem>
-    //         <SelectItem key={"surface-asc"} value="surface-asc">
-    //           Surface croissante
-    //         </SelectItem>
-    //         <SelectItem key={"surface-desc"} value="surface-desc">
-    //           Surface décroissante
-    //         </SelectItem>
-    //         <SelectItem key={"date-asc"} value="date-asc">
-    //           Plus ancien
-    //         </SelectItem>
-    //         <SelectItem key={"date-desc"} value="date-desc">
-    //           Plus récent
-    //         </SelectItem>
-    //       </Select>
-    //     </div>
-
-    //     {/* Section 2 : Filtres avancés (affichage conditionnel) */}
-    //     {showAdvancedFilters && (
-    //       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-    //         <Slider
-    //           label="Prix (€)"
-    //           value={priceRange}
-    //           step={10000}
-    //           minValue={0}
-    //           maxValue={1000000}
-    //           onChange={handlePriceChange}
-    //           formatOptions={{ style: "currency", currency: "EUR" }}
-    //           className="w-full shadow-lg bg-white p-2 rounded"
-    //           showTooltip
-    //         />
-
-    //         <Slider
-    //           label="Surface habitable (m²)"
-    //           value={areaRange}
-    //           step={10}
-    //           minValue={0}
-    //           maxValue={1000}
-    //           onChange={handleAreaChange}
-    //           className="w-full shadow-lg bg-white p-2 rounded"
-    //           showTooltip
-    //         />
-
-    //         <Slider
-    //           label="Chambres"
-    //           value={bedroomsRange}
-    //           step={1}
-    //           minValue={0}
-    //           maxValue={10}
-    //           onChange={handleBedroomsChange}
-    //           className="w-full shadow-lg bg-white p-2 rounded"
-    //           showTooltip
-    //         />
-
-    //         <Slider
-    //           label="Salles de bain"
-    //           value={bathroomsRange}
-    //           step={1}
-    //           minValue={0}
-    //           maxValue={10}
-    //           onChange={handleBathroomsChange}
-    //           className="w-full shadow-lg bg-white p-2 rounded"
-    //           showTooltip
-    //         />
-    //       </div>
-    //     )}
-
-    //     <div className="flex flex-col md:flex-row justify-center md:justify-between items-center gap-4">
-    //       <button
-    //         className="w-full md:w-auto px-4 py-2 bg-indigo-600 text-white rounded shadow-lg hover:bg-indigo-700 text-center"
-    //         onClick={toggleAdvancedFilters}
-    //       >
-    //         {showAdvancedFilters
-    //           ? "Masquer les filtres avancés"
-    //           : "Plus de critères"}
-    //       </button>
-    //       <button
-    //         className="w-full md:w-auto px-4 py-2 bg-red-600 text-white rounded shadow-lg hover:bg-red-700 text-center"
-    //         onClick={resetFilters}
-    //       >
-    //         Réinitialiser les filtres
-    //       </button>
-    //     </div>
-    //   </div>
-    // </div>
     <>
       {/* Modal fenêtre filtre */}
       {openModal && (
