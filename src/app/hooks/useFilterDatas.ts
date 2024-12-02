@@ -7,6 +7,16 @@ import { countries } from "../data/countries";
 import useFetchValues from "./useFetchValues";
 import { FilterValueTypes } from "./useFilterChange";
 
+// Récupérer les données de LocalStorage (si elles existent)
+const getSavedSearches = () => {
+  const savedSearches = localStorage.getItem("savedSearches");
+  return savedSearches ? JSON.parse(savedSearches) : [];
+};
+
+
+
+
+
 export type SelectNameType =
   | "queryStatus"
   | "queryType"
@@ -39,6 +49,10 @@ export type SelectFilterTypes = SelectFilterType[];
 const useFilterDatas = () => {
   const searchParams = useSearchParams();
   const fetchValue = useFetchValues();
+
+  // Initialiser les états avec les valeurs de LocalStorage ou des valeurs par défaut
+  const savedFilters = getSavedSearches();
+
   const [selectedStatus, setSelectedStatus] = useState(
     searchParams.get("queryStatus") ?? ""
   );
@@ -75,6 +89,8 @@ const useFilterDatas = () => {
     searchParams.get("city") ?? ""
   );
   const [filterDatas, setFilterDatas] = useState<SelectFilterTypes>([]);
+
+
 
   useEffect(() => {
     fetchValue(
