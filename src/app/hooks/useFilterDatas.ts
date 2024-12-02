@@ -75,25 +75,36 @@ const useFilterDatas = () => {
     type?: string;
     range?: number[];
   }
-  const savedFilters: Filter[][] = getSavedSearches()
+  const savedFilters: Filter[][] = getSavedSearches() || [];
 
   // Accédez à l'élément dans le sous-tableau à l'index 0
-  const filters = savedFilters[0]; // Le premier sous-tableau
+  const filters = savedFilters[0] || []; // Le premier sous-tableau
 
   // Si savedFilters est un tableau et contient des objets
-  const defaultStatus = filters.find((filter) => filter.name === "queryStatus")?.value || searchParams.get("queryStatus") || "";
-  const defaultType = filters.find((filter) => filter.name === "queryType")?.value || searchParams.get("queryType") || "";
-  const defaultCountry = filters.find((filter) => filter.name === "country")?.value || searchParams.get("country") || "";
-  const defaultCity = filters.find((filter) => filter.name === "city")?.value || searchParams.get("city") || "";
+  const defaultStatus =
+    filters.find((filter) => filter.name === "queryStatus")?.value ||
+    searchParams.get("queryStatus") ||
+    "";
 
-  console.log('default city', defaultCity)
+  const defaultType =
+    filters.find((filter) => filter.name === "queryType")?.value ||
+    searchParams.get("queryType") ||
+    "";
+
+  const defaultCountry =
+    filters.find((filter) => filter.name === "country")?.value ||
+    searchParams.get("country") ||
+    "";
+
+  const defaultCity =
+    filters.find((filter) => filter.name === "city")?.value ||
+    searchParams.get("city") ||
+    "";
 
   const [selectedStatus, setSelectedStatus] = useState(defaultStatus);
   const [selectedType, setSelectedType] = useState(defaultType);
   const [selectedCountry, setSelectedCountry] = useState(defaultCountry);
   const [selectedCity, setSelectedCity] = useState(defaultCity)
-
-  console.log('status', selectedCity)
   // const [selectedStatus, setSelectedStatus] = useState(
   //   (savedFilters.find((filter: Filter) => filter.name === "queryStatus")?.value
   //     || searchParams.get("queryStatus")) ?? ""
@@ -163,6 +174,7 @@ const useFilterDatas = () => {
   }, []);
 
   useEffect(() => {
+    console.log('status updated', selectedCity);
     const selectFilters: SelectFilterTypes = [
       {
         ariaLabel: "Opération",
