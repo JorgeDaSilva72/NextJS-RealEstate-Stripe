@@ -10,7 +10,20 @@ import { FilterValueTypes } from "./useFilterChange";
 // Récupérer les données de LocalStorage (si elles existent)
 const getSavedSearches = () => {
   const savedSearches = localStorage.getItem("savedSearches");
-  return savedSearches ? JSON.parse(savedSearches) : [];
+  if (savedSearches) {
+    try {
+      const parsedSearches = JSON.parse(savedSearches);
+      // Vérifier que c'est bien un tableau et qu'il contient les bonnes informations
+      if (Array.isArray(parsedSearches) && parsedSearches.length > 0) {
+        return parsedSearches;
+      }
+      return []; // Retourner un tableau vide si la structure est incorrecte
+    } catch (error) {
+      console.error("Erreur lors de la lecture des recherches sauvegardées", error);
+      return []; // Retourner un tableau vide si JSON.parse échoue
+    }
+  }
+  return []; // Retourner un tableau vide si aucun élément n'est trouvé
 };
 
 
@@ -65,22 +78,32 @@ const useFilterDatas = () => {
   }
 
   const savedFilters: Filter[] = getSavedSearches();
+  // Si savedFilters est un tableau et contient des objets
+  const defaultStatus = savedFilters.find((filter) => filter.name === "queryStatus")?.value || searchParams.get("queryStatus") || "";
+  const defaultType = savedFilters.find((filter) => filter.name === "queryType")?.value || searchParams.get("queryType") || "";
+  const defaultCountry = savedFilters.find((filter) => filter.name === "country")?.value || searchParams.get("country") || "";
+  const defaultCity = savedFilters.find((filter) => filter.name === "city")?.value || searchParams.get("city") || "";
 
-  const [selectedStatus, setSelectedStatus] = useState(
-    (savedFilters.find((filter: Filter) => filter.name === "queryStatus")?.value
-      || searchParams.get("queryStatus")) ?? ""
-  );
-  console.log('selectedStatus', selectedStatus)
+
+  const [selectedStatus, setSelectedStatus] = useState(defaultStatus);
+  const [selectedType, setSelectedType] = useState(defaultType);
+  const [selectedCountry, setSelectedCountry] = useState(defaultCountry);
+  const [selectedCity, setSelectedCity] = useState(defaultCity)
+  // const [selectedStatus, setSelectedStatus] = useState(
+  //   (savedFilters.find((filter: Filter) => filter.name === "queryStatus")?.value
+  //     || searchParams.get("queryStatus")) ?? ""
+  // );
+  console.log("QueryStatus:", selectedStatus);
 
   const [statuses, setStatuses] = useState<PropertyStatus[]>([]);
   // const [selectedType, setSelectedType] = useState(
   //   searchParams.get("queryType") ?? ""
   // );
 
-  const [selectedType, setSelectedType] = useState(
-    (savedFilters.find((filter: Filter) => filter.name === "queryType")?.value
-      || searchParams.get("queryType")) ?? ""
-  );
+  // const [selectedType, setSelectedType] = useState(
+  //   (savedFilters.find((filter: Filter) => filter.name === "queryType")?.value
+  //     || searchParams.get("queryType")) ?? ""
+  // );
   const [types, setTypes] = useState<PropertyType[]>([]);
   const typesWithNoneOption = [
     { id: "none", value: "Tout Type de bien" },
@@ -106,17 +129,17 @@ const useFilterDatas = () => {
   // const [selectedCountry, setSelectedCountry] = useState(
   //   searchParams.get("country") ?? ""
   // );
-  const [selectedCountry, setSelectedCountry] = useState(
-    (savedFilters.find((filter: Filter) => filter.name === "country")?.value
-      || searchParams.get("country")) ?? ""
-  );
+  // const [selectedCountry, setSelectedCountry] = useState(
+  //   (savedFilters.find((filter: Filter) => filter.name === "country")?.value
+  //     || searchParams.get("country")) ?? ""
+  // );
   // const [selectedCity, setSelectedCity] = useState(
   //   searchParams.get("city") ?? ""
   // );
-  const [selectedCity, setSelectedCity] = useState(
-    (savedFilters.find((filter: Filter) => filter.name === "city")?.value
-      || searchParams.get("city")) ?? ""
-  );
+  // const [selectedCity, setSelectedCity] = useState(
+  //   (savedFilters.find((filter: Filter) => filter.name === "city")?.value
+  //     || searchParams.get("city")) ?? ""
+  // );
   // const [filterDatas, setFilterDatas] = useState<SelectFilterTypes>([]);
   const [filterDatas, setFilterDatas] = useState<SelectFilterTypes>([]);
 
