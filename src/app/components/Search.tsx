@@ -799,6 +799,7 @@ import useModalOpen from "../hooks/useModalOpen"; // ajout
 import SearchSlider from "./SearchSlider";
 import SearchSelect from "./SearchSelect";
 import useFilterDatas from "../hooks/useFilterDatas";
+import { div } from "framer-motion/client";
 
 const Search = () => {
   const [loading, setLoading] = useState(false);
@@ -880,6 +881,7 @@ const Search = () => {
   useEffect(() => {
     if (!openModal) {
       selectFilters.map((item) => {
+        console.log('test item', item)
         if (item.rangeName && item.setRange) {
           const minRange = searchParams.get(item.rangeName[0]);
           const maxRange = searchParams.get(item.rangeName[1]);
@@ -1163,7 +1165,7 @@ const Search = () => {
 
   // Accédez à l'élément dans le sous-tableau à l'index 0
   const filters = savedFilters[0] || [];
-  console.log('get data local', filters)
+  // console.log('get data local', filters)
 
   return (
 
@@ -1202,7 +1204,7 @@ const Search = () => {
             >
               <div className="flex flex-col gap-4 justify-center items-center">
                 {selectFilters.map((item, index) => {
-                  console.log("Item:", item);  // Affiche l'élément à chaque itération
+                  // console.log("Item:", item);  // Affiche l'élément à chaque itération
                   return (
                     <Fragment key={index}>
                       {item.type === "slider" ? (
