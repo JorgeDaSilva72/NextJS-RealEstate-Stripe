@@ -119,18 +119,26 @@ import {
   SelectItem,
   Textarea,
   cn,
+  useDisclosure,
 } from "@nextui-org/react";
-import React from "react";
+import React, { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { AddPropertyInputType } from "./AddPropertyForm";
 import { citiesOfMorocco } from "@/app/data/cities";
 import { countries } from "@/app/data/countries";
+import { getUserSub, numberOfSubInCity } from "@/lib/actions/subscription";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import SubModal from "./SubModal";
 
 interface Props {
   next: () => void;
   prev: () => void;
   className?: string;
 }
+
+const message = "Votre abonnement gratuit ne vous permet pas d'ajouter une nouvelle annonce dans cette ville. Mettez à niveau votre abonnement pour continuer."
 
 const Location = (props: Props) => {
   const {
@@ -140,8 +148,21 @@ const Location = (props: Props) => {
     setValue,
     getValues,
   } = useFormContext<AddPropertyInputType>();
+  const {user}= useKindeBrowserClient();
+  const router = useRouter();
+  const { onOpen, isOpen } = useDisclosure();
 
   const handleNext = async () => {
+    if (!user) return router.push("/")
+    const userPlan = await getUserSub(user.id);
+    if (userPlan?.plan.namePlan.toLocaleLowerCase() == "gratuit") {
+      const city = getValues().location.city;
+      const nbrSubFreeInTheCity = await numberOfSubInCity({planId: userPlan.palnId, city })
+      if (nbrSubFreeInTheCity > 3) {
+        onOpen()
+        return;
+      }
+    }
     if (
       await trigger([
         "location.streetAddress",
@@ -157,6 +178,7 @@ const Location = (props: Props) => {
 
   return (
     <>
+     <SubModal isOpen={isOpen} modalMessage={message} />
       <Card
         className={cn(
           "p-2 grid grid-cols-1 md:grid-cols-2 gap-3",

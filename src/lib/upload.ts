@@ -10,7 +10,7 @@ export async function uploadImages(images: File[]) {
     images.map((file) =>
       supabase.storage
         .from("propertyImages")
-        .upload(`${file.name}_${Date.now()}`, file)
+        .upload(`${file.name.split(".").at(-2)}_${Date.now()}.${file.name.split(".").at(-1)}`, file)
     )
   );
 
