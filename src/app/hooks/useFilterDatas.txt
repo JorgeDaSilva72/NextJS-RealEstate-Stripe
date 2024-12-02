@@ -50,36 +50,15 @@ const useFilterDatas = () => {
   const searchParams = useSearchParams();
   const fetchValue = useFetchValues();
 
-
-
-
-  // const [selectedStatus, setSelectedStatus] = useState(
-  //   searchParams.get("queryStatus") ?? ""
-  // );
-
-  //Riv
   // Initialiser les états avec les valeurs de LocalStorage ou des valeurs par défaut
-  interface Filter {
-    name: string;
-    value: string;
-  }
-
-  const savedFilters: Filter[] = getSavedSearches();
+  const savedFilters = getSavedSearches();
 
   const [selectedStatus, setSelectedStatus] = useState(
-    (savedFilters.find((filter: Filter) => filter.name === "queryStatus")?.value
-      || searchParams.get("queryStatus")) ?? ""
+    searchParams.get("queryStatus") ?? ""
   );
-  console.log('selectedStatus', selectedStatus)
-
   const [statuses, setStatuses] = useState<PropertyStatus[]>([]);
-  // const [selectedType, setSelectedType] = useState(
-  //   searchParams.get("queryType") ?? ""
-  // );
-
   const [selectedType, setSelectedType] = useState(
-    (savedFilters.find((filter: Filter) => filter.name === "queryType")?.value
-      || searchParams.get("queryType")) ?? ""
+    searchParams.get("queryType") ?? ""
   );
   const [types, setTypes] = useState<PropertyType[]>([]);
   const typesWithNoneOption = [
@@ -103,21 +82,12 @@ const useFilterDatas = () => {
   const [bedroomsRange, setBedroomsRange] = useState([0, 10]);
   const [bathroomsRange, setBathroomsRange] = useState([0, 10]);
   const [sortOrder, setSortOrder] = useState("");
-  // const [selectedCountry, setSelectedCountry] = useState(
-  //   searchParams.get("country") ?? ""
-  // );
   const [selectedCountry, setSelectedCountry] = useState(
-    (savedFilters.find((filter: Filter) => filter.name === "country")?.value
-      || searchParams.get("country")) ?? ""
+    searchParams.get("country") ?? ""
   );
-  // const [selectedCity, setSelectedCity] = useState(
-  //   searchParams.get("city") ?? ""
-  // );
   const [selectedCity, setSelectedCity] = useState(
-    (savedFilters.find((filter: Filter) => filter.name === "city")?.value
-      || searchParams.get("city")) ?? ""
+    searchParams.get("city") ?? ""
   );
-  // const [filterDatas, setFilterDatas] = useState<SelectFilterTypes>([]);
   const [filterDatas, setFilterDatas] = useState<SelectFilterTypes>([]);
 
 

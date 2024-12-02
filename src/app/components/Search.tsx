@@ -908,66 +908,7 @@ const Search = () => {
         }
       });
     }
-    //   // const minPrice = searchParams.get("minPrice");
-    //   // const maxPrice = searchParams.get("maxPrice");
-    //   // if (minPrice && maxPrice) {
-    //   //   setPriceRange([Number(minPrice), Number(maxPrice)]);
-    //   // }
-
-    //   // const minArea = searchParams.get("minArea");
-    //   // const maxArea = searchParams.get("maxArea");
-    //   // if (minArea && maxArea) {
-    //   //   setAreaRange([Number(minArea), Number(maxArea)]);
-    //   // }
-
-    //   // const minBedrooms = searchParams.get("minBedrooms");
-    //   // const maxBedrooms = searchParams.get("maxBedrooms");
-    //   // if (minBedrooms && maxBedrooms) {
-    //   //   setBedroomsRange([Number(minBedrooms), Number(maxBedrooms)]);
-    //   // }
-
-    //   // const minBathrooms = searchParams.get("minBathrooms");
-    //   // const maxBathrooms = searchParams.get("maxBathrooms");
-    //   // if (minBathrooms && maxBathrooms) {
-    //   //   setBathroomsRange([Number(minBathrooms), Number(maxBathrooms)]);
-    //   // }
-
-    //   // const sortOrder = searchParams.get("sortOrder");
-    //   // if (sortOrder) {
-    //   //   setSortOrder(sortOrder);
-    //   // } else {
-    //   //   setSortOrder(""); // Pas de tri
-    //   // }
-
-    //   // const country = searchParams.get("country");
-    //   // if (country) {
-    //   //   setSelectedCountry(country);
-    //   // } else {
-    //   //   setSelectedCountry("");
-    //   // }
-
-    //   // const city = searchParams.get("city");
-    //   // if (city) {
-    //   //   setSelectedCity(city);
-    //   // } else {
-    //   //   setSelectedCity("");
-    //   // }
   }, [searchParams, selectFilters, openModal]);
-
-  // useEffect(() => {
-  //   // Afficher les filtres avancés si des critères avancés sont présents dans l'URL
-  //   const hasAdvancedFilters =
-  //     searchParams.get("minPrice") ||
-  //     searchParams.get("maxPrice") ||
-  //     searchParams.get("minArea") ||
-  //     searchParams.get("maxArea") ||
-  //     searchParams.get("minBedrooms") ||
-  //     searchParams.get("maxBedrooms") ||
-  //     searchParams.get("minBathrooms") ||
-  //     searchParams.get("maxBathrooms");
-
-  //   setShowAdvancedFilters(Boolean(hasAdvancedFilters));
-  // }, [searchParams]);
 
   const handleInputChange = (query: string) => {
     setSearchQuery(query); // Met à jour l'état local
