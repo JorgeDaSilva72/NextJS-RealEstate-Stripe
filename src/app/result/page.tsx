@@ -172,6 +172,15 @@ export default async function Home({ searchParams }: Props) {
           ...(maxBathrooms !== undefined && { lte: maxBathrooms }),
         },
       },
+      user: {
+        subscriptions: {
+          some: {
+            endDate: {
+              gt: new Date()
+            }
+          }
+        }
+      }
     },
     // ...(sortOrder && { orderBy: { price: sortOrder } }), // Inclure seulement si sortOrder est défini
     orderBy, // Ajoutez la liste des critères de tri
@@ -242,6 +251,15 @@ export default async function Home({ searchParams }: Props) {
           ...(maxBathrooms !== undefined && { lte: maxBathrooms }),
         },
       },
+      user: {
+        subscriptions: {
+          some: {
+            endDate: {
+              gt: new Date()
+            }
+          }
+        }
+      }
     },
   });
 
