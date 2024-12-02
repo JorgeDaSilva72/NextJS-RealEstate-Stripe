@@ -878,44 +878,104 @@ const Search = () => {
   //   fetchTypes();
   // }, []);
 
+  // useEffect(() => {    
+  //   if (!openModal) {
+  //     const savedFilters = getSavedSearches();
+  //     const localStorageFilters = savedFilters[0] || [];
+  //     console.log('localstorageFilters', localStorageFilters)
+
+  //     selectFilters.map((item) => {
+  //       console.log('test item', item.name)
+  //       if (item.rangeName && item.setRange) {
+  //         const minRange = searchParams.get(item.rangeName[0]);
+  //         const maxRange = searchParams.get(item.rangeName[1]);
+  //         if (minRange && maxRange) {
+  //           item.setRange([Number(minRange), Number(maxRange)]);
+  //         }
+  //       } else if (
+  //         item.name &&
+  //         item.setValue &&
+  //         item.type !== "slider" &&
+  //         item.items
+  //       ) {
+  //         const searchString = searchParams.get(item.name);
+  //         let matchItem = item.items.find(
+  //           (value) => value.value == searchString
+  //         );
+  //         if (item.name == "sortOrder")
+  //           matchItem = matchItem = item.items.find(
+  //             (value) => value.id == searchString
+  //           );
+  //         if (matchItem) {
+  //           item.setValue(matchItem?.id.toString());
+  //         } else {
+  //           item.setValue(""); // Pas de tri
+  //         }
+  //       }
+  //     });
+  //   }
+  // }, [searchParams, selectFilters, openModal]);
+
+  // const handleInputChange = (query: string) => {
+  //   setSearchQuery(query); // Met à jour l'état local
+  //   handleChange(query); // Débounced callback pour l'URL
+  // };
+
   useEffect(() => {
     if (!openModal) {
+      const savedFilters = getSavedSearches();
+      const localStorageFilters = savedFilters[0] || [];
+      console.log('localstorageFilters', localStorageFilters)
+
       selectFilters.map((item) => {
-        console.log('test item', item)
-        if (item.rangeName && item.setRange) {
-          const minRange = searchParams.get(item.rangeName[0]);
-          const maxRange = searchParams.get(item.rangeName[1]);
-          if (minRange && maxRange) {
-            item.setRange([Number(minRange), Number(maxRange)]);
+        // console.log('test item', item.name)
+
+        // Priorité aux données de LocalStorage
+        const savedFilters: Filter[][] = getSavedSearches() || [];
+        const localStorageFilters: Filter[] = savedFilters[0] || [];
+        const savedFilter = localStorageFilters.find((f: Filter) => f.name === item.name);
+        // console.log('test find', savedFilter)
+
+
+        if (savedFilter) {
+          // Si c'est un filtre de type "slider"
+          if (savedFilter.type === "slider" && savedFilter.range) {
+            item.setRange && item.setRange(savedFilter.range);
+          } else if (savedFilter.value) {
+            // Autres types de filtres avec une valeur
+            item.setValue && item.setValue(savedFilter.value);
           }
-        } else if (
-          item.name &&
-          item.setValue &&
-          item.type !== "slider" &&
-          item.items
-        ) {
-          const searchString = searchParams.get(item.name);
-          let matchItem = item.items.find(
-            (value) => value.value == searchString
-          );
-          if (item.name == "sortOrder")
-            matchItem = matchItem = item.items.find(
-              (value) => value.id == searchString
+        } else {
+          // Si pas de filtre trouvé dans LocalStorage, utiliser les searchParams
+          if (item.rangeName && item.setRange) {
+            const minRange = searchParams.get(item.rangeName[0]);
+            const maxRange = searchParams.get(item.rangeName[1]);
+            if (minRange && maxRange) {
+              item.setRange([Number(minRange), Number(maxRange)]);
+            }
+          } else if (
+            item.name &&
+            item.setValue &&
+            item.type !== "slider" &&
+            item.items
+          ) {
+            const searchString = searchParams.get(item.name);
+            let matchItem = item.items.find(
+              (value) => value.value == searchString
             );
-          if (matchItem) {
-            item.setValue(matchItem?.id.toString());
-          } else {
-            item.setValue(""); // Pas de tri
+            if (item.name == "sortOrder")
+              matchItem = item.items.find((value) => value.id == searchString);
+
+            if (matchItem) {
+              item.setValue(matchItem?.id.toString());
+            } else {
+              item.setValue(""); // Pas de tri
+            }
           }
         }
       });
     }
   }, [searchParams, selectFilters, openModal]);
-
-  const handleInputChange = (query: string) => {
-    setSearchQuery(query); // Met à jour l'état local
-    handleChange(query); // Débounced callback pour l'URL
-  };
 
 
   const handleChange = useDebouncedCallback(async (query: string) => {
