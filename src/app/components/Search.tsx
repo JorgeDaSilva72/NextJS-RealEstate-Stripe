@@ -1359,33 +1359,36 @@ const Search = () => {
   [scrollbar-width:none]"
             >
               <div className="flex flex-col gap-4 justify-center items-center">
-                {selectFilters.map((item, index) => (
-                  <Fragment key={index}>
-                    {item.type === "slider" ? (
-                      <SearchSlider
-                        ariaLabel={item.ariaLabel}
-                        value={item.range || []}
-                        step={item.step || 1}
-                        rangeValue={item.rangeValue || [0, 10]}
-                        searchParams={searchParams}
-                        setValue={item.setRange}
-                        name={item.name}
-                        formatOptions={item.formatOptions}
-                        rangeName={item.rangeName || []}
-                      />
-                    ) : (
-                      <SearchSelect
-                        ariaLabel={item.ariaLabel}
-                        placeholder={item.placeholder || ""}
-                        value={item.value || ""}
-                        setValue={item.setValue}
-                        values={item.items || []}
-                        searchParams={searchParams}
-                        name={item.name}
-                      />
-                    )}
-                  </Fragment>
-                ))}
+                {selectFilters.map((item, index) => {
+                  console.log("Item:", item);  // Affiche l'élément à chaque itération
+                  return (
+                    <Fragment key={index}>
+                      {item.type === "slider" ? (
+                        <SearchSlider
+                          ariaLabel={item.ariaLabel}
+                          value={item.range || []}
+                          step={item.step || 1}
+                          rangeValue={item.rangeValue || [0, 10]}
+                          searchParams={searchParams}
+                          setValue={item.setRange}
+                          name={item.name}
+                          formatOptions={item.formatOptions}
+                          rangeName={item.rangeName || []}
+                        />
+                      ) : (
+                        <SearchSelect
+                          ariaLabel={item.ariaLabel}
+                          placeholder={item.placeholder || ""}
+                          value={item.value || ""}
+                          setValue={item.setValue}
+                          values={item.items || []}
+                          searchParams={searchParams}
+                          name={item.name}
+                        />
+                      )}
+                    </Fragment>
+                  );
+                })}
               </div>
             </div>
             {/* <div className="flex mt-3 justify-between items-center w-full px-8 max-440:px-6"> */}
