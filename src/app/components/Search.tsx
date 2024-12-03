@@ -246,30 +246,43 @@ const Search = () => {
             >
               <div className="flex flex-col gap-4 justify-center items-center">
                 {selectFilters.map((item, index) => {
+
+                  const localStorageFilters = localFilters[0] || [];
+                  // Trouver le filtre sauvegardé correspondant
+                  const savedFilter = localStorageFilters.find((f) => f.name === item.name);
+                  const updatedItem = savedFilter
+                    ? {
+                      ...item,
+                      value: savedFilter.value || item.value,
+                      range: savedFilter.range || item.range,
+                    }
+                    : item;
+
+                  console.log("Item:", updatedItem);
                   // console.log("Item:", item);  // Affiche l'élément à chaque itération
                   return (
                     <Fragment key={index}>
                       {item.type === "slider" ? (
                         <SearchSlider
-                          ariaLabel={item.ariaLabel}
-                          value={item.range || []}
-                          step={item.step || 1}
-                          rangeValue={item.rangeValue || [0, 10]}
+                          ariaLabel={updatedItem.ariaLabel}
+                          value={updatedItem.range || []}
+                          step={updatedItem.step || 1}
+                          rangeValue={updatedItem.rangeValue || [0, 10]}
                           searchParams={searchParams}
-                          setValue={item.setRange}
-                          name={item.name}
-                          formatOptions={item.formatOptions}
-                          rangeName={item.rangeName || []}
+                          setValue={updatedItem.setRange}
+                          name={updatedItem.name}
+                          formatOptions={updatedItem.formatOptions}
+                          rangeName={updatedItem.rangeName || []}
                         />
                       ) : (
                         <SearchSelect
-                          ariaLabel={item.ariaLabel}
-                          placeholder={item.placeholder || ""}
-                          value={item.value || ""}
-                          setValue={item.setValue}
-                          values={item.items || []}
+                          ariaLabel={updatedItem.ariaLabel}
+                          placeholder={updatedItem.placeholder || ""}
+                          value={updatedItem.value || ""}
+                          setValue={updatedItem.setValue}
+                          values={updatedItem.items || []}
                           searchParams={searchParams}
-                          name={item.name}
+                          name={updatedItem.name}
                         />
                       )}
                     </Fragment>
