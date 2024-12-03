@@ -61,9 +61,31 @@ const useFilterDatas = () => {
   const fetchValue = useFetchValues();
 
 
-  const [selectedStatus, setSelectedStatus] = useState(
+
+  interface FilterItem {
+    name: string;
+    value: string;
+  }
+  // Valeur brute simulée
+  const rawFilters: FilterItem[] = [
+    { name: "queryStatus", value: "3" }
+  ];
+
+  // Déclaration du state
+  const [selectedStatus, setSelectedStatus] = useState<string>(
     searchParams.get("queryStatus") ?? ""
   );
+
+  // Charger la valeur brute dans le state
+  useEffect(() => {
+    const queryStatusItem = rawFilters.find(
+      (item) => item.name === "queryStatus"
+    );
+    if (queryStatusItem) {
+      setSelectedStatus(queryStatusItem.value);
+    }
+  }, []);
+
 
   const [statuses, setStatuses] = useState<PropertyStatus[]>([]);
   const [selectedType, setSelectedType] = useState(
