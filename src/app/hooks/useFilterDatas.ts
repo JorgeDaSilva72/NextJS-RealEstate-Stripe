@@ -63,62 +63,16 @@ const useFilterDatas = () => {
   const searchParams = useSearchParams();
   const fetchValue = useFetchValues();
 
-  // const [selectedStatus, setSelectedStatus] = useState(
-  //   searchParams.get("queryStatus") ?? ""
-  // );
 
-  //Riv
-  // Initialiser les états avec les valeurs de LocalStorage ou des valeurs par défaut
-  interface Filter {
-    name: string;
-    value: string;
-    type?: string;
-    range?: number[];
-  }
-  const savedFilters: Filter[][] = getSavedSearches() || [];
-
-  // Accédez à l'élément dans le sous-tableau à l'index 0
-  const filters = savedFilters[0] || []; // Le premier sous-tableau
-
-  // Si savedFilters est un tableau et contient des objets
-  const defaultStatus =
-    filters.find((filter) => filter.name === "queryStatus")?.value ||
-    searchParams.get("queryStatus") ||
-    "";
-
-  const defaultType =
-    filters.find((filter) => filter.name === "queryType")?.value ||
-    searchParams.get("queryType") ||
-    "";
-
-  const defaultCountry =
-    filters.find((filter) => filter.name === "country")?.value ||
-    searchParams.get("country") ||
-    "";
-
-  const defaultCity =
-    filters.find((filter) => filter.name === "city")?.value ||
-    searchParams.get("city") ||
-    "";
-
-  const [selectedStatus, setSelectedStatus] = useState(defaultStatus);
-  const [selectedType, setSelectedType] = useState(defaultType);
-  const [selectedCountry, setSelectedCountry] = useState(defaultCountry);
-  const [selectedCity, setSelectedCity] = useState(defaultCity)
-  // const [selectedStatus, setSelectedStatus] = useState(
-  //   (savedFilters.find((filter: Filter) => filter.name === "queryStatus")?.value
-  //     || searchParams.get("queryStatus")) ?? ""
-  // );
+  const [selectedStatus, setSelectedStatus] = useState(
+    searchParams.get("queryStatus") ?? ""
+  );
 
   const [statuses, setStatuses] = useState<PropertyStatus[]>([]);
-  // const [selectedType, setSelectedType] = useState(
-  //   searchParams.get("queryType") ?? ""
-  // );
+  const [selectedType, setSelectedType] = useState(
+    searchParams.get("queryType") ?? ""
+  );
 
-  // const [selectedType, setSelectedType] = useState(
-  //   (savedFilters.find((filter: Filter) => filter.name === "queryType")?.value
-  //     || searchParams.get("queryType")) ?? ""
-  // );
   const [types, setTypes] = useState<PropertyType[]>([]);
   const typesWithNoneOption = [
     { id: "none", value: "Tout Type de bien" },
@@ -152,21 +106,12 @@ const useFilterDatas = () => {
   const [bedroomsRange, setBedroomsRange] = useState([0, 10]);
   const [bathroomsRange, setBathroomsRange] = useState([0, 10]);
   const [sortOrder, setSortOrder] = useState("");
-  // const [selectedCountry, setSelectedCountry] = useState(
-  //   searchParams.get("country") ?? ""
-  // );
-  // const [selectedCountry, setSelectedCountry] = useState(
-  //   (savedFilters.find((filter: Filter) => filter.name === "country")?.value
-  //     || searchParams.get("country")) ?? ""
-  // );
-  // const [selectedCity, setSelectedCity] = useState(
-  //   searchParams.get("city") ?? ""
-  // );
-  // const [selectedCity, setSelectedCity] = useState(
-  //   (savedFilters.find((filter: Filter) => filter.name === "city")?.value
-  //     || searchParams.get("city")) ?? ""
-  // );
-  // const [filterDatas, setFilterDatas] = useState<SelectFilterTypes>([]);
+  const [selectedCountry, setSelectedCountry] = useState(
+    searchParams.get("country") ?? ""
+  );
+  const [selectedCity, setSelectedCity] = useState(
+    searchParams.get("city") ?? ""
+  );
   const [filterDatas, setFilterDatas] = useState<SelectFilterTypes>([]);
 
 
@@ -186,17 +131,6 @@ const useFilterDatas = () => {
 
   useEffect(() => {
     const selectFilters: SelectFilterTypes = [
-
-      //Rivah
-      // {
-      //   ariaLabel: "Opération",
-      //   placeholder: "Test",
-      //   name: "queryStatus",
-      //   items: statusWithNoneOptionTest,
-      //   value: selectedStatus,
-      //   setValue: setSelectedStatus,
-      // },
-
 
       {
         ariaLabel: "Opération",
