@@ -6,6 +6,7 @@ import Appbar from "./components/Appbar";
 import SignInPanel from "./components/signInPanel";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FavoriteProvider } from "./context/FavoriteContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,13 +32,15 @@ export default function RootLayout({
         {/* Lien direct vers la favicon */}
       </head>
       <body className={`${inter.className} h-full`}>
-        <Providers>
-          <Appbar>
-            <SignInPanel />
-          </Appbar>
-          {children}
-          <ToastContainer />
-        </Providers>
+        <FavoriteProvider>
+          <Providers>
+            <Appbar>
+              <SignInPanel />
+            </Appbar>
+            {children}
+            <ToastContainer />
+          </Providers>
+        </FavoriteProvider>
       </body>
     </html>
   );

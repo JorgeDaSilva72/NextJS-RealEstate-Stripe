@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+
 import {
   Heart,
   Square,
@@ -15,6 +16,7 @@ import Link from "next/link";
 // import { Prisma } from "@prisma/client";
 import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
 import { formatPrice } from "@/lib/formatPrice";
+import { useFavorites } from "../context/FavoriteContext";
 
 interface Property {
   id: number;
@@ -49,7 +51,8 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
   const [isHovered, setIsHovered] = React.useState(false);
   const [imageError, setImageError] = React.useState(false);
   const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
-
+  const { favorites, toggleFavorite } = useFavorites();
+  const isPropertyFavorite = favorites.includes(property.id);
   if (!property) {
     return null;
   }
@@ -80,14 +83,6 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
       );
     }
   };
-
-  // const formatPrice = (price: number) => {
-  //   return new Intl.NumberFormat("fr-FR", {
-  //     style: "currency",
-  //     currency: "EUR",
-  //     maximumFractionDigits: 0,
-  //   }).format(price);
-  // };
 
   const formatArea = (area: number) => {
     return `${area.toLocaleString("fr-FR")} m²`;
@@ -194,13 +189,16 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
           <button
             onClick={(e) => {
               e.preventDefault();
-              onFavorite?.(property.id);
+              // onFavorite?.(property.id);
+              toggleFavorite(property.id);
             }}
             className="z-10 absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
           >
             <Heart
               className={`w-5 h-5 transition-colors ${
-                isFavorite ? "fill-red-500 text-red-500" : "text-gray-600"
+                isPropertyFavorite
+                  ? "fill-red-500 text-red-500"
+                  : "text-gray-600"
               }`}
             />
           </button>
