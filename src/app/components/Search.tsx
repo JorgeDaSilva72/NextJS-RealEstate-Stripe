@@ -927,26 +927,36 @@ const Search = () => {
       const savedFilters: Filter[][] = getSavedSearches() || [];
       const localStorageFilters: Filter[] = savedFilters[0] || [];
 
+      // console.log('retrieve localstorage', localStorageFilters);
+
+
       // Parcourir les filtres sélectionnés
       selectFilters.forEach((item) => {
         // Trouver un filtre correspondant dans localStorage
+        // console.log('item', item);
+
         const savedFilter = localStorageFilters.find((f) => f.name === item.name);
+        // console.log('filter', savedFilter)
 
         if (savedFilter) {
           // Priorité aux filtres de type "slider"
           if (savedFilter.type === "slider" && savedFilter.range) {
             item.setRange && item.setRange(savedFilter.range);
+            console.log('range filter trouvé')
           } else if (savedFilter.value) {
             // Autres filtres avec une valeur
             item.setValue && item.setValue(savedFilter.value);
+            console.log('save filter trouvé')
           }
         } else {
           // Si aucun filtre sauvegardé, utiliser les searchParams
           if (item.rangeName && item.setRange) {
+            console.log('item trouvé', item.rangeName)
             const minRange = searchParams.get(item.rangeName[0]);
             const maxRange = searchParams.get(item.rangeName[1]);
             if (minRange && maxRange) {
               item.setRange([Number(minRange), Number(maxRange)]);
+              console.log('item range trouvé')
             }
           } else if (
             item.name &&
@@ -1203,11 +1213,11 @@ const Search = () => {
     const savedSearches = localStorage.getItem("savedSearches");
     if (savedSearches) {
       try {
-        console.log('filtre recu')
+        // console.log('filtre recu')
         const parsedSearches = JSON.parse(savedSearches);
         // Vérifier que c'est bien un tableau et qu'il contient les bonnes informations
         if (Array.isArray(parsedSearches) && parsedSearches.length > 0) {
-          console.log('filtre parsedSearches', parsedSearches);
+          // console.log('filtre parsedSearches', parsedSearches);
           return parsedSearches;
 
         }
