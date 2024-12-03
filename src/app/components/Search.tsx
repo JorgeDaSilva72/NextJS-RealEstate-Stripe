@@ -1100,7 +1100,8 @@ const Search = () => {
 
     // Sauvegarder dans LocalStorage (ou une API backend)
     const previousSearches = JSON.parse(localStorage.getItem("savedSearches") || "[]");
-    localStorage.setItem("savedSearches", JSON.stringify([...previousSearches, savedFilters]));
+    previousSearches.push(savedFilters);
+    localStorage.setItem("savedSearches", JSON.stringify([previousSearches]));
 
     // Notifier l'utilisateur
     alert("Votre recherche a été enregistrée !");
@@ -1201,7 +1202,8 @@ const Search = () => {
         }
       });
     }
-  }, [searchParams, selectFilters, openModal]);
+    // }, [searchParams, selectFilters, openModal]);
+  }, [selectFilters, openModal]);
 
   const handleInputChange = (query: string) => {
     setSearchQuery(query); // Met à jour l'état local
