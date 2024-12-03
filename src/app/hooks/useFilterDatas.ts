@@ -27,9 +27,6 @@ const getSavedSearches = () => {
 };
 
 
-
-
-
 export type SelectNameType =
   | "queryStatus"
   | "queryType"
