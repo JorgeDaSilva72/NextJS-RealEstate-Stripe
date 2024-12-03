@@ -799,6 +799,7 @@ import useModalOpen from "../hooks/useModalOpen"; // ajout
 import SearchSlider from "./SearchSlider";
 import SearchSelect from "./SearchSelect";
 import useFilterDatas from "../hooks/useFilterDatas";
+import ButtonClose from "./ButtonClose";
 
 const Search = () => {
   const [loading, setLoading] = useState(false);
@@ -1370,12 +1371,20 @@ const Search = () => {
             >
               X
             </span> */}
-            <button
+            {/* <button
               onClick={() => handleModalOpen(setOpenModal, "auto", false)}
               className="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
             >
               ✕
-            </button>
+            </button> */}
+
+            <ButtonClose
+              top="top-2"
+              right="right-2"
+              width="w-8"
+              height="h-8"
+              onClick={() => handleModalOpen(setOpenModal, "auto", false)}
+            />
             {/* Filtres principaux */}
             {/* <div className="mt-5 overflow-y-scroll overflow-hidden h-88% pl-8 pr-6 scroll-blue max-440:pl-6 max-440:pr-4"> */}
             {/* Scrollable Content */}

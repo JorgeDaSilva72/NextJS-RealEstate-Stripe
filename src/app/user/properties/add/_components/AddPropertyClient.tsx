@@ -13,6 +13,7 @@ import {
 import { PropertyType, PropertyStatus, SubscriptionPlan } from "@prisma/client";
 import AddPropertyForm from "./AddPropertyForm";
 import Link from "next/link";
+import SubModal from "./SubModal";
 
 interface AddPropertyClientProps {
   showModal: boolean;
@@ -51,7 +52,7 @@ const AddPropertyClient: React.FC<AddPropertyClientProps> = ({
   return (
     <>
       {/* Désactive le contrôle de fermeture de la modale */}
-      <Modal isOpen={isOpen} onOpenChange={() => {}} closeButton={false}>
+      {/* <Modal isOpen={isOpen} onOpenChange={() => {}} closeButton={false}>
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
             Abonnement requis
@@ -60,13 +61,13 @@ const AddPropertyClient: React.FC<AddPropertyClientProps> = ({
             <p>{modalMessage}</p>
           </ModalBody>
           <ModalFooter>
-            {/* Bouton qui redirige vers la page d'abonnement sans possibilité de fermer la modale autrement */}
             <Link href="/user/subscription">
               <Button color="primary">Voir les abonnements</Button>
             </Link>
           </ModalFooter>
         </ModalContent>
-      </Modal>
+      </Modal> */}
+      <SubModal isOpen={isOpen} modalMessage={modalMessage} />
       <div>
         {planDetails && (
           <div className="mb-6 bg-gray-100 p-4 rounded shadow">
