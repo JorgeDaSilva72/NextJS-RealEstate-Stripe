@@ -923,31 +923,25 @@ const Search = () => {
 
   useEffect(() => {
     if (!openModal) {
-      const savedFilters = getSavedSearches();
-      const localStorageFilters = savedFilters[0] || [];
-      // console.log('localstorageFilters', localStorageFilters)
+      // Récupérer les filtres sauvegardés dans localStorage
+      const savedFilters: Filter[][] = getSavedSearches() || [];
+      const localStorageFilters: Filter[] = savedFilters[0] || [];
 
-      selectFilters.map((item) => {
-        // console.log('test item', item.name)
-
-        // Priorité aux données de LocalStorage
-        const savedFilters: Filter[][] = getSavedSearches() || [];
-        const localStorageFilters: Filter[] = savedFilters[0] || [];
-        const savedFilter = localStorageFilters.find((f: Filter) => f.name === item.name);
-        console.log('test find', savedFilter)
-        console.log('test item', item.name)
-
+      // Parcourir les filtres sélectionnés
+      selectFilters.forEach((item) => {
+        // Trouver un filtre correspondant dans localStorage
+        const savedFilter = localStorageFilters.find((f) => f.name === item.name);
 
         if (savedFilter) {
-          // Si c'est un filtre de type "slider"
+          // Priorité aux filtres de type "slider"
           if (savedFilter.type === "slider" && savedFilter.range) {
             item.setRange && item.setRange(savedFilter.range);
           } else if (savedFilter.value) {
-            // Autres types de filtres avec une valeur
+            // Autres filtres avec une valeur
             item.setValue && item.setValue(savedFilter.value);
           }
         } else {
-          // Si pas de filtre trouvé dans LocalStorage, utiliser les searchParams
+          // Si aucun filtre sauvegardé, utiliser les searchParams
           if (item.rangeName && item.setRange) {
             const minRange = searchParams.get(item.rangeName[0]);
             const maxRange = searchParams.get(item.rangeName[1]);
@@ -961,16 +955,17 @@ const Search = () => {
             item.items
           ) {
             const searchString = searchParams.get(item.name);
-            let matchItem = item.items.find(
-              (value) => value.value == searchString
-            );
-            if (item.name == "sortOrder")
-              matchItem = item.items.find((value) => value.id == searchString);
+            let matchItem = item.items.find((value) => value.value === searchString);
+
+            // Gestion spécifique pour "sortOrder"
+            if (item.name === "sortOrder") {
+              matchItem = item.items.find((value) => value.id === searchString);
+            }
 
             if (matchItem) {
-              item.setValue(matchItem?.id.toString());
+              item.setValue(matchItem.id.toString());
             } else {
-              item.setValue(""); // Pas de tri
+              item.setValue(""); // Pas de tri par défaut
             }
           }
         }
@@ -980,7 +975,7 @@ const Search = () => {
 
   const handleInputChange = (query: string) => {
     setSearchQuery(query); // Met à jour l'état local
-    handleChange(query); // Débounced callback pour l'URL
+    handleChange(query); // Mise à jour différée (debounced callback)
   };
 
 
