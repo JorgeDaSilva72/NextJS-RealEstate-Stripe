@@ -263,21 +263,12 @@ export default async function Home({ searchParams }: Props) {
     totalPropertiesPromise,
   ]);
 
-
   const totalPages = Math.floor(totalProperties / PAGE_SIZE + 1);
-  console.log('proprieté', propertiesPromise)
-  console.log('total propriété', totalPages)
+  console.log('proprety ravo', properties);
 
   return (
     <div className="w-full min-h-screen bg-gray-100">
       <Search />
-      {/* <div>
-        <p>Query: {query}</p>
-        <p>QueryType: {queryType}</p>
-        <p>Min Price: {minPrice}</p>
-        <p>Max Price: {maxPrice}</p>
-        <p>QueryStatus: {queryStatus}</p>
-      </div> */}
       {properties.length > 0 ? (
         <PropertyContainer totalPages={totalPages} currentPage={+pagenum}>
           {properties.map((propertyItem) => (
