@@ -1159,15 +1159,13 @@ const Search = () => {
 
         if (savedFilter) {
           // Priorité aux filtres de type "slider"
-          console.log('range:', savedFilter.range);
-          console.log('Value:', savedFilter.value);
           if (savedFilter.type === "slider" && savedFilter.range) {
             item.setRange && item.setRange(savedFilter.range);
-            // console.log('range filter trouvé')
+            console.log('range filter trouvé')
           } else if (savedFilter.value) {
             // Autres filtres avec une valeur
             item.setValue && item.setValue(savedFilter.value);
-            // console.log('save filter trouvé')
+            console.log('save filter trouvé')
           }
         } else {
           // Si aucun filtre sauvegardé, utiliser les searchParams
@@ -1202,8 +1200,7 @@ const Search = () => {
         }
       });
     }
-    // }, [searchParams, selectFilters, openModal]);
-  }, [selectFilters, openModal]);
+  }, [searchParams, selectFilters, openModal]);
 
   const handleInputChange = (query: string) => {
     setSearchQuery(query); // Met à jour l'état local
