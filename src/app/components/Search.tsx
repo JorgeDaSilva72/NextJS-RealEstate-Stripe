@@ -1100,8 +1100,7 @@ const Search = () => {
 
     // Sauvegarder dans LocalStorage (ou une API backend)
     const previousSearches = JSON.parse(localStorage.getItem("savedSearches") || "[]");
-    previousSearches.push(savedFilters);
-    localStorage.setItem("savedSearches", JSON.stringify([previousSearches]));
+    localStorage.setItem("savedSearches", JSON.stringify([...previousSearches, savedFilters]));
 
     // Notifier l'utilisateur
     alert("Votre recherche a été enregistrée !");
@@ -1159,13 +1158,15 @@ const Search = () => {
 
         if (savedFilter) {
           // Priorité aux filtres de type "slider"
+          console.log('range:', savedFilter.range);
+          console.log('Value:', savedFilter.value);
           if (savedFilter.type === "slider" && savedFilter.range) {
             item.setRange && item.setRange(savedFilter.range);
-            console.log('range filter trouvé')
+            // console.log('range filter trouvé')
           } else if (savedFilter.value) {
             // Autres filtres avec une valeur
             item.setValue && item.setValue(savedFilter.value);
-            console.log('save filter trouvé')
+            // console.log('save filter trouvé')
           }
         } else {
           // Si aucun filtre sauvegardé, utiliser les searchParams
