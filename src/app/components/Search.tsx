@@ -99,21 +99,14 @@ const Search = () => {
     const savedSearches = localStorage.getItem("savedSearches");
     if (savedSearches) {
       try {
-        // console.log('filtre recu')
         const parsedSearches = JSON.parse(savedSearches);
-        // Vérifier que c'est bien un tableau et qu'il contient les bonnes informations
-        if (Array.isArray(parsedSearches) && parsedSearches.length > 0) {
-          // console.log('filtre parsedSearches', parsedSearches);
-          return parsedSearches;
-
-        }
-        return []; // Retourner un tableau vide si la structure est incorrecte
+        return Array.isArray(parsedSearches) ? parsedSearches : [];
       } catch (error) {
         console.error("Erreur lors de la lecture des recherches sauvegardées", error);
-        return []; // Retourner un tableau vide si JSON.parse échoue
+        return [];
       }
     }
-    return []; // Retourner un tableau vide si aucun élément n'est trouvé
+    return [];  // Retourne un tableau vide si aucune donnée n'est trouvée
   };
 
   // console.log('get data local', filters)
@@ -140,11 +133,12 @@ const Search = () => {
 
         if (savedFilter) {
           if (savedFilter.type === "slider" && savedFilter.range) {
-            item.setRange && item.setRange(savedFilter.range);
+            item.setRange && item.setRange(savedFilter.range || []);  // Applique la plage de valeurs
           } else if (savedFilter.value) {
-            item.setValue && item.setValue(savedFilter.value);
+            item.setValue && item.setValue(savedFilter.value || "");  // Applique la valeur spécifique
           }
         } else {
+          // Si aucune valeur sauvegardée, appliquer les paramètres par défaut
           if (item.rangeName && item.setRange) {
             const minRange = searchParams.get(item.rangeName[0]);
             const maxRange = searchParams.get(item.rangeName[1]);
