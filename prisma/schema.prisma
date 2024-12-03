@@ -6,10 +6,10 @@ generator client {
 }
 //Developement
 
-datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
-}
+// datasource db {
+//   provider = "sqlite"
+//   url      = env("DATABASE_URL")
+// }
 
 // PRODUCTION avec Postgres DB IN VERCEL 
 // datasource db {
@@ -20,12 +20,12 @@ datasource db {
 // PRODUCTION avec Postgres DB IN NEON
 
 
-//datasource db {
-  //provider  = "postgresql"
-  //url  	    = env("DATABASE_URL")
-  // uncomment next line if you use Prisma <5.10
+datasource db {
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
+  //uncomment next line if you use Prisma <5.10
   // directUrl = env("DATABASE_URL_UNPOOLED")
-//}
+}
 
 model User {
   id            String          @id

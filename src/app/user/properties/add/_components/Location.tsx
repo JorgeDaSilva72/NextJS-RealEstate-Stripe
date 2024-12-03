@@ -373,7 +373,7 @@ const Location = (props: Props) => {
         planId: userPlan.palnId,
         city,
       });
-      if (nbrSubFreeInTheCity > 3) {
+      if (nbrSubFreeInTheCity >= 3) {
         onOpen();
         return;
       }

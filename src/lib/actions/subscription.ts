@@ -161,7 +161,7 @@ export const saveFreeSubscription = async ({
       };
     const nbrUserFreeInCity = await numberOfSubInCity({ planId, city });
 
-    if (nbrUserFreeInCity > 3)
+    if (nbrUserFreeInCity >= 3)
       return {
         success: false,
         message:
