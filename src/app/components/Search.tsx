@@ -925,7 +925,7 @@ const Search = () => {
     if (!openModal) {
       const savedFilters = getSavedSearches();
       const localStorageFilters = savedFilters[0] || [];
-      console.log('localstorageFilters', localStorageFilters)
+      // console.log('localstorageFilters', localStorageFilters)
 
       selectFilters.map((item) => {
         // console.log('test item', item.name)
@@ -934,7 +934,8 @@ const Search = () => {
         const savedFilters: Filter[][] = getSavedSearches() || [];
         const localStorageFilters: Filter[] = savedFilters[0] || [];
         const savedFilter = localStorageFilters.find((f: Filter) => f.name === item.name);
-        // console.log('test find', savedFilter)
+        console.log('test find', savedFilter)
+        console.log('test item', item.name)
 
 
         if (savedFilter) {
