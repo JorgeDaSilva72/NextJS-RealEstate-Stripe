@@ -1,4 +1,6 @@
+"use server";
 import { createClient } from "@supabase/supabase-js";
+import sharp from "sharp";
 
 export async function uploadImages(images: File[]) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -24,7 +26,26 @@ export async function uploadImages(images: File[]) {
   return urls;
 }
 
-export async function removeImages(images: string[]) {
+export async function uploadImagesToWebp(base64Image: string, name: string, storage: "propertyImages" | "avatars") {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  const buffer = Buffer.from(base64Image, "base64");
+  const webpBuffer = await sharp(buffer)
+    .webp()
+    .toBuffer();
+  const data = await supabase.storage
+    .from(storage)
+    .upload(`${name.split(".").at(-2)}_${Date.now()}.webp`, webpBuffer)
+
+  return supabase.storage
+    .from(storage)
+    .getPublicUrl(data?.data?.path ?? "").data.publicUrl
+}
+
+export async function removeImages(images: string[], storage: "propertyImages" | "avatars") {
   if (!images || images.length == 0) return;
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -33,7 +54,7 @@ export async function removeImages(images: string[]) {
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   const { data, error } = await supabase.storage
-    .from("propertyImages")
+    .from(storage)
     .remove(images);
 
   if (error) {
@@ -41,7 +62,7 @@ export async function removeImages(images: string[]) {
     return;
   }
 
-  data.map(item =>console.log('Fichier supprimé avec succès:', item.name))
+  data.map(item => console.log('Fichier supprimé avec succès:', item.name))
 }
 
 export async function uploadAvatar(image: File) {

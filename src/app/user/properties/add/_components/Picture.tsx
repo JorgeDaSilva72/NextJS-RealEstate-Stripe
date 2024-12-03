@@ -24,6 +24,9 @@ interface Props {
   isPremium: boolean;
 }
 
+const MAX_SIZE_MB = 2; // Limite en Mo
+export const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024; // Conversion en octets
+
 const Picture = ({
   next,
   prev,
@@ -71,8 +74,15 @@ const Picture = ({
       return;
     }
 
+    const validFileSizes = selectedFiles.filter((file) => file.size <= MAX_SIZE_BYTES)
+
+    if (selectedFiles.length !== validFileSizes.length) {
+      setError("Certains fichiers sont plus grand que 2Mo.");
+      return;
+    }
+    
     setError(null);
-    setImages([...validFiles, ...images]);
+    setImages([...validFileSizes, ...images]);
   };
 
   // Gère la suppression des images locales

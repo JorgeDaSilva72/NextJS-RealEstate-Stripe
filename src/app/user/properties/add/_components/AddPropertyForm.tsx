@@ -21,11 +21,12 @@ import { z } from "zod";
 import { AddPropertyFormSchema } from "@/lib/zodSchema";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { removeImages, uploadImages } from "@/lib/upload";
+import { removeImages, uploadImages, uploadImagesToWebp } from "@/lib/upload";
 import { editProperty, saveProperty } from "@/lib/actions/property";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import fileToBase64 from "@/lib/fileToBase64";
 
 const steps = [
   {
@@ -109,16 +110,21 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
 
   const onSubmit: SubmitHandler<AddPropertyInputType> = async (data) => {
     console.log("data from addPropertyInputType:", { data });
-    const imageUrls = await uploadImages(images);
-
+    
     try {
+    const imageUrls = await Promise.all(images.map(async (img) => {
+      const base64 = await fileToBase64(img);
+      const url = await uploadImagesToWebp(base64, img.name, "propertyImages")
+      return url;
+    }))
+
       if (isEdit && props.property) {
         const deletedImages = props.property?.images
           .filter((item) => !savedImagesUrl.includes(item))
 
         const deletedImageIDs = deletedImages.map((item) => item.id);
         const deletedImageURLs = deletedImages.map(item => item.url.split("/").at(-1)).filter(item => item !== undefined);
-        await removeImages(deletedImageURLs);
+        await removeImages(deletedImageURLs, "propertyImages");
         // const deletedVideosIDs = props.property?.videos
         //   .filter((item) => !savedVideosUrl.includes(item))
         //   .map((item) => item.id);
