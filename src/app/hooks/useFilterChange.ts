@@ -43,6 +43,7 @@ const useFilterChange = () => {
       values?.find((item) => String(item.id) === selectedId) || null;
 
     if (selected) {
+      console.log('selected', selected)
       setValue(selected.id.toString());
       params.set(
         name,

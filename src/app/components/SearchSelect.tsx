@@ -49,11 +49,14 @@ const SearchSelect = ({
         )
       }
     >
-      {values.map((item) => (
-        <SelectItem key={item.id} value={item.id}>
-          {item.value}
-        </SelectItem>
-      ))}
+      {values.map((item) => {
+        // console.log('item', item)
+        return (
+          <SelectItem key={item.id} value={item.id}>
+            {item.value}
+          </SelectItem>
+        )
+      })}
     </Select>
   );
 };

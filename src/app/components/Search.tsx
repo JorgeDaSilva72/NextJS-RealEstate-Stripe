@@ -115,23 +115,20 @@ const Search = () => {
     }
     return []; // Retourner un tableau vide si aucun élément n'est trouvé
   };
+
+  // console.log('get data local', filters)
+
   interface Filter {
     name: string;
     value: string;
     type?: string;
     range?: number[];
   }
-  const savedFilters: Filter[][] = getSavedSearches() || [];
-
-  // Accédez à l'élément dans le sous-tableau à l'index 0
-  const filters = savedFilters[0] || [];
-  // console.log('get data local', filters)
-
   const [localFilters, setLocalFilters] = useState<Filter[][]>([]);
 
   useEffect(() => {
-    const savedFilters = getSavedSearches() || [];
-    setLocalFilters(savedFilters);
+    const localFilters = getSavedSearches() || [];
+    setLocalFilters(localFilters);
   }, []);
 
   useEffect(() => {
@@ -244,7 +241,7 @@ const Search = () => {
   [-ms-overflow-style:none] 
   [scrollbar-width:none]"
             >
-              {/*
+
               <div className="flex flex-col gap-4 justify-center items-center">
                 {selectFilters.map((item, index) => {
                   // console.log("Item:", item);  // Affiche l'élément à chaque itération
@@ -276,8 +273,8 @@ const Search = () => {
                     </Fragment>
                   );
                 })}
-              </div> */}
-              <div className="flex flex-col gap-4 justify-center items-center">
+              </div>
+              {/* <div className="flex flex-col gap-4 justify-center items-center">
                 {selectFilters.map((item, index) => {
                   const localStorageFilters = localFilters[0] || [];
                   // Trouver le filtre sauvegardé correspondant
@@ -318,7 +315,7 @@ const Search = () => {
                     </Fragment>
                   );
                 })}
-              </div>
+              </div> */}
             </div>
             {/* <div className="flex mt-3 justify-between items-center w-full px-8 max-440:px-6"> */}
             <div className="flex flex-col md:flex-row justify-between p-4 bg-white/10 backdrop-blur-sm">
