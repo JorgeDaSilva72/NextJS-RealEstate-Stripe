@@ -921,85 +921,6 @@ const Search = () => {
   //   handleChange(query); // Débounced callback pour l'URL
   // };
 
-  useEffect(() => {
-    if (!openModal) {
-      // Récupérer les filtres sauvegardés dans localStorage
-      const savedFilters: Filter[][] = getSavedSearches() || [];
-      const localStorageFilters: Filter[] = savedFilters[0] || [];
-
-      // console.log('retrieve localstorage', localStorageFilters);
-
-
-      // Parcourir les filtres sélectionnés
-      selectFilters.forEach((item) => {
-        // Trouver un filtre correspondant dans localStorage
-        // console.log('item', item);
-
-        const savedFilter = localStorageFilters.find((f) => f.name === item.name);
-        // console.log('filter', savedFilter)
-
-        if (savedFilter) {
-          // Priorité aux filtres de type "slider"
-          if (savedFilter.type === "slider" && savedFilter.range) {
-            item.setRange && item.setRange(savedFilter.range);
-            console.log('range filter trouvé')
-          } else if (savedFilter.value) {
-            // Autres filtres avec une valeur
-            item.setValue && item.setValue(savedFilter.value);
-            console.log('save filter trouvé')
-          }
-        } else {
-          // Si aucun filtre sauvegardé, utiliser les searchParams
-          if (item.rangeName && item.setRange) {
-            console.log('item trouvé', item.rangeName)
-            const minRange = searchParams.get(item.rangeName[0]);
-            const maxRange = searchParams.get(item.rangeName[1]);
-            if (minRange && maxRange) {
-              item.setRange([Number(minRange), Number(maxRange)]);
-              console.log('item range trouvé')
-            }
-          } else if (
-            item.name &&
-            item.setValue &&
-            item.type !== "slider" &&
-            item.items
-          ) {
-            const searchString = searchParams.get(item.name);
-            let matchItem = item.items.find((value) => value.value === searchString);
-
-            // Gestion spécifique pour "sortOrder"
-            if (item.name === "sortOrder") {
-              matchItem = item.items.find((value) => value.id === searchString);
-            }
-
-            if (matchItem) {
-              item.setValue(matchItem.id.toString());
-            } else {
-              item.setValue(""); // Pas de tri par défaut
-            }
-          }
-        }
-      });
-    }
-  }, [searchParams, selectFilters, openModal]);
-
-  const handleInputChange = (query: string) => {
-    setSearchQuery(query); // Met à jour l'état local
-    handleChange(query); // Mise à jour différée (debounced callback)
-  };
-
-
-  const handleChange = useDebouncedCallback(async (query: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (query) {
-      params.set("query", query);
-      setLoading(true);
-    } else {
-      params.delete("query");
-    }
-    router.replace(`${pathName}?${params.toString()}`);
-    setLoading(false);
-  }, 500);
 
   // const handleStatusChange = (type: string) => {
   //   const selectedId = Array.from(type)[0] as string;
@@ -1158,29 +1079,6 @@ const Search = () => {
   // };
 
   // j utilise une clé dynamique pour synchroniser les select avec les states
-  const [resetKey, setResetKey] = useState(0);
-  // Fonction pour réinitialiser tous les filtres
-  const resetFilters = () => {
-    selectFilters.map((item) => {
-      if (item.type === "slider" && item.setRange && item.rangeValue) {
-        item.setRange(item.rangeValue);
-      } else if (item.type !== "slider" && item.setValue) {
-        item.setValue("");
-      }
-    });
-    // setSearchQuery(""); // Réinitialise la recherche
-    // setSelectedStatus("");
-    // setSelectedType("");
-    // setSortOrder("");
-    // setPriceRange([0, 1000000]);
-    // setAreaRange([0, 1000]);
-    // setBedroomsRange([0, 10]);
-    // setBathroomsRange([0, 10]);
-
-    setResetKey((prev) => prev + 1);
-    // Supprime tous les paramètres de l'URL
-    router.replace(pathName);
-  };
 
   //Riv
   const saveSearch = () => {
@@ -1240,6 +1138,114 @@ const Search = () => {
   // Accédez à l'élément dans le sous-tableau à l'index 0
   const filters = savedFilters[0] || [];
   // console.log('get data local', filters)
+
+  useEffect(() => {
+    if (!openModal) {
+      // Récupérer les filtres sauvegardés dans localStorage
+      const savedFilters: Filter[][] = getSavedSearches() || [];
+      const localStorageFilters: Filter[] = savedFilters[0] || [];
+
+      // console.log('retrieve localstorage', localStorageFilters);
+
+
+      // Parcourir les filtres sélectionnés
+      selectFilters.forEach((item) => {
+        // Trouver un filtre correspondant dans localStorage
+        // console.log('item', item);
+
+        const savedFilter = localStorageFilters.find((f) => f.name === item.name);
+        // console.log('filter', savedFilter)
+
+        if (savedFilter) {
+          // Priorité aux filtres de type "slider"
+          console.log('range:', savedFilter.range);
+          console.log('Value:', savedFilter.value);
+          if (savedFilter.type === "slider" && savedFilter.range) {
+            item.setRange && item.setRange(savedFilter.range);
+            // console.log('range filter trouvé')
+          } else if (savedFilter.value) {
+            // Autres filtres avec une valeur
+            item.setValue && item.setValue(savedFilter.value);
+            // console.log('save filter trouvé')
+          }
+        } else {
+          // Si aucun filtre sauvegardé, utiliser les searchParams
+          if (item.rangeName && item.setRange) {
+            console.log('item trouvé', item.rangeName)
+            const minRange = searchParams.get(item.rangeName[0]);
+            const maxRange = searchParams.get(item.rangeName[1]);
+            if (minRange && maxRange) {
+              item.setRange([Number(minRange), Number(maxRange)]);
+              console.log('item range trouvé')
+            }
+          } else if (
+            item.name &&
+            item.setValue &&
+            item.type !== "slider" &&
+            item.items
+          ) {
+            const searchString = searchParams.get(item.name);
+            let matchItem = item.items.find((value) => value.value === searchString);
+
+            // Gestion spécifique pour "sortOrder"
+            if (item.name === "sortOrder") {
+              matchItem = item.items.find((value) => value.id === searchString);
+            }
+
+            if (matchItem) {
+              item.setValue(matchItem.id.toString());
+            } else {
+              item.setValue(""); // Pas de tri par défaut
+            }
+          }
+        }
+      });
+    }
+  }, [searchParams, selectFilters, openModal]);
+
+  const handleInputChange = (query: string) => {
+    setSearchQuery(query); // Met à jour l'état local
+    handleChange(query); // Mise à jour différée (debounced callback)
+  };
+
+
+  const handleChange = useDebouncedCallback(async (query: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (query) {
+      params.set("query", query);
+      setLoading(true);
+    } else {
+      params.delete("query");
+    }
+    router.replace(`${pathName}?${params.toString()}`);
+    setLoading(false);
+  }, 500);
+
+  const [resetKey, setResetKey] = useState(0);
+  // Fonction pour réinitialiser tous les filtres
+  const resetFilters = () => {
+    selectFilters.map((item) => {
+      if (item.type === "slider" && item.setRange && item.rangeValue) {
+        item.setRange(item.rangeValue);
+      } else if (item.type !== "slider" && item.setValue) {
+        item.setValue("");
+      }
+    });
+    // setSearchQuery(""); // Réinitialise la recherche
+    // setSelectedStatus("");
+    // setSelectedType("");
+    // setSortOrder("");
+    // setPriceRange([0, 1000000]);
+    // setAreaRange([0, 1000]);
+    // setBedroomsRange([0, 10]);
+    // setBathroomsRange([0, 10]);
+
+    setResetKey((prev) => prev + 1);
+    // Supprime tous les paramètres de l'URL
+    router.replace(pathName);
+  };
+
+
 
   return (
 
