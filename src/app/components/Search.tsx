@@ -1203,10 +1203,13 @@ const Search = () => {
     const savedSearches = localStorage.getItem("savedSearches");
     if (savedSearches) {
       try {
+        console.log('filtre recu')
         const parsedSearches = JSON.parse(savedSearches);
         // Vérifier que c'est bien un tableau et qu'il contient les bonnes informations
         if (Array.isArray(parsedSearches) && parsedSearches.length > 0) {
+          console.log('filtre parsedSearches', parsedSearches);
           return parsedSearches;
+
         }
         return []; // Retourner un tableau vide si la structure est incorrecte
       } catch (error) {
