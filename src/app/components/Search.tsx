@@ -127,55 +127,37 @@ const Search = () => {
   const filters = savedFilters[0] || [];
   // console.log('get data local', filters)
 
+  const [localFilters, setLocalFilters] = useState<Filter[][]>([]);
+
+  useEffect(() => {
+    const savedFilters = getSavedSearches() || [];
+    setLocalFilters(savedFilters);
+  }, []);
+
   useEffect(() => {
     if (!openModal) {
-      // Récupérer les filtres sauvegardés dans localStorage
-      const savedFilters: Filter[][] = getSavedSearches() || [];
-      const localStorageFilters: Filter[] = savedFilters[0] || [];
+      const localStorageFilters = localFilters[0] || [];
 
-      // console.log('retrieve localstorage', localStorageFilters);
-
-
-      // Parcourir les filtres sélectionnés
       selectFilters.forEach((item) => {
-        // Trouver un filtre correspondant dans localStorage
-        // console.log('item', item);
-
         const savedFilter = localStorageFilters.find((f) => f.name === item.name);
-        // console.log('filter', savedFilter)
 
         if (savedFilter) {
-          // Priorité aux filtres de type "slider"
-          // console.log('range:', savedFilter.range);
-          // console.log('Value:', savedFilter.value);
           if (savedFilter.type === "slider" && savedFilter.range) {
             item.setRange && item.setRange(savedFilter.range);
-            // console.log('range filter trouvé')
           } else if (savedFilter.value) {
-            // Autres filtres avec une valeur
             item.setValue && item.setValue(savedFilter.value);
-            // console.log('save filter trouvé')
           }
         } else {
-          // Si aucun filtre sauvegardé, utiliser les searchParams
           if (item.rangeName && item.setRange) {
-            console.log('item trouvé', item.rangeName)
             const minRange = searchParams.get(item.rangeName[0]);
             const maxRange = searchParams.get(item.rangeName[1]);
             if (minRange && maxRange) {
               item.setRange([Number(minRange), Number(maxRange)]);
-              console.log('item range trouvé')
             }
-          } else if (
-            item.name &&
-            item.setValue &&
-            item.type !== "slider" &&
-            item.items
-          ) {
+          } else if (item.name && item.setValue && item.type !== "slider" && item.items) {
             const searchString = searchParams.get(item.name);
             let matchItem = item.items.find((value) => value.value === searchString);
 
-            // Gestion spécifique pour "sortOrder"
             if (item.name === "sortOrder") {
               matchItem = item.items.find((value) => value.id === searchString);
             }
@@ -183,13 +165,13 @@ const Search = () => {
             if (matchItem) {
               item.setValue(matchItem.id.toString());
             } else {
-              item.setValue(""); // Pas de tri par défaut
+              item.setValue("");
             }
           }
         }
       });
     }
-  }, [searchParams, selectFilters, openModal]);
+  }, [localFilters, searchParams, selectFilters, openModal]);
 
   const handleInputChange = (query: string) => {
     setSearchQuery(query); // Met à jour l'état local
