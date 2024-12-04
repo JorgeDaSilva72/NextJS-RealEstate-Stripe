@@ -198,7 +198,52 @@ const Search = () => {
     router.replace(pathName);
   };
 
+  const saveSearchTest = async () => {
+    // Récupérer les filtres formatés
+    const savedFilters = selectFilters.map((filter) => {
+      if (filter.type === "slider") {
+        return {
+          name: filter.name,
+          type: filter.type,
+          range: filter.range || [],
+        };
+      } else {
+        return {
+          name: filter.name,
+          type: filter.type,
+          value: filter.value || "",
+        };
+      }
+    });
 
+    // Préparer les données à envoyer
+    const requestData = {
+      userId: "user-id-here", // Récupérez dynamiquement l'utilisateur connecté
+      name: "Nom de la recherche", // Vous pouvez demander à l'utilisateur d'entrer un nom
+      filters: savedFilters,
+    };
+
+    try {
+      // Envoyer la requête POST
+      const response = await fetch("/api/saved-search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      if (response.ok) {
+        alert("Recherche sauvegardée avec succès !");
+      } else {
+        const errorData = await response.json();
+        alert(`Erreur : ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Erreur :", error);
+      alert("Une erreur s'est produite.");
+    }
+  };
 
   return (
 
@@ -268,7 +313,7 @@ const Search = () => {
                   );
                 })}
               </div>
-             
+
             </div>
             {/* <div className="flex mt-3 justify-between items-center w-full px-8 max-440:px-6"> */}
             <div className="flex flex-col md:flex-row justify-between p-4 bg-white/10 backdrop-blur-sm">
@@ -282,7 +327,7 @@ const Search = () => {
 
               {/* Bouton Save Search */}
               <button
-                onClick={saveSearch} // Appeler la fonction pour sauvegarder les filtres
+                onClick={saveSearchTest} // Appeler la fonction pour sauvegarder les filtres
                 className="px-4 py-2 bg-green-600 text-white rounded shadow-lg hover:bg-green-700 mb-4 md:mb-0 text-center mr-4"
               >
                 Enregistrer
