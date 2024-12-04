@@ -198,32 +198,47 @@ const Search = () => {
     router.replace(pathName);
   };
 
+
   const saveSearchTest = async () => {
-    // Récupérer les filtres formatés
-    const savedFilters = selectFilters.map((filter) => {
-      if (filter.type === "slider") {
-        return {
-          name: filter.name,
-          type: filter.type,
-          range: filter.range || [],
-        };
-      } else {
-        return {
-          name: filter.name,
-          type: filter.type,
-          value: filter.value || "",
-        };
-      }
-    });
-
-    // Préparer les données à envoyer
-    const requestData = {
-      userId: "user-id-here", // Récupérez dynamiquement l'utilisateur connecté
-      name: "Nom de la recherche", // Vous pouvez demander à l'utilisateur d'entrer un nom
-      filters: savedFilters,
-    };
-
     try {
+      // Récupérer l'ID de l'utilisateur connecté en appelant l'API
+      const userResponse = await fetch("/api/get-user"); // L'URL de votre API GET
+      if (!userResponse.ok) {
+        throw new Error("Erreur lors de la récupération de l'utilisateur.");
+      }
+
+      const userData = await userResponse.json();
+      const userId = userData.userId; // Récupérer l'ID de l'utilisateur
+      console.log('user id', userId)
+
+      if (!userId) {
+        throw new Error("Utilisateur non authentifié");
+      }
+
+      // Récupérer les filtres formatés
+      const savedFilters = selectFilters.map((filter) => {
+        if (filter.type === "slider") {
+          return {
+            name: filter.name,
+            type: filter.type,
+            range: filter.range || [],
+          };
+        } else {
+          return {
+            name: filter.name,
+            type: filter.type,
+            value: filter.value || "",
+          };
+        }
+      });
+
+      // Préparer les données à envoyer
+      const requestData = {
+        userId: userId, // Utiliser l'ID de l'utilisateur récupéré
+        name: "Nom de la recherche", // Vous pouvez demander à l'utilisateur d'entrer un nom
+        filters: savedFilters,
+      };
+
       // Envoyer la requête POST
       const response = await fetch("/api/saved-search", {
         method: "POST",
