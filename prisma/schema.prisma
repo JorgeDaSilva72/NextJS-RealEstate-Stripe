@@ -36,6 +36,18 @@ model User {
     createdAt     DateTime        @default(now())
     Property      Property[]
     subscriptions Subscriptions[]
+    SavedSearch   SavedSearch[]
+}
+
+//npx prisma migrate dev --name add_saved_search_table
+model SavedSearch {
+    id        Int      @id @default(autoincrement())
+    userId    String // Référence à l'utilisateur ayant sauvegardé cette recherche
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    name      String // Nom donné à la recherche sauvegardée
+    filters   String // Les critères de filtre, stockés sous forme JSON
+    createdAt DateTime @default(now()) // Date de création
+    updatedAt DateTime @updatedAt // Dernière mise à jour
 }
 
 model Property {
