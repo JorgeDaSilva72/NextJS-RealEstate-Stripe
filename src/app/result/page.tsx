@@ -5,6 +5,7 @@ import PropertyContainer from "../components/PropertyContainer";
 import PropertyCard from "../components/PropertyCard";
 import NoPropertiesFound from "./_components/noPropertiesFound";
 import { Prisma } from "@prisma/client";
+import { jwtDecode } from 'jwt-decode';
 
 const PAGE_SIZE = 12;
 
@@ -12,6 +13,26 @@ interface Props {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 export default async function Home({ searchParams }: Props) {
+
+  // Récupérer le token à partir des cookies côté serveur
+  const cookieStore = await cookies();
+  const token = cookieStore.get('id_token')?.value || '';
+
+  let userId = null;
+  if (token) {
+    const decodedToken: any = jwtDecode(token); // Décoder le token
+    userId = decodedToken.sub; // Supposons que 'sub' contient l'ID de l'utilisateur
+  }
+
+
+  // Récupérer les valeurs de la table SaveSearch pour l'utilisateur
+  let savedSearch = null;
+  if (userId) {
+    savedSearch = await prisma.savedSearch.findFirst({
+      where: { userId: userId },
+    });
+  }
+
   const pagenum = searchParams.pagenum ?? 1;
   const query = searchParams.query ?? "";
   const queryStatus = searchParams.queryStatus ?? "";
@@ -263,9 +284,7 @@ export default async function Home({ searchParams }: Props) {
     propertiesPromise,
     totalPropertiesPromise,
   ]);
-  // Récupérer le token à partir des cookies côté serveur
-  const cookieStore = await cookies();
-  const token = cookieStore.get('id_token')?.value || '';
+
 
   const totalPages = Math.floor(totalProperties / PAGE_SIZE + 1);
   console.log('proprety ravo', properties);
