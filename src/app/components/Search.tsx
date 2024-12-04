@@ -243,7 +243,7 @@ const Search = ({ token }: SearchProps) => {
       const requestData = {
         userId: userId, // Utiliser l'ID de l'utilisateur récupéré depuis le token
         name: "Token",  // Vous pouvez demander à l'utilisateur d'entrer un nom
-        filters: savedFilters,  // Les filtres formatés
+        // filters: savedFilters,  // Les filtres formatés
       };
 
       // Envoyer la requête POST
@@ -260,11 +260,10 @@ const Search = ({ token }: SearchProps) => {
         alert("Recherche sauvegardée avec succès !");
       } else {
         const errorData = await response.json();
-        alert(`Erreur : ${errorData.error || "Un problème est survenu"}`);
+        alert(`Erreur : ${errorData.error}`);
       }
     } catch (error) {
       console.error("Erreur :", error);
-      alert("Une erreur s'est produite.");
     }
   };
 

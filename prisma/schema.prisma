@@ -45,7 +45,7 @@ model SavedSearch {
     userId    String // Référence à l'utilisateur ayant sauvegardé cette recherche
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     name      String // Nom donné à la recherche sauvegardée
-    filters   String // Les critères de filtre, stockés sous forme JSON
+    filters   String? // Les critères de filtre, stockés sous forme JSON
     createdAt DateTime @default(now()) // Date de création
     updatedAt DateTime @updatedAt // Dernière mise à jour
 }
