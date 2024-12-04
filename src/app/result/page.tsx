@@ -8,58 +8,77 @@ import { Prisma } from "@prisma/client";
 import { jwtDecode } from 'jwt-decode';
 
 const PAGE_SIZE = 12;
+const getUserIdFromToken = async () => {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('id_token')?.value || '';
+
+  if (token) {
+    try {
+      const decodedToken: any = jwtDecode(token);
+      return decodedToken.sub;
+    } catch (error) {
+      console.error("Token invalide ou erreur lors du décodage:", error);
+      return null;
+    }
+  }
+
+  return null;
+};
+
+const getSavedSearch = async (userId: string | null) => {
+  if (userId) {
+    return await prisma.savedSearch.findFirst({
+      where: { userId: userId },
+    });
+  }
+  return null;
+};
+
+const getFilterValues = (savedSearch: any) => {
+  return savedSearch?.filters ? JSON.parse(savedSearch.filters) : {};
+};
+
+const getSearchParams = (filterValues: any, searchParams: { [key: string]: string | string[] | undefined }) => {
+  return {
+    searchqueryStatus: searchParams.searchqueryStatus || filterValues.searchqueryStatus,
+    searchQueryType: searchParams.searchQueryType || filterValues.searchQueryType,
+    searchcountry: searchParams.searchcountry || filterValues.searchcountry,
+    searchcity: searchParams.searchcity || filterValues.searchcity,
+    searchsortOrder: searchParams.searchsortOrder || filterValues.searchsortOrder,
+    price: searchParams.price || filterValues.price,
+    area: searchParams.area || filterValues.area,
+    room: searchParams.room || filterValues.room,
+    bathroom: searchParams.bathroom || filterValues.bathroom,
+  };
+};
 
 interface Props {
   searchParams: { [key: string]: string | string[] | undefined };
 }
+
 export default async function Home({ searchParams }: Props) {
 
-  // Récupérer le token à partir des cookies côté serveur
-  const cookieStore = await cookies();
-  const token = cookieStore.get('id_token')?.value || '';
-  let userId = null;
-  if (token) {
-    const decodedToken: any = jwtDecode(token); // Décoder le token
-    userId = decodedToken.sub; // Supposons que 'sub' contient l'ID de l'utilisateur
+  const userId = await getUserIdFromToken();
+  const savedSearch = await getSavedSearch(userId);
+
+  // const filterValues = getFilterValues(savedSearch);
+
+
+  interface FilterValue {
+    name: string;
+    value?: string;
+    type?: string;
+    range?: number[];
   }
+  const filterValues: FilterValue[] = getFilterValues(savedSearch);
 
-  // Récupérer les valeurs de la table SavedSearch pour l'utilisateur
-  let savedSearch = null;
-  if (userId) {
-    savedSearch = await prisma.savedSearch.findFirst({
-      where: { userId: userId },
-    });
-  }
+  // Pour récupérer les noms et les valeurs
+  const namesAndValues = filterValues.map(item => ({
+    name: item.name,
+    value: item.value || item.range || item.type // Gérer la valeur
+  }));
 
-  // Si un savedSearch existe pour l'utilisateur
-  if (savedSearch && savedSearch.filters) {
-    // Assurez-vous que filters est un tableau d'objets
-    let filters: { name: string; value: any }[] = Array.isArray(savedSearch.filters)
-      ? savedSearch.filters
-      : JSON.parse(savedSearch.filters);
-
-    // Afficher le contenu de filters dans la console
-    console.log('filters:', filters);
-
-    // Extraire les valeurs des filtres à partir de cet objet
-    const filterValues = filters.reduce((acc: { [key: string]: any }, filter: { name: string; value: any }) => {
-      acc[filter.name] = filter.value;
-      return acc;
-    }, {});
-
-    // Utilisation des filtres dans la recherche
-    const {
-      searchqueryStatus,
-      searchQueryType,
-      searchcountry,
-      searchcity,
-      searchsortOrder,
-      price,
-      area,
-      room,
-      bathroom
-    } = filterValues;
-  }
+  console.log('value', namesAndValues)
 
   const pagenum = searchParams.pagenum ?? 1;
   const query = searchParams.query ?? "";
@@ -315,7 +334,11 @@ export default async function Home({ searchParams }: Props) {
 
 
   const totalPages = Math.floor(totalProperties / PAGE_SIZE + 1);
-  console.log('proprety ravo', properties);
+
+
+  // Récupération du token depuis les cookies
+  const cookieStore = await cookies();
+  const token = cookieStore.get('id_token')?.value || ''; // Assurez-vous que le token est bien présent ici
 
   return (
     <div className="w-full min-h-screen bg-gray-100">
