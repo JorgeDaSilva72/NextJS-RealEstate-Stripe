@@ -17,6 +17,7 @@ import SearchSelect from "./SearchSelect";
 import useFilterDatas from "../hooks/useFilterDatas";
 import { div } from "framer-motion/client";
 import { jwtDecode } from 'jwt-decode';
+import { cookies } from 'next/headers'
 
 const Search = () => {
   const [loading, setLoading] = useState(false);
@@ -267,7 +268,28 @@ const Search = () => {
       alert("Une erreur s'est produite.");
     }
   };
+  const saveCooki = async () => {
+    const cookieStore = await cookies()
 
+    // Récupérer le cookie 'id_token'
+    const token = cookieStore.get('id_token')?.value
+
+    if (!token) {
+      throw new Error("Token non trouvé dans les cookies.")
+    }
+
+    // Vous pouvez maintenant utiliser le token
+    console.log("Token récupéré :", token)
+
+    // Décoder le token (vous pouvez utiliser jwt-decode ici si vous avez besoin de le décoder côté serveur)
+    const decodedToken = jwtDecode(token)
+
+    console.log("Décodage du token :", decodedToken)
+
+    // ... logiques supplémentaires
+
+    return <div>Token récupéré avec succès !</div>
+  }
   return (
 
     <>
@@ -350,7 +372,7 @@ const Search = () => {
 
               {/* Bouton Save Search */}
               <button
-                onClick={saveSearchTest} // Appeler la fonction pour sauvegarder les filtres
+                onClick={saveCooki} // Appeler la fonction pour sauvegarder les filtres
                 className="px-4 py-2 bg-green-600 text-white rounded shadow-lg hover:bg-green-700 mb-4 md:mb-0 text-center mr-4"
               >
                 Enregistrer
