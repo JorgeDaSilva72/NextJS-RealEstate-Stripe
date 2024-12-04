@@ -1,4 +1,4 @@
-// src/app/api/savedsearch/route.ts
+// src/app/api/post/route.ts
 
 import prisma from "@/lib/prisma";  // Assurez-vous d'importer correctement Prisma
 import { NextResponse } from "next/server";  // Importer NextResponse de next/server
@@ -10,9 +10,9 @@ export async function POST(req: Request) {
         const { userId, name, filters } = await req.json();
 
         // Convertir les filtres en chaîne JSON
-        // const filtersJson = JSON.stringify(filters);
+        const filtersJson = JSON.stringify(filters);
         // Si des filtres sont fournis, les convertir en chaîne JSON, sinon les définir comme une chaîne vide
-        const filtersJson = filters ? JSON.stringify(filters) : "";  // Gérer le cas où `filters` peut être vide
+        // const filtersJson = filters ? JSON.stringify(filters) : "";  // Gérer le cas où `filters` peut être vide
 
         // Création de la recherche sauvegardée dans la base de données
         const savedSearch = await prisma.savedSearch.create({

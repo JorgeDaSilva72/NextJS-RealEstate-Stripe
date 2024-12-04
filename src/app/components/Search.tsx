@@ -243,11 +243,11 @@ const Search = ({ token }: SearchProps) => {
       const requestData = {
         userId: userId, // Utiliser l'ID de l'utilisateur récupéré depuis le token
         name: "Token",  // Vous pouvez demander à l'utilisateur d'entrer un nom
-        // filters: savedFilters,  // Les filtres formatés
+        filters: savedFilters,  // Les filtres formatés
       };
 
       // Envoyer la requête POST
-      const response = await fetch("/api/savedsearch", {
+      const response = await fetch("/api/post", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
