@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import prisma from "@/lib/prisma";
 import PropertyContainer from "@/app/components/PropertyContainer";
 import PropertyCard from "@/app/components/PropertyCard";
 import NoPropertiesFound from "@/app/result/_components/noPropertiesFound";
@@ -62,7 +61,12 @@ export default function FavoriteProperties() {
           ))}
         </PropertyContainer>
       ) : (
-        <NoPropertiesFound />
+        <NoPropertiesFound
+          title="Pas encore de biens en favoris ?"
+          message="Ajouter des biens en cliquant sur leur coeur.
+Vos annonces préférées seront disponibles ici à tout moment."
+          buttonText="Lancer une recherche"
+        />
       )}
     </div>
   );
