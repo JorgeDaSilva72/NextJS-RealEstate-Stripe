@@ -17,20 +17,48 @@ export default async function Home({ searchParams }: Props) {
   // Récupérer le token à partir des cookies côté serveur
   const cookieStore = await cookies();
   const token = cookieStore.get('id_token')?.value || '';
-
   let userId = null;
   if (token) {
     const decodedToken: any = jwtDecode(token); // Décoder le token
     userId = decodedToken.sub; // Supposons que 'sub' contient l'ID de l'utilisateur
   }
 
-
-  // Récupérer les valeurs de la table SaveSearch pour l'utilisateur
+  // Récupérer les valeurs de la table SavedSearch pour l'utilisateur
   let savedSearch = null;
   if (userId) {
     savedSearch = await prisma.savedSearch.findFirst({
       where: { userId: userId },
     });
+  }
+
+  // Si un savedSearch existe pour l'utilisateur
+  if (savedSearch && savedSearch.filters) {
+    // Assurez-vous que filters est un tableau d'objets
+    let filters: { name: string; value: any }[] = Array.isArray(savedSearch.filters)
+      ? savedSearch.filters
+      : JSON.parse(savedSearch.filters);
+
+    // Afficher le contenu de filters dans la console
+    console.log('filters:', filters);
+
+    // Extraire les valeurs des filtres à partir de cet objet
+    const filterValues = filters.reduce((acc: { [key: string]: any }, filter: { name: string; value: any }) => {
+      acc[filter.name] = filter.value;
+      return acc;
+    }, {});
+
+    // Utilisation des filtres dans la recherche
+    const {
+      searchqueryStatus,
+      searchQueryType,
+      searchcountry,
+      searchcity,
+      searchsortOrder,
+      price,
+      area,
+      room,
+      bathroom
+    } = filterValues;
   }
 
   const pagenum = searchParams.pagenum ?? 1;
