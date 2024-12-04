@@ -54,7 +54,7 @@ const ProfilePage = async () => {
                 className="w-20 h-20"
                 src={dbUser?.avatarUrl ?? "/profile.png"}
               />
-              <UploadAvatar userId={dbUser?.id!} />
+              <UploadAvatar userId={dbUser?.id!} userAvatar={dbUser?.avatarUrl} />
             </div>
           </div>
 

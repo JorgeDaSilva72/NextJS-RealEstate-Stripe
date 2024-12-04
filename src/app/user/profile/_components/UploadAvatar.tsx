@@ -2,7 +2,7 @@
 
 import FileInput from "@/app/components/fileUpload";
 import { updateUserAvatar } from "@/lib/actions/user";
-import { uploadAvatar, uploadImagesToWebp } from "@/lib/upload";
+import { removeImages, uploadAvatar, uploadImagesToWebp } from "@/lib/upload";
 import { PencilIcon } from "@heroicons/react/16/solid";
 import {
   Button,
@@ -20,18 +20,21 @@ import fileToBase64 from "@/lib/fileToBase64";
 import { toast } from "react-toastify";
 import { MAX_SIZE_BYTES } from "../../properties/add/_components/Picture";
 
-const UploadAvatar = ({ userId }: { userId: string }) => {
+const UploadAvatar = ({ userId, userAvatar }: { userId: string, userAvatar: string | null }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [image, setImage] = useState<File>();
+  const [image, setImage] = useState<File | null>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
   const handleChangeAvatar = (file: File) => {
     if (!file.type.startsWith("image/")) {
       toast.error("Le fichier doit être un image")
+      setImage(null)
       return;
     }else if (file.size >= MAX_SIZE_BYTES) {
       toast.error("Le fichier est plus grand que 2Mo")
+      setImage(null)
+      return;
     }
     setImage(file);
   }
@@ -57,7 +60,10 @@ const UploadAvatar = ({ userId }: { userId: string }) => {
                 {image && <Image src={URL.createObjectURL(image)} alt="" />}
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
+                <Button color="danger" variant="light" onPress={() => {
+                  setImage(null);
+                  onClose()
+                }}>
                   Effacer
                 </Button>
                 <Button
@@ -66,11 +72,15 @@ const UploadAvatar = ({ userId }: { userId: string }) => {
                   onPress={async () => {
                     setIsSubmitting(true);
                     if (!image) {
+                      setIsSubmitting(false);
                       onClose();
                       return;
                     }
                     const imgBase64 = await fileToBase64(image);
                     const avatarUrl = await uploadImagesToWebp(imgBase64, image.name, "avatars");
+                    const userAvatarFileName = userAvatar?.split("/").at(-1)
+                    if (userAvatarFileName) await removeImages([userAvatarFileName], "avatars")
+                    
                     const result = await updateUserAvatar(avatarUrl, userId);
                     router.refresh();
                     setIsSubmitting(false);
