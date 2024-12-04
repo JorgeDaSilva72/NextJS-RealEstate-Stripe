@@ -16,6 +16,7 @@ import SearchSlider from "./SearchSlider";
 import SearchSelect from "./SearchSelect";
 import useFilterDatas from "../hooks/useFilterDatas";
 import { div } from "framer-motion/client";
+import { jwtDecode } from 'jwt-decode';
 
 const Search = () => {
   const [loading, setLoading] = useState(false);
@@ -201,21 +202,28 @@ const Search = () => {
 
   const saveSearchTest = async () => {
     try {
-      // Récupérer l'ID de l'utilisateur connecté en appelant l'API
-      const userResponse = await fetch("/api/get-user"); // L'URL de votre API GET
-      if (!userResponse.ok) {
-        throw new Error("Erreur lors de la récupération de l'utilisateur.");
+      // 1. Récupérer le token depuis les cookies
+      const token = document.cookie.replace(
+        /(?:(?:^|.*;\s*)id_token\s*=\s*([^;]*).*$)|^.*$/,
+        "$1"
+      );
+
+      if (!token) {
+        throw new Error("Token non trouvé dans les cookies.");
       }
 
-      const userData = await userResponse.json();
-      const userId = userData.userId; // Récupérer l'ID de l'utilisateur
-      console.log('user id', userId)
+      // 2. Décoder le token pour obtenir l'ID utilisateur
+      const decodedToken = jwtDecode(token);
+
+      const userId = decodedToken.sub; // Récupérer l'ID de l'utilisateur à partir du champ 'sub' du token
+
+      console.log("user id", userId);
 
       if (!userId) {
         throw new Error("Utilisateur non authentifié");
       }
 
-      // Récupérer les filtres formatés
+      // 3. Récupérer les filtres formatés
       const savedFilters = selectFilters.map((filter) => {
         if (filter.type === "slider") {
           return {
@@ -232,14 +240,14 @@ const Search = () => {
         }
       });
 
-      // Préparer les données à envoyer
+      // 4. Préparer les données à envoyer
       const requestData = {
-        userId: userId, // Utiliser l'ID de l'utilisateur récupéré
+        userId: userId, // Utiliser l'ID de l'utilisateur récupéré depuis le token
         name: "Nom de la recherche", // Vous pouvez demander à l'utilisateur d'entrer un nom
         filters: savedFilters,
       };
 
-      // Envoyer la requête POST
+      // 5. Envoyer la requête POST
       const response = await fetch("/api/saved-search", {
         method: "POST",
         headers: {
