@@ -206,60 +206,61 @@ const Search = ({ token }: SearchProps) => {
 
   const saveSearchTest = async () => {
     try {
-
+      // Vérifier si le token est présent
       if (!token) {
         throw new Error("Token non trouvé dans les cookies.");
       }
 
-      // 2. Décoder le token pour obtenir l'ID utilisateur
+      // Décoder le token pour obtenir l'ID utilisateur
       const decodedToken = jwtDecode(token);
-
       const userId = decodedToken.sub; // Récupérer l'ID de l'utilisateur à partir du champ 'sub' du token
 
       console.log("user id", userId);
 
+      // Vérifier si l'utilisateur est authentifié
       if (!userId) {
         throw new Error("Utilisateur non authentifié");
       }
 
-      // 3. Récupérer les filtres formatés
+      // Récupérer les filtres formatés
       const savedFilters = selectFilters.map((filter) => {
         if (filter.type === "slider") {
           return {
             name: filter.name,
             type: filter.type,
-            range: filter.range || [],
+            range: filter.range || [], // Gérer les valeurs manquantes
           };
         } else {
           return {
             name: filter.name,
             type: filter.type,
-            value: filter.value || "",
+            value: filter.value || "", // Gérer les valeurs manquantes
           };
         }
       });
 
-      // 4. Préparer les données à envoyer
+      // Préparer les données à envoyer
       const requestData = {
         userId: userId, // Utiliser l'ID de l'utilisateur récupéré depuis le token
-        name: "Token", // Vous pouvez demander à l'utilisateur d'entrer un nom
-        filters: savedFilters,
+        name: "Token",  // Vous pouvez demander à l'utilisateur d'entrer un nom
+        filters: savedFilters,  // Les filtres formatés
       };
 
-      // 5. Envoyer la requête POST
-      const response = await fetch("/api/saved-search", {
+      // Envoyer la requête POST
+      const response = await fetch("/api/savedsearch", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(requestData),
+        body: JSON.stringify(requestData),  // Envoi des données au serveur
       });
 
+      // Vérifier si la réponse est correcte
       if (response.ok) {
         alert("Recherche sauvegardée avec succès !");
       } else {
         const errorData = await response.json();
-        alert(`Erreur : ${errorData.message}`);
+        alert(`Erreur : ${errorData.error || "Un problème est survenu"}`);
       }
     } catch (error) {
       console.error("Erreur :", error);
