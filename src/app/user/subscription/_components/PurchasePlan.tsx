@@ -402,6 +402,11 @@ import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import ModalCity from "./ModalCity";
 import useModalOpen from "@/app/hooks/useModalOpen";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { saveSubscription } from "@/lib/actions/subscription";
+import { AnyNode } from "postcss";
+// import type { OnApproveData, OnApproveActions } from "@paypal/react-paypal-js";
 
 // Stripe promise
 const stripePromise = loadStripe(
@@ -429,6 +434,27 @@ const PurchasePlan = ({
   const handleModalOpen = useModalOpen();
 
   const { user } = useKindeBrowserClient();
+  const router = useRouter();
+
+  // if (!user) {
+  //   toast.error("Vous devez être connecté pour effectuer un achat.");
+  //   router.push("/");
+  //   return null;
+  // }
+
+  //Vérification des clés d'environnement
+  if (
+    !process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
+    !process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
+  ) {
+    console.error(
+      "Les clés d'environnement Stripe ou PayPal sont manquantes !"
+    );
+    toast.error(
+      "Une erreur de configuration est survenue. Veuillez réessayer plus tard."
+    );
+    return null;
+  }
 
   // Stripe payment initiation
   const initiateStripePayment = async () => {
@@ -442,7 +468,9 @@ const PurchasePlan = ({
       setShowCheckout(true);
     } catch (error) {
       console.error("Stripe payment initiation failed:", error);
-      alert("Une erreur est survenue lors de l'initialisation du paiement.");
+      toast.error(
+        "Une erreur est survenue lors de l'initialisation du paiement."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -450,9 +478,41 @@ const PurchasePlan = ({
 
   // PayPal payment success handler
   const handlePayPalPaymentSuccess = async (details: any) => {
-    alert(
-      `Transaction réussie ! Merci, ${details.payer.name.given_name}. Réf : ${details.id}`
+    // Logique après paiement réussi
+
+    console.log(
+      `Transaction paypal réussie ! Merci, ${details.payer.name.given_name}. Réf : ${details.id}`
     );
+    // Date de début de l'abonnement
+    const startDate = new Date();
+    // const startDate = new Date().toISOString();
+
+    // Date de fin de l'abonnement (par exemple, 12 mois après la date de début)
+    const endDate = new Date();
+    endDate.setMonth(endDate.getMonth() + 12);
+    // const endDateISOString = endDate.toISOString();
+
+    if (!user) {
+      toast.error("Vous devez être connecté pour effectuer un achat.");
+      router.push("/");
+      return null;
+    }
+
+    try {
+      await saveSubscription({
+        paymentId: details.id,
+        planId: plan.id,
+        userId: user?.id,
+        startDate: startDate,
+        endDate: endDate,
+      });
+      toast.success("Merci pour votre abonnement.");
+      router.push("/user/profile");
+    } catch (error) {
+      console.error("Erreur lors de l'enregistrement de l'abonnement :", error);
+      toast.error("Une erreur est survenue. Veuillez réessayer.");
+    }
+
     setShowCheckout(false);
     return; // Return a Promise<void>
   };
@@ -460,7 +520,9 @@ const PurchasePlan = ({
   // PayPal payment error handler
   const handlePayPalPaymentError = (error: any) => {
     console.error("Erreur de paiement PayPal :", error);
-    alert("Une erreur est survenue lors du paiement.");
+    toast.error(
+      `Erreur de paiement : ${error.message || "Transaction échouée"}`
+    );
   };
 
   // Render checkout based on payment provider
@@ -474,7 +536,12 @@ const PurchasePlan = ({
           }}
         >
           <PayPalButtons
-            style={{ layout: "vertical" }}
+            style={{
+              layout: "vertical",
+              color: "blue",
+              shape: "rect",
+              label: "paypal",
+            }}
             createOrder={(data, actions) => {
               return actions.order.create({
                 intent: "CAPTURE",
@@ -489,12 +556,20 @@ const PurchasePlan = ({
                 ],
               });
             }}
-            onApprove={(data, actions) => {
+            onApprove={async (data: any, actions: any): Promise<void> => {
               if (!actions.order) {
                 console.error("Order is undefined");
-                return Promise.reject("Order is undefined");
+                throw new Error("Order is undefined"); // Lever une erreur explicite au lieu de retourner null/undefined
               }
-              return actions.order?.capture().then(handlePayPalPaymentSuccess);
+
+              try {
+                const details = await actions.order.capture(); // Appel de la méthode capture
+                await handlePayPalPaymentSuccess(details); // Appel de la fonction de succès
+              } catch (error) {
+                console.error("Erreur lors de la capture de l'ordre :", error);
+                handlePayPalPaymentError(error); // Gestion de l'erreur
+                throw error; // Relancer l'erreur pour respecter Promise<void>
+              }
             }}
             onError={handlePayPalPaymentError}
             onCancel={() => setShowCheckout(false)}
