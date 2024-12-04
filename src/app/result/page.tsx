@@ -72,13 +72,30 @@ export default async function Home({ searchParams }: Props) {
   }
   const filterValues: FilterValue[] = getFilterValues(savedSearch);
 
-  // Pour récupérer les noms et les valeurs
-  const namesAndValues = filterValues.map(item => ({
-    name: item.name,
-    value: item.value || item.range || item.type // Gérer la valeur
-  }));
 
-  console.log('value', namesAndValues)
+
+
+
+
+  const namesAndValues = filterValues.map(item => {
+    console.log('nom', item.name); // Loguer le nom de chaque item
+    console.log('value', item.value);
+
+    // Si le nom de l'élément est 'queryStatus', on assigne une valeur par défaut si item.value est vide
+    if (item.name === 'country') {
+      return {
+        name: item.name,
+        value: item.value || "" // Remplacez "default_value" par la valeur par défaut que vous voulez
+      };
+    }
+
+    return item; // Retourne l'élément original s'il n'est pas 'queryStatus'
+  });
+
+  // const queryStatus = namesAndValues.find(item => item.name === 'queryStatus')?.value || ""; // Valeur par défaut si non trouvé
+  // const country = namesAndValues.find(item => item.name === 'country')?.value || "";
+
+
 
   const pagenum = searchParams.pagenum ?? 1;
   const query = searchParams.query ?? "";
@@ -86,7 +103,6 @@ export default async function Home({ searchParams }: Props) {
   const queryType = searchParams.queryType ?? "";
   const city = searchParams.city ?? "";
   const country = searchParams.country ?? "";
-
   const minPrice = searchParams.minPrice
     ? Number(searchParams.minPrice)
     : undefined;
