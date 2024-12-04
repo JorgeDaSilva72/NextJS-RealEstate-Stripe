@@ -281,7 +281,7 @@ export default async function Home({ searchParams }: Props) {
     totalPropertiesPromise,
   ]);
 
-  const totalPages = Math.floor(totalProperties / PAGE_SIZE + 1);
+  const totalPages = Math.ceil(totalProperties / PAGE_SIZE);
 
   return (
     <div className="w-full min-h-screen bg-gray-100">
