@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { cookies } from 'next/headers';
 import Search from "../components/Search";
 import PropertyContainer from "../components/PropertyContainer";
 import PropertyCard from "../components/PropertyCard";
@@ -262,13 +263,17 @@ export default async function Home({ searchParams }: Props) {
     propertiesPromise,
     totalPropertiesPromise,
   ]);
+  // Récupérer le token à partir des cookies côté serveur
+  const cookieStore = await cookies();
+  const token = cookieStore.get('id_token')?.value || '';
 
   const totalPages = Math.floor(totalProperties / PAGE_SIZE + 1);
   console.log('proprety ravo', properties);
 
   return (
     <div className="w-full min-h-screen bg-gray-100">
-      <Search />
+      {/* Passez le token récupéré à Search */}
+      <Search token={token} />
       {properties.length > 0 ? (
         <PropertyContainer totalPages={totalPages} currentPage={+pagenum}>
           {properties.map((propertyItem) => (
