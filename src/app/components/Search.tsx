@@ -23,7 +23,6 @@ interface SearchProps {
 }
 const Search = ({ token }: SearchProps) => {
 
-  console.log("Token reçu dans Search:", token);
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const pathName = usePathname();
@@ -207,11 +206,6 @@ const Search = ({ token }: SearchProps) => {
 
   const saveSearchTest = async () => {
     try {
-      // 1. Récupérer le token depuis les cookies
-      const token = document.cookie.replace(
-        /(?:(?:^|.*;\s*)id_token\s*=\s*([^;]*).*$)|^.*$/,
-        "$1"
-      );
 
       if (!token) {
         throw new Error("Token non trouvé dans les cookies.");
@@ -248,7 +242,7 @@ const Search = ({ token }: SearchProps) => {
       // 4. Préparer les données à envoyer
       const requestData = {
         userId: userId, // Utiliser l'ID de l'utilisateur récupéré depuis le token
-        name: "Nom de la recherche", // Vous pouvez demander à l'utilisateur d'entrer un nom
+        name: "Token", // Vous pouvez demander à l'utilisateur d'entrer un nom
         filters: savedFilters,
       };
 
@@ -272,28 +266,7 @@ const Search = ({ token }: SearchProps) => {
       alert("Une erreur s'est produite.");
     }
   };
-  // const saveCooki = async () => {
-  //   const cookieStore = await cookies()
 
-  //   // Récupérer le cookie 'id_token'
-  //   const token = cookieStore.get('id_token')?.value
-
-  //   if (!token) {
-  //     throw new Error("Token non trouvé dans les cookies.")
-  //   }
-
-  //   // Vous pouvez maintenant utiliser le token
-  //   console.log("Token récupéré :", token)
-
-  //   // Décoder le token (vous pouvez utiliser jwt-decode ici si vous avez besoin de le décoder côté serveur)
-  //   const decodedToken = jwtDecode(token)
-
-  //   console.log("Décodage du token :", decodedToken)
-
-  //   // ... logiques supplémentaires
-
-  //   return <div>Token récupéré avec succès !</div>
-  // }
   return (
 
     <>
