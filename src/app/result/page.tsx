@@ -5,7 +5,7 @@ import PropertyCard from "../components/PropertyCard";
 import NoPropertiesFound from "./_components/noPropertiesFound";
 import { Prisma } from "@prisma/client";
 
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 12;
 
 interface Props {
   searchParams: { [key: string]: string | string[] | undefined };
