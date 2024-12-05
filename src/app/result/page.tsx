@@ -77,23 +77,42 @@ export default async function Home({ searchParams }: Props) {
 
 
 
-  const namesAndValues = filterValues.map(item => {
-    console.log('nom', item.name); // Loguer le nom de chaque item
-    console.log('value', item.value);
+  // const namesAndValues = filterValues.map(item => {
+  //   console.log('item', item)
 
-    // Si le nom de l'élément est 'queryStatus', on assigne une valeur par défaut si item.value est vide
-    if (item.name === 'country') {
+  //   // Si le nom de l'élément est 'queryStatus', on assigne une valeur par défaut si item.value est vide
+  //   if (item.name === 'country') {
+  //     console.log('nom', item.name);
+  //     console.log('value', item.value);
+
+  //     return {
+  //       name: item.name,
+  //       value: item.value || "" // Remplacez "default_value" par la valeur par défaut que vous voulez
+  //     };
+  //   }
+
+  //   return item; // Retourne l'élément original s'il n'est pas 'queryStatus'
+  // });
+
+  const namesAndValues = filterValues.map(item => {
+    // Ajouter une valeur par défaut pour les champs où "value" est vide
+    if (!item.value && item.name) {
       return {
-        name: item.name,
-        value: item.value || "" // Remplacez "default_value" par la valeur par défaut que vous voulez
+        ...item,
+        value: '', // Par exemple : valeur par défaut
       };
     }
 
-    return item; // Retourne l'élément original s'il n'est pas 'queryStatus'
+    // Si aucune transformation n'est nécessaire, renvoyer l'objet tel quel
+    return item;
   });
 
-  // const queryStatus = namesAndValues.find(item => item.name === 'queryStatus')?.value || ""; // Valeur par défaut si non trouvé
-  // const country = namesAndValues.find(item => item.name === 'country')?.value || "";
+  const keyValueObject = namesAndValues.reduce((acc: Record<string, string | number[] | undefined>, item) => {
+    acc[item.name] = item.value || item.range; // Priorité à `value`, sinon utiliser `range`
+    return acc;
+  }, {});
+  console.log("Objet clé-valeur :", keyValueObject);
+
 
 
 
@@ -103,7 +122,10 @@ export default async function Home({ searchParams }: Props) {
   const queryType = searchParams.queryType ?? "";
   const city = searchParams.city ?? "";
   const country = searchParams.country ?? "";
+
+  // console.log('retrieve query status:', queryStatus);
   const minPrice = searchParams.minPrice
+
     ? Number(searchParams.minPrice)
     : undefined;
   const maxPrice = searchParams.maxPrice
