@@ -63,7 +63,7 @@ export default async function Home({ searchParams }: Props) {
     getFilterValues(savedSearch) : [];
 
 
-  const namesAndValues = await filterValues.map(item => {
+  const namesAndValues = filterValues.map(item => {
     // Ajouter une valeur par défaut pour les champs où "value" est vide
     if (!item.value && item.name) {
       return {
@@ -75,7 +75,7 @@ export default async function Home({ searchParams }: Props) {
     return item;
   });
 
-  const keyValueObject = await namesAndValues.reduce((acc: Record<string, string | number[] | undefined>, item) => {
+  const keyValueObject = namesAndValues.reduce((acc: Record<string, string | number[] | undefined>, item) => {
     acc[item.name] = item.value || item.range; // Priorité à `value`, sinon utiliser `range`
     return acc;
   }, {});
@@ -91,8 +91,8 @@ export default async function Home({ searchParams }: Props) {
   const secondPrice = Array.isArray(keyValueObject.price) &&
     keyValueObject.price.length > 1 ? keyValueObject.price[1] : undefined;
 
-  const firstArea = Number(keyValueObject?.area?.[0]);
-  const secondArea = Number(keyValueObject?.area?.[1]);
+  // const firstArea = Number(keyValueObject?.area?.[0]);
+  // const secondArea = Number(keyValueObject?.area?.[1]);
 
   const firstRoom = Number(keyValueObject?.room?.[0]);
   const secondRoom = Number(keyValueObject?.room?.[1]);
@@ -117,7 +117,7 @@ export default async function Home({ searchParams }: Props) {
   });
 
 
-  const hasUserSelected = await Object.keys(searchParams).some(
+  const hasUserSelected = Object.keys(searchParams).some(
     key => searchParams[key] !== undefined && searchParams[key] !== null
   );
   console.log('user selected', hasUserSelected)
@@ -160,17 +160,13 @@ export default async function Home({ searchParams }: Props) {
   //   ? (searchParams.maxPrice ? Number(searchParams.maxPrice) : secondPrice || 10000)
   //   : secondPrice || 10000;
 
-  // const minArea = hasUserSelected
-  //   ? searchParams.minArea
-  //     ? Number(searchParams.minArea)
-  //     : firstArea ?? undefined
-  //   : undefined;
 
-  // const maxArea = hasUserSelected
-  //   ? searchParams.maxArea
-  //     ? Number(searchParams.maxArea)
-  //     : secondArea ?? undefined
-  //   : undefined;
+  const minArea = searchParams.minArea
+    ? Number(searchParams.minArea)
+    : undefined;
+  const maxArea = searchParams.maxArea
+    ? Number(searchParams.maxArea)
+    : undefined;
 
   // const minPrice = hasUserSelected
   //   ? minPriceTest ?? firstPrice ?? 0  // Si `minPriceTest` est défini, il est utilisé ; sinon on prend `firstPrice`, sinon 0
@@ -196,17 +192,6 @@ export default async function Home({ searchParams }: Props) {
   //   ? maxAreaTest ?? secondArea ?? 1000  // Si `maxAreaTest` est défini, il est utilisé ; sinon on prend `secondArea`, sinon 1000
   //   : secondArea ?? 1000;  // Valeur par défaut si `hasUserSelected` est false
 
-  const minArea = hasUserSelected
-    ? searchParams.minArea
-      ? Number(searchParams.minArea)
-      : firstArea ?? undefined
-    : undefined;
-
-  const maxArea = hasUserSelected
-    ? searchParams.maxArea
-      ? Number(searchParams.maxArea)
-      : secondArea ?? undefined
-    : undefined;
 
   const minBedrooms = searchParams.minBedrooms
     ? Number(searchParams.minBedrooms)
@@ -454,7 +439,6 @@ export default async function Home({ searchParams }: Props) {
   console.log('city', city);
   console.log('min price', firstPrice);
   console.log('max price', maxPrice);
-  console.log('area', firstArea);
   console.log('area', firstBathroom);
 
   const [properties, totalProperties] = await Promise.all([

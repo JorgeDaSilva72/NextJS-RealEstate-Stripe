@@ -91,8 +91,8 @@ export default async function Home({ searchParams }: Props) {
   const secondPrice = Array.isArray(keyValueObject.price) &&
     keyValueObject.price.length > 1 ? keyValueObject.price[1] : undefined;
 
-  const firstArea = Number(keyValueObject?.area?.[0]);
-  const secondArea = Number(keyValueObject?.area?.[1]);
+  // const firstArea = Number(keyValueObject?.area?.[0]);
+  // const secondArea = Number(keyValueObject?.area?.[1]);
 
   const firstRoom = Number(keyValueObject?.room?.[0]);
   const secondRoom = Number(keyValueObject?.room?.[1]);
@@ -160,17 +160,13 @@ export default async function Home({ searchParams }: Props) {
   //   ? (searchParams.maxPrice ? Number(searchParams.maxPrice) : secondPrice || 10000)
   //   : secondPrice || 10000;
 
-  // const minArea = hasUserSelected
-  //   ? searchParams.minArea
-  //     ? Number(searchParams.minArea)
-  //     : firstArea ?? undefined
-  //   : undefined;
 
-  // const maxArea = hasUserSelected
-  //   ? searchParams.maxArea
-  //     ? Number(searchParams.maxArea)
-  //     : secondArea ?? undefined
-  //   : undefined;
+  const minArea = searchParams.minArea
+    ? Number(searchParams.minArea)
+    : undefined;
+  const maxArea = searchParams.maxArea
+    ? Number(searchParams.maxArea)
+    : undefined;
 
   // const minPrice = hasUserSelected
   //   ? minPriceTest ?? firstPrice ?? 0  // Si `minPriceTest` est défini, il est utilisé ; sinon on prend `firstPrice`, sinon 0
@@ -185,16 +181,16 @@ export default async function Home({ searchParams }: Props) {
     : secondPrice ?? 1000000;
 
 
-  const minAreaTest = searchParams.minArea ? Number(searchParams.minArea) : undefined;
-  const maxAreaTest = searchParams.maxArea ? Number(searchParams.maxArea) : undefined;
+  // const minAreaTest = searchParams.minArea ? Number(searchParams.minArea) : undefined;
+  // const maxAreaTest = searchParams.maxArea ? Number(searchParams.maxArea) : undefined;
 
-  const minArea = hasUserSelected
-    ? minAreaTest ?? firstArea ?? 0  // Si `minAreaTest` est défini, il est utilisé ; sinon on prend `firstArea`, sinon 0
-    : firstArea ?? 0;  // Valeur par défaut si `hasUserSelected` est false
+  // const minArea = hasUserSelected
+  //   ? minAreaTest ?? firstArea ?? 0  // Si `minAreaTest` est défini, il est utilisé ; sinon on prend `firstArea`, sinon 0
+  //   : firstArea ?? 0;  // Valeur par défaut si `hasUserSelected` est false
 
-  const maxArea = hasUserSelected
-    ? maxAreaTest ?? secondArea ?? 1000  // Si `maxAreaTest` est défini, il est utilisé ; sinon on prend `secondArea`, sinon 1000
-    : secondArea ?? 1000;  // Valeur par défaut si `hasUserSelected` est false
+  // const maxArea = hasUserSelected
+  //   ? maxAreaTest ?? secondArea ?? 1000  // Si `maxAreaTest` est défini, il est utilisé ; sinon on prend `secondArea`, sinon 1000
+  //   : secondArea ?? 1000;  // Valeur par défaut si `hasUserSelected` est false
 
 
   const minBedrooms = searchParams.minBedrooms
@@ -443,7 +439,6 @@ export default async function Home({ searchParams }: Props) {
   console.log('city', city);
   console.log('min price', firstPrice);
   console.log('max price', maxPrice);
-  console.log('area', firstArea);
   console.log('area', firstBathroom);
 
   const [properties, totalProperties] = await Promise.all([
