@@ -96,7 +96,7 @@ const ModalDeletePropertyPage = ({ params }: Props) => {
         const deletedImageURLs = property.images
           .map((item) => item.url.split("/").at(-1))
           .filter((item) => item !== undefined);
-        await removeImages(deletedImageURLs);
+        await removeImages(deletedImageURLs, "propertyImages");
       }
       await deleteProperty(Number(params.id));
 
