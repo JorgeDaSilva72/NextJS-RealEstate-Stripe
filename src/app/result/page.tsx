@@ -77,13 +77,22 @@ export default async function Home({ searchParams }: Props) {
     acc[item.name] = item.value || item.range; // Priorité à `value`, sinon utiliser `range`
     return acc;
   }, {});
-  console.log("Objet clé-valeur :", keyValueObject);
+  // console.log("Objet clé-valeur :", keyValueObject);
 
   const queryTypeFilter = keyValueObject.queryType ?? "";
   const queryStatusFilter = keyValueObject.queryStatus ?? "";
   const queryCountryFilter = keyValueObject.country ?? "";
   const queryCityFilter = keyValueObject.city ?? "";
 
+  const firstPrice = keyValueObject?.price?.[0];
+  const firstArea = keyValueObject?.area?.[0];
+  const firstRoom = keyValueObject?.room?.[0];
+  const firstBathroom = keyValueObject?.bathroom?.[0];
+
+  const secondPrice = keyValueObject?.price?.[1];
+  const secondArea = keyValueObject?.area?.[1];
+  const secondRoom = keyValueObject?.room?.[1];
+  const secondBathroom = keyValueObject?.bathroom?.[1];
 
 
   // Récupérer le PropertyType correspondant à queryType
@@ -102,17 +111,31 @@ export default async function Home({ searchParams }: Props) {
   });
 
 
-  const pagenum = searchParams.pagenum ?? 1;
-  const query = searchParams.query ?? "";
-  const queryStatus = searchParams.queryStatus ?? propertyStatusValue?.value ?? "";
-  const queryType = searchParams.queryType ?? propertyTypeValue?.value ?? "";
-  const city = searchParams.city ?? queryCityFilter ?? "";
-  const country = searchParams.country ?? queryCountryFilter ?? "";
+  const hasUserSelected = Object.keys(searchParams).some(
+    key => searchParams[key] !== undefined && searchParams[key] !== null
+  );
+  // console.log('user selected', hasUserSelected)
 
-  console.log('type filter', queryType);
-  console.log('status filter', queryStatus);
-  console.log('country filter', country);
-  console.log('city filter', city);
+  // Si l'utilisateur a sélectionné un champ, on utilise uniquement `searchParams`. Sinon, on prend les valeurs par défaut.
+  const pagenum = hasUserSelected ? searchParams.pagenum ?? 1 : 1;
+  const query = hasUserSelected ? searchParams.query ?? "" : "";
+
+  const queryStatus = hasUserSelected
+    ? searchParams.queryStatus ?? ""
+    : propertyStatusValue?.value ?? "";
+
+  const queryType = hasUserSelected
+    ? searchParams.queryType ?? ""
+    : propertyTypeValue?.value ?? "";
+
+  const city = hasUserSelected
+    ? searchParams.city ?? ""
+    : queryCityFilter ?? "";
+
+  const country = hasUserSelected
+    ? searchParams.country ?? ""
+    : queryCountryFilter ?? "";
+
 
 
   // const pagenum = searchParams.pagenum ?? 1;
@@ -130,12 +153,36 @@ export default async function Home({ searchParams }: Props) {
     ? Number(searchParams.maxPrice)
     : undefined;
 
+  // const minPrice = hasUserSelected
+  //   ? searchParams.minPrice
+  //     ? Number(searchParams.minPrice)
+  //     : firstPrice ?? undefined
+  //   : undefined;
+
+  // const maxPrice = hasUserSelected
+  //   ? searchParams.maxPrice
+  //     ? Number(searchParams.maxPrice)
+  //     : secondPrice ?? undefined
+  //   : undefined;
+
   const minArea = searchParams.minArea
     ? Number(searchParams.minArea)
     : undefined;
   const maxArea = searchParams.maxArea
     ? Number(searchParams.maxArea)
     : undefined;
+
+  // const minArea = hasUserSelected
+  //   ? searchParams.minArea
+  //     ? Number(searchParams.minArea)
+  //     : firstArea ?? undefined
+  //   : undefined;
+
+  // const maxArea = hasUserSelected
+  //   ? searchParams.maxArea
+  //     ? Number(searchParams.maxArea)
+  //     : secondArea ?? undefined
+  //   : undefined;
 
   const minBedrooms = searchParams.minBedrooms
     ? Number(searchParams.minBedrooms)
@@ -144,12 +191,39 @@ export default async function Home({ searchParams }: Props) {
     ? Number(searchParams.maxBedrooms)
     : undefined;
 
+  // const minBedrooms = hasUserSelected
+  //   ? searchParams.minBedrooms
+  //     ? Number(searchParams.minBedrooms)
+  //     : firstRoom ?? undefined
+  //   : undefined;
+
+  // const maxBedrooms = hasUserSelected
+  //   ? searchParams.maxBedrooms
+  //     ? Number(searchParams.maxBedrooms)
+  //     : secondRoom ?? undefined
+  //   : undefined;
+
   const minBathrooms = searchParams.minBathrooms
     ? Number(searchParams.minBathrooms)
     : undefined;
   const maxBathrooms = searchParams.maxBathrooms
     ? Number(searchParams.maxBathrooms)
     : undefined;
+
+  // const minBathrooms = hasUserSelected
+  //   ? searchParams.minBathrooms
+  //     ? Number(searchParams.minBathrooms)
+  //     : firstBathroom ?? undefined
+  //   : undefined;
+
+  // const maxBathrooms = hasUserSelected
+  //   ? searchParams.maxBathrooms
+  //     ? Number(searchParams.maxBathrooms)
+  //     : secondBathroom ?? undefined
+  //   : undefined;
+
+
+
 
   type SortOrder =
     | "price-asc"
@@ -350,18 +424,14 @@ export default async function Home({ searchParams }: Props) {
     },
   });
 
-  // console.log(
-  //   "query",
-  //   query,
-  //   "queryType",
-  //   queryType,
-  //   "minPrice:",
-  //   minPrice,
-  //   "maxPrice:",
-  //   maxPrice,
-  //   "queryStatus,",
-  //   queryStatus
-  // );
+  console.log('queryStatus', queryStatus);
+  console.log('queryType', queryType);
+  console.log('country', country);
+  console.log('city', city);
+  console.log('price', firstPrice);
+  console.log('area', firstArea);
+  console.log('price', firstRoom);
+  console.log('area', firstBathroom);
 
   const [properties, totalProperties] = await Promise.all([
     propertiesPromise,
