@@ -58,7 +58,9 @@ export default async function Home({ searchParams }: Props) {
     type?: string;
     range?: number[];
   }
-  const filterValues: FilterValue[] = getFilterValues(savedSearch);
+  // const filterValues: FilterValue[] = getFilterValues(savedSearch);
+  const filterValues: FilterValue[] = Array.isArray(getFilterValues(savedSearch)) ? 
+  getFilterValues(savedSearch) : [];
 
 
   const namesAndValues = filterValues.map(item => {
@@ -84,15 +86,15 @@ export default async function Home({ searchParams }: Props) {
   const queryCountryFilter = keyValueObject.country ?? "";
   const queryCityFilter = keyValueObject.city ?? "";
 
-  const firstPrice = keyValueObject?.price?.[0];
-  const firstArea = keyValueObject?.area?.[0];
-  const firstRoom = keyValueObject?.room?.[0];
-  const firstBathroom = keyValueObject?.bathroom?.[0];
+  const firstPrice = Number(keyValueObject?.price?.[0]);
+  const firstArea = Number(keyValueObject?.area?.[0]);
+  const firstRoom = Number(keyValueObject?.room?.[0]);
+  const firstBathroom = Number(keyValueObject?.bathroom?.[0]);
 
-  const secondPrice = keyValueObject?.price?.[1];
-  const secondArea = keyValueObject?.area?.[1];
-  const secondRoom = keyValueObject?.room?.[1];
-  const secondBathroom = keyValueObject?.bathroom?.[1];
+  const secondPrice = Number(keyValueObject?.price?.[1]);
+  const secondArea = Number(keyValueObject?.area?.[1]);
+  const secondRoom = Number(keyValueObject?.room?.[1]);
+  const secondBathroom = Number(keyValueObject?.bathroom?.[1]);
 
 
   // Récupérer le PropertyType correspondant à queryType
@@ -145,82 +147,81 @@ export default async function Home({ searchParams }: Props) {
   // const city = searchParams.city ?? "";
   // const country = searchParams.country ?? "";
 
-  const minPrice = searchParams.minPrice
-
-    ? Number(searchParams.minPrice)
-    : undefined;
-  const maxPrice = searchParams.maxPrice
-    ? Number(searchParams.maxPrice)
-    : undefined;
-
-  // const minPrice = hasUserSelected
-  //   ? searchParams.minPrice
-  //     ? Number(searchParams.minPrice)
-  //     : firstPrice ?? undefined
+  // const minPrice = searchParams.minPrice
+  //   ? Number(searchParams.minPrice)
+  //   : undefined;
+  // const maxPrice = searchParams.maxPrice
+  //   ? Number(searchParams.maxPrice)
   //   : undefined;
 
-  // const maxPrice = hasUserSelected
-  //   ? searchParams.maxPrice
-  //     ? Number(searchParams.maxPrice)
-  //     : secondPrice ?? undefined
-  //   : undefined;
-
-  const minArea = searchParams.minArea
-    ? Number(searchParams.minArea)
-    : undefined;
-  const maxArea = searchParams.maxArea
-    ? Number(searchParams.maxArea)
+  const minPrice = hasUserSelected
+    ? searchParams.minPrice
+      ? Number(searchParams.minPrice)
+      : firstPrice ?? undefined
     : undefined;
 
-  // const minArea = hasUserSelected
-  //   ? searchParams.minArea
-  //     ? Number(searchParams.minArea)
-  //     : firstArea ?? undefined
-  //   : undefined;
-
-  // const maxArea = hasUserSelected
-  //   ? searchParams.maxArea
-  //     ? Number(searchParams.maxArea)
-  //     : secondArea ?? undefined
-  //   : undefined;
-
-  const minBedrooms = searchParams.minBedrooms
-    ? Number(searchParams.minBedrooms)
-    : undefined;
-  const maxBedrooms = searchParams.maxBedrooms
-    ? Number(searchParams.maxBedrooms)
+  const maxPrice = hasUserSelected
+    ? searchParams.maxPrice
+      ? Number(searchParams.maxPrice)
+      : secondPrice ?? undefined
     : undefined;
 
-  // const minBedrooms = hasUserSelected
-  //   ? searchParams.minBedrooms
-  //     ? Number(searchParams.minBedrooms)
-  //     : firstRoom ?? undefined
+  // const minArea = searchParams.minArea
+  //   ? Number(searchParams.minArea)
+  //   : undefined;
+  // const maxArea = searchParams.maxArea
+  //   ? Number(searchParams.maxArea)
   //   : undefined;
 
-  // const maxBedrooms = hasUserSelected
-  //   ? searchParams.maxBedrooms
-  //     ? Number(searchParams.maxBedrooms)
-  //     : secondRoom ?? undefined
-  //   : undefined;
-
-  const minBathrooms = searchParams.minBathrooms
-    ? Number(searchParams.minBathrooms)
-    : undefined;
-  const maxBathrooms = searchParams.maxBathrooms
-    ? Number(searchParams.maxBathrooms)
+  const minArea = hasUserSelected
+    ? searchParams.minArea
+      ? Number(searchParams.minArea)
+      : firstArea ?? undefined
     : undefined;
 
-  // const minBathrooms = hasUserSelected
-  //   ? searchParams.minBathrooms
-  //     ? Number(searchParams.minBathrooms)
-  //     : firstBathroom ?? undefined
+  const maxArea = hasUserSelected
+    ? searchParams.maxArea
+      ? Number(searchParams.maxArea)
+      : secondArea ?? undefined
+    : undefined;
+
+  // const minBedrooms = searchParams.minBedrooms
+  //   ? Number(searchParams.minBedrooms)
+  //   : undefined;
+  // const maxBedrooms = searchParams.maxBedrooms
+  //   ? Number(searchParams.maxBedrooms)
   //   : undefined;
 
-  // const maxBathrooms = hasUserSelected
-  //   ? searchParams.maxBathrooms
-  //     ? Number(searchParams.maxBathrooms)
-  //     : secondBathroom ?? undefined
+  const minBedrooms = hasUserSelected
+    ? searchParams.minBedrooms
+      ? Number(searchParams.minBedrooms)
+      : firstRoom ?? undefined
+    : undefined;
+
+  const maxBedrooms = hasUserSelected
+    ? searchParams.maxBedrooms
+      ? Number(searchParams.maxBedrooms)
+      : secondRoom ?? undefined
+    : undefined;
+
+  // const minBathrooms = searchParams.minBathrooms
+  //   ? Number(searchParams.minBathrooms)
   //   : undefined;
+  // const maxBathrooms = searchParams.maxBathrooms
+  //   ? Number(searchParams.maxBathrooms)
+  //   : undefined;
+
+  const minBathrooms = hasUserSelected
+    ? searchParams.minBathrooms
+      ? Number(searchParams.minBathrooms)
+      : firstBathroom ?? undefined
+    : undefined;
+
+  const maxBathrooms = hasUserSelected
+    ? searchParams.maxBathrooms
+      ? Number(searchParams.maxBathrooms)
+      : secondBathroom ?? undefined
+    : undefined;
 
 
 
