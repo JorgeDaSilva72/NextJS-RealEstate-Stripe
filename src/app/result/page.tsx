@@ -69,7 +69,6 @@ export default async function Home({ searchParams }: Props) {
         value: '', // Par exemple : valeur par défaut
       };
     }
-
     // Si aucune transformation n'est nécessaire, renvoyer l'objet tel quel
     return item;
   });
@@ -80,27 +79,48 @@ export default async function Home({ searchParams }: Props) {
   }, {});
   console.log("Objet clé-valeur :", keyValueObject);
 
-  const queryTypeTest = keyValueObject.queryType ?? "";
-  const queryStatusTest = keyValueObject.queryStatus ?? "";
-  // console.log('propriété type', queryTypeTest)
-  console.log('propriété Status', queryStatusTest)
-  // console.log('propriété Price', priceTest)
+  const queryTypeFilter = keyValueObject.queryType ?? "";
+  const queryStatusFilter = keyValueObject.queryStatus ?? "";
+  const queryCountryFilter = keyValueObject.country ?? "";
+  const queryCityFilter = keyValueObject.city ?? "";
+
+
 
   // Récupérer le PropertyType correspondant à queryType
   const propertyTypeValue = await prisma.propertyType.findUnique({
-    where: { id: Number(queryTypeTest) },
+    where: { id: Number(queryTypeFilter) },
+    select: {
+      value: true
+    }
   });
+
   const propertyStatusValue = await prisma.propertyStatus.findUnique({
-    where: { id: Number(queryStatusTest) },
+    where: { id: Number(queryStatusFilter) },
+    select: {
+      value: true
+    }
   });
 
 
   const pagenum = searchParams.pagenum ?? 1;
   const query = searchParams.query ?? "";
-  const queryStatus = searchParams.queryStatus ?? "";
-  const queryType = searchParams.queryType ?? "";
-  const city = searchParams.city ?? "";
-  const country = searchParams.country ?? "";
+  const queryStatus = searchParams.queryStatus ?? propertyStatusValue?.value ?? "";
+  const queryType = searchParams.queryType ?? propertyTypeValue?.value ?? "";
+  const city = searchParams.city ?? queryCityFilter ?? "";
+  const country = searchParams.country ?? queryCountryFilter ?? "";
+
+  console.log('type filter', queryType);
+  console.log('status filter', queryStatus);
+  console.log('country filter', country);
+  console.log('city filter', city);
+
+
+  // const pagenum = searchParams.pagenum ?? 1;
+  // const query = searchParams.query ?? "";
+  // const queryStatus = searchParams.queryStatus ?? "";
+  // const queryType = searchParams.queryType ?? "";
+  // const city = searchParams.city ?? "";
+  // const country = searchParams.country ?? "";
 
   const minPrice = searchParams.minPrice
 
