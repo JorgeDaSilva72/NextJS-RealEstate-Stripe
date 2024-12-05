@@ -47,6 +47,7 @@ export default async function Home({ searchParams }: Props) {
 
   const userId = await getUserIdFromToken();
   const savedSearch = await getSavedSearch(userId);
+  // console.log('table savedSearch', savedSearch)
 
   // const filterValues = getFilterValues(savedSearch);
 
@@ -59,27 +60,6 @@ export default async function Home({ searchParams }: Props) {
   }
   const filterValues: FilterValue[] = getFilterValues(savedSearch);
 
-
-
-
-
-
-  // const namesAndValues = filterValues.map(item => {
-  //   console.log('item', item)
-
-  //   // Si le nom de l'élément est 'queryStatus', on assigne une valeur par défaut si item.value est vide
-  //   if (item.name === 'country') {
-  //     console.log('nom', item.name);
-  //     console.log('value', item.value);
-
-  //     return {
-  //       name: item.name,
-  //       value: item.value || "" // Remplacez "default_value" par la valeur par défaut que vous voulez
-  //     };
-  //   }
-
-  //   return item; // Retourne l'élément original s'il n'est pas 'queryStatus'
-  // });
 
   const namesAndValues = filterValues.map(item => {
     // Ajouter une valeur par défaut pour les champs où "value" est vide
@@ -100,10 +80,19 @@ export default async function Home({ searchParams }: Props) {
   }, {});
   console.log("Objet clé-valeur :", keyValueObject);
 
-  const citytest = keyValueObject.city ?? "";
+  const queryTypeTest = keyValueObject.queryType ?? "";
   const queryStatusTest = keyValueObject.queryStatus ?? "";
-  console.log('city test', citytest)
-  console.log('city Status', queryStatusTest)
+  // console.log('propriété type', queryTypeTest)
+  console.log('propriété Status', queryStatusTest)
+  // console.log('propriété Price', priceTest)
+
+  // Récupérer le PropertyType correspondant à queryType
+  const propertyTypeValue = await prisma.propertyType.findUnique({
+    where: { id: Number(queryTypeTest) },
+  });
+  const propertyStatusValue = await prisma.propertyStatus.findUnique({
+    where: { id: Number(queryStatusTest) },
+  });
 
 
   const pagenum = searchParams.pagenum ?? 1;
@@ -113,7 +102,6 @@ export default async function Home({ searchParams }: Props) {
   const city = searchParams.city ?? "";
   const country = searchParams.country ?? "";
 
-  console.log('propriété status:', queryStatus);
   const minPrice = searchParams.minPrice
 
     ? Number(searchParams.minPrice)

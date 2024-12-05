@@ -19,7 +19,7 @@ export async function POST(req: Request) {
             where: { userId },  // Utilisez la colonne `userId` pour trouver l'entrée
         });
 
-        console.log('existing id', existingEntry)
+        // console.log('existing id', existingEntry)
 
         let savedSearch;
 
