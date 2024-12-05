@@ -14,14 +14,34 @@ export async function POST(req: Request) {
         // Si des filtres sont fournis, les convertir en chaîne JSON, sinon les définir comme une chaîne vide
         // const filtersJson = filters ? JSON.stringify(filters) : "";  // Gérer le cas où `filters` peut être vide
 
-        // Création de la recherche sauvegardée dans la base de données
-        const savedSearch = await prisma.savedSearch.create({
-            data: {
-                userId,
-                name,
-                filters: filtersJson,  // Utilisation de la chaîne JSON des filtres
-            },
+        // Vérifier si une entrée avec ce `userId` existe déjà
+        const existingEntry = await prisma.savedSearch.findFirst({
+            where: { userId },  // Utilisez la colonne `userId` pour trouver l'entrée
         });
+
+        console.log('existing id', existingEntry)
+
+        let savedSearch;
+
+        if (existingEntry) {
+            savedSearch = await prisma.savedSearch.update({
+                where: { id: existingEntry.id },
+                data: {
+                    name,
+                    filters: filtersJson,  // Mise à jour des colonnes avec les nouvelles données
+                },
+            })
+        } else {
+            // Création de la recherche sauvegardée dans la base de données
+            const savedSearch = await prisma.savedSearch.create({
+                data: {
+                    userId,
+                    name,
+                    filters: filtersJson,  // Utilisation de la chaîne JSON des filtres
+                },
+            });
+        }
+
 
         // Retourner la réponse sous forme de JSON avec un statut 200 en cas de succès
         return NextResponse.json(savedSearch);

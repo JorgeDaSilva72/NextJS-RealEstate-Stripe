@@ -238,6 +238,7 @@ const Search = ({ token }: SearchProps) => {
           };
         }
       });
+      console.log('saved filters', savedFilters)
 
       // Préparer les données à envoyer
       const requestData = {

@@ -98,9 +98,12 @@ export default async function Home({ searchParams }: Props) {
     acc[item.name] = item.value || item.range; // Priorité à `value`, sinon utiliser `range`
     return acc;
   }, {});
-  // console.log("Objet clé-valeur :", keyValueObject);
+  console.log("Objet clé-valeur :", keyValueObject);
 
-
+  const citytest = keyValueObject.city ?? "";
+  const queryStatusTest = keyValueObject.queryStatus ?? "";
+  console.log('city test', citytest)
+  console.log('city Status', queryStatusTest)
 
 
   const pagenum = searchParams.pagenum ?? 1;
@@ -110,7 +113,7 @@ export default async function Home({ searchParams }: Props) {
   const city = searchParams.city ?? "";
   const country = searchParams.country ?? "";
 
-  console.log('retrieve query status:', city);
+  console.log('propriété status:', queryStatus);
   const minPrice = searchParams.minPrice
 
     ? Number(searchParams.minPrice)
