@@ -59,8 +59,8 @@ export default async function Home({ searchParams }: Props) {
     range?: number[];
   }
   // const filterValues: FilterValue[] = getFilterValues(savedSearch);
-  const filterValues: FilterValue[] = Array.isArray(getFilterValues(savedSearch)) ? 
-  getFilterValues(savedSearch) : [];
+  const filterValues: FilterValue[] = Array.isArray(getFilterValues(savedSearch)) ?
+    getFilterValues(savedSearch) : [];
 
 
   const namesAndValues = filterValues.map(item => {
@@ -116,7 +116,7 @@ export default async function Home({ searchParams }: Props) {
   const hasUserSelected = Object.keys(searchParams).some(
     key => searchParams[key] !== undefined && searchParams[key] !== null
   );
-  // console.log('user selected', hasUserSelected)
+  console.log('user selected', hasUserSelected)
 
   // Si l'utilisateur a sélectionné un champ, on utilise uniquement `searchParams`. Sinon, on prend les valeurs par défaut.
   const pagenum = hasUserSelected ? searchParams.pagenum ?? 1 : 1;
@@ -147,81 +147,92 @@ export default async function Home({ searchParams }: Props) {
   // const city = searchParams.city ?? "";
   // const country = searchParams.country ?? "";
 
-  // const minPrice = searchParams.minPrice
-  //   ? Number(searchParams.minPrice)
+
+  // const minPrice = hasUserSelected
+  //   ? (searchParams.minPrice ? Number(searchParams.minPrice) : firstPrice || 0)
+  //   : firstPrice || 0;
+
+  // const maxPrice = hasUserSelected
+  //   ? (searchParams.maxPrice ? Number(searchParams.maxPrice) : secondPrice || 10000)
+  //   : secondPrice || 10000;
+
+  // const minArea = hasUserSelected
+  //   ? searchParams.minArea
+  //     ? Number(searchParams.minArea)
+  //     : firstArea ?? undefined
   //   : undefined;
-  // const maxPrice = searchParams.maxPrice
-  //   ? Number(searchParams.maxPrice)
+
+  // const maxArea = hasUserSelected
+  //   ? searchParams.maxArea
+  //     ? Number(searchParams.maxArea)
+  //     : secondArea ?? undefined
   //   : undefined;
+
+  const minPriceTest = searchParams.minPrice ? Number(searchParams.minPrice) : undefined;
+  const maxPriceTest = searchParams.maxPrice ? Number(searchParams.maxPrice) : undefined;
+
+  // const minPrice = hasUserSelected
+  //   ? minPriceTest ?? firstPrice ?? 0  // Si `minPriceTest` est défini, il est utilisé ; sinon on prend `firstPrice`, sinon 0
+  //   : firstPrice ?? 0; 
 
   const minPrice = hasUserSelected
-    ? searchParams.minPrice
-      ? Number(searchParams.minPrice)
-      : firstPrice ?? undefined
-    : undefined;
+    ? (searchParams.minPrice ? Number(searchParams.minPrice) : undefined)
+    : firstPrice ?? 0;
 
   const maxPrice = hasUserSelected
-    ? searchParams.maxPrice
-      ? Number(searchParams.maxPrice)
-      : secondPrice ?? undefined
-    : undefined;
+    ? (searchParams.maxPrice ? Number(searchParams.maxPrice) : undefined)
+    : secondPrice ?? 10000;
 
-  // const minArea = searchParams.minArea
-  //   ? Number(searchParams.minArea)
-  //   : undefined;
-  // const maxArea = searchParams.maxArea
-  //   ? Number(searchParams.maxArea)
-  //   : undefined;
+
+  const minAreaTest = searchParams.minArea ? Number(searchParams.minArea) : undefined;
+  const maxAreaTest = searchParams.maxArea ? Number(searchParams.maxArea) : undefined;
 
   const minArea = hasUserSelected
-    ? searchParams.minArea
-      ? Number(searchParams.minArea)
-      : firstArea ?? undefined
-    : undefined;
+    ? minAreaTest ?? firstArea ?? 0  // Si `minAreaTest` est défini, il est utilisé ; sinon on prend `firstArea`, sinon 0
+    : firstArea ?? 0;  // Valeur par défaut si `hasUserSelected` est false
 
   const maxArea = hasUserSelected
-    ? searchParams.maxArea
-      ? Number(searchParams.maxArea)
-      : secondArea ?? undefined
+    ? maxAreaTest ?? secondArea ?? 1000  // Si `maxAreaTest` est défini, il est utilisé ; sinon on prend `secondArea`, sinon 1000
+    : secondArea ?? 1000;  // Valeur par défaut si `hasUserSelected` est false
+
+
+  const minBedrooms = searchParams.minBedrooms
+    ? Number(searchParams.minBedrooms)
+    : undefined;
+  const maxBedrooms = searchParams.maxBedrooms
+    ? Number(searchParams.maxBedrooms)
     : undefined;
 
-  // const minBedrooms = searchParams.minBedrooms
-  //   ? Number(searchParams.minBedrooms)
-  //   : undefined;
-  // const maxBedrooms = searchParams.maxBedrooms
-  //   ? Number(searchParams.maxBedrooms)
-  //   : undefined;
-
-  const minBedrooms = hasUserSelected
-    ? searchParams.minBedrooms
-      ? Number(searchParams.minBedrooms)
-      : firstRoom ?? undefined
-    : undefined;
-
-  const maxBedrooms = hasUserSelected
-    ? searchParams.maxBedrooms
-      ? Number(searchParams.maxBedrooms)
-      : secondRoom ?? undefined
-    : undefined;
-
-  // const minBathrooms = searchParams.minBathrooms
-  //   ? Number(searchParams.minBathrooms)
-  //   : undefined;
-  // const maxBathrooms = searchParams.maxBathrooms
-  //   ? Number(searchParams.maxBathrooms)
+  // const minBedrooms = hasUserSelected
+  //   ? searchParams.minBedrooms
+  //     ? Number(searchParams.minBedrooms)
+  //     : firstRoom ?? undefined
   //   : undefined;
 
-  const minBathrooms = hasUserSelected
-    ? searchParams.minBathrooms
-      ? Number(searchParams.minBathrooms)
-      : firstBathroom ?? undefined
+  // const maxBedrooms = hasUserSelected
+  //   ? searchParams.maxBedrooms
+  //     ? Number(searchParams.maxBedrooms)
+  //     : secondRoom ?? undefined
+  //   : undefined;
+
+  const minBathrooms = searchParams.minBathrooms
+    ? Number(searchParams.minBathrooms)
+    : undefined;
+  const maxBathrooms = searchParams.maxBathrooms
+    ? Number(searchParams.maxBathrooms)
     : undefined;
 
-  const maxBathrooms = hasUserSelected
-    ? searchParams.maxBathrooms
-      ? Number(searchParams.maxBathrooms)
-      : secondBathroom ?? undefined
-    : undefined;
+  // const minBathrooms = hasUserSelected
+  //   ? searchParams.minBathrooms
+  //     ? Number(searchParams.minBathrooms)
+  //     : firstBathroom ?? undefined
+  //   : undefined;
+
+  // const maxBathrooms = hasUserSelected
+  //   ? searchParams.maxBathrooms
+  //     ? Number(searchParams.maxBathrooms)
+  //     : secondBathroom ?? undefined
+  //   : undefined;
 
 
 
@@ -429,9 +440,9 @@ export default async function Home({ searchParams }: Props) {
   console.log('queryType', queryType);
   console.log('country', country);
   console.log('city', city);
-  console.log('price', firstPrice);
+  console.log('min price', firstPrice);
+  console.log('max price', maxPrice);
   console.log('area', firstArea);
-  console.log('price', firstRoom);
   console.log('area', firstBathroom);
 
   const [properties, totalProperties] = await Promise.all([
