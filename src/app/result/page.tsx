@@ -38,19 +38,6 @@ const getFilterValues = (savedSearch: any) => {
   return savedSearch?.filters ? JSON.parse(savedSearch.filters) : {};
 };
 
-const getSearchParams = (filterValues: any, searchParams: { [key: string]: string | string[] | undefined }) => {
-  return {
-    searchqueryStatus: searchParams.searchqueryStatus || filterValues.searchqueryStatus,
-    searchQueryType: searchParams.searchQueryType || filterValues.searchQueryType,
-    searchcountry: searchParams.searchcountry || filterValues.searchcountry,
-    searchcity: searchParams.searchcity || filterValues.searchcity,
-    searchsortOrder: searchParams.searchsortOrder || filterValues.searchsortOrder,
-    price: searchParams.price || filterValues.price,
-    area: searchParams.area || filterValues.area,
-    room: searchParams.room || filterValues.room,
-    bathroom: searchParams.bathroom || filterValues.bathroom,
-  };
-};
 
 interface Props {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -111,7 +98,7 @@ export default async function Home({ searchParams }: Props) {
     acc[item.name] = item.value || item.range; // Priorité à `value`, sinon utiliser `range`
     return acc;
   }, {});
-  console.log("Objet clé-valeur :", keyValueObject);
+  // console.log("Objet clé-valeur :", keyValueObject);
 
 
 
@@ -123,7 +110,7 @@ export default async function Home({ searchParams }: Props) {
   const city = searchParams.city ?? "";
   const country = searchParams.country ?? "";
 
-  // console.log('retrieve query status:', queryStatus);
+  console.log('retrieve query status:', city);
   const minPrice = searchParams.minPrice
 
     ? Number(searchParams.minPrice)
