@@ -40,6 +40,7 @@ const config: Config = {
       //   // "max-1024": { max: "1024px" }, // Custom small breakpoint
       //   // "max-440": { max: "440px" }, // Custom small breakpoint
       // },
+
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
