@@ -63,7 +63,7 @@ export default async function Home({ searchParams }: Props) {
     getFilterValues(savedSearch) : [];
 
 
-  const namesAndValues = await filterValues.map(item => {
+  const namesAndValues = filterValues.map(item => {
     // Ajouter une valeur par défaut pour les champs où "value" est vide
     if (!item.value && item.name) {
       return {
@@ -75,7 +75,7 @@ export default async function Home({ searchParams }: Props) {
     return item;
   });
 
-  const keyValueObject = await namesAndValues.reduce((acc: Record<string, string | number[] | undefined>, item) => {
+  const keyValueObject = namesAndValues.reduce((acc: Record<string, string | number[] | undefined>, item) => {
     acc[item.name] = item.value || item.range; // Priorité à `value`, sinon utiliser `range`
     return acc;
   }, {});
@@ -117,7 +117,7 @@ export default async function Home({ searchParams }: Props) {
   });
 
 
-  const hasUserSelected = await Object.keys(searchParams).some(
+  const hasUserSelected = Object.keys(searchParams).some(
     key => searchParams[key] !== undefined && searchParams[key] !== null
   );
   console.log('user selected', hasUserSelected)
@@ -185,28 +185,17 @@ export default async function Home({ searchParams }: Props) {
     : secondPrice ?? 1000000;
 
 
-  // const minAreaTest = searchParams.minArea ? Number(searchParams.minArea) : undefined;
-  // const maxAreaTest = searchParams.maxArea ? Number(searchParams.maxArea) : undefined;
-
-  // const minArea = hasUserSelected
-  //   ? minAreaTest ?? firstArea ?? 0  // Si `minAreaTest` est défini, il est utilisé ; sinon on prend `firstArea`, sinon 0
-  //   : firstArea ?? 0;  // Valeur par défaut si `hasUserSelected` est false
-
-  // const maxArea = hasUserSelected
-  //   ? maxAreaTest ?? secondArea ?? 1000  // Si `maxAreaTest` est défini, il est utilisé ; sinon on prend `secondArea`, sinon 1000
-  //   : secondArea ?? 1000;  // Valeur par défaut si `hasUserSelected` est false
+  const minAreaTest = searchParams.minArea ? Number(searchParams.minArea) : undefined;
+  const maxAreaTest = searchParams.maxArea ? Number(searchParams.maxArea) : undefined;
 
   const minArea = hasUserSelected
-    ? searchParams.minArea
-      ? Number(searchParams.minArea)
-      : firstArea ?? undefined
-    : undefined;
+    ? minAreaTest ?? firstArea ?? 0  // Si `minAreaTest` est défini, il est utilisé ; sinon on prend `firstArea`, sinon 0
+    : firstArea ?? 0;  // Valeur par défaut si `hasUserSelected` est false
 
   const maxArea = hasUserSelected
-    ? searchParams.maxArea
-      ? Number(searchParams.maxArea)
-      : secondArea ?? undefined
-    : undefined;
+    ? maxAreaTest ?? secondArea ?? 1000  // Si `maxAreaTest` est défini, il est utilisé ; sinon on prend `secondArea`, sinon 1000
+    : secondArea ?? 1000;  // Valeur par défaut si `hasUserSelected` est false
+
 
   const minBedrooms = searchParams.minBedrooms
     ? Number(searchParams.minBedrooms)
