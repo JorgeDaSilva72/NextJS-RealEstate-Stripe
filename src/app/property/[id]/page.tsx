@@ -493,10 +493,12 @@ const PropertyPage = async ({ params }: Props) => {
   // };
   // const currentUrl = getCurrentUrl();
 
-  const currentUrl =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/property/${params.id}`
-      : `http://localhost:3000/property/${params.id}`;
+  // const currentUrl =
+  //   typeof window !== "undefined"
+  //     ? `${window.location.origin}/property/${params.id}`
+  //     : `http://localhost:3000/property/${params.id}`;
+
+  const currentUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/property/${params.id}`;
 
   return (
     <div className="min-h-screen bg-gray-50">
