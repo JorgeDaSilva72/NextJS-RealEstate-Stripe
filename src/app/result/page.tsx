@@ -86,14 +86,20 @@ export default async function Home({ searchParams }: Props) {
   const queryCountryFilter = keyValueObject.country ?? "";
   const queryCityFilter = keyValueObject.city ?? "";
 
-  const firstPrice = Number(keyValueObject?.price?.[0]);
-  const firstArea = Number(keyValueObject?.area?.[0]);
-  const firstRoom = Number(keyValueObject?.room?.[0]);
-  const firstBathroom = Number(keyValueObject?.bathroom?.[0]);
+  // const firstPrice = Number(keyValueObject?.price?.[0]);
+  // const secondPrice = Number(keyValueObject?.price?.[1]);
+  const firstPrice = Array.isArray(keyValueObject.price) && keyValueObject.price.length > 0 ? 
+  keyValueObject.price[0] : undefined;
+  const secondPrice = Array.isArray(keyValueObject.price) && 
+  keyValueObject.price.length > 1 ? keyValueObject.price[1] : undefined;
 
-  const secondPrice = Number(keyValueObject?.price?.[1]);
+  const firstArea = Number(keyValueObject?.area?.[0]);
   const secondArea = Number(keyValueObject?.area?.[1]);
+
+  const firstRoom = Number(keyValueObject?.room?.[0]);
   const secondRoom = Number(keyValueObject?.room?.[1]);
+
+  const firstBathroom = Number(keyValueObject?.bathroom?.[0]);
   const secondBathroom = Number(keyValueObject?.bathroom?.[1]);
 
 
@@ -168,9 +174,6 @@ export default async function Home({ searchParams }: Props) {
   //     : secondArea ?? undefined
   //   : undefined;
 
-  const minPriceTest = searchParams.minPrice ? Number(searchParams.minPrice) : undefined;
-  const maxPriceTest = searchParams.maxPrice ? Number(searchParams.maxPrice) : undefined;
-
   // const minPrice = hasUserSelected
   //   ? minPriceTest ?? firstPrice ?? 0  // Si `minPriceTest` est défini, il est utilisé ; sinon on prend `firstPrice`, sinon 0
   //   : firstPrice ?? 0; 
@@ -181,7 +184,7 @@ export default async function Home({ searchParams }: Props) {
 
   const maxPrice = hasUserSelected
     ? (searchParams.maxPrice ? Number(searchParams.maxPrice) : undefined)
-    : secondPrice ?? 10000;
+    : secondPrice ?? 1000000;
 
 
   const minAreaTest = searchParams.minArea ? Number(searchParams.minArea) : undefined;
