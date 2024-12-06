@@ -115,6 +115,7 @@ export default async function Home({ searchParams }: Props) {
       ...(!!query && {
         name: {
           contains: String(query),
+          mode: "insensitive", // Rendre la recherche insensible à la casse
         },
       }),
       ...(!!queryStatus && {
