@@ -123,11 +123,6 @@ export default async function Home({ searchParams }: Props) {
   const minBathroomGet = savedSearch.minBathroom ?? '';
   const maxBathroomGet = savedSearch.maxBathroom ?? '';
 
-
-
-  console.log("Type Value:", queryStatusGet); // Affiche la valeur du type
-  console.log("Status city:", cityGet)
-
   interface FilterValue {
     name: string;
     value?: string;
@@ -157,40 +152,11 @@ export default async function Home({ searchParams }: Props) {
   }, {});
   // console.log("Objet clé-valeur :", keyValueObject);
 
-  const queryTypeFilter = keyValueObject.queryType ?? "";
-  const queryStatusFilter = keyValueObject.queryStatus ?? "";
-  const queryCountryFilter = keyValueObject.country ?? "";
-  const queryCityFilter = keyValueObject.city ?? "";
 
   const firstPrice = Array.isArray(keyValueObject.price) && keyValueObject.price.length > 0 ?
     keyValueObject.price[0] : undefined;
   const secondPrice = Array.isArray(keyValueObject.price) &&
     keyValueObject.price.length > 1 ? keyValueObject.price[1] : undefined;
-
-  // const firstArea = Number(keyValueObject?.area?.[0]);
-  // const secondArea = Number(keyValueObject?.area?.[1]);
-
-  const firstRoom = Number(keyValueObject?.room?.[0]);
-  const secondRoom = Number(keyValueObject?.room?.[1]);
-
-  const firstBathroom = Number(keyValueObject?.bathroom?.[0]);
-  const secondBathroom = Number(keyValueObject?.bathroom?.[1]);
-
-
-  // Récupérer le PropertyType correspondant à queryType
-  const propertyTypeValue = await prisma.propertyType.findUnique({
-    where: { id: Number(queryTypeFilter) },
-    select: {
-      value: true
-    }
-  });
-
-  const propertyStatusValue = await prisma.propertyStatus.findUnique({
-    where: { id: Number(queryStatusFilter) },
-    select: {
-      value: true
-    }
-  });
 
 
   const hasUserSelected = Object.keys(searchParams).some(
