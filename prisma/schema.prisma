@@ -27,6 +27,32 @@ datasource db {
 // directUrl = env("DATABASE_URL_UNPOOLED")
 //}
 
+model SavedSearch {
+    id          Int            @id @default(autoincrement())
+    userId      String
+    user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+    name        String
+    queryStatus Int?
+    queryType   Int?
+    country     String?
+    city        String?
+    sortOrder   String?
+    minPrice    Float?
+    maxPrice    Float?
+    minArea     Float?
+    maxArea     Float?
+    minRoom     Int?
+    maxRoom     Int?
+    minBathroom Int?
+    maxBathroom Int?
+    typeId      Int            @default(1) // Valeur par défaut temporaire
+    type        PropertyType   @relation(fields: [typeId], references: [id], onDelete: Restrict)
+    statusId    Int            @default(1) // Valeur par défaut temporaire
+    status      PropertyStatus @relation(fields: [statusId], references: [id], onDelete: Restrict)
+    createdAt   DateTime       @default(now())
+    updatedAt   DateTime       @updatedAt
+}
+
 model User {
     id            String          @id
     firstName     String
@@ -37,18 +63,6 @@ model User {
     Property      Property[]
     subscriptions Subscriptions[]
     SavedSearch   SavedSearch[]
-}
-
-//npx prisma migrate dev --name add_saved_search_table
-model SavedSearch {
-    id        Int      @id @default(autoincrement())
-    userId    String // Référence à l'utilisateur ayant sauvegardé cette recherche
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    name      String // Nom donné à la recherche sauvegardée
-    // filters   String? // Les critères de filtre, stockés sous forme JSON
-    filters   String
-    createdAt DateTime @default(now()) // Date de création
-    updatedAt DateTime @updatedAt // Dernière mise à jour
 }
 
 model Property {
@@ -71,15 +85,17 @@ model Property {
 }
 
 model PropertyType {
-    id       Int        @id @default(autoincrement())
-    value    String     @unique
-    Property Property[]
+    id          Int           @id @default(autoincrement())
+    value       String        @unique
+    Property    Property[]
+    SavedSearch SavedSearch[]
 }
 
 model PropertyStatus {
-    id       Int        @id @default(autoincrement())
-    value    String     @unique
-    Property Property[]
+    id          Int           @id @default(autoincrement())
+    value       String        @unique
+    Property    Property[]
+    SavedSearch SavedSearch[]
 }
 
 model PropertyLocation {

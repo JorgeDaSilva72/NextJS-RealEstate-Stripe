@@ -228,16 +228,17 @@ const Search = ({ token }: SearchProps) => {
           return {
             name: filter.name,
             type: filter.type,
-            range: filter.range || [], // Gérer les valeurs manquantes
+            range: Array.isArray(filter.range) ? filter.range : [], // S'assurer que c'est un tableau
           };
         } else {
           return {
             name: filter.name,
             type: filter.type,
-            value: filter.value || "", // Gérer les valeurs manquantes
+            value: typeof filter.value === "object" ? JSON.stringify(filter.value) : filter.value || "", // Convertir les objets en chaînes
           };
         }
       });
+
 
       console.log('saved filters', savedFilters)
 
@@ -247,6 +248,7 @@ const Search = ({ token }: SearchProps) => {
         name: "Token",  // Vous pouvez demander à l'utilisateur d'entrer un nom
         filters: savedFilters,  // Les filtres formatés
       };
+      console.log('Request data', requestData)
 
       // Envoyer la requête POST
       const response = await fetch("/api/post", {

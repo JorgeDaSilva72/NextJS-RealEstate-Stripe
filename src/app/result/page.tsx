@@ -151,26 +151,12 @@ export default async function Home({ searchParams }: Props) {
   // const city = searchParams.city ?? "";
   // const country = searchParams.country ?? "";
 
-
-  // const minPrice = hasUserSelected
-  //   ? (searchParams.minPrice ? Number(searchParams.minPrice) : firstPrice || 0)
-  //   : firstPrice || 0;
-
-  // const maxPrice = hasUserSelected
-  //   ? (searchParams.maxPrice ? Number(searchParams.maxPrice) : secondPrice || 10000)
-  //   : secondPrice || 10000;
-
-
   const minArea = searchParams.minArea
     ? Number(searchParams.minArea)
     : undefined;
   const maxArea = searchParams.maxArea
     ? Number(searchParams.maxArea)
     : undefined;
-
-  // const minPrice = hasUserSelected
-  //   ? minPriceTest ?? firstPrice ?? 0  // Si `minPriceTest` est défini, il est utilisé ; sinon on prend `firstPrice`, sinon 0
-  //   : firstPrice ?? 0; 
 
   const minPrice = hasUserSelected
     ? (searchParams.minPrice ? Number(searchParams.minPrice) : undefined)
@@ -230,8 +216,6 @@ export default async function Home({ searchParams }: Props) {
   //     ? Number(searchParams.maxBathrooms)
   //     : secondBathroom ?? undefined
   //   : undefined;
-
-
 
 
   type SortOrder =
@@ -433,13 +417,13 @@ export default async function Home({ searchParams }: Props) {
     },
   });
 
-  console.log('queryStatus', queryStatus);
-  console.log('queryType', queryType);
-  console.log('country', country);
-  console.log('city', city);
-  console.log('min price', firstPrice);
-  console.log('max price', maxPrice);
-  console.log('area', firstBathroom);
+  // console.log('queryStatus', queryStatus);
+  // console.log('queryType', queryType);
+  // console.log('country', country);
+  // console.log('city', city);
+  // console.log('min price', firstPrice);
+  // console.log('max price', maxPrice);
+  // console.log('area', firstBathroom);
 
   const [properties, totalProperties] = await Promise.all([
     propertiesPromise,
