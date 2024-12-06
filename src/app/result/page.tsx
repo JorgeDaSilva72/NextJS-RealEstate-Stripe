@@ -87,7 +87,7 @@ export default async function Home({ searchParams }: Props) {
 
   const userId = await getUserIdFromToken();
   const savedSearch = await getSavedSearchTest(userId);
-  console.log('user id avec savedsearch', savedSearch)
+  // console.log('user id avec savedsearch', savedSearch)
   // console.log('table savedSearch', savedSearch)
 
   if (!savedSearch) {
@@ -111,6 +111,7 @@ export default async function Home({ searchParams }: Props) {
 
   const queryStatusGet = savedSearch.status?.value ?? '';
   const queryTypeGet = savedSearch.type?.value ?? '';
+  const sortOrderGet = savedSearch.sortOrder ?? '';
   const cityGet = savedSearch.city ?? '';
   const countryGet = savedSearch.country ?? '';
   const minPriceGet = savedSearch.minPrice ?? '';
@@ -154,7 +155,7 @@ export default async function Home({ searchParams }: Props) {
     acc[item.name] = item.value || item.range; // Priorité à `value`, sinon utiliser `range`
     return acc;
   }, {});
-  console.log("Objet clé-valeur :", keyValueObject);
+  // console.log("Objet clé-valeur :", keyValueObject);
 
   const queryTypeFilter = keyValueObject.queryType ?? "";
   const queryStatusFilter = keyValueObject.queryStatus ?? "";
@@ -203,19 +204,24 @@ export default async function Home({ searchParams }: Props) {
 
   const queryStatus = hasUserSelected
     ? searchParams.queryStatus ?? ""
-    : propertyStatusValue?.value ?? "";
+    : queryStatusGet ?? "";
 
   const queryType = hasUserSelected
     ? searchParams.queryType ?? ""
-    : propertyTypeValue?.value ?? "";
+    : queryTypeGet ?? "";
 
   const city = hasUserSelected
     ? searchParams.city ?? ""
-    : queryCityFilter ?? "";
+    : cityGet ?? "";
 
   const country = hasUserSelected
     ? searchParams.country ?? ""
-    : queryCountryFilter ?? "";
+    : countryGet ?? "";
+
+  console.log('query status', queryStatus)
+  console.log('query queryType', queryType)
+  console.log('query city', city)
+  console.log('query country', country)
 
 
 
