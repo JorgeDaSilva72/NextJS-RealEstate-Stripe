@@ -28,8 +28,8 @@ async function createProperty() {
                 location: {
                     create: {
                         streetAddress: "12 Rue de Paris",
-                        city: "Maroc",
-                        state: "Île-de-France",
+                        city: "Agadir",
+                        state: "Maroc",
                         zip: "75001",
                         region: "Paris",
                         landmark: "Près de la gare",

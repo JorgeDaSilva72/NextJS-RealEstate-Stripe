@@ -8,7 +8,8 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "node --loader ts-node/esm prisma/seed.ts"
+    "seed": "node --loader ts-node/esm prisma/seed.ts",
+    "cron-job": "tsc && node dist/utils/cronJob.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.3",
