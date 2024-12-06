@@ -6,7 +6,7 @@ var transporter = nodemailer.createTransport({
     service: 'gmail', // Service de messagerie (ici Gmail, mais peut être changé)
     auth: {
         user: 'rravoniainarivah@gmail.com', // Remplacez par votre adresse e-mail
-        pass: 'Naivo@1991', // Remplacez par votre mot de passe (ou mot de passe d'application si vous avez l'authentification à 2 facteurs)
+        pass: 'iayf hpuk zzwv ebmo', // Remplacez par votre mot de passe (ou mot de passe d'application si vous avez l'authentification à 2 facteurs)
     },
 });
 // Définir les options de l'e-mail
