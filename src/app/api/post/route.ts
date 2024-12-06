@@ -10,16 +10,19 @@ export async function POST(req: Request) {
         const queryStatusFilter = filters.find((filter: any) => filter.name === 'queryStatus');
         const queryTypeFilter = filters.find((filter: any) => filter.name === 'queryType');
 
+        // Récupérer les valeurs de queryStatus et queryType ou leur assigner une valeur par défaut (0)
         const queryStatus = queryStatusFilter ? queryStatusFilter.value : '0';
         const queryType = queryTypeFilter ? queryTypeFilter.value : '0';
+
         // Convertir les valeurs en entiers
         const queryStatusInt = parseInt(queryStatus, 10);
         const queryTypeInt = parseInt(queryType, 10);
 
-       
+        const statusId = parseInt(queryStatus.toString(), 10); // Utiliser statusId pour queryStatus
+        const typeId = parseInt(queryType.toString(), 10);
 
-        console.log('queryStatusInt', queryStatusInt);  // Vérifier si la conversion fonctionne correctement
-        console.log('queryTypeInt', queryTypeInt);      // Vérifier si la conversion fonctionne correctement
+        console.log('statut id', statusId);  // Vérifier la valeur de queryStatus
+        console.log('type id', typeId);      // Vérifier la valeur de queryType
 
         // Préparer les filtres pour l'insertion ou la mise à jour
         const filterMap = filters.reduce((acc: Record<string, any>, filter: any) => {
@@ -41,13 +44,12 @@ export async function POST(req: Request) {
             return acc;
         }, {});
 
-        // Ajouter queryStatus et queryType aux filtres
-        if (!isNaN(queryStatusInt)) {
-            filterMap['queryStatus'] = queryStatusInt;
-        }
-        if (!isNaN(queryTypeInt)) {
-            filterMap['queryType'] = queryTypeInt;
-        }
+        // Ajouter queryStatus et queryType aux filtres si elles sont valides
+        filterMap['queryStatus'] = queryStatusInt;
+        filterMap['queryType'] = queryTypeInt;
+
+        filterMap['statusId'] = statusId;
+        filterMap['typeId'] = typeId;
 
         // Vérifier si une entrée avec ce `userId` existe déjà
         const existingEntry = await prisma.savedSearch.findFirst({

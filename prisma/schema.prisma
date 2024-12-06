@@ -28,9 +28,9 @@ datasource db {
 //}
 
 model SavedSearch {
-    id          Int            @id @default(autoincrement())
+    id          Int            @id @default(autoincrement()) // ID auto-incrémenté pour chaque recherche enregistrée
     userId      String
-    user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user        User           @relation(fields: [userId], references: [id], onDelete: Cascade) // Relation avec l'utilisateur
     name        String
     queryStatus Int?
     queryType   Int?
@@ -45,12 +45,12 @@ model SavedSearch {
     maxRoom     Int?
     minBathroom Int?
     maxBathroom Int?
-    typeId      Int            @default(1) // Valeur par défaut temporaire
-    type        PropertyType   @relation(fields: [typeId], references: [id], onDelete: Restrict)
-    statusId    Int            @default(1) // Valeur par défaut temporaire
-    status      PropertyStatus @relation(fields: [statusId], references: [id], onDelete: Restrict)
-    createdAt   DateTime       @default(now())
-    updatedAt   DateTime       @updatedAt
+    typeId      Int            @default(1) // Valeur par défaut du type
+    type        PropertyType   @relation(fields: [typeId], references: [id], onDelete: Restrict) // Relation avec PropertyType
+    statusId    Int            @default(1) // Valeur par défaut du statut
+    status      PropertyStatus @relation(fields: [statusId], references: [id], onDelete: Restrict) // Relation avec PropertyStatus
+    createdAt   DateTime       @default(now()) // Date de création
+    updatedAt   DateTime       @updatedAt // Date de mise à jour
 }
 
 model User {

@@ -8,6 +8,32 @@ import { Prisma } from "@prisma/client";
 import { jwtDecode } from 'jwt-decode';
 
 const PAGE_SIZE = 12;
+
+interface SavedSearch {
+  id: number;
+  userId: string;
+  name: string;
+  queryStatus: number | null;
+  queryType: number | null;
+  country: string | null;
+  city: string | null;
+  sortOrder: string | null;
+  minPrice: number | null;
+  maxPrice: number | null;
+  minArea: number | null;
+  maxArea: number | null;
+  minRoom: number | null;
+  maxRoom: number | null;
+  minBathroom: number | null;
+  maxBathroom: number | null;
+  typeId: number;
+  statusId: number;
+  createdAt: Date;
+  updatedAt: Date;
+  filters?: string | null; // Ajoute le champ filters si nécessaire
+  [key: string]: any; // Permet l'accès dynamique aux autres propriétés
+}
+
 const getUserIdFromToken = async () => {
   const cookieStore = await cookies();
   const token = cookieStore.get('id_token')?.value || '';
@@ -22,6 +48,20 @@ const getUserIdFromToken = async () => {
     }
   }
 
+  return null;
+};
+
+const getSavedSearchTest = async (userId: string | null): Promise<SavedSearch | null> => {
+  if (userId) {
+    return await prisma.savedSearch.findFirst({
+      where: { userId: userId },
+      include: {
+        // Inclure les relations associées à 'typeId' et 'statusId'
+        type: true, // Inclut la relation 'type' (PropertyType)
+        status: true, // Inclut la relation 'status' (PropertyStatus)
+      },
+    });
+  }
   return null;
 };
 
@@ -46,11 +86,46 @@ interface Props {
 export default async function Home({ searchParams }: Props) {
 
   const userId = await getUserIdFromToken();
-  const savedSearch = await getSavedSearch(userId);
+  const savedSearch = await getSavedSearchTest(userId);
+  console.log('user id avec savedsearch', savedSearch)
   // console.log('table savedSearch', savedSearch)
 
-  // const filterValues = getFilterValues(savedSearch);
+  if (!savedSearch) {
+    return <div>Aucune recherche enregistrée trouvée.</div>;
+  }
 
+  // Crée un objet pour stocker les valeurs
+  const searchValues: { [key: string]: any } = {};
+
+  // Vérification de l'existence de 'savedSearch' et itération sur les clés
+  if (savedSearch) {
+    // Parcours de chaque propriété de 'savedSearch' et affecte à searchValues
+    for (const key in savedSearch) {
+      if (savedSearch.hasOwnProperty(key)) {
+        // Utilisation d'un cast explicite pour éviter l'erreur TypeScript
+        searchValues[key] = savedSearch[key as keyof SavedSearch];
+      }
+    }
+  }
+
+
+  const queryStatusGet = savedSearch.status?.value ?? '';
+  const queryTypeGet = savedSearch.type?.value ?? '';
+  const cityGet = savedSearch.city ?? '';
+  const countryGet = savedSearch.country ?? '';
+  const minPriceGet = savedSearch.minPrice ?? '';
+  const maxPriceGet = savedSearch.maxPrice ?? '';
+  const minAreaGet = savedSearch.minArea ?? '';
+  const maxAreaGet = savedSearch.maxArea ?? '';
+  const minRoomGet = savedSearch.minRoom ?? '';
+  const maxRoomGet = savedSearch.maxRoom ?? '';
+  const minBathroomGet = savedSearch.minBathroom ?? '';
+  const maxBathroomGet = savedSearch.maxBathroom ?? '';
+
+
+
+  console.log("Type Value:", queryStatusGet); // Affiche la valeur du type
+  console.log("Status city:", cityGet)
 
   interface FilterValue {
     name: string;
@@ -79,7 +154,7 @@ export default async function Home({ searchParams }: Props) {
     acc[item.name] = item.value || item.range; // Priorité à `value`, sinon utiliser `range`
     return acc;
   }, {});
-  // console.log("Objet clé-valeur :", keyValueObject);
+  console.log("Objet clé-valeur :", keyValueObject);
 
   const queryTypeFilter = keyValueObject.queryType ?? "";
   const queryStatusFilter = keyValueObject.queryStatus ?? "";
