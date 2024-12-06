@@ -6,9 +6,11 @@ const transporter = nodemailer.createTransport({
     service: "gmail", // Exemple avec Gmail, vous pouvez utiliser d'autres services
     auth: {
         user: process.env.EMAIL_USER,  // Email d'expéditeur
-        pass: process.env.EMAIL_PASS   // Mot de passe de l'expéditeur
+        pass: process.env.EMAIL_PASSWORD   // Mot de passe de l'expéditeur
     }
 });
+
+console.log('transport', transporter)
 
 // Fonction d'envoi d'email
 export async function sendEmail(userEmail: string) {

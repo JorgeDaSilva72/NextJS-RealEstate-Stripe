@@ -1,44 +1,56 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-
-
 import { sendEmail } from "@/app/services/searchService";
 
 export async function GET() {
     try {
+        // Récupérer les recherches sauvegardées
         const savedSearches = await prisma.savedSearch.findMany();
+
+        // Récupérer toutes les propriétés avec leur localisation
         const properties = await prisma.property.findMany({
             include: {
                 location: true,
             }
         });
 
-        savedSearches.forEach((search) => {
+        for (const search of savedSearches) {
+            // Filtrer les propriétés en fonction des critères de recherche
             const matchingProperties = properties.filter((property) => {
                 const isQueryStatusMatching = search.queryStatus === property.statusId;
                 const isQueryTypeMatching = search.queryType === property.typeId;
                 const isCountryMatching = !search.country || search.country.toLowerCase() === property.location?.state.toLowerCase();
-                const isCriteriaMatching = isQueryStatusMatching && isQueryTypeMatching && isCountryMatching;
 
-                if (isCriteriaMatching) {
-                    console.log(`Propriété "${property.name}" correspond aux critères de recherche.`);
-                    console.log(`Critères vérifiés : 
-                                queryStatus (${search.queryStatus}) == statusId (${property.statusId}), 
-                                queryType (${search.queryType}) == typeId (${property.typeId}),
-                                country (${search.country}) == state (${property.location?.state})`);
-                }
-
-                return isCriteriaMatching;
+                // Vérification finale de tous les critères
+                return isQueryStatusMatching && isQueryTypeMatching && isCountryMatching;
             });
 
+            // Si des propriétés correspondent, envoyer un email
             if (matchingProperties.length > 0) {
                 console.log(`Propriétés correspondantes trouvées pour la recherche "${search.name}" de l'utilisateur ${search.userId}.`);
 
-                // Envoi de l'email si des propriétés correspondent
-                // const userEmail = "user@example.com";  // Vous devez récupérer l'email de l'utilisateur depuis la base de données
-                // sendEmail(userEmail);  // Appel à la fonction d'envoi d'email
+                // Récupérer l'utilisateur associé à la recherche sauvegardée
+                const user = await prisma.savedSearch.findUnique({
+                    where: {
+                        id: search.id, // Utilisez l'ID de la recherche pour trouver l'utilisateur
+                    },
+                    include: {
+                        user: true, // Inclure l'utilisateur
+                    }
+                });
+
+                if (user && user.user) {
+                    const userEmail = user.user.email;
+                    console.log('Email de l\'utilisateur:', userEmail);  // Accédez correctement à l'email
+
+                    // Envoi de l'email
+                    await sendEmail(userEmail);  // Appel à la fonction d'envoi d'email
+                    console.log(`Email envoyé à ${userEmail}`);
+                } else {
+                    console.log('Aucun utilisateur trouvé pour cette recherche sauvegardée.');
+                }
             }
-        });
+        }
 
         return NextResponse.json(
             { message: "Matching properties processed successfully" },
