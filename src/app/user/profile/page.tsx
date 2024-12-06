@@ -1,141 +1,3 @@
-// import PageTitle from "@/app/components/pageTitle";
-// import { getUserById } from "@/lib/actions/user";
-// import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-// import { ReactNode } from "react";
-// import SectionTitle from "./_components/sectionTitle";
-// import { Avatar, Button, Card } from "@nextui-org/react";
-// import UploadAvatar from "./_components/UploadAvatar";
-// import Link from "next/link";
-// import prisma from "@/lib/prisma";
-
-// const ProfilePage = async () => {
-//   try {
-//     // Obtenez la session et l'utilisateur
-//     const { getUser } = await getKindeServerSession();
-//     const user = await getUser();
-
-//     // Vérifiez si l'utilisateur est valide
-//     const dbUser = await getUserById(user ? user.id : "");
-//     if (!dbUser || !dbUser.id) {
-//       throw new Error("Something went wrong with authentication");
-//     }
-
-//     // Cherchez le plan d'abonnement de l'utilisateur dans la base de données
-//     const userSubscription = await prisma.subscriptions.findFirst({
-//       where: { userId: dbUser?.id },
-//       include: { plan: true },
-//       orderBy: { createdAt: "desc" },
-//     });
-
-//     // Vérifiez si l'abonnement a expiré
-//     const currentDate = new Date();
-//     const isSubscriptionExpired = userSubscription?.endDate
-//       ? new Date(userSubscription.endDate) < currentDate
-//       : true;
-
-//     const totalPropertiesCount = await prisma.property.count({
-//       where: {
-//         userId: user?.id,
-//       },
-//     });
-
-//     return (
-//       <div>
-//         <PageTitle
-//           title="Mon Profil"
-//           linkCaption="Retour à l'accueil"
-//           href="/"
-//         />
-//         <Card className="m-4 p-4 flex flex-col gap-5">
-//           <SectionTitle title="Informations" />
-//           <div className="flex">
-//             <div className="flex flex-col items-center ">
-//               <Avatar
-//                 className="w-20 h-20"
-//                 src={dbUser?.avatarUrl ?? "/profile.png"}
-//               />
-//               <UploadAvatar userId={dbUser?.id!} />
-//             </div>
-//           </div>
-
-//           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-//             <Attribute
-//               title="Nom"
-//               value={`${dbUser?.firstName} ${dbUser?.lastName}`}
-//             />
-//             <Attribute title="Email" value={dbUser?.email} />
-//             <Attribute
-//               title="Compte créé le:"
-//               value={dbUser?.createdAt.toLocaleDateString()}
-//             />
-//             <Attribute
-//               title="Nombre d'annonces"
-//               value={totalPropertiesCount.toString()}
-//             />
-//             <Link href={"/user/properties"}>
-//               <Button color="secondary">Voir mes annonces</Button>
-//             </Link>
-//           </div>
-//         </Card>
-
-//         <Card className="m-4 p-4 flex flex-col gap-5">
-//           <SectionTitle title="Abonnement" />
-//           {userSubscription ? (
-//             <div>
-//               <Attribute
-//                 title="Abonnement"
-//                 value={userSubscription?.plan?.namePlan}
-//               />
-//               <Attribute
-//                 title="Prix en euros"
-//                 value={userSubscription?.plan?.price}
-//               />
-//               <Attribute
-//                 title="Acheté le"
-//                 value={userSubscription?.createdAt.toLocaleDateString()}
-//               />
-//               <Attribute
-//                 title="Expire le"
-//                 value={
-//                   <span
-//                     className={
-//                       isSubscriptionExpired ? "text-red-500" : "text-slate-600"
-//                     }
-//                   >
-//                     {userSubscription?.endDate.toLocaleDateString()}
-//                   </span>
-//                 }
-//               />
-//             </div>
-//           ) : (
-//             <div className="flex flex-col items-center">
-//               <p className="text-center">Aucun abonnement trouvé !</p>
-//             </div>
-//           )}
-
-//           {(isSubscriptionExpired || !userSubscription) && (
-//             <Link href={"/user/subscription"}>
-//               <Button color="secondary">Achetez votre abonnement</Button>
-//             </Link>
-//           )}
-//         </Card>
-//       </div>
-//     );
-//   } catch (error) {
-//     console.log((error as Error).message);
-//   }
-// };
-
-// export default ProfilePage;
-
-// const Attribute = ({ title, value }: { title: string; value: ReactNode }) => (
-//   <div className="flex flex-col text-sm">
-//     <span className="text-slate-800 font-semibold">{title}</span>
-//     <span className="text-slate-600">{value}</span>
-//   </div>
-// );
-// end ---------------------------------------
-
 // Cedrico : fixer upload avatar et supprimer l'ancien photo 05/12/2024
 
 import PageTitle from "@/app/components/pageTitle";
@@ -179,6 +41,159 @@ const ProfilePage = async () => {
       },
     });
 
+    // return (
+    //   <div>
+    //     <PageTitle
+    //       title="Mon Profil"
+    //       linkCaption="Retour à l'accueil"
+    //       href="/"
+    //     />
+    //     <Card className="m-4 p-4 flex flex-col gap-5">
+    //       <SectionTitle title="Informations" />
+    //       <div className="flex">
+    //         <div className="flex flex-col items-center ">
+    //           <Avatar
+    //             className="w-20 h-20"
+    //             src={dbUser?.avatarUrl ?? "/profile.png"}
+    //           />
+    //           <UploadAvatar
+    //             userId={dbUser?.id!}
+    //             userAvatar={dbUser?.avatarUrl}
+    //           />
+    //         </div>
+    //       </div>
+
+    //       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    //         <Attribute
+    //           title="Nom"
+    //           value={`${dbUser?.firstName} ${dbUser?.lastName}`}
+    //         />
+    //         <Attribute title="Email" value={dbUser?.email} />
+    //         <Attribute
+    //           title="Compte créé le:"
+    //           value={dbUser?.createdAt.toLocaleDateString()}
+    //         />
+    //         <Attribute
+    //           title="Nombre d'annonces"
+    //           value={totalPropertiesCount.toString()}
+    //         />
+    //         <Link href={"/user/properties"}>
+    //           <Button color="secondary">Voir mes annonces</Button>
+    //         </Link>
+    //       </div>
+    //     </Card>
+
+    //     {/* <Card className="m-4 p-4 flex flex-col gap-5">
+    //       <SectionTitle title="Abonnement" />
+    //       {userSubscription ? (
+    //         <div>
+    //           <div>
+    //             <Attribute
+    //               title="Abonnement"
+    //               value={userSubscription?.plan?.namePlan}
+    //             />
+    //             <Link href={"/user/subscription"}>
+    //               <Button color="secondary">Changer votre abonnement</Button>
+    //             </Link>
+    //           </div>
+
+    //           <Attribute
+    //             title="Prix en euros"
+    //             value={userSubscription?.plan?.price}
+    //           />
+    //           <Attribute
+    //             title="Acheté le"
+    //             value={userSubscription?.createdAt.toLocaleDateString()}
+    //           />
+    //           <Attribute
+    //             title="Expire le"
+    //             value={
+    //               <span
+    //                 className={
+    //                   isSubscriptionExpired ? "text-red-500" : "text-slate-600"
+    //                 }
+    //               >
+    //                 {userSubscription?.endDate.toLocaleDateString()}
+    //               </span>
+    //             }
+    //           />
+    //         </div>
+    //       ) : (
+    //         <div className="flex flex-col items-center">
+    //           <p className="text-center">Aucun abonnement trouvé !</p>
+    //         </div>
+    //       )}
+
+    //       {(isSubscriptionExpired || !userSubscription) && (
+    //         <Link href={"/user/subscription"}>
+    //           <Button color="secondary">Achetez votre abonnement</Button>
+    //         </Link>
+    //       )}
+    //     </Card> */}
+
+    //     <Card className="m-4 p-6 flex flex-col gap-6 bg-white shadow-md rounded-lg max-w-2xl mx-auto">
+    //       <SectionTitle title="Abonnement" />
+    //       {userSubscription ? (
+    //         <div className="space-y-4">
+    //           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+    //             <Attribute
+    //               title="Abonnement"
+    //               value={userSubscription?.plan?.namePlan}
+    //             />
+    //             <Link href={"/user/subscription"}>
+    //               <Button
+    //                 color="secondary"
+    //                 className="mt-2 sm:mt-0 text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-md shadow transition duration-200"
+    //               >
+    //                 Changer votre abonnement
+    //               </Button>
+    //             </Link>
+    //           </div>
+
+    //           <Attribute
+    //             title="Prix en euros"
+    //             value={`${userSubscription?.plan?.price} €`}
+    //           />
+    //           <Attribute
+    //             title="Acheté le"
+    //             value={userSubscription?.createdAt.toLocaleDateString()}
+    //           />
+    //           <Attribute
+    //             title="Expire le"
+    //             value={
+    //               <span
+    //                 className={
+    //                   isSubscriptionExpired
+    //                     ? "text-red-500 font-semibold"
+    //                     : "text-slate-600"
+    //                 }
+    //               >
+    //                 {userSubscription?.endDate.toLocaleDateString()}
+    //               </span>
+    //             }
+    //           />
+    //         </div>
+    //       ) : (
+    //         <div className="flex flex-col items-center text-gray-600">
+    //           <p className="text-center font-medium">
+    //             Aucun abonnement trouvé !
+    //           </p>
+    //         </div>
+    //       )}
+
+    //       {(isSubscriptionExpired || !userSubscription) && (
+    //         <Link href={"/user/subscription"}>
+    //           <Button
+    //             color="secondary"
+    //             className="text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md shadow transition duration-200 w-full sm:w-auto mx-auto"
+    //           >
+    //             Achetez votre abonnement
+    //           </Button>
+    //         </Link>
+    //       )}
+    //     </Card>
+    //   </div>
+    // );
     return (
       <div>
         <PageTitle
@@ -186,21 +201,15 @@ const ProfilePage = async () => {
           linkCaption="Retour à l'accueil"
           href="/"
         />
-        <Card className="m-4 p-4 flex flex-col gap-5">
+        <Card className="m-4 p-6 flex flex-col gap-6 bg-white shadow-md rounded-lg max-w-3xl mx-auto">
           <SectionTitle title="Informations" />
-          <div className="flex">
-            <div className="flex flex-col items-center ">
-              <Avatar
-                className="w-20 h-20"
-                src={dbUser?.avatarUrl ?? "/profile.png"}
-              />
-              <UploadAvatar
-                userId={dbUser?.id!}
-                userAvatar={dbUser?.avatarUrl}
-              />
-            </div>
+          <div className="flex flex-col items-center gap-4">
+            <Avatar
+              className="w-24 h-24"
+              src={dbUser?.avatarUrl ?? "/profile.png"}
+            />
+            <UploadAvatar userId={dbUser?.id!} userAvatar={dbUser?.avatarUrl} />
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Attribute
               title="Nom"
@@ -216,22 +225,37 @@ const ProfilePage = async () => {
               value={totalPropertiesCount.toString()}
             />
             <Link href={"/user/properties"}>
-              <Button color="secondary">Voir mes annonces</Button>
+              <Button
+                color="secondary"
+                className="text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-md shadow"
+              >
+                Voir mes annonces
+              </Button>
             </Link>
           </div>
         </Card>
 
-        <Card className="m-4 p-4 flex flex-col gap-5">
+        <Card className="m-4 p-6 flex flex-col gap-6 bg-white shadow-md rounded-lg max-w-3xl mx-auto">
           <SectionTitle title="Abonnement" />
           {userSubscription ? (
-            <div>
-              <Attribute
-                title="Abonnement"
-                value={userSubscription?.plan?.namePlan}
-              />
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <Attribute
+                  title="Abonnement"
+                  value={userSubscription?.plan?.namePlan}
+                />
+                <Link href={"/user/subscription"}>
+                  <Button
+                    color="secondary"
+                    className="mt-2 sm:mt-0 text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-md shadow"
+                  >
+                    Changer votre abonnement
+                  </Button>
+                </Link>
+              </div>
               <Attribute
                 title="Prix en euros"
-                value={userSubscription?.plan?.price}
+                value={`${userSubscription?.plan?.price} €`}
               />
               <Attribute
                 title="Acheté le"
@@ -242,7 +266,9 @@ const ProfilePage = async () => {
                 value={
                   <span
                     className={
-                      isSubscriptionExpired ? "text-red-500" : "text-slate-600"
+                      isSubscriptionExpired
+                        ? "text-red-500 font-semibold"
+                        : "text-slate-600"
                     }
                   >
                     {userSubscription?.endDate.toLocaleDateString()}
@@ -251,14 +277,18 @@ const ProfilePage = async () => {
               />
             </div>
           ) : (
-            <div className="flex flex-col items-center">
-              <p className="text-center">Aucun abonnement trouvé !</p>
+            <div className="text-center text-gray-600">
+              <p className="font-medium">Aucun abonnement trouvé !</p>
             </div>
           )}
-
           {(isSubscriptionExpired || !userSubscription) && (
             <Link href={"/user/subscription"}>
-              <Button color="secondary">Achetez votre abonnement</Button>
+              <Button
+                color="secondary"
+                className="text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md shadow w-full sm:w-auto mx-auto"
+              >
+                Achetez votre abonnement
+              </Button>
             </Link>
           )}
         </Card>
