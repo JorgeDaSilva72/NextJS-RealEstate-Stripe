@@ -267,7 +267,8 @@ const Search = ({ token }: SearchProps) => {
         alert(`Erreur : ${errorData.error}`);
       }
     } catch (error) {
-      console.error("Erreur :", error);
+      // console.error("Erreur :", error);
+      alert('Vous devez vous connecter pour enregistrer un filtre')
     }
   };
 

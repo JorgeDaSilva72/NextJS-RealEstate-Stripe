@@ -1,9 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation"; // Nouvelle API
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ImagesSlider } from "./components/ImageSlider";
-
 const Hero = () => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
@@ -31,6 +30,7 @@ const Hero = () => {
     { url: "/Hero4.jpg" },
     { url: "/Hero5.jpg" },
   ];
+
 
   return (
     <>

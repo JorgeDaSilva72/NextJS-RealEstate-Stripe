@@ -11,15 +11,30 @@ export async function POST(req: Request) {
         const queryTypeFilter = filters.find((filter: any) => filter.name === 'queryType');
 
         // Récupérer les valeurs de queryStatus et queryType ou leur assigner une valeur par défaut (0)
-        const queryStatus = queryStatusFilter ? queryStatusFilter.value : '0';
-        const queryType = queryTypeFilter ? queryTypeFilter.value : '0';
+        // const queryStatus = queryStatusFilter ? queryStatusFilter.value : '0';
+        // const queryType = queryTypeFilter ? queryTypeFilter.value : '0';
+
+        const queryStatus = queryStatusFilter ? queryStatusFilter.value : '';
+        const queryType = queryTypeFilter ? queryTypeFilter.value : '';
+        // const queryStatus = queryStatusFilter ? queryStatusFilter.value : '0';
+        // const queryType = queryTypeFilter ? queryTypeFilter.value : '0';
+
+        const queryStatusInt = isNaN(parseInt(queryStatus, 10)) || queryStatus === '' ? 0 : parseInt(queryStatus, 10);
+        const queryTypeInt = isNaN(parseInt(queryType, 10)) || queryType === '' ? 0 : parseInt(queryType, 10);
+
+
 
         // Convertir les valeurs en entiers
-        const queryStatusInt = parseInt(queryStatus, 10);
-        const queryTypeInt = parseInt(queryType, 10);
+        // const queryStatusInt = parseInt(queryStatus, 10);
+        // const queryTypeInt = parseInt(queryType, 10);
 
-        const statusId = parseInt(queryStatus.toString(), 10); // Utiliser statusId pour queryStatus
-        const typeId = parseInt(queryType.toString(), 10);
+        console.log('statut queryStatus', queryStatusInt);  // Vérifier la valeur de queryStatus
+        console.log('type queryType', queryTypeInt);
+
+        // const statusId = parseInt(queryStatusInt.toString(), 10); // Utiliser statusId pour queryStatus
+        const statusId = isNaN(queryStatusInt) || queryStatusInt === undefined || queryStatusInt === 0 ? 1 : queryStatusInt;
+        const typeId = isNaN(queryTypeInt) || queryTypeInt === undefined || queryTypeInt === 0 ? 1 : queryTypeInt;
+        // const typeId = parseInt(queryTypeInt.toString(), 10);
 
         console.log('statut id', statusId);  // Vérifier la valeur de queryStatus
         console.log('type id', typeId);      // Vérifier la valeur de queryType
