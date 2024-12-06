@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { PropertyStatus, PropertyType } from "@prisma/client";
-import { useSearchParams } from "next/navigation";
+import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { citiesOfMorocco } from "../data/cities";
 import { countries } from "../data/countries";
