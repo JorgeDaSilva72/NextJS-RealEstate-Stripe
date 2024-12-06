@@ -805,6 +805,7 @@ const Search = () => {
   const [openModal, setOpenModal] = useState(false); // ajout
   const handleModalOpen = useModalOpen(); // ajout
   const selectFilters = useFilterDatas();
+  const [once, setOnce] = useState(true);
 
   const [searchQuery, setSearchQuery] = useState(
     searchParams.get("query") ?? ""
@@ -816,7 +817,13 @@ const Search = () => {
   }, [searchParams]);
 
   useEffect(() => {
-    if (!openModal) {
+    if (
+      !openModal &&
+      selectFilters &&
+      selectFilters.length > 0 &&
+      searchParams &&
+      once
+    ) {
       selectFilters.map((item) => {
         if (item.rangeName && item.setRange) {
           const minRange = searchParams.get(item.rangeName[0]);
@@ -845,8 +852,9 @@ const Search = () => {
           }
         }
       });
+      setOnce(false);
     }
-  }, [searchParams, selectFilters, openModal]);
+  }, [searchParams, selectFilters, openModal, once]);
 
   const handleInputChange = (query: string) => {
     setSearchQuery(query); // Met à jour l'état local
@@ -876,10 +884,11 @@ const Search = () => {
         item.setValue("");
       }
     });
-
+    setSearchQuery(""); // Réinitialise la recherche
     setResetKey((prev) => prev + 1);
     // Supprime tous les paramètres de l'URL
     router.replace(pathName);
+    router.refresh();
   };
 
   const resetSearchQuery = () => {
