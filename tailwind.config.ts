@@ -55,6 +55,9 @@ const config: Config = {
       animation: {
         shine: "shine 1.5s linear infinite",
         glow: "glow 1.5s infinite alternate",
+        spin3D: "spin3D 3s linear infinite",
+        shadowPulse: "shadowPulse 2s ease-out infinite",
+        shadowPulseBlue: "shadowPulseBlue 2s ease-out infinite",
         fadeDown: "fadeDown 0.5s ease-out", // ajout 0.5s est la durée par défaut
       },
       keyframes: {
@@ -70,6 +73,20 @@ const config: Config = {
         fadeDown: {
           "0%": { opacity: "0", transform: "translateY(-50px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        spin3D: {
+          "0%": { transform: "rotatey(0deg)" },
+          "100%": { transform: "rotatey(360deg)" },
+        },
+        shadowPulse: {
+          "0%": { boxShadow: "0 0 0 0 rgba(255, 255, 255, 0.5)" },
+          "50%": { boxShadow: "0 0 10px 5px rgba(255, 255, 255, 0.3)" },
+          "100%": { boxShadow: "0 0 20px 10px rgba(255, 255, 255, 0)" },
+        },
+        shadowPulseBlue: {
+          "0%": { boxShadow: "0 0 0 0 rgb(0,91,196, 0.5)" },
+          "50%": { boxShadow: "0 0 10px 5px rgb(0,91,196, 0.3)" },
+          "100%": { boxShadow: "0 0 20px 10px rgb(0,91,196, 0)" },
         },
       },
     },
