@@ -18,8 +18,8 @@ export default async function Home({ searchParams }: Props) {
 
   const userId = await getUserIdFromToken();
   const savedSearch = await getSavedSearchTest(userId) ?? null;
-  console.log('user id avec savedsearch', savedSearch)
-  console.log('table savedSearch', savedSearch)
+  // console.log('user id avec savedsearch', savedSearch)
+  // console.log('table savedSearch', savedSearch)
 
 
   // Crée un objet pour stocker les valeurs
@@ -202,14 +202,14 @@ export default async function Home({ searchParams }: Props) {
     ? maxBathroomsTest
     : maxBathroomGet !== undefined ? maxPriceGet : undefined;
 
-  console.log('query minArea', minArea)
-  console.log('query maxArea', maxArea)
-  console.log('query minPrice', minPrice)
-  console.log('query maxPrice', maxPrice)
-  console.log('query minBathrooms', minBathrooms)
-  console.log('query maxBathrooms', maxBathrooms)
-  console.log('query minBedrooms', minBedrooms)
-  console.log('query maxBedrooms', maxBedrooms)
+  // console.log('query minArea', minArea)
+  // console.log('query maxArea', maxArea)
+  // console.log('query minPrice', minPrice)
+  // console.log('query maxPrice', maxPrice)
+  // console.log('query minBathrooms', minBathrooms)
+  // console.log('query maxBathrooms', maxBathrooms)
+  // console.log('query minBedrooms', minBedrooms)
+  // console.log('query maxBedrooms', maxBedrooms)
 
 
 
