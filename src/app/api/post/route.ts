@@ -28,16 +28,16 @@ export async function POST(req: Request) {
         // const queryStatusInt = parseInt(queryStatus, 10);
         // const queryTypeInt = parseInt(queryType, 10);
 
-        console.log('statut queryStatus', queryStatusInt);  // Vérifier la valeur de queryStatus
-        console.log('type queryType', queryTypeInt);
+        // console.log('statut queryStatus', queryStatusInt);  // Vérifier la valeur de queryStatus
+        // console.log('type queryType', queryTypeInt);
 
         // const statusId = parseInt(queryStatusInt.toString(), 10); // Utiliser statusId pour queryStatus
         const statusId = isNaN(queryStatusInt) || queryStatusInt === undefined || queryStatusInt === 0 ? 1 : queryStatusInt;
         const typeId = isNaN(queryTypeInt) || queryTypeInt === undefined || queryTypeInt === 0 ? 1 : queryTypeInt;
         // const typeId = parseInt(queryTypeInt.toString(), 10);
 
-        console.log('statut id', statusId);  // Vérifier la valeur de queryStatus
-        console.log('type id', typeId);      // Vérifier la valeur de queryType
+        // console.log('statut id', statusId);  // Vérifier la valeur de queryStatus
+        // console.log('type id', typeId);      // Vérifier la valeur de queryType
 
         // Préparer les filtres pour l'insertion ou la mise à jour
         const filterMap = filters.reduce((acc: Record<string, any>, filter: any) => {
@@ -59,6 +59,7 @@ export async function POST(req: Request) {
             return acc;
         }, {});
 
+        console.log('filterMap', filterMap)
         // Ajouter queryStatus et queryType aux filtres si elles sont valides
         filterMap['queryStatus'] = queryStatusInt;
         filterMap['queryType'] = queryTypeInt;

@@ -184,7 +184,7 @@ export default async function Home({ searchParams }: Props) {
   const hasUserSelected = Object.keys(searchParams).some(
     key => searchParams[key] !== undefined && searchParams[key] !== null && searchParams[key] !== ""
   );
-  // console.log('user selected', hasUserSelected)
+  console.log('user selected', hasUserSelected)
 
   // Si l'utilisateur a sélectionné un champ, on utilise uniquement `searchParams`. Sinon, on prend les valeurs par défaut.
   const pagenum = hasUserSelected ? searchParams.pagenum ?? 1 : 1;
@@ -271,14 +271,14 @@ export default async function Home({ searchParams }: Props) {
     ? maxBathroomsTest
     : maxBathroomGet !== undefined ? maxPriceGet : undefined;
 
-  // console.log('query minArea', minArea)
-  // console.log('query maxArea', maxArea)
-  // console.log('query minPrice', minPrice)
-  // console.log('query maxPrice', maxPrice)
-  // console.log('query minBathrooms', minBathrooms)
-  // console.log('query maxBathrooms', maxBathrooms)
-  // console.log('query minBedrooms', minBedrooms)
-  // console.log('query maxBedrooms', maxBedrooms)
+  console.log('query minArea', minArea)
+  console.log('query maxArea', maxArea)
+  console.log('query minPrice', minPrice)
+  console.log('query maxPrice', maxPrice)
+  console.log('query minBathrooms', minBathrooms)
+  console.log('query maxBathrooms', maxBathrooms)
+  console.log('query minBedrooms', minBedrooms)
+  console.log('query maxBedrooms', maxBedrooms)
 
 
 
