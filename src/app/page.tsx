@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation"; // Nouvelle API
 import { useState } from "react";
 import { ImagesSlider } from "./components/ImageSlider";
+import PlaySVG from "./assets/svg/PlaySVG";
 
 const Hero = () => {
   const router = useRouter();
@@ -64,11 +65,11 @@ const Hero = () => {
         {/* <div className="absolute inset-0 bg-black opacity-40"></div> */}
 
         {/* Content */}
-        <div className="relative z-10 text-center text-white px-6 w-[80%] max-w-3xl">
-          <h1 className="text-3xl md:text-5xl font-bold mb-4">
+        <div className="relative z-10 text-center text-white px-6 w-[80%] max-w-3xl flex flex-col items-center justify-center">
+          <h1 className="text-3xl md:text-5xl font-bold mb-4 text-[60px] font-extrabold tracking-[5px] w-full">
             Trouvez la propriété de vos rêves
           </h1>
-          <p className="hidden lg:block text-lg md:text-xl mb-8">
+          <p className="hidden lg:block text-lg md:text-xl mb-8 w-[60%] font-medium whitespace-pre-line">
             Parcourez des centaines d&apos;annonces pour trouver l&apos;endroit
             parfait où vivre
           </p>
@@ -84,9 +85,10 @@ const Hero = () => {
             /> */}
             <button
               onClick={handleSearch}
-              className="w-full sm:w-auto bg-transparent/50 lg:bg-primary-500 text-white py-3 px-6 rounded-md font-semibold hover:bg-primary-600 transition"
+              className="text-[18px] tracking-[1px] font-medium flex items-center justify-center gap-[10px] w-full sm:w-auto bg-transparent/50 lg:bg-primary-500 text-white py-2 px-3 rounded-md font-semibold hover:bg-primary-600 transition"
             >
-              Explorer
+              <span>Explorer</span>
+              <PlaySVG width="35" height="35" className="animate-spin3D" />
             </button>
           </div>
         </div>

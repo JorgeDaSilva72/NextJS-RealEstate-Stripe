@@ -15,6 +15,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { ReactNode, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { navBars } from "../data/navbars";
 interface Props {
   children: ReactNode;
 }
@@ -64,21 +65,17 @@ const Appbar = ({ children }: Props) => {
             <Image
               src="/logo-topaz-enhance-coupe.jpeg"
               alt="Logo Afrique Avenir"
-              width={48}
-              height={48}
+              width={40}
+              height={40}
               className="rounded-lg object-contain"
             />
             {/* Texte caché sur petit écran */}
             <div className=" ml-2 hidden sm:flex sm:flex-col   text-center md:flex md:flex-row md:items-center md:text-left  ">
-              <p className="font-bold text-primary text-xs sm:text-sm md:text-md lg:text-lg">
-                AFRIQUE&nbsp;
-              </p>
-              <p className="font-bold text-primary text-xs sm:text-sm md:text-md lg:text-lg">
-                AVENIR&nbsp;
-              </p>
-              <p className="font-bold text-primary text-xs sm:text-sm md:text-md lg:text-lg">
-                IMMO&nbsp;
-              </p>
+            <div className="w-[170px] h-[50px] flex items-center justify-center">
+                <p className={(pathname == "/" ? "text-white" : "text-blue-500" ) + " w-full text-center whitespace-pre-line font-medium leading-[20px] tracking-[1px] text-primary text-xs sm:text-sm md:text-md lg:text-lg"}>
+                  AFRIQUE AVENIR IMMO
+                </p>
+              </div>
             </div>
           </Link>
         </NavbarBrand>
@@ -94,7 +91,17 @@ const Appbar = ({ children }: Props) => {
             Accueil
           </Link>
         </NavbarItem> */}
-        <NavbarItem>
+        {navBars.map((nav, index) => (
+          <NavbarItem key={index}>
+          <Link
+            href={nav.url}
+            className={(pathname == "/" ? "text-white" : "text-blue-500" ) + " tracking-[1px] text-primary-500 hover:text-primary-700 transition duration-200"}
+          >
+            {nav.name}
+          </Link>
+        </NavbarItem>
+        ))}
+        {/* <NavbarItem>
           <Link
             href="/about"
             className="text-primary-500 hover:text-primary-700 transition duration-200"
@@ -109,7 +116,7 @@ const Appbar = ({ children }: Props) => {
           >
             Contact
           </Link>
-        </NavbarItem>
+        </NavbarItem> */}
       </NavbarContent>
 
       {/* Actions */}
