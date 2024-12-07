@@ -1,11 +1,21 @@
 import Link from 'next/link';
+import { cookies } from 'next/headers';
+import prisma from "@/lib/prisma";
 import PropertyContainer from '@/app/components/PropertyContainer';
 import PropertyCard from '@/app/components/PropertyCard';
 import NoPropertiesFound from '@/app/result/_components/noPropertiesFound';
 import { Prisma } from "@prisma/client";
 import { getUserIdFromToken, getSavedSearchTest, getFilterValues, SavedSearch } from '@/app/components/savedSearch';
 
-const SavedSearchesPage = async () => {
+
+const PAGE_SIZE = 12;
+
+interface Props {
+    searchParams: { [key: string]: string | string[] | undefined };
+}
+
+const SavedSearchesPage = async ({ searchParams }: Props) => {
+
 
     const userId = await getUserIdFromToken();
     const savedSearch = await getSavedSearchTest(userId) ?? null;
@@ -27,6 +37,8 @@ const SavedSearchesPage = async () => {
         }
     }
 
+    const pagenum = searchParams.pagenum ?? 1;
+    const query = searchParams.query ?? "";
 
     const queryStatusGet = savedSearch?.status?.value ?? '';
     const queryTypeGet = savedSearch?.type?.value ?? '';
@@ -104,70 +116,15 @@ const SavedSearchesPage = async () => {
 
     const country = countryGet ?? "";
 
-    const minPriceTest = searchParams.minPrice && searchParams.minPrice !== ""
-        ? Number(searchParams.minPrice)
-        : undefined;
-
-    const maxPriceTest = searchParams.maxPrice && searchParams.maxPrice !== ""
-        ? Number(searchParams.maxPrice)
-        : undefined;
-
     // Utiliser les valeurs de minPriceTest et maxPriceTest en fonction de hasUserSelected
-    const minPrice = hasUserSelected
-        ? minPriceTest
-        : minPriceGet !== undefined ? minPriceGet : undefined;
-
-    const maxPrice = hasUserSelected
-        ? maxPriceTest
-        : maxPriceGet !== undefined ? maxPriceGet : undefined;
-
-    const minAreaTest = searchParams.minArea
-        ? Number(searchParams.minArea)
-        : undefined;
-    const maxAreaTest = searchParams.maxArea
-        ? Number(searchParams.maxArea)
-        : undefined;
-
-    const minArea = hasUserSelected
-        ? minAreaTest
-        : minAreaGet !== undefined ? minPriceGet : undefined;
-
-    const maxArea = hasUserSelected
-        ? maxAreaTest
-        : maxAreaGet !== undefined ? maxPriceGet : undefined;
-
-
-
-    const minBedroomsTest = searchParams.minBedrooms
-        ? Number(searchParams.minBedrooms)
-        : undefined;
-    const maxBedroomsTest = searchParams.maxBedrooms
-        ? Number(searchParams.maxBedrooms)
-        : undefined;
-
-
-    const minBedrooms = hasUserSelected
-        ? minBedroomsTest
-        : minRoomGet !== undefined ? minPriceGet : undefined;
-
-    const maxBedrooms = hasUserSelected
-        ? maxBedroomsTest
-        : maxRoomGet !== undefined ? maxPriceGet : undefined;
-
-    const minBathroomsTest = searchParams.minBathrooms
-        ? Number(searchParams.minBathrooms)
-        : undefined;
-    const maxBathroomsTest = searchParams.maxBathrooms
-        ? Number(searchParams.maxBathrooms)
-        : undefined;
-
-    const minBathrooms = hasUserSelected
-        ? minBathroomsTest
-        : minBathroomGet !== undefined ? minPriceGet : undefined;
-
-    const maxBathrooms = hasUserSelected
-        ? maxBathroomsTest
-        : maxBathroomGet !== undefined ? maxPriceGet : undefined;
+    const minPrice = minPriceGet !== undefined ? minPriceGet : undefined;
+    const maxPrice = maxPriceGet !== undefined ? maxPriceGet : undefined;
+    const minArea = minAreaGet !== undefined ? minPriceGet : undefined;
+    const maxArea = maxAreaGet !== undefined ? maxPriceGet : undefined;
+    const minBedrooms = minRoomGet !== undefined ? minPriceGet : undefined;
+    const maxBedrooms = maxRoomGet !== undefined ? maxPriceGet : undefined;
+    const minBathrooms = minBathroomGet !== undefined ? minPriceGet : undefined;
+    const maxBathrooms = maxBathroomGet !== undefined ? maxPriceGet : undefined;
 
     console.log('query minArea', minArea)
     console.log('query maxArea', maxArea)

@@ -34,45 +34,6 @@ const Search = ({ token }: SearchProps) => {
     searchParams.get("query") ?? ""
   );
 
-  // useEffect(() => {    
-  //   if (!openModal) {
-  //     const savedFilters = getSavedSearches();
-  //     const localStorageFilters = savedFilters[0] || [];
-  //     console.log('localstorageFilters', localStorageFilters)
-
-  //     selectFilters.map((item) => {
-  //       console.log('test item', item.name)
-  //       if (item.rangeName && item.setRange) {
-  //         const minRange = searchParams.get(item.rangeName[0]);
-  //         const maxRange = searchParams.get(item.rangeName[1]);
-  //         if (minRange && maxRange) {
-  //           item.setRange([Number(minRange), Number(maxRange)]);
-  //         }
-  //       } else if (
-  //         item.name &&
-  //         item.setValue &&
-  //         item.type !== "slider" &&
-  //         item.items
-  //       ) {
-  //         const searchString = searchParams.get(item.name);
-  //         let matchItem = item.items.find(
-  //           (value) => value.value == searchString
-  //         );
-  //         if (item.name == "sortOrder")
-  //           matchItem = matchItem = item.items.find(
-  //             (value) => value.id == searchString
-  //           );
-  //         if (matchItem) {
-  //           item.setValue(matchItem?.id.toString());
-  //         } else {
-  //           item.setValue(""); // Pas de tri
-  //         }
-  //       }
-  //     });
-  //   }
-  // }, [searchParams, selectFilters, openModal]);
-
-
   //Riv
   const saveSearch = () => {
     const savedFilters = selectFilters.map((filter) => {
@@ -261,7 +222,8 @@ const Search = ({ token }: SearchProps) => {
 
       // Vérifier si la réponse est correcte
       if (response.ok) {
-        alert("Recherche sauvegardée avec succès !");
+        // alert("Recherche sauvegardée avec succès !");
+        router.push("/user/search");
       } else {
         const errorData = await response.json();
         alert(`Erreur : ${errorData.error}`);

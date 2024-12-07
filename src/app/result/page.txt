@@ -15,43 +15,192 @@ interface Props {
 }
 
 export default async function Home({ searchParams }: Props) {
-  // Si l'utilisateur a sélectionné un champ, on utilise uniquement `searchParams`. Sinon, on prend les valeurs par défaut.
-  const pagenum = searchParams.pagenum ?? 1;
-  const query = searchParams.query ?? "";
-  const queryStatus = searchParams.queryStatus ?? "";
-  const queryType = searchParams.queryType ?? "";
-  const city = searchParams.city ?? "";
-  const country = searchParams.country ?? "";
 
-  const minPrice = searchParams.minPrice && searchParams.minPrice !== ""
+  const userId = await getUserIdFromToken();
+  const savedSearch = await getSavedSearchTest(userId) ?? null;
+  // console.log('user id avec savedsearch', savedSearch)
+  // console.log('table savedSearch', savedSearch)
+
+
+  // Crée un objet pour stocker les valeurs
+  const searchValues: { [key: string]: any } = {};
+
+  // Vérification de l'existence de 'savedSearch' et itération sur les clés
+  if (savedSearch) {
+    // Parcours de chaque propriété de 'savedSearch' et affecte à searchValues
+    for (const key in savedSearch) {
+      if (savedSearch?.hasOwnProperty(key)) {
+        // Utilisation d'un cast explicite pour éviter l'erreur TypeScript
+        searchValues[key] = savedSearch[key as keyof SavedSearch];
+      }
+    }
+  }
+
+
+  const queryStatusGet = savedSearch?.status?.value ?? '';
+  const queryTypeGet = savedSearch?.type?.value ?? '';
+  const sortOrderGet = savedSearch?.sortOrder ?? '';
+  const cityGet = savedSearch?.city ?? '';
+  const countryGet = savedSearch?.country ?? '';
+  // const minPriceGet = savedSearch?.minPrice ?? '';
+  // const maxPriceGet = savedSearch?.maxPrice ?? '';
+  const minPriceGet = savedSearch?.minPrice !== undefined && savedSearch?.minPrice !== null
+    ? Number(savedSearch?.minPrice)
+    : undefined;
+
+  const maxPriceGet = savedSearch?.maxPrice !== undefined && savedSearch?.maxPrice !== null
+    ? Number(savedSearch?.maxPrice)
+    : undefined;
+
+  const minAreaGet = savedSearch?.minArea !== undefined && savedSearch?.minArea !== null
+    ? Number(savedSearch?.minArea)
+    : undefined;
+
+  const maxAreaGet = savedSearch?.maxArea !== undefined && savedSearch?.maxArea !== null
+    ? Number(savedSearch?.maxArea)
+    : undefined;
+
+  const minRoomGet = savedSearch?.minRoom !== undefined && savedSearch?.minRoom !== null
+    ? Number(savedSearch?.minRoom)
+    : undefined;
+
+  const maxRoomGet = savedSearch?.maxRoom !== undefined && savedSearch?.maxRoom !== null
+    ? Number(savedSearch?.maxRoom)
+    : undefined;
+
+  const minBathroomGet = savedSearch?.minBathroom !== undefined && savedSearch?.minBathroom !== null
+    ? Number(savedSearch?.minBathroom)
+    : undefined;
+
+  const maxBathroomGet = savedSearch?.maxBathroom !== undefined && savedSearch?.maxBathroom !== null
+    ? Number(savedSearch?.maxBathroom)
+    : undefined;
+
+
+
+  interface FilterValue {
+    name: string;
+    value?: string;
+    type?: string;
+    range?: number[];
+  }
+  // const filterValues: FilterValue[] = getFilterValues(savedSearch);
+  const filterValues: FilterValue[] = Array.isArray(getFilterValues(savedSearch)) ?
+    getFilterValues(savedSearch) : [];
+
+
+  const namesAndValues = filterValues.map(item => {
+    // Ajouter une valeur par défaut pour les champs où "value" est vide
+    if (!item.value && item.name) {
+      return {
+        ...item,
+        value: '', // Par exemple : valeur par défaut
+      };
+    }
+    // Si aucune transformation n'est nécessaire, renvoyer l'objet tel quel
+    return item;
+  });
+
+  const keyValueObject = namesAndValues.reduce((acc: Record<string, string | number[] | undefined>, item) => {
+    acc[item.name] = item.value || item.range; // Priorité à `value`, sinon utiliser `range`
+    return acc;
+  }, {});
+  // console.log("Objet clé-valeur :", keyValueObject);
+
+
+  // const hasUserSelected = Object.keys(searchParams).some(
+  //   key => searchParams[key] !== undefined && searchParams[key] !== null
+  // );
+
+  const hasUserSelected = Object.keys(searchParams).some(
+    key => searchParams[key] !== undefined && searchParams[key] !== null && searchParams[key] !== ""
+  );
+  console.log('user selected', hasUserSelected)
+
+  // Si l'utilisateur a sélectionné un champ, on utilise uniquement `searchParams`. Sinon, on prend les valeurs par défaut.
+  const pagenum = hasUserSelected ? searchParams.pagenum ?? 1 : 1;
+  const query = hasUserSelected ? searchParams.query ?? "" : "";
+
+  const queryStatus = hasUserSelected
+    ? searchParams.queryStatus ?? ""
+    : queryStatusGet ?? "";
+
+  const queryType = hasUserSelected
+    ? searchParams.queryType ?? ""
+    : queryTypeGet ?? "";
+
+  const city = hasUserSelected
+    ? searchParams.city ?? ""
+    : cityGet ?? "";
+
+  const country = hasUserSelected
+    ? searchParams.country ?? ""
+    : countryGet ?? "";
+
+  const minPriceTest = searchParams.minPrice && searchParams.minPrice !== ""
     ? Number(searchParams.minPrice)
     : undefined;
 
-  const maxPrice = searchParams.maxPrice && searchParams.maxPrice !== ""
+  const maxPriceTest = searchParams.maxPrice && searchParams.maxPrice !== ""
     ? Number(searchParams.maxPrice)
     : undefined;
 
-  const minArea = searchParams.minArea
+  // Utiliser les valeurs de minPriceTest et maxPriceTest en fonction de hasUserSelected
+  const minPrice = hasUserSelected
+    ? minPriceTest
+    : minPriceGet !== undefined ? minPriceGet : undefined;
+
+  const maxPrice = hasUserSelected
+    ? maxPriceTest
+    : maxPriceGet !== undefined ? maxPriceGet : undefined;
+
+  const minAreaTest = searchParams.minArea
     ? Number(searchParams.minArea)
     : undefined;
-  const maxArea = searchParams.maxArea
+  const maxAreaTest = searchParams.maxArea
     ? Number(searchParams.maxArea)
     : undefined;
 
+  const minArea = hasUserSelected
+    ? minAreaTest
+    : minAreaGet !== undefined ? minPriceGet : undefined;
 
-  const minBedrooms = searchParams.minBedrooms
+  const maxArea = hasUserSelected
+    ? maxAreaTest
+    : maxAreaGet !== undefined ? maxPriceGet : undefined;
+
+
+
+  const minBedroomsTest = searchParams.minBedrooms
     ? Number(searchParams.minBedrooms)
     : undefined;
-  const maxBedrooms = searchParams.maxBedrooms
+  const maxBedroomsTest = searchParams.maxBedrooms
     ? Number(searchParams.maxBedrooms)
     : undefined;
 
-  const minBathrooms = searchParams.minBathrooms
+
+  const minBedrooms = hasUserSelected
+    ? minBedroomsTest
+    : minRoomGet !== undefined ? minPriceGet : undefined;
+
+  const maxBedrooms = hasUserSelected
+    ? maxBedroomsTest
+    : maxRoomGet !== undefined ? maxPriceGet : undefined;
+
+  const minBathroomsTest = searchParams.minBathrooms
     ? Number(searchParams.minBathrooms)
     : undefined;
-  const maxBathrooms = searchParams.maxBathrooms
+  const maxBathroomsTest = searchParams.maxBathrooms
     ? Number(searchParams.maxBathrooms)
     : undefined;
+
+  const minBathrooms = hasUserSelected
+    ? minBathroomsTest
+    : minBathroomGet !== undefined ? minPriceGet : undefined;
+
+  const maxBathrooms = hasUserSelected
+    ? maxBathroomsTest
+    : maxBathroomGet !== undefined ? maxPriceGet : undefined;
 
   // console.log('query minArea', minArea)
   // console.log('query maxArea', maxArea)
@@ -62,12 +211,17 @@ export default async function Home({ searchParams }: Props) {
   // console.log('query minBedrooms', minBedrooms)
   // console.log('query maxBedrooms', maxBedrooms)
 
+
+
   // const pagenum = searchParams.pagenum ?? 1;
   // const query = searchParams.query ?? "";
   // const queryStatus = searchParams.queryStatus ?? "";
   // const queryType = searchParams.queryType ?? "";
   // const city = searchParams.city ?? "";
   // const country = searchParams.country ?? "";
+
+
+
 
   type SortOrder =
     | "price-asc"
