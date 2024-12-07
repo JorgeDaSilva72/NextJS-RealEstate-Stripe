@@ -27,21 +27,36 @@ type Props = {
   currentPage: number;
 };
 
-// const PropertiesTable = ({ properties, totalPages, currentPage }: Props) => {
-const PropertiesTable = ({ properties, totalPages, currentPage }: any) => {
+const SaveSearchTable = () => {
   // To DEPLOY
   const router = useRouter();
   return (
     <div className="flex flex-col items-center gap-4">
       <Table>
         <TableHeader>
-          <TableColumn>TITRE</TableColumn>
-          <TableColumn>PRIX</TableColumn>
-          <TableColumn>TYPE</TableColumn>
-          <TableColumn>STATUT</TableColumn>
-          <TableColumn>ACTIONS</TableColumn>
+          <TableColumn>Status</TableColumn>
+          <TableColumn>Type</TableColumn>
+          <TableColumn>Pays</TableColumn>
+          <TableColumn>Ville</TableColumn>
+          <TableColumn>Prix</TableColumn>
+          <TableColumn>Superficie</TableColumn>
+          <TableColumn>chambre</TableColumn>
+          <TableColumn>salle de bain</TableColumn>
+
         </TableHeader>
         <TableBody>
+          <TableRow>
+            <TableCell>Aucune donnée disponible.</TableCell>
+            <TableCell>Aucune donnée disponible.</TableCell>
+            <TableCell>Aucune donnée disponible.</TableCell>
+            <TableCell>Aucune donnée disponible.</TableCell>
+            <TableCell>Aucune donnée disponible.</TableCell>
+            <TableCell>Aucune donnée disponible.</TableCell>
+            <TableCell>Aucune donnée disponible.</TableCell>
+            <TableCell>Aucune donnée disponible.</TableCell>
+          </TableRow>
+        </TableBody>
+        {/* <TableBody>
           {properties.map(
             (
               item: any,
@@ -76,19 +91,19 @@ const PropertiesTable = ({ properties, totalPages, currentPage }: any) => {
               </TableRow>
             )
           )}
-        </TableBody>
+        </TableBody> */}
       </Table>
-      <Pagination
+      {/* <Pagination
         total={totalPages}
         initialPage={1}
         page={currentPage}
         onChange={(page) => router.push(`/user/properties?pagenum=${page}`)}
-      />
+      /> */}
     </div>
   );
 };
 
-export default PropertiesTable;
+export default SaveSearchTable;
 
 type Props2 = {
   properties: Prisma.PropertyGetPayload<{

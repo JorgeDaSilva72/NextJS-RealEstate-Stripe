@@ -6,7 +6,7 @@ import PropertyCard from '@/app/components/PropertyCard';
 import NoPropertiesFound from '@/app/result/_components/noPropertiesFound';
 import { Prisma } from "@prisma/client";
 import { getUserIdFromToken, getSavedSearchTest, getFilterValues, SavedSearch } from '@/app/components/savedSearch';
-
+import SaveSearchTable from './_components/SaveSearchTable';
 
 const PAGE_SIZE = 12;
 
@@ -337,6 +337,11 @@ const SavedSearchesPage = async ({ searchParams }: Props) => {
     return (
         <div className="w-full min-h-screen bg-gray-100">
             {/* Passez le token récupéré à Search */}
+
+            <div className="bg-primary-400 flex justify-between items-center p-4">
+                <h2 className="text-white text-xl font-semibold px-2">Mes filtres de recherche</h2>
+            </div>
+            <SaveSearchTable />
             {properties.length > 0 ? (
                 <PropertyContainer totalPages={totalPages} currentPage={+pagenum}>
                     {properties.map((propertyItem) => (
