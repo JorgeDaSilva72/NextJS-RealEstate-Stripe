@@ -37,7 +37,7 @@ const UserProfilePanel = ({ user }: Props) => {
         </DropdownItem>
         <DropdownItem>
           {/* Ajout du lien vers la page "Mes recherches sauvegardées" */}
-          <Link href="/saved-searches">Mes recherches sauvegardées</Link>
+          <Link href="/user/savedsearches">Mes recherches</Link>
         </DropdownItem>
         <DropdownItem key="logout" color="danger">
           <LogoutLink>Se Déconnecter</LogoutLink>
