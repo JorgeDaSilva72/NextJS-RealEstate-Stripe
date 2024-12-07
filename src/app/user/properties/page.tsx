@@ -13,6 +13,7 @@ const PropertiesPage = async ({ searchParams }: Props) => {
   const { getUser } = await getKindeServerSession();
   const user = await getUser();
 
+
   const pagenum = searchParams.pagenum ?? 1;
   const propertiesPromise = prisma.property.findMany({
     where: {
@@ -37,7 +38,13 @@ const PropertiesPage = async ({ searchParams }: Props) => {
     totalPropertiesPromise,
   ]);
 
+
+
   const totalPages = Math.floor(totalProperties / PAGE_SIZE + 1);
+
+  console.log('user totalProperties', totalProperties)
+  console.log('user PAGE_SIZE', PAGE_SIZE)
+  console.log('user totalProperties', totalPages)
 
   // console.log({ properties });
 

@@ -16,12 +16,10 @@ interface Props {
 
 const SavedSearchesPage = async ({ searchParams }: Props) => {
 
-
     const userId = await getUserIdFromToken();
     const savedSearch = await getSavedSearchTest(userId) ?? null;
     console.log('user id avec savedsearch', savedSearch)
     console.log('table savedSearch', savedSearch)
-
 
     // Crée un objet pour stocker les valeurs
     const searchValues: { [key: string]: any } = {};
@@ -39,18 +37,14 @@ const SavedSearchesPage = async ({ searchParams }: Props) => {
 
     const pagenum = searchParams.pagenum ?? 1;
     const query = searchParams.query ?? "";
-
     const queryStatusGet = savedSearch?.status?.value ?? '';
     const queryTypeGet = savedSearch?.type?.value ?? '';
     const sortOrderGet = savedSearch?.sortOrder ?? '';
     const cityGet = savedSearch?.city ?? '';
     const countryGet = savedSearch?.country ?? '';
-    // const minPriceGet = savedSearch?.minPrice ?? '';
-    // const maxPriceGet = savedSearch?.maxPrice ?? '';
     const minPriceGet = savedSearch?.minPrice !== undefined && savedSearch?.minPrice !== null
         ? Number(savedSearch?.minPrice)
         : undefined;
-
     const maxPriceGet = savedSearch?.maxPrice !== undefined && savedSearch?.maxPrice !== null
         ? Number(savedSearch?.maxPrice)
         : undefined;
@@ -58,7 +52,6 @@ const SavedSearchesPage = async ({ searchParams }: Props) => {
     const minAreaGet = savedSearch?.minArea !== undefined && savedSearch?.minArea !== null
         ? Number(savedSearch?.minArea)
         : undefined;
-
     const maxAreaGet = savedSearch?.maxArea !== undefined && savedSearch?.maxArea !== null
         ? Number(savedSearch?.maxArea)
         : undefined;
@@ -66,7 +59,6 @@ const SavedSearchesPage = async ({ searchParams }: Props) => {
     const minRoomGet = savedSearch?.minRoom !== undefined && savedSearch?.minRoom !== null
         ? Number(savedSearch?.minRoom)
         : undefined;
-
     const maxRoomGet = savedSearch?.maxRoom !== undefined && savedSearch?.maxRoom !== null
         ? Number(savedSearch?.maxRoom)
         : undefined;
@@ -74,12 +66,9 @@ const SavedSearchesPage = async ({ searchParams }: Props) => {
     const minBathroomGet = savedSearch?.minBathroom !== undefined && savedSearch?.minBathroom !== null
         ? Number(savedSearch?.minBathroom)
         : undefined;
-
     const maxBathroomGet = savedSearch?.maxBathroom !== undefined && savedSearch?.maxBathroom !== null
         ? Number(savedSearch?.maxBathroom)
         : undefined;
-
-
 
     interface FilterValue {
         name: string;
@@ -87,11 +76,9 @@ const SavedSearchesPage = async ({ searchParams }: Props) => {
         type?: string;
         range?: number[];
     }
-    // const filterValues: FilterValue[] = getFilterValues(savedSearch);
+
     const filterValues: FilterValue[] = Array.isArray(getFilterValues(savedSearch)) ?
         getFilterValues(savedSearch) : [];
-
-
     const namesAndValues = filterValues.map(item => {
         // Ajouter une valeur par défaut pour les champs où "value" est vide
         if (!item.value && item.name) {
@@ -134,18 +121,6 @@ const SavedSearchesPage = async ({ searchParams }: Props) => {
     console.log('query maxBathrooms', maxBathrooms)
     console.log('query minBedrooms', minBedrooms)
     console.log('query maxBedrooms', maxBedrooms)
-
-
-
-    // const pagenum = searchParams.pagenum ?? 1;
-    // const query = searchParams.query ?? "";
-    // const queryStatus = searchParams.queryStatus ?? "";
-    // const queryType = searchParams.queryType ?? "";
-    // const city = searchParams.city ?? "";
-    // const country = searchParams.country ?? "";
-
-
-
 
     type SortOrder =
         | "price-asc"
@@ -345,14 +320,6 @@ const SavedSearchesPage = async ({ searchParams }: Props) => {
             },
         },
     });
-
-    // console.log('queryStatus', queryStatus);
-    // console.log('queryType', queryType);
-    // console.log('country', country);
-    // console.log('city', city);
-    // console.log('min price', firstPrice);
-    // console.log('max price', maxPrice);
-    // console.log('area', firstBathroom);
 
     const [properties, totalProperties] = await Promise.all([
         propertiesPromise,
