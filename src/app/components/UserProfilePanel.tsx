@@ -35,6 +35,10 @@ const UserProfilePanel = ({ user }: Props) => {
         <DropdownItem>
           <Link href="/user/properties">Mes Annonces</Link>
         </DropdownItem>
+        <DropdownItem>
+          {/* Ajout du lien vers la page "Mes recherches sauvegardées" */}
+          <Link href="/saved-searches">Mes recherches sauvegardées</Link>
+        </DropdownItem>
         <DropdownItem key="logout" color="danger">
           <LogoutLink>Se Déconnecter</LogoutLink>
         </DropdownItem>

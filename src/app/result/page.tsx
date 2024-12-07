@@ -6,78 +6,9 @@ import PropertyCard from "../components/PropertyCard";
 import NoPropertiesFound from "./_components/noPropertiesFound";
 import { Prisma } from "@prisma/client";
 import { jwtDecode } from 'jwt-decode';
+import { getUserIdFromToken, getSavedSearchTest, getFilterValues, SavedSearch } from "../components/savedSearch";
 
 const PAGE_SIZE = 12;
-
-interface SavedSearch {
-  id: number;
-  userId: string;
-  name: string;
-  queryStatus: number | null;
-  queryType: number | null;
-  country: string | null;
-  city: string | null;
-  sortOrder: string | null;
-  minPrice: number | null;
-  maxPrice: number | null;
-  minArea: number | null;
-  maxArea: number | null;
-  minRoom: number | null;
-  maxRoom: number | null;
-  minBathroom: number | null;
-  maxBathroom: number | null;
-  typeId: number;
-  statusId: number;
-  createdAt: Date;
-  updatedAt: Date;
-  filters?: string | null; // Ajoute le champ filters si nécessaire
-  [key: string]: any; // Permet l'accès dynamique aux autres propriétés
-}
-
-const getUserIdFromToken = async () => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('id_token')?.value || '';
-
-  if (token) {
-    try {
-      const decodedToken: any = jwtDecode(token);
-      return decodedToken.sub;
-    } catch (error) {
-      console.error("Token invalide ou erreur lors du décodage:", error);
-      return null;
-    }
-  }
-
-  return null;
-};
-
-const getSavedSearchTest = async (userId: string | null): Promise<SavedSearch | null> => {
-  if (userId) {
-    return await prisma.savedSearch?.findFirst({
-      where: { userId: userId },
-      include: {
-        // Inclure les relations associées à 'typeId' et 'statusId'
-        type: true, // Inclut la relation 'type' (PropertyType)
-        status: true, // Inclut la relation 'status' (PropertyStatus)
-      },
-    });
-  }
-  return null;
-};
-
-const getSavedSearch = async (userId: string | null) => {
-  if (userId) {
-    return await prisma.savedSearch?.findFirst({
-      where: { userId: userId },
-    });
-  }
-  return null;
-};
-
-const getFilterValues = (savedSearch: any) => {
-  return savedSearch?.filters ? JSON.parse(savedSearch?.filters) : {};
-};
-
 
 interface Props {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -87,8 +18,8 @@ export default async function Home({ searchParams }: Props) {
 
   const userId = await getUserIdFromToken();
   const savedSearch = await getSavedSearchTest(userId) ?? null;
-  // console.log('user id avec savedsearch', savedSearch)
-  // console.log('table savedSearch', savedSearch)
+  console.log('user id avec savedsearch', savedSearch)
+  console.log('table savedSearch', savedSearch)
 
 
   // Crée un objet pour stocker les valeurs
