@@ -42,9 +42,9 @@ const PropertiesPage = async ({ searchParams }: Props) => {
 
   const totalPages = Math.floor(totalProperties / PAGE_SIZE + 1);
 
-  console.log('user totalProperties', totalProperties)
-  console.log('user PAGE_SIZE', PAGE_SIZE)
-  console.log('user totalProperties', totalPages)
+  // console.log('user totalProperties', totalProperties)
+  // console.log('user PAGE_SIZE', PAGE_SIZE)
+  // console.log('user totalProperties', totalPages)
 
   // console.log({ properties });
 

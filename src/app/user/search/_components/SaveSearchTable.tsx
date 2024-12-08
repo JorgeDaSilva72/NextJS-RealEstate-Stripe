@@ -27,71 +27,69 @@ type Props = {
   currentPage: number;
 };
 
-const SaveSearchTable = () => {
+
+const SaveSearchTable = ({ filtres }: any) => {
+  // console.log('liste des filtres', filtres)
+
+  const filtresArray = Array.isArray(filtres) ? filtres : filtres ? [filtres] : [];
   // To DEPLOY
   const router = useRouter();
   return (
     <div className="flex flex-col items-center gap-4">
       <Table>
         <TableHeader>
-          <TableColumn>Status</TableColumn>
-          <TableColumn>Type</TableColumn>
-          <TableColumn>Pays</TableColumn>
-          <TableColumn>Ville</TableColumn>
-          <TableColumn>Prix</TableColumn>
-          <TableColumn>Superficie</TableColumn>
-          <TableColumn>chambre</TableColumn>
-          <TableColumn>salle de bain</TableColumn>
+          <TableColumn>STATUS</TableColumn>
+          <TableColumn>TYPE</TableColumn>
+          <TableColumn>PAYS</TableColumn>
+          <TableColumn>VILLE</TableColumn>
+          <TableColumn>PRIX</TableColumn>
+          <TableColumn>SUPERFICIE</TableColumn>
+          <TableColumn>CHAMBRE</TableColumn>
+          <TableColumn>SALLE DE BAIN</TableColumn>
+          <TableColumn>Action</TableColumn>
 
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell>Aucune donnée disponible.</TableCell>
-            <TableCell>Aucune donnée disponible.</TableCell>
-            <TableCell>Aucune donnée disponible.</TableCell>
-            <TableCell>Aucune donnée disponible.</TableCell>
-            <TableCell>Aucune donnée disponible.</TableCell>
-            <TableCell>Aucune donnée disponible.</TableCell>
-            <TableCell>Aucune donnée disponible.</TableCell>
-            <TableCell>Aucune donnée disponible.</TableCell>
-          </TableRow>
-        </TableBody>
-        {/* <TableBody>
-          {properties.map(
-            (
-              item: any,
-              index: number // TO DEPLOY
-            ) => (
-              // {properties.map((item, index) => (
-
+          {filtresArray.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={8} className="text-center">
+                Aucune donnée disponible.
+              </TableCell>
+            </TableRow>
+          ) : (
+            filtresArray.map((filter: any, index: number) => (
               <TableRow key={index}>
-                <TableCell>{item.name}</TableCell>
-                <TableCell>{item.price}</TableCell>
-                <TableCell>{item.type.value}</TableCell>
-                <TableCell>{item.status.value}</TableCell>
+                <TableCell>{filter.status?.value || "Non défini"}</TableCell>
+                <TableCell>{filter.type?.value || "Non défini"}</TableCell>
+                <TableCell>{filter.country || "Non défini"}</TableCell>
+                <TableCell>{filter.city || "Non défini"}</TableCell>
+                <TableCell>{filter.sortOrder || "Non défini"}</TableCell>
+                <TableCell>{`${filter.minArea || 0} - ${filter.maxArea || 0}`}</TableCell>
+                <TableCell>{`${filter.minRoom || 0} - ${filter.maxRoom || 0}`}</TableCell>
+                <TableCell>{`${filter.minBathroom || 0} - ${filter.maxBathroom || 0}`}</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-4">
-                    <Tooltip content="Détails">
-                      <Link href={`/property/${item.id}`}>
+                    {/* <Tooltip content="Détails">
+                      <Link href={`/property/${filter.id}`}>
                         <EyeIcon className="w-5 text-slate-500" />
                       </Link>
                     </Tooltip>
                     <Tooltip content="Editer" color="warning">
-                      <Link href={`/user/properties/${item.id}/edit`}>
+                      <Link href={`/user/properties/${filter.id}/edit`}>
                         <PencilIcon className="w-5 text-yellow-500" />
                       </Link>
-                    </Tooltip>
+                    </Tooltip> */}
                     <Tooltip content="Supprimer" color="danger">
-                      <Link href={`/user/properties/${item.id}/delete`}>
+                      <Link href={`/user/search/${filter.id}/delete`}>
                         <TrashIcon className="w-5 text-red-500" />
                       </Link>
                     </Tooltip>
                   </div>
                 </TableCell>
               </TableRow>
-            )
+            ))
           )}
-        </TableBody> */}
+        </TableBody>
       </Table>
       {/* <Pagination
         total={totalPages}
