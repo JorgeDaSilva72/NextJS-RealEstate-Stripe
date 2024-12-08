@@ -206,7 +206,7 @@ const Search = ({ token }: SearchProps) => {
       // Préparer les données à envoyer
       const requestData = {
         userId: userId, // Utiliser l'ID de l'utilisateur récupéré depuis le token
-        name: "Token",  // Vous pouvez demander à l'utilisateur d'entrer un nom
+        name: "Filtre personnel",  // Vous pouvez demander à l'utilisateur d'entrer un nom
         filters: savedFilters,  // Les filtres formatés
       };
       console.log('Request data', requestData)

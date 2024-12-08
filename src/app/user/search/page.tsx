@@ -326,7 +326,8 @@ const SavedSearchesPage = async ({ searchParams }: Props) => {
         totalPropertiesPromise,
     ]);
 
-    console.log('properties', properties)
+    // console.log('properties test', properties)
+    console.log('savesearch test', savedSearch)
 
     const totalPages = Math.floor(totalProperties / PAGE_SIZE + 1);
 
@@ -350,7 +351,9 @@ const SavedSearchesPage = async ({ searchParams }: Props) => {
                             ))}
                         </PropertyContainer>
                     ) : (
-                        <NoPropertiesFound />
+                        <div className='mt-5'>
+                            <NoPropertiesFound />
+                        </div>
                     )}
                 </>
             ) : (
