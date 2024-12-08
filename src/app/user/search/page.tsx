@@ -106,21 +106,21 @@ const SavedSearchesPage = async ({ searchParams }: Props) => {
     // Utiliser les valeurs de minPriceTest et maxPriceTest en fonction de hasUserSelected
     const minPrice = minPriceGet !== undefined ? minPriceGet : undefined;
     const maxPrice = maxPriceGet !== undefined ? maxPriceGet : undefined;
-    const minArea = minAreaGet !== undefined ? minPriceGet : undefined;
-    const maxArea = maxAreaGet !== undefined ? maxPriceGet : undefined;
-    const minBedrooms = minRoomGet !== undefined ? minPriceGet : undefined;
-    const maxBedrooms = maxRoomGet !== undefined ? maxPriceGet : undefined;
-    const minBathrooms = minBathroomGet !== undefined ? minPriceGet : undefined;
-    const maxBathrooms = maxBathroomGet !== undefined ? maxPriceGet : undefined;
+    const minArea = minAreaGet !== undefined ? minAreaGet : undefined;
+    const maxArea = maxAreaGet !== undefined ? maxAreaGet : undefined;
+    const minBedrooms = minRoomGet !== undefined ? minRoomGet : undefined;
+    const maxBedrooms = maxRoomGet !== undefined ? maxRoomGet : undefined;
+    const minBathrooms = minBathroomGet !== undefined ? minBathroomGet : undefined;
+    const maxBathrooms = maxBathroomGet !== undefined ? maxBathroomGet : undefined;
 
-    // console.log('query minArea', minArea)
-    // console.log('query maxArea', maxArea)
-    // console.log('query minPrice', minPrice)
-    // console.log('query maxPrice', maxPrice)
-    // console.log('query minBathrooms', minBathrooms)
-    // console.log('query maxBathrooms', maxBathrooms)
-    // console.log('query minBedrooms', minBedrooms)
-    // console.log('query maxBedrooms', maxBedrooms)
+    console.log('query minArea', minArea)
+    console.log('query maxArea', maxArea)
+    console.log('query minPrice', minPrice)
+    console.log('query maxPrice', maxPrice)
+    console.log('query minBathrooms', minBathrooms)
+    console.log('query maxBathrooms', maxBathrooms)
+    console.log('query minBedrooms', minBedrooms)
+    console.log('query maxBedrooms', maxBedrooms)
 
     type SortOrder =
         | "price-asc"
@@ -327,7 +327,7 @@ const SavedSearchesPage = async ({ searchParams }: Props) => {
     ]);
 
     // console.log('properties test', properties)
-    console.log('savesearch test', savedSearch)
+    // console.log('savesearch test', savedSearch)
 
     const totalPages = Math.floor(totalProperties / PAGE_SIZE + 1);
 
