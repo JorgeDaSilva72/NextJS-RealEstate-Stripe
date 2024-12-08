@@ -47,50 +47,54 @@ const SaveSearchTable = ({ filtres }: any) => {
           <TableColumn>CHAMBRE</TableColumn>
           <TableColumn>SALLE DE BAIN</TableColumn>
           <TableColumn>Action</TableColumn>
-
         </TableHeader>
         <TableBody>
-          {filtresArray.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={8} className="text-center">
-                Aucune donnée disponible.
-              </TableCell>
-            </TableRow>
-          ) : (
-            filtresArray.map((filter: any, index: number) => (
-              <TableRow key={index}>
-                <TableCell>{filter.status?.value || "Non défini"}</TableCell>
-                <TableCell>{filter.type?.value || "Non défini"}</TableCell>
-                <TableCell>{filter.country || "Non défini"}</TableCell>
-                <TableCell>{filter.city || "Non défini"}</TableCell>
-                <TableCell>{filter.sortOrder || "Non défini"}</TableCell>
-                <TableCell>{`${filter.minArea || 0} - ${filter.maxArea || 0}`}</TableCell>
-                <TableCell>{`${filter.minRoom || 0} - ${filter.maxRoom || 0}`}</TableCell>
-                <TableCell>{`${filter.minBathroom || 0} - ${filter.maxBathroom || 0}`}</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-4">
-                    {/* <Tooltip content="Détails">
-                      <Link href={`/property/${filter.id}`}>
-                        <EyeIcon className="w-5 text-slate-500" />
-                      </Link>
-                    </Tooltip>
-                    <Tooltip content="Editer" color="warning">
-                      <Link href={`/user/properties/${filter.id}/edit`}>
-                        <PencilIcon className="w-5 text-yellow-500" />
-                      </Link>
-                    </Tooltip> */}
-                    <Tooltip content="Supprimer" color="danger">
-                      <Link href={`/user/search/${filter.id}/delete`}>
-                        <TrashIcon className="w-5 text-red-500" />
-                      </Link>
-                    </Tooltip>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))
-          )}
+          {
+            // filtresArray.length === 0 ? (
+            //   <TableRow>
+            //     {/* Le colSpan doit être égal au nombre de colonnes dans TableHeader */}
+            //     <TableCell colSpan={9} className="text-center">
+            //       Aucune donnée disponible.
+            //     </TableCell>
+            //     {/* <TableCell className="text-center">Aucune donnée</TableCell>
+            //     <TableCell className="text-center">Aucune donnée</TableCell>
+            //     <TableCell className="text-center">Aucune donnée</TableCell>
+            //     <TableCell className="text-center">Aucune donnée</TableCell>
+            //     <TableCell className="text-center">Aucune donnée</TableCell>
+            //     <TableCell className="text-center">Aucune donnée</TableCell>
+            //     <TableCell className="text-center">Aucune donnée</TableCell>
+            //     <TableCell className="text-center">Aucune donnée</TableCell>
+            //     <TableCell className="text-center"> </TableCell> */}
+            //   </TableRow>
+            // ) : 
+            (
+              filtresArray.map((filter: any, index: number) => (
+                <TableRow key={index}>
+                  {/* Vérifiez que chaque ligne a bien 9 cellules */}
+                  <TableCell>{filter.status?.value || "Non défini"}</TableCell>
+                  <TableCell>{filter.type?.value || "Non défini"}</TableCell>
+                  <TableCell>{filter.country || "Non défini"}</TableCell>
+                  <TableCell>{filter.city || "Non défini"}</TableCell>
+                  <TableCell>{`${filter.minPrice || 0} - ${filter.maxPrice || 0}`}</TableCell>
+                  <TableCell>{`${filter.minArea || 0} - ${filter.maxArea || 0}`}</TableCell>
+                  <TableCell>{`${filter.minRoom || 0} - ${filter.maxRoom || 0}`}</TableCell>
+                  <TableCell>{`${filter.minBathroom || 0} - ${filter.maxBathroom || 0}`}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-4">
+                      <Tooltip content="Supprimer" color="danger">
+                        <Link href={`/user/search/${filter.id}/delete`}>
+                          <TrashIcon className="w-5 text-red-500" />
+                        </Link>
+                      </Tooltip>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
         </TableBody>
       </Table>
+
+
       {/* <Pagination
         total={totalPages}
         initialPage={1}

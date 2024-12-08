@@ -326,7 +326,7 @@ const SavedSearchesPage = async ({ searchParams }: Props) => {
         totalPropertiesPromise,
     ]);
 
-    // console.log('properties', properties)
+    console.log('properties', properties)
 
     const totalPages = Math.floor(totalProperties / PAGE_SIZE + 1);
 
@@ -336,23 +336,36 @@ const SavedSearchesPage = async ({ searchParams }: Props) => {
     const token = cookieStore.get('id_token')?.value || ''; // Assurez-vous que le token est bien présent ici
 
     return (
-        <div className="w-full min-h-screen bg-gray-100">
-            {/* Passez le token récupéré à Search */}
-
-            <div className="bg-primary-400 flex justify-between items-center p-4">
-                <h2 className="text-white text-xl font-semibold px-2">Mes filtres de recherche</h2>
-            </div>
-            <SaveSearchTable filtres={savedSearch} />
-            {properties.length > 0 ? (
-                <PropertyContainer totalPages={totalPages} currentPage={+pagenum}>
-                    {properties.map((propertyItem) => (
-                        <PropertyCard property={propertyItem} key={propertyItem.id} />
-                    ))}
-                </PropertyContainer>
+        <>
+            {savedSearch ? (
+                <>
+                    <div className="bg-primary-400 flex justify-between items-center p-4">
+                        <h2 className="text-white text-xl font-semibold px-2">Mes filtres de recherche</h2>
+                    </div>
+                    <SaveSearchTable filtres={savedSearch} />
+                    {properties.length > 0 ? (
+                        <PropertyContainer totalPages={totalPages} currentPage={+pagenum}>
+                            {properties.map((propertyItem) => (
+                                <PropertyCard property={propertyItem} key={propertyItem.id} />
+                            ))}
+                        </PropertyContainer>
+                    ) : (
+                        <NoPropertiesFound />
+                    )}
+                </>
             ) : (
-                <NoPropertiesFound /> // Affichage du composant NoPropertiesFound si aucune propriété n'est trouvée
+                <>
+                    <div className="bg-primary-400 flex justify-between items-center p-4">
+                        <h2 className="text-white text-xl font-semibold px-2">Mes filtres de recherche</h2>
+                    </div>
+                    <SaveSearchTable filtres={savedSearch} />
+                    <div className='mt-5'>
+                        <NoPropertiesFound />
+                    </div>
+                </>
+
             )}
-        </div>
+        </>
     );
 };
 
