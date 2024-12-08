@@ -15,22 +15,22 @@ interface Props {
 async function DeletePropertyPage({ params }: Props) {
   console.log('delete trouvé')
   const { getUser } = getKindeServerSession();
-  const propertyPromise = prisma.property.findUnique({
+  const savedSearchPromise = prisma.savedSearch.findUnique({
     where: {
       id: +params.id, //+ to transform params(string) into a number
     },
   });
-  const [property, user] = await Promise.all([propertyPromise, getUser()]);
+  const [filter, user] = await Promise.all([savedSearchPromise, getUser()]);
 
-  if (!property) return notFound();
-  if (!user || property.userId !== user.id) redirect("/unauthorized");
+  if (!filter) return notFound();
+  if (!user || filter.userId !== user.id) redirect("/unauthorized");
   //savedSearch
   const deleteAction = async () => {
     "use server";
     try {
       await deleteFilter(+params.id);
 
-      redirect("/user/properties");
+      redirect("/user/search");
     } catch (e) {
       throw e;
     }
@@ -44,7 +44,7 @@ async function DeletePropertyPage({ params }: Props) {
       <p>Êtes-vous sûr de supprimer cette filtre ?</p>
       <p>
         <span className="text-slate-400">Titre: </span>{" "}
-        <span className="text-slate-700">{property.name}</span>
+        <span className="text-slate-700">{filter.name}</span>
       </p>
       <div className="flex justify-center gap-3">
         <Link href={"/user/properties"}>
