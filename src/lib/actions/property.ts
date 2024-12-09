@@ -386,13 +386,11 @@ export async function saveProperty(
               user: true, // Inclure l'utilisateur
             }
           });
-
           if (user && user.user) {
             const userEmail = user.user.email;  // Accédez correctement à l'email
 
             // Envoi de l'email
             await sendEmail(userEmail);  // Appel à la fonction d'envoi d'email
-            console.log(`Email envoyé à ${userEmail}`);
           } else {
             console.log('Aucun utilisateur trouvé pour cette recherche sauvegardée.');
           }
