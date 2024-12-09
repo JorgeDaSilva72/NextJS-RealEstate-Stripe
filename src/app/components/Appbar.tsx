@@ -15,6 +15,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { ReactNode, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import "./appbar.css";
 import { navBars } from "../data/navbars";
 interface Props {
   children: ReactNode;
@@ -23,7 +24,11 @@ interface Props {
 const Appbar = ({ children }: Props) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isTransparent, setIsTransparent] = useState(false);
+  const [width, setWidth] = useState(0);
 
+  useEffect(() => {
+    setWidth(window.innerWidth);
+  }, [])
   const pathname = usePathname(); // Utilisation de usePathname pour obtenir le chemin actuel
   useEffect(() => {
     // Vérifie si on est dans la page d'accueil
@@ -45,17 +50,17 @@ const Appbar = ({ children }: Props) => {
   return (
     <Navbar
       // className=" bg-transparent shadow-md z-50 "
-      className={`${
-        isTransparent ? "fixed top-0 left-0 w-full bg-transparent" : "bg-white "
-      } z-50 shadow-md transition duration-300 ease-in-out`}
+      className={`${isTransparent ? "fixed top-0 left-0 w-full bg-transparent" : "bg-white "
+        } z-50 shadow-md transition duration-300 ease-in-out`}
       onMenuOpenChange={setIsMenuOpen}
+      height={pathname != "/" && width < 600 ? "7rem" : "4rem"}
     >
       {/* Mobile Menu Toggle */}
       <NavbarContent className="flex items-center">
-        <NavbarMenuToggle
+        {/* <NavbarMenuToggle
           aria-label={isMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
           className="sm:hidden"
-        />
+        /> */}
         {/* Brand */}
         <NavbarBrand>
           <Link
@@ -71,8 +76,8 @@ const Appbar = ({ children }: Props) => {
             />
             {/* Texte caché sur petit écran */}
             <div className=" ml-2 hidden sm:flex sm:flex-col   text-center md:flex md:flex-row md:items-center md:text-left  ">
-            <div className="w-[170px] h-[50px] flex items-center justify-center">
-                <p className={(pathname == "/" ? "text-white" : "text-blue-500" ) + " w-full text-center whitespace-pre-line font-medium leading-[20px] tracking-[1px] text-primary text-xs sm:text-sm md:text-md lg:text-lg"}>
+              <div className="w-[140px] h-[50px] flex items-center justify-center">
+                <p className={(pathname == "/" ? "text-white" : "text-blue-500") + " w-full text-center whitespace-pre-line font-medium tracking-[1px] text-primary text-sm"}>
                   AFRIQUE AVENIR IMMO
                 </p>
               </div>
@@ -93,13 +98,13 @@ const Appbar = ({ children }: Props) => {
         </NavbarItem> */}
         {navBars.map((nav, index) => (
           <NavbarItem key={index}>
-          <Link
-            href={nav.url}
-            className={(pathname == "/" ? "text-white" : "text-blue-500" ) + " tracking-[1px] text-primary-500 hover:text-primary-700 transition duration-200"}
-          >
-            {nav.name}
-          </Link>
-        </NavbarItem>
+            <Link
+              href={nav.url}
+              className={(pathname == "/" ? "text-white" : "text-blue-500") + " tracking-[1px] text-primary-500 hover:text-primary-700 transition duration-200"}
+            >
+              {nav.name}
+            </Link>
+          </NavbarItem>
         ))}
         {/* <NavbarItem>
           <Link
@@ -126,12 +131,21 @@ const Appbar = ({ children }: Props) => {
       </NavbarContent>
 
       {/* Mobile Menu */}
-      <NavbarMenu
-        className={`sm:hidden ${
-          isMenuOpen ? "flex" : "hidden"
-        } flex-col items-center`}
+      <NavbarContent
+        className="sm:hidden menu"
       >
-        <NavbarMenuItem>
+        <input type="checkbox" className="menu-open hidden" name="menu-open" id="menu-open" />
+        <label className="menu-open-button" htmlFor="menu-open">
+          <span className="hamburger hamburger-1"></span>
+          <span className="hamburger hamburger-2"></span>
+          <span className="hamburger hamburger-3"></span>
+        </label>
+        {navBars.map((nav, index) => (
+          <Link href={nav.url} className="menu-item" key={index}>
+            {nav.svg}
+          </Link>
+        ))}
+        {/* <NavbarMenuItem>
           <Link
             href="/"
             className="text-primary-500 hover:text-primary-700 transition duration-200"
@@ -154,8 +168,8 @@ const Appbar = ({ children }: Props) => {
           >
             Contact
           </Link>
-        </NavbarMenuItem>
-      </NavbarMenu>
+        </NavbarMenuItem> */}
+      </NavbarContent>
     </Navbar>
   );
 };
