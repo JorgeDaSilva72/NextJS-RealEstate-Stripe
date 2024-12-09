@@ -193,6 +193,28 @@ export async function removeImages(
   data.map((item) => console.log("Fichier supprimé avec succès:", item.name));
 }
 
+export async function checkFileExists(storage: "propertyImages" | "avatars", name: string) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+  const { data, error } = await supabase.storage
+    .from(storage)
+    .download(name);
+
+  if (error) {
+    if (error.message.includes('The resource was not found')) {
+      console.log('Le fichier n’existe pas.');
+      return false;
+    }
+    console.error('Erreur lors de la vérification du fichier :', error);
+    throw error;
+  }
+
+  console.log('Le fichier existe.');
+  return true;
+}
+
 export async function uploadAvatar(image: File) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;

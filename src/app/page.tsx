@@ -66,7 +66,7 @@ const Hero = () => {
 
         {/* Content */}
         <div className="relative z-10 text-center text-white px-6 w-[80%] max-w-3xl flex flex-col items-center justify-center">
-          <h1 className="tracking-[1px] h-[300px] leading-tight mb-4 text-[55px] md:text-[60px] font-extrabold sm:leading-normal sm:h-auto sm:tracking-[5px] w-full">
+          <h1 className="tracking-[1px] h-[260px] leading-tight mb-4 text-[50px] md:text-[60px] font-extrabold sm:leading-normal sm:h-auto sm:tracking-[5px] w-full">
             Trouvez la propriété de vos rêves
           </h1>
           <p className="hidden lg:block text-lg md:text-xl mb-8 w-[60%] font-medium whitespace-pre-line">

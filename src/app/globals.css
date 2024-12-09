@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Parkinsans:wght@300..800&display=swap");
 
 /* @layer base {
   html,
@@ -28,6 +29,9 @@
   }
 } */
 @layer utilities {
+  body,h1,h2,h3,h4,h5,h6,p,span {
+    font-family: "Parkinsans", sans-serif;
+  }
   @media (max-width: 1023px) {
     .scrollbar-hide::-webkit-scrollbar {
       display: none;

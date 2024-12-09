@@ -1,4 +1,5 @@
 .menu-item {
+  filter:url('#goo');
   background: #4D93F4;
   border-radius: 100%;
   width: 80px;
@@ -62,6 +63,7 @@
   transform: translate3d(0, 0, 0) rotate(-45deg);
 }
 .menu {
+  filter:url('#shadowed-goo');
   position: absolute;
   left: 50%;
   margin-left: -190px;

@@ -9,12 +9,18 @@ import {
 } from "@nextui-org/react";
 import { User as PrismaUser } from "@prisma/client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 interface Props {
   user: PrismaUser;
 }
 const UserProfilePanel = ({ user }: Props) => {
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    setWidth(window.innerWidth);
+  }, [])
+
   return (
     <Dropdown placement="bottom-start">
       <DropdownTrigger>
@@ -25,7 +31,7 @@ const UserProfilePanel = ({ user }: Props) => {
             src: user.avatarUrl ?? "/profile.png",
           }}
           className="transition-transform"
-          name={`${user.firstName} ${user.lastName}`}
+          name={width < 500 ? '' : `${user.firstName[0].toUpperCase()} ${user.lastName}`}
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="User Actions" variant="flat">
