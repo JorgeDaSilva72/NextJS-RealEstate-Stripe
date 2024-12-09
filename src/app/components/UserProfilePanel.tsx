@@ -7,19 +7,32 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@nextui-org/react";
-import { User as PrismaUser } from "@prisma/client";
+import { User as PrismaUser, SavedSearch } from "@prisma/client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import prisma from "@/lib/prisma";
 // import { getUserIdFromToken } from '@/app/components/savedSearch';
 
 
 interface Props {
   user: PrismaUser;
+  filter: SavedSearch[]
 }
-const UserProfilePanel = ({ user }: Props) => {
+const UserProfilePanel = ({ user, filter }: Props) => {
+  const [hasFilter, setHasFilter] = useState(false);
 
-  // const userId = await getUserIdFromToken();
-  // console.log('get id', userId)
+  useEffect(() => {
+    // Si le nom du filtre existe, on met à jour l'état en `true`
+    if (filter.length > 0 && filter[0].name) {
+      setHasFilter(true);
+    } else {
+      setHasFilter(false);
+    }
+  }, [filter]);
+
+  const filterName = filter.length > 0 ? filter[0].name : '';
+  console.log('filtre nom', filterName)
+
 
   return (
     <Dropdown placement="bottom-start">
@@ -42,8 +55,9 @@ const UserProfilePanel = ({ user }: Props) => {
           <Link href="/user/properties">Mes Annonces</Link>
         </DropdownItem>
         <DropdownItem>
-          {/* Ajout du lien vers la page "Mes recherches sauvegardées" */}
-          <Link href="/user/search">Mes recherches</Link>
+          {!hasFilter && (
+            <Link href="/user/search">{filterName}</Link>
+          )}
         </DropdownItem>
         <DropdownItem key="logout" color="danger">
           <LogoutLink>Se Déconnecter</LogoutLink>
