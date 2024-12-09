@@ -30,36 +30,14 @@ const Search = ({ token }: SearchProps) => {
   const [openModal, setOpenModal] = useState(false); // ajout
   const handleModalOpen = useModalOpen(); // ajout
   const selectFilters = useFilterDatas();
+
+  const [isNameModalOpen, setIsNameModalOpen] = useState(false); // État pour le second modal
+  const [filterName, setFilterName] = useState(""); // État pour le nom saisi
+
   const [searchQuery, setSearchQuery] = useState(
     searchParams.get("query") ?? ""
   );
 
-  //Riv
-  const saveSearch = () => {
-    const savedFilters = selectFilters.map((filter) => {
-      if (filter.type === "slider") {
-        return {
-          name: filter.name,
-          type: filter.type,
-          range: filter.range || [],
-        };
-      } else {
-        return {
-          name: filter.name,
-          type: filter.type,
-          value: filter.value || "",
-        };
-      }
-    });
-
-    // Sauvegarder dans LocalStorage (ou une API backend)
-    const previousSearches = JSON.parse(localStorage.getItem("savedSearches") || "[]");
-    localStorage.setItem("savedSearches", JSON.stringify([...previousSearches, savedFilters]));
-
-    // Notifier l'utilisateur
-    alert("Votre recherche a été enregistrée !");
-
-  }
 
   const getSavedSearches = () => {
     const savedSearches = localStorage.getItem("savedSearches");
@@ -165,7 +143,7 @@ const Search = ({ token }: SearchProps) => {
   };
 
 
-  const saveSearchTest = async () => {
+  const saveSearch = async () => {
     try {
       // Vérifier si le token est présent
       if (!token) {
@@ -206,7 +184,9 @@ const Search = ({ token }: SearchProps) => {
       // Préparer les données à envoyer
       const requestData = {
         userId: userId, // Utiliser l'ID de l'utilisateur récupéré depuis le token
-        name: "Filtre personnel",  // Vous pouvez demander à l'utilisateur d'entrer un nom
+
+        // name: "Filtre personnel",  // Vous pouvez demander à l'utilisateur d'entrer un nom
+        name: filterName,
         filters: savedFilters,  // Les filtres formatés
       };
       console.log('Request data', requestData)
@@ -265,9 +245,9 @@ const Search = ({ token }: SearchProps) => {
             > */}
             <div
               className="px-6 mt-8 overflow-y-auto overflow-x-hidden max-h-[calc(90vh-200px)] 
-  [&::-webkit-scrollbar]:hidden 
-  [-ms-overflow-style:none] 
-  [scrollbar-width:none]"
+              [&::-webkit-scrollbar]:hidden 
+              [-ms-overflow-style:none] 
+              [scrollbar-width:none]"
             >
 
               <div className="flex flex-col gap-4 justify-center items-center">
@@ -315,12 +295,50 @@ const Search = ({ token }: SearchProps) => {
               </button>
 
               {/* Bouton Save Search */}
+              {/* <button
+                onClick={saveSearch} // Appeler la fonction pour sauvegarder les filtres
+                className="px-4 py-2 bg-green-600 text-white rounded shadow-lg hover:bg-green-700 mb-4 md:mb-0 text-center mr-4"
+              >
+                Enregistrer
+              </button> */}
               <button
-                onClick={saveSearchTest} // Appeler la fonction pour sauvegarder les filtres
+                onClick={() => setIsNameModalOpen(true)} // Ouvrir le second modal
                 className="px-4 py-2 bg-green-600 text-white rounded shadow-lg hover:bg-green-700 mb-4 md:mb-0 text-center mr-4"
               >
                 Enregistrer
               </button>
+
+              {isNameModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-end mb-60 justify-center bg-black/50 backdrop-blur-sm">
+                  <div className="bg-white rounded-lg p-6 w-96">
+                    <h2 className="text-lg font-semibold mb-4">Nommer votre filtre</h2>
+                    <input
+                      type="text"
+                      value={filterName}
+                      onChange={(e) => setFilterName(e.target.value)}
+                      placeholder="Entrez un nom"
+                      className="w-full p-2 border rounded mb-4"
+                    />
+                    <div className="flex justify-end space-x-4">
+                      <button
+                        onClick={() => setIsNameModalOpen(false)}
+                        className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                      >
+                        Annuler
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsNameModalOpen(false); // Fermer le modal
+                          saveSearch(); // Sauvegarder les filtres
+                        }}
+                        className="px-4 py-2 bg-green-600 text-white rounded shadow-lg hover:bg-green-700"
+                      >
+                        Confirmer
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Bouton Effacer les filtres */}
               <button

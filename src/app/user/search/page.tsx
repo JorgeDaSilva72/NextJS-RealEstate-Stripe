@@ -326,7 +326,7 @@ const SavedSearchesPage = async ({ searchParams }: Props) => {
         totalPropertiesPromise,
     ]);
 
-    // console.log('properties test', properties)
+    console.log('properties test', properties)
     // console.log('savesearch test', savedSearch)
 
     const totalPages = Math.floor(totalProperties / PAGE_SIZE + 1);
