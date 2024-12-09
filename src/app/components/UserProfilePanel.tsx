@@ -19,7 +19,7 @@ interface Props {
   filter: SavedSearch[]
 }
 const UserProfilePanel = ({ user, filter }: Props) => {
-  const [hasFilter, setHasFilter] = useState(false);
+  const [hasFilter, setHasFilter] = useState(true);
 
   useEffect(() => {
     // Si le nom du filtre existe, on met à jour l'état en `true`
@@ -47,22 +47,34 @@ const UserProfilePanel = ({ user, filter }: Props) => {
           name={`${user.firstName} ${user.lastName}`}
         />
       </DropdownTrigger>
-      <DropdownMenu aria-label="User Actions" variant="flat">
-        <DropdownItem>
-          <Link href="/user/profile">Mon Profil</Link>
-        </DropdownItem>
-        <DropdownItem>
-          <Link href="/user/properties">Mes Annonces</Link>
-        </DropdownItem>
-        <DropdownItem>
-          {!hasFilter && (
+      {hasFilter ? (
+        <DropdownMenu aria-label="User Actions" variant="flat">
+          <DropdownItem>
+            <Link href="/user/profile">Mon Profil</Link>
+          </DropdownItem>
+          <DropdownItem>
+            <Link href="/user/properties">Mes Annonces</Link>
+          </DropdownItem>
+          <DropdownItem>
             <Link href="/user/search">{filterName}</Link>
-          )}
-        </DropdownItem>
-        <DropdownItem key="logout" color="danger">
-          <LogoutLink>Se Déconnecter</LogoutLink>
-        </DropdownItem>
-      </DropdownMenu>
+          </DropdownItem>
+          <DropdownItem key="logout" color="danger">
+            <LogoutLink>Se Déconnecter</LogoutLink>
+          </DropdownItem>
+        </DropdownMenu>
+      ) :
+        <DropdownMenu aria-label="User Actions" variant="flat">
+          <DropdownItem>
+            <Link href="/user/profile">Mon Profil</Link>
+          </DropdownItem>
+          <DropdownItem>
+            <Link href="/user/properties">Mes Annonces</Link>
+          </DropdownItem>
+          <DropdownItem key="logout" color="danger">
+            <LogoutLink>Se Déconnecter</LogoutLink>
+          </DropdownItem>
+        </DropdownMenu>
+      }
     </Dropdown>
   );
 };

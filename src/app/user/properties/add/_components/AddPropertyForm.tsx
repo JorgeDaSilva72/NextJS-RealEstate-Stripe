@@ -208,8 +208,7 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
                 newImages.length > (props.planDetails?.photosPerAd || Infinity)
               ) {
                 toast.error(
-                  `Vous avez dépassé la limite de ${
-                    props.planDetails?.photosPerAd || "Illimité"
+                  `Vous avez dépassé la limite de ${props.planDetails?.photosPerAd || "Illimité"
                   } photos.`
                 );
                 return;
@@ -226,8 +225,7 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
                 newVideos.length > (props.planDetails?.shortVideosPerAd || 0)
               ) {
                 toast.error(
-                  `Vous avez dépassé la limite de ${
-                    props.planDetails?.shortVideosPerAd || "0"
+                  `Vous avez dépassé la limite de ${props.planDetails?.shortVideosPerAd || "0"
                   } vidéo.`
                 );
                 return;
