@@ -31,6 +31,7 @@ import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
+
 const steps = [
   {
     label: "Basique",
@@ -112,7 +113,8 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
   const { user } = useKindeBrowserClient();
 
   const onSubmit: SubmitHandler<AddPropertyInputType> = async (data) => {
-    console.log("data from addPropertyInputType:", { data });
+    // console.log("data from addPropertyInputType:", { data });
+    // console.log("Formulaire bien ajouté par Rivah");
     const imageUrls = await uploadImages(images);
 
     try {
@@ -149,8 +151,11 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
         toast.success("Annonce modifiée!");
       } else {
         await saveProperty(data, imageUrls, videos, user?.id!); //ajout
+        // const emailSend = 'rravoniainarivah@gmail.com';
+        // await sendEmail(emailSend);
 
         toast.success("Annonce ajoutée !");
+
       }
     } catch (error) {
       console.error({ error });

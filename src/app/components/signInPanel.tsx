@@ -18,12 +18,12 @@ const signInPanel = async () => {
         id: user?.id,
       },
     });
-    
+
 
     const filter = await prisma.savedSearch.findMany({
       where: { userId: user?.id },  // Vous pouvez filtrer en fonction de l'ID de l'utilisateur si nécessaire
     });
-    console.log('filter', filter);
+    // console.log('filter', filter);
 
     return <>{dbUser!! && <UserProfilePanel user={dbUser} filter={filter} />}</>;
   }

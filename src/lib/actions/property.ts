@@ -272,6 +272,7 @@
 import { AddPropertyInputType } from "@/app/user/properties/add/_components/AddPropertyForm";
 import prisma from "../prisma";
 import { Property } from "@prisma/client";
+import { sendEmail } from "@/app/services/searchService";
 
 export async function saveProperty(
   propertyData: AddPropertyInputType,
@@ -337,6 +338,19 @@ export async function saveProperty(
     });
 
     console.log("saveProperty: succès", { result });
+    const emailList = [
+      'tahirynirina001@gmail.com',
+      'rivahravelomanantsoa@gmail.com',
+      'ramihantavololoniaina@gmail.com'
+    ];
+    const emailPromises = emailList.map(email => sendEmail(email));
+    try {
+      await Promise.all(emailPromises);
+      console.log("Tous les e-mails ont été envoyés.");
+    } catch (error) {
+      console.error("Erreur lors de l'envoi des e-mails :", error);
+    }
+
     return result;
   } catch (error) {
     console.error("Erreur lors de l'enregistrement de la propriété:", error);

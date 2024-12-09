@@ -59,7 +59,7 @@ export async function POST(req: Request) {
             return acc;
         }, {});
 
-        console.log('filterMap', filterMap)
+        // console.log('filterMap', filterMap)
         // Ajouter queryStatus et queryType aux filtres si elles sont valides
         filterMap['queryStatus'] = queryStatusInt;
         filterMap['queryType'] = queryTypeInt;
