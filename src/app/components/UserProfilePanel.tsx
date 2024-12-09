@@ -10,11 +10,17 @@ import {
 import { User as PrismaUser } from "@prisma/client";
 import Link from "next/link";
 import React from "react";
+// import { getUserIdFromToken } from '@/app/components/savedSearch';
+
 
 interface Props {
   user: PrismaUser;
 }
 const UserProfilePanel = ({ user }: Props) => {
+
+  // const userId = await getUserIdFromToken();
+  // console.log('get id', userId)
+
   return (
     <Dropdown placement="bottom-start">
       <DropdownTrigger>

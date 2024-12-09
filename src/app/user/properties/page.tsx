@@ -12,6 +12,7 @@ interface Props {
 const PropertiesPage = async ({ searchParams }: Props) => {
   const { getUser } = await getKindeServerSession();
   const user = await getUser();
+  console.log('user', user)
 
 
   const pagenum = searchParams.pagenum ?? 1;
