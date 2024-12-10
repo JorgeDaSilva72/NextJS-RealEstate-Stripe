@@ -3,7 +3,7 @@ import AboutSVG from "../assets/svg/AboutSVG";
 import HomeSVG from "../assets/svg/HomeSVG";
 import ContactSVG from "../assets/svg/ContactSVG";
 
-type NavBarsType = {
+export type NavBarsType = {
   url: string;
   name: string;
   svg: React.ReactNode;

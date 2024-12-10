@@ -202,16 +202,8 @@ export async function checkFileExists(storage: "propertyImages" | "avatars", nam
     .from(storage)
     .download(name);
 
-  if (error) {
-    if (error.message.includes('The resource was not found')) {
-      console.log('Le fichier n’existe pas.');
-      return false;
-    }
-    console.error('Erreur lors de la vérification du fichier :', error);
-    throw error;
-  }
+  if (error) return false;
 
-  console.log('Le fichier existe.');
   return true;
 }
 
