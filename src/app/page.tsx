@@ -268,7 +268,8 @@ const Hero = () => {
 
         {/* Content */}
         <div className="relative z-10 text-center text-white px-6 w-[80%] max-w-3xl flex flex-col items-center justify-center">
-          <h1 className="tracking-[1px] h-[300px] leading-tight mb-4 text-[55px] md:text-[60px] font-extrabold sm:leading-normal sm:h-auto sm:tracking-[5px] w-full">
+          {/* <h1 className="tracking-[1px] h-[300px] leading-tight mb-4 text-[55px] md:text-[60px] font-extrabold sm:leading-normal sm:h-auto sm:tracking-[5px] w-full"> */}
+          <h1 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight mb-4 font-extrabold tracking-wide">
             Trouvez la propriété de vos rêves
           </h1>
           <p className="hidden lg:block text-lg md:text-xl mb-8 w-[60%] font-medium whitespace-pre-line">
@@ -287,6 +288,7 @@ const Hero = () => {
             /> */}
             <button
               onClick={handleSearch}
+              aria-label="Explorer les propriétés"
               className="text-[18px] tracking-[1px] flex items-center justify-center gap-[10px] w-full sm:w-auto bg-transparent/50 lg:bg-primary-500 text-white py-2 px-3 rounded-md font-semibold hover:bg-primary-600 transition"
             >
               <span>Explorer</span>
