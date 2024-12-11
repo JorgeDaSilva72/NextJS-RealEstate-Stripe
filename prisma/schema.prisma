@@ -4,12 +4,13 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 //Developement
 
-// datasource db {
-//   provider = "sqlite"
-//   url      = env("DATABASE_URL")
-// }
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
 
 // PRODUCTION avec Postgres DB IN VERCEL 
 // datasource db {
@@ -19,13 +20,12 @@ generator client {
 // }
 // PRODUCTION avec Postgres DB IN NEON
 
-
-datasource db {
-  provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
-  //uncomment next line if you use Prisma <5.10
-  // directUrl = env("DATABASE_URL_UNPOOLED")
-}
+// datasource db {
+//   provider  = "postgresql"
+//   url  	    = env("DATABASE_URL")
+//   //uncomment next line if you use Prisma <5.10
+//   // directUrl = env("DATABASE_URL_UNPOOLED")
+// }
 
 model User {
   id            String          @id
@@ -36,7 +36,6 @@ model User {
   createdAt     DateTime        @default(now())
   Property      Property[]
   subscriptions Subscriptions[]
-
 }
 
 model Property {
@@ -53,20 +52,20 @@ model Property {
   location    PropertyLocation?
   feature     PropertyFeature?
   images      PropertyImage[]
-  videos      PropertyVideo[]   // Nouvelle relation pour les vidéos
+  videos      PropertyVideo[] // Nouvelle relation pour les vidéos
   contact     Contact?
-  createdAt   DateTime @default(now()) // Nouvelle colonne
+  createdAt   DateTime          @default(now()) // Nouvelle colonne
 }
 
 model PropertyType {
   id       Int        @id @default(autoincrement())
-  value    String @unique
+  value    String     @unique
   Property Property[]
 }
 
 model PropertyStatus {
   id       Int        @id @default(autoincrement())
-  value    String @unique
+  value    String     @unique
   Property Property[]
 }
 
@@ -103,13 +102,12 @@ model PropertyImage {
 }
 
 model PropertyVideo {
-  id          Int      @id @default(autoincrement())
-  url         String   // Lien YouTube de la vidéo
-  propertyId  Int      // Référence à la propriété associée
-  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now()) // Date d'ajout
+  id         Int      @id @default(autoincrement())
+  url        String // Lien YouTube de la vidéo
+  propertyId Int // Référence à la propriété associée
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now()) // Date d'ajout
 }
-
 
 model Contact {
   id         Int      @id @default(autoincrement())
@@ -121,22 +119,22 @@ model Contact {
 }
 
 model SubscriptionPlan {
-  id                    Int             @id @default(autoincrement())
-  namePlan              String
-  price                 Float // Prix en euros
-  duration           String   @default("AN")// Durée, ex: "AN" ou"Mois"
-  country            String   // Pays concerné
-  startDate          DateTime // Date de début
-  endDate            DateTime // Date de fin
-  premiumAds         Int      // Nombre d'annonces premium incluses
-  photosPerAd        Int      // Nombre de photos par annonce
-  shortVideosPerAd   Int      // Nombre de vidéos courtes par annonce
+  id                   Int             @id @default(autoincrement())
+  namePlan             String
+  price                Float // Prix en euros
+  duration             String          @default("AN") // Durée, ex: "AN" ou"Mois"
+  country              String // Pays concerné
+  startDate            DateTime // Date de début
+  endDate              DateTime // Date de fin
+  premiumAds           Int // Nombre d'annonces premium incluses
+  photosPerAd          Int // Nombre de photos par annonce
+  shortVideosPerAd     Int // Nombre de vidéos courtes par annonce
   youtubeVideoDuration String // Durée des vidéos YouTube
-  zoneRadius         Int      // Zone de couverture (en km)
-  features              String
-  createdAt          DateTime @default(now()) // Date de création du plan
-  updatedAt          DateTime @updatedAt // Dernière mise à jour
-  subscriptions         Subscriptions[]
+  zoneRadius           Int // Zone de couverture (en km)
+  features             String
+  createdAt            DateTime        @default(now()) // Date de création du plan
+  updatedAt            DateTime        @updatedAt // Dernière mise à jour
+  subscriptions        Subscriptions[]
 }
 
 model Subscriptions {
@@ -145,7 +143,7 @@ model Subscriptions {
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
   startDate DateTime
-  endDate DateTime
+  endDate   DateTime
   plan      SubscriptionPlan @relation(fields: [palnId], references: [id])
   palnId    Int
   userId    String
