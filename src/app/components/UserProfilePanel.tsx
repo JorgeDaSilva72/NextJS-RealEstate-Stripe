@@ -91,7 +91,7 @@ const UserProfilePanel = ({ user }: Props) => {
           <div key={index}>
             {option.url === "/logout" ? (
               <LogoutLink
-                className={`${optionClassName} hover:bg-red-600 text-white`}
+                className={`${optionClassName} hover:bg-red-600`}
                 // onClick={handleLinkClick} // Ferme le menu au clic sur Déconnexion
               >
                 {option.svg}
@@ -112,7 +112,7 @@ const UserProfilePanel = ({ user }: Props) => {
                 {option.svg}
                 <span>
                   {option.url == "/user/profile"
-                    ? `${user.lastName[0].toUpperCase()} ${user.firstName}`
+                    ? ` ${user.firstName} ${user.lastName[0].toUpperCase()} `
                     : option.name}
                 </span>
               </Link>
