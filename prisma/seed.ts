@@ -4,6 +4,21 @@ const prisma = new PrismaClient();
 
 const plans = [
   {
+    namePlan: "Gratuit",
+    price: 0,
+    duration: "AN",
+    country: "",
+    startDate: new Date("2024-12-01"),
+    endDate: new Date("2025-01-31"),
+    premiumAds: 3,
+    photosPerAd: 3,
+    shortVideosPerAd: 0,
+    youtubeVideoDuration: "",
+    zoneRadius: 0,
+    features:
+      "Visibilité normale, 3 annonces, 3 photos/annonce, pas de vidéos",
+  },
+  {
     namePlan: "Bronze",
     price: 150,
     duration: "AN",
