@@ -444,8 +444,8 @@ const PurchasePlan = ({
 
   //Vérification des clés d'environnement
   if (
-    !process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
-    !process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
+    (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
+    !process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID) && plan.namePlan.toLowerCase() != "gratuit"
   ) {
     console.error(
       "Les clés d'environnement Stripe ou PayPal sont manquantes !"

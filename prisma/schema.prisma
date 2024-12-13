@@ -37,6 +37,9 @@ model User {
   Property      Property[]
   subscriptions Subscriptions[]
 
+  // Relation avec les rendez-vous
+  appointments  Appointment[]
+
 }
 
 model Property {
@@ -56,6 +59,25 @@ model Property {
   videos      PropertyVideo[]   // Nouvelle relation pour les vidéos
   contact     Contact?
   createdAt   DateTime @default(now()) // Nouvelle colonne
+
+  // Relation avec les rendez-vous
+  appointments Appointment[]
+}
+
+model Appointment {
+  id          Int       @id @default(autoincrement())
+  start       DateTime  // Heure de début du rendez-vous
+  end         DateTime  // Heure de fin du rendez-vous
+  title       String    @default("Visite de l'immobilier")// Optionnel : Description du rendez-vous
+  createdAt   DateTime  @default(now())
+
+  // Relation avec User
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+
+  // Relation avec Property
+  propertyId  Int
+  property    Property   @relation(fields: [propertyId], references: [id])
 }
 
 model PropertyType {

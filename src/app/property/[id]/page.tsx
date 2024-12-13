@@ -432,9 +432,10 @@ import ShareButtons from "@/app/components/ShareButtons";
 import { formatPrice } from "@/lib/formatPrice";
 import prisma from "@/lib/prisma";
 import { Card, Image } from "@nextui-org/react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
-interface Props {
+export interface Props {
   params: {
     id: string;
   };
@@ -551,6 +552,11 @@ const PropertyPage = async ({ params }: Props) => {
                   <span className="text-sm sm:text-sm ">{property.id}</span>
                 </p>
               </div>
+              <Link href={`/property/${property.id}/appointment`}
+                className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded shadow-lg hover:bg-indigo-700 mb-4 md:mb-0 text-center"
+              >
+                Prendre Rendez-Vous
+              </Link>
             </Card>
 
             {/* Partager */}
