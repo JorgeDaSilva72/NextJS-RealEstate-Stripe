@@ -619,54 +619,48 @@ const Features = (props: Props) => {
         min={0}
       />
 
-      <div className="flex flex-col md:flex-row items-center justify-around col-span-1 md:col-span-2 gap-2">
-        <div className="flex items-center">
-          <Controller
-            control={control}
-            name="propertyFeature.hasSwimmingPool"
-            render={({ field }) => (
-              <Checkbox
-                isSelected={field.value || false}
-                onChange={field.onChange}
-                className="mr-2"
-              >
-                Possède une piscine
-              </Checkbox>
-            )}
-          />
-        </div>
+      <div className="flex flex-col items-start gap-2  md:flex-row  justify-around  md:col-span-2 ">
+        <Controller
+          control={control}
+          name="propertyFeature.hasSwimmingPool"
+          render={({ field }) => (
+            <Checkbox
+              isSelected={field.value || false}
+              onChange={field.onChange}
+              className="mr-2"
+            >
+              Possède une piscine
+            </Checkbox>
+          )}
+        />
 
-        <div className="flex items-center">
-          <Controller
-            control={control}
-            name="propertyFeature.hasGardenYard"
-            render={({ field }) => (
-              <Checkbox
-                isSelected={field.value || false}
-                onChange={field.onChange}
-                className="mr-2"
-              >
-                Possède un jardin/une cour
-              </Checkbox>
-            )}
-          />
-        </div>
+        <Controller
+          control={control}
+          name="propertyFeature.hasGardenYard"
+          render={({ field }) => (
+            <Checkbox
+              isSelected={field.value || false}
+              onChange={field.onChange}
+              className="mr-2"
+            >
+              Possède un jardin/une cour
+            </Checkbox>
+          )}
+        />
 
-        <div className="flex items-center">
-          <Controller
-            control={control}
-            name="propertyFeature.hasBalcony"
-            render={({ field }) => (
-              <Checkbox
-                isSelected={field.value || false}
-                onChange={field.onChange}
-                className="mr-2"
-              >
-                Possède un balcon/terrasse
-              </Checkbox>
-            )}
-          />
-        </div>
+        <Controller
+          control={control}
+          name="propertyFeature.hasBalcony"
+          render={({ field }) => (
+            <Checkbox
+              isSelected={field.value || false}
+              onChange={field.onChange}
+              className="mr-2"
+            >
+              Possède un balcon/terrasse
+            </Checkbox>
+          )}
+        />
       </div>
 
       <div className="flex flex-col md:flex-row justify-center col-span-1 md:col-span-2 gap-3 mt-4">
