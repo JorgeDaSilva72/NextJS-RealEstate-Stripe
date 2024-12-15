@@ -156,7 +156,9 @@ const UserProfilePanel = ({ user }: Props) => {
                 {option.svg}
                 <span>
                   {option.url == "/user/profile"
-                    ? ` ${user.firstName} ${user.lastName[0].toUpperCase()} `
+                    ? `${user?.firstName || ""} ${
+                        user?.lastName?.[0]?.toUpperCase() || ""
+                      }`
                     : option.name}
                 </span>
               </Link>
