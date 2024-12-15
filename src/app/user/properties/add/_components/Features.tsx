@@ -343,10 +343,191 @@
 
 // JhnRavelo fixer le bug de la suppression de l'image
 
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
-import { Button, Card, Checkbox, Input, cn } from "@nextui-org/react";
+// import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
+// import { Button, Card, Checkbox, Input, cn } from "@nextui-org/react";
+// import React from "react";
+// import { Controller, useFormContext } from "react-hook-form";
+// import { AddPropertyInputType } from "./AddPropertyForm";
+
+// interface Props {
+//   next: () => void;
+//   prev: () => void;
+//   className?: string;
+// }
+
+// const Features = (props: Props) => {
+//   const {
+//     register,
+//     formState: { errors },
+//     control,
+//     trigger,
+//     getValues,
+//   } = useFormContext<AddPropertyInputType>();
+
+//   const handleNext = async () => {
+//     if (
+//       await trigger([
+//         "propertyFeature.area",
+//         "propertyFeature.bathrooms",
+//         "propertyFeature.bedrooms",
+//         "propertyFeature.parkingSpots",
+//       ])
+//     ) {
+//       props.next();
+//     }
+//   };
+
+//   return (
+//     <Card
+//       className={cn(
+//         "p-2 grid grid-cols-1 md:grid-cols-2 gap-3",
+//         props.className
+//       )}
+//     >
+//       <Input
+//         {...register("propertyFeature.bedrooms", {
+//           setValueAs: (v: any) => v.toString(),
+//         })}
+//         type="number"
+//         errorMessage={errors.propertyFeature?.bedrooms?.message}
+//         isInvalid={!!errors.propertyFeature?.bedrooms}
+//         label="Chambre(s)"
+//         // labelPlacement="outside"
+//         startContent={
+//           <div className="pointer-events-none flex items-center">
+//             <span className="text-default-400 text-small">🛏️</span>
+//           </div>
+//         }
+//         defaultValue={getValues().propertyFeature?.bedrooms?.toString() || ""}
+//       />
+
+//       <Input
+//         {...register("propertyFeature.bathrooms", {
+//           setValueAs: (v: any) => v.toString(),
+//         })}
+//         type="number"
+//         errorMessage={errors.propertyFeature?.bathrooms?.message}
+//         isInvalid={!!errors.propertyFeature?.bathrooms}
+//         label="Salle(s) de bain"
+//         startContent={
+//           <div className="pointer-events-none flex items-center">
+//             <span className="text-default-400 text-small">🚿</span>
+//           </div>
+//         }
+//         defaultValue={getValues().propertyFeature?.bathrooms?.toString()}
+//       />
+
+//       <Input
+//         {...register("propertyFeature.parkingSpots", {
+//           setValueAs: (v: any) => v.toString(),
+//         })}
+//         type="number"
+//         errorMessage={errors.propertyFeature?.parkingSpots?.message}
+//         isInvalid={!!errors.propertyFeature?.parkingSpots}
+//         label="Place(s) de stationnement"
+//         startContent={
+//           <div className="pointer-events-none flex items-center">
+//             <span className="text-default-400 text-small">🚗</span>
+//           </div>
+//         }
+//         defaultValue={getValues().propertyFeature?.parkingSpots?.toString()}
+//       />
+
+//       <Input
+//         {...register("propertyFeature.area", {
+//           setValueAs: (v: any) => v.toString(),
+//         })}
+//         type="number"
+//         errorMessage={errors.propertyFeature?.area?.message}
+//         isInvalid={!!errors.propertyFeature?.area}
+//         label="Surface habitable en m²"
+//         startContent={
+//           <div className="pointer-events-none flex items-center">
+//             <span className="text-default-400 text-small">📏</span>
+//           </div>
+//         }
+//         defaultValue={getValues().propertyFeature?.area?.toString()}
+//       />
+
+//       <div className="flex flex-col md:flex-row items-center justify-around col-span-1 md:col-span-2 gap-2">
+//         <div className="flex items-center">
+//           <Controller
+//             control={control}
+//             name="propertyFeature.hasSwimmingPool"
+//             render={({ field }) => (
+//               <Checkbox
+//                 isSelected={field.value || false}
+//                 onChange={field.onChange}
+//                 className="mr-2"
+//               >
+//                 Possède une piscine
+//               </Checkbox>
+//             )}
+//           />
+//         </div>
+
+//         <div className="flex items-center">
+//           <Controller
+//             control={control}
+//             name="propertyFeature.hasGardenYard"
+//             render={({ field }) => (
+//               <Checkbox
+//                 isSelected={field.value || false}
+//                 onChange={field.onChange}
+//                 className="mr-2"
+//               >
+//                 Possède un jardin/une cour
+//               </Checkbox>
+//             )}
+//           />
+//         </div>
+
+//         <div className="flex items-center">
+//           <Controller
+//             control={control}
+//             name="propertyFeature.hasBalcony"
+//             render={({ field }) => (
+//               <Checkbox
+//                 isSelected={field.value || false}
+//                 onChange={field.onChange}
+//                 className="mr-2"
+//               >
+//                 Possède un balcon/terrasse
+//               </Checkbox>
+//             )}
+//           />
+//         </div>
+//       </div>
+
+//       <div className="flex flex-col md:flex-row justify-center col-span-1 md:col-span-2 gap-3 mt-4">
+//         <Button
+//           onClick={props.prev}
+//           startContent={<ChevronLeftIcon className="w-6" />}
+//           color="primary"
+//           className="w-full md:w-36"
+//         >
+//           Précédent
+//         </Button>
+//         <Button
+//           onClick={handleNext}
+//           endContent={<ChevronRightIcon className="w-6" />}
+//           color="primary"
+//           className="w-full md:w-36"
+//         >
+//           Suivant
+//         </Button>
+//       </div>
+//     </Card>
+//   );
+// };
+
+// export default Features;
+
 import React from "react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
+import { Button, Card, Checkbox, cn } from "@nextui-org/react";
 import { Controller, useFormContext } from "react-hook-form";
+import NumberInput from "./NumberInput"; // Assurez-vous que le chemin est correct
 import { AddPropertyInputType } from "./AddPropertyForm";
 
 interface Props {
@@ -362,6 +543,7 @@ const Features = (props: Props) => {
     control,
     trigger,
     getValues,
+    setValue,
   } = useFormContext<AddPropertyInputType>();
 
   const handleNext = async () => {
@@ -384,69 +566,57 @@ const Features = (props: Props) => {
         props.className
       )}
     >
-      <Input
-        {...register("propertyFeature.bedrooms", {
-          setValueAs: (v: any) => v.toString(),
-        })}
-        type="number"
+      <NumberInput
+        label="Chambre(s)"
+        // value={getValues().propertyFeature?.bedrooms || 0}
+        value={getValues("propertyFeature.bedrooms") || 0}
+        onChange={(value) => {
+          setValue("propertyFeature.bedrooms", value, {
+            shouldValidate: true,
+          });
+        }}
         errorMessage={errors.propertyFeature?.bedrooms?.message}
         isInvalid={!!errors.propertyFeature?.bedrooms}
-        label="Chambre(s)"
-        // labelPlacement="outside"
-        startContent={
-          <div className="pointer-events-none flex items-center">
-            <span className="text-default-400 text-small">🛏️</span>
-          </div>
-        }
-        defaultValue={getValues().propertyFeature?.bedrooms?.toString() || ""}
+        min={0}
       />
 
-      <Input
-        {...register("propertyFeature.bathrooms", {
-          setValueAs: (v: any) => v.toString(),
-        })}
-        type="number"
+      <NumberInput
+        label="Salle(s) de bain"
+        value={getValues().propertyFeature?.bathrooms || 0}
+        onChange={(value) =>
+          setValue("propertyFeature.bathrooms", value, {
+            shouldValidate: true,
+          })
+        }
         errorMessage={errors.propertyFeature?.bathrooms?.message}
         isInvalid={!!errors.propertyFeature?.bathrooms}
-        label="Salle(s) de bain"
-        startContent={
-          <div className="pointer-events-none flex items-center">
-            <span className="text-default-400 text-small">🚿</span>
-          </div>
-        }
-        defaultValue={getValues().propertyFeature?.bathrooms?.toString()}
+        min={0}
       />
 
-      <Input
-        {...register("propertyFeature.parkingSpots", {
-          setValueAs: (v: any) => v.toString(),
-        })}
-        type="number"
+      <NumberInput
+        label="Place(s) de stationnement"
+        value={getValues().propertyFeature?.parkingSpots || 0}
+        onChange={(value) =>
+          setValue("propertyFeature.parkingSpots", value, {
+            shouldValidate: true,
+          })
+        }
         errorMessage={errors.propertyFeature?.parkingSpots?.message}
         isInvalid={!!errors.propertyFeature?.parkingSpots}
-        label="Place(s) de stationnement"
-        startContent={
-          <div className="pointer-events-none flex items-center">
-            <span className="text-default-400 text-small">🚗</span>
-          </div>
-        }
-        defaultValue={getValues().propertyFeature?.parkingSpots?.toString()}
+        min={0}
       />
 
-      <Input
-        {...register("propertyFeature.area", {
-          setValueAs: (v: any) => v.toString(),
-        })}
-        type="number"
+      <NumberInput
+        label="Surface habitable en m²"
+        value={getValues().propertyFeature?.area || 0}
+        onChange={(value) =>
+          setValue("propertyFeature.area", value, {
+            shouldValidate: true,
+          })
+        }
         errorMessage={errors.propertyFeature?.area?.message}
         isInvalid={!!errors.propertyFeature?.area}
-        label="Surface habitable en m²"
-        startContent={
-          <div className="pointer-events-none flex items-center">
-            <span className="text-default-400 text-small">📏</span>
-          </div>
-        }
-        defaultValue={getValues().propertyFeature?.area?.toString()}
+        min={0}
       />
 
       <div className="flex flex-col md:flex-row items-center justify-around col-span-1 md:col-span-2 gap-2">
