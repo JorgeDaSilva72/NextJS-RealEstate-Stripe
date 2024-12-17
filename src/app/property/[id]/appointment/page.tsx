@@ -81,15 +81,20 @@ const AppointmentPage = ({ params }: Props) => {
 
     //Verifier s'il y a pas de visite simultané, il dois avoir une difference de deux heures
     const checkVisits = events.map((event) => {
-      const diffStartInMs =
-        new Date(event.start).getTime() - new Date(value.start).getTime();
-      const diffStartInHours = diffStartInMs / (1000 * 60 * 60);
-      const diffEndInMs =
-        new Date(event.end).getTime() - new Date(value.end).getTime();
-      const diffEndInHours = diffEndInMs / (1000 * 60 * 60);
+      const twoHoursInMs = 2 * 60 * 60 * 1000; // 2 heures en millisecondes
+
+      const valueStart = new Date(value.start).getTime();
+      const valueEnd = new Date(value.end).getTime();
+      const eventStart = new Date(event.start).getTime();
+      const eventEnd = new Date(event.end).getTime();
+
+      // Vérifie s'il y a une séparation d'au moins 2 heures entre les intervalles
+      const isSeparated =
+        valueEnd + twoHoursInMs <= eventStart || // L'intervalle 'value' se termine 2h avant 'event'
+        eventEnd + twoHoursInMs <= valueStart;
       if (
-        (!eventUserId && ( diffEndInHours < 2 || diffStartInHours < 4)) ||
-        (eventUserId && eventUserId != user.id && ( diffEndInHours < 2 || diffStartInHours < 4))
+        (!eventUserId && !isSeparated) ||
+        (eventUserId && eventUserId != user.id && !isSeparated)
       ) {
         return false;
       }
@@ -97,9 +102,7 @@ const AppointmentPage = ({ params }: Props) => {
     });
 
     if (checkVisits.includes(false)) {
-      toast.error(
-        "Pas de visite simultané"
-      );
+      toast.error("Pas de visite simultané");
       return;
     }
     const results = await createAppointment({
