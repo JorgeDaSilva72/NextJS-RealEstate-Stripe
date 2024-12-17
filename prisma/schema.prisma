@@ -70,6 +70,7 @@ model Appointment {
   end         DateTime  // Heure de fin du rendez-vous
   title       String    @default("Visite de l'immobilier")// Optionnel : Description du rendez-vous
   createdAt   DateTime  @default(now())
+  state       String    @default("pending")
 
   // Relation avec User
   userId      String

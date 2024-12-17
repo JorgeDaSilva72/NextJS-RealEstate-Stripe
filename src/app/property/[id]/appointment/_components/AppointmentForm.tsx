@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+
 import { motion } from "framer-motion";
 import { AppointmentEvent } from "../page";
+import { appointmentValidationSchema } from "@/lib/validations/appointmentValidation";
+import { appointmentFormFields } from "@/app/data/appointments";
 
 export interface AppointmentValue {
   start: Date | string;
@@ -23,41 +25,18 @@ const AppointmentForm = ({
 }: AppointmentFormProps) => {
   const [isVisible, setIsVisible] = useState(true);
 
-  const validationSchema = Yup.object({
-    start: Yup.date().required("La date de début est obligatoire"),
-    end: Yup.date()
-      .required("La date de fin est obligatoire")
-      .min(
-        Yup.ref("start"),
-        "La date de fin doit être postérieure à la date de début"
-      )
-      .test(
-        "same-day",
-        "La date de fin doit être le même jour que la date de début.",
-        function (value) {
-          const { start } = this.parent;
-          if (!value || !start) return true;
-          return (
-            value.getFullYear() === start.getFullYear() &&
-            value.getMonth() === start.getMonth() &&
-            value.getDate() === start.getDate()
-          );
-        }
-      ),
-  });
-
   return (
     <motion.div
-      initial={{ x: "100%" }} 
-      animate={{ x: isVisible ? "0%" : "100%" }} 
-      exit={{ x: "100%" }} 
+      initial={{ x: "100%" }}
+      animate={{ x: isVisible ? "0%" : "100%" }}
+      exit={{ x: "100%" }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
       className="fixed top-0 right-0 h-full w-full sm:w-1/4 bg-white shadow-lg z-50 p-6"
     >
       <button
         onClick={() => {
           setIsVisible(false);
-          setTimeout(onClose, 500); 
+          setTimeout(onClose, 500);
         }}
         className="absolute text-2xl top-2 left-2 text-gray-500 hover:text-red-500"
       >
@@ -73,7 +52,7 @@ const AppointmentForm = ({
           end: initialData?.end || "",
           title: initialData?.title || "",
         }}
-        validationSchema={validationSchema}
+        validationSchema={appointmentValidationSchema}
         onSubmit={(values) => {
           onSubmit(values);
           onClose();
@@ -81,66 +60,37 @@ const AppointmentForm = ({
       >
         {({ isSubmitting }) => (
           <Form className="space-y-4">
-            <div>
-              <label
-                htmlFor="start"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Date de Début
-              </label>
-              <Field
-                type="datetime-local"
-                id="start"
-                name="start"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-              <ErrorMessage
-                name="start"
-                component="div"
-                className="text-sm text-red-500"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="end"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Date de Fin
-              </label>
-              <Field
-                type="datetime-local"
-                id="end"
-                name="end"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-              <ErrorMessage
-                name="end"
-                component="div"
-                className="text-sm text-red-500"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="title"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Description du Rendez-vous
-              </label>
-              <Field
-                as="textarea"
-                id="title"
-                name="title"
-                rows="3"
-                className="mt-1 block w-full h-[100px] p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-              <ErrorMessage
-                name="title"
-                component="div"
-                className="text-sm text-red-500"
-              />
-            </div>
+            {appointmentFormFields.map((field, index) => (
+              <div key={index}>
+                <label
+                  htmlFor={field.id}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  {field.label}
+                </label>
+                {field.type == "textarea" ? (
+                  <Field
+                    as={field.type}
+                    id={field.id}
+                    name={field.id}
+                    className={field.className}
+                    rows={field.rows}
+                  />
+                ) : (
+                  <Field
+                    type={field.type}
+                    id={field.id}
+                    name={field.id}
+                    className={field.className}
+                  />
+                )}
+                <ErrorMessage
+                  name={field.id}
+                  component="div"
+                  className="text-sm text-red-500"
+                />
+              </div>
+            ))}
 
             {/* Boutons */}
             <div className="flex justify-end space-x-4">

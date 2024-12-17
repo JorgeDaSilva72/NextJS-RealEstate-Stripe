@@ -1,10 +1,9 @@
 "use client";
 import PageTitle from "@/app/components/pageTitle";
-import React, { use, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Calendar as BigCalendar,
   momentLocalizer,
-  Event,
   Views,
   View,
 } from "react-big-calendar";
@@ -18,10 +17,14 @@ import useGetFormatDate from "@/app/hooks/useGetFormatDate";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { toast } from "react-toastify";
 import { Props } from "../page";
-import { createAppointment } from "@/lib/actions/appointment";
+import {
+  createAppointment,
+  getAppointmentsByProperty,
+} from "@/lib/actions/appointment";
 
 const localizer = momentLocalizer(moment);
 
+export type AppointmentState = "pending" | "accepted" | "refused";
 export interface AppointmentEvent {
   id?: number;
   title: string;
@@ -29,6 +32,7 @@ export interface AppointmentEvent {
   end: Date | string;
   userId: string;
   propertyId: number;
+  state?: AppointmentState;
 }
 
 export type EventItem = {
@@ -47,9 +51,17 @@ const AppointmentPage = ({ params }: Props) => {
   const [events, setEvents] = useState<AppointmentEvent[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [initialData, setInitialData] = useState<Partial<AppointmentEvent>>();
+  const [eventUserId, setEventUserId] = useState("");
   const formatDate = useGetFormatDate();
 
   const handleAdd = (start: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    today.setDate(today.getDate() + 1);
+    if (start < today) {
+      toast.error("Cette date est déjà passée");
+      return;
+    }
     setIsFormVisible(true);
     const startDate = formatDate(start);
     setInitialData((prev) => {
@@ -66,15 +78,54 @@ const AppointmentPage = ({ params }: Props) => {
       toast.error("Propriété non reconnue");
       return;
     }
-    await createAppointment({
+
+    //Verifier s'il y a pas de visite simultané, il dois avoir une difference de deux heures
+    const checkVisits = events.map((event) => {
+      const diffStartInMs =
+        new Date(event.start).getTime() - new Date(value.start).getTime();
+      const diffStartInHours = diffStartInMs / (1000 * 60 * 60);
+      const diffEndInMs =
+        new Date(event.end).getTime() - new Date(value.end).getTime();
+      const diffEndInHours = diffEndInMs / (1000 * 60 * 60);
+      if (
+        (!eventUserId && ( diffEndInHours < 2 || diffStartInHours < 4)) ||
+        (eventUserId && eventUserId != user.id && ( diffEndInHours < 2 || diffStartInHours < 4))
+      ) {
+        return false;
+      }
+      return true;
+    });
+
+    if (checkVisits.includes(false)) {
+      toast.error(
+        "Pas de visite simultané"
+      );
+      return;
+    }
+    const results = await createAppointment({
       userId: user.id,
       propertyId: parseInt(params.id),
-      end: value.end,
-      start: value.start,
-      title: value.title,
+      end: new Date(value.end).toISOString(),
+      start: new Date(value.start).toISOString(),
+      title: "Description : " + value.title,
     });
-    console.log("Value", user.id, params.id, value);
+    if (results.success) {
+      setEvents(results.data);
+      toast.success(results.message);
+    } else toast.error(results.message);
+
+    setEventUserId("");
+    setIsFormVisible(false);
   };
+
+  useEffect(() => {
+    (async () => {
+      const results = await getAppointmentsByProperty(parseInt(params.id));
+      if (results.success) setEvents(results.data);
+      else toast.error(results.message);
+    })();
+  }, [params.id]);
+
   return (
     <div className="bg-gray-50">
       <PageTitle
