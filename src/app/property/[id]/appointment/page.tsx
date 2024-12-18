@@ -20,11 +20,11 @@ import { Props } from "../page";
 import {
   createAppointment,
   getAppointmentsByProperty,
+  updateAppointment,
 } from "@/lib/actions/appointment";
 
 const localizer = momentLocalizer(moment);
 
-export type AppointmentState = "pending" | "accepted" | "refused";
 export interface AppointmentEvent {
   id?: number;
   title: string;
@@ -32,15 +32,8 @@ export interface AppointmentEvent {
   end: Date | string;
   userId: string;
   propertyId: number;
-  state?: AppointmentState;
+  state?: string;
 }
-
-export type EventItem = {
-  start: Date;
-  end: Date;
-  data?: { appointment?: AppointmentEvent };
-  isDraggable?: boolean;
-};
 
 const DndCalendar = withDragAndDrop<AppointmentEvent>(BigCalendar);
 
@@ -51,10 +44,10 @@ const AppointmentPage = ({ params }: Props) => {
   const [events, setEvents] = useState<AppointmentEvent[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [initialData, setInitialData] = useState<Partial<AppointmentEvent>>();
-  const [eventUserId, setEventUserId] = useState("");
   const formatDate = useGetFormatDate();
 
   const handleAdd = (start: Date) => {
+    setInitialData(undefined)
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     today.setDate(today.getDate() + 1);
@@ -68,8 +61,32 @@ const AppointmentPage = ({ params }: Props) => {
       return { ...prev, start: startDate };
     });
   };
+  const handleEdit = (event: AppointmentEvent) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    today.setDate(today.getDate() + 1);
+    if (event.start < today) {
+      toast.error("Trop tard pour modifier");
+      return;
+    }
+    if (event.userId != user?.id) {
+      toast.error("Erreur vous ne pouvez pas modifier ce rendez-vous")
+      return;
+    }
+    const startDate = formatDate(new Date(event.start));
+    const endDate = formatDate(new Date(event.end));
+    setInitialData({ ...event, start: startDate, end: endDate });
+    setIsFormVisible(true);
+  }
   const handleClose = () => setIsFormVisible(false);
   const handleSubmit = async (value: AppointmentValue) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    today.setDate(today.getDate() + 1);
+    if (value.start < today) {
+      toast.error("Cette date est déjà passée");
+      return;
+    }
     if (!user?.id) {
       toast.error("Utilisateur non authentifié");
       return;
@@ -78,34 +95,42 @@ const AppointmentPage = ({ params }: Props) => {
       toast.error("Propriété non reconnue");
       return;
     }
-
+    if (initialData?.state != "pending") {
+      toast.error("Le rendez-vous ne peut plus être modifier")
+      return;
+    }
     //Verifier s'il y a pas de visite simultané, il dois avoir une difference de deux heures
-    const checkVisits = events.map((event) => {
-      const twoHoursInMs = 2 * 60 * 60 * 1000; // 2 heures en millisecondes
-
-      const valueStart = new Date(value.start).getTime();
-      const valueEnd = new Date(value.end).getTime();
-      const eventStart = new Date(event.start).getTime();
-      const eventEnd = new Date(event.end).getTime();
-
-      // Vérifie s'il y a une séparation d'au moins 2 heures entre les intervalles
-      const isSeparated =
-        valueEnd + twoHoursInMs <= eventStart || // L'intervalle 'value' se termine 2h avant 'event'
-        eventEnd + twoHoursInMs <= valueStart;
-      if (
-        (!eventUserId && !isSeparated) ||
-        (eventUserId && eventUserId != user.id && !isSeparated)
-      ) {
-        return false;
-      }
-      return true;
-    });
+    const checkVisits = events
+      .filter((event) => event.id != initialData.id)
+      .map((event) => {
+        const twoHoursInMs = 2 * 60 * 60 * 1000; // 2 heures en millisecondes
+        const valueStart = new Date(value.start).getTime();
+        const valueEnd = new Date(value.end).getTime();
+        const eventStart = new Date(event.start).getTime();
+        const eventEnd = new Date(event.end).getTime();
+        // Vérifie s'il y a une séparation d'au moins 2 heures entre les intervalles
+        const isSeparated =
+          valueEnd + twoHoursInMs <= eventStart || // L'intervalle 'value' se termine 2h avant 'event'
+          eventEnd + twoHoursInMs <= valueStart;
+        if (!isSeparated) return false;
+        return true;
+      });
 
     if (checkVisits.includes(false)) {
       toast.error("Pas de visite simultané");
       return;
     }
-    const results = await createAppointment({
+    let results;
+
+    if (initialData && initialData.id) {
+      results = await updateAppointment({
+        id: initialData.id,
+        userId: user.id,
+        propertyId: parseInt(params.id),
+        end: new Date(value.end).toISOString(),
+        start: new Date(value.start).toISOString(),
+        title: "Description : " + value.title.replace("Description : ", ""),})
+    }else results = await createAppointment({
       userId: user.id,
       propertyId: parseInt(params.id),
       end: new Date(value.end).toISOString(),
@@ -117,7 +142,7 @@ const AppointmentPage = ({ params }: Props) => {
       toast.success(results.message);
     } else toast.error(results.message);
 
-    setEventUserId("");
+    setInitialData(undefined);
     setIsFormVisible(false);
   };
 
@@ -139,9 +164,7 @@ const AppointmentPage = ({ params }: Props) => {
       <div className="p-5 h-[80vh]">
         <DndCalendar
           localizer={localizer}
-          onSelectEvent={({ id, userId, propertyId }) =>
-            console.log("START", id, userId, propertyId)
-          }
+          onSelectEvent={(event) => handleEdit(event)}
           onSelectSlot={({ start }) => handleAdd(start)}
           events={events}
           views={[Views.MONTH, Views.WEEK, Views.DAY]}
@@ -149,7 +172,7 @@ const AppointmentPage = ({ params }: Props) => {
           view={view}
           date={date}
           onView={(view) => setView(view)}
-          draggableAccessor={(event) => true}
+          // draggableAccessor={(event) => true}
           onNavigate={(date) => {
             setDate(new Date(date));
           }}
