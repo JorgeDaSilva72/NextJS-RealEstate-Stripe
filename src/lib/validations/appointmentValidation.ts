@@ -5,7 +5,7 @@ export const appointmentValidationSchema = Yup.object({
     .required("La date de début est obligatoire")
     .test("today", "La date de début est déjà passé", function (value) {
       const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      today.setHours(23, 59, 59, 59);
       return value >= today;
     }),
   end: Yup.date()

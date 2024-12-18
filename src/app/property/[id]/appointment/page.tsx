@@ -19,9 +19,11 @@ import { toast } from "react-toastify";
 import { Props } from "../page";
 import {
   createAppointment,
+  deleteAppointment,
   getAppointmentsByProperty,
   updateAppointment,
 } from "@/lib/actions/appointment";
+import ModalDelete from "@/app/components/ModalDelete";
 
 const localizer = momentLocalizer(moment);
 
@@ -43,11 +45,12 @@ const AppointmentPage = ({ params }: Props) => {
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState<AppointmentEvent[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [initialData, setInitialData] = useState<Partial<AppointmentEvent>>();
   const formatDate = useGetFormatDate();
 
   const handleAdd = (start: Date) => {
-    setInitialData(undefined)
+    setInitialData(undefined);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     today.setDate(today.getDate() + 1);
@@ -62,23 +65,19 @@ const AppointmentPage = ({ params }: Props) => {
     });
   };
   const handleEdit = (event: AppointmentEvent) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    today.setDate(today.getDate() + 1);
-    if (event.start < today) {
-      toast.error("Trop tard pour modifier");
-      return;
-    }
     if (event.userId != user?.id) {
-      toast.error("Erreur vous ne pouvez pas modifier ce rendez-vous")
+      toast.error("Erreur vous ne pouvez pas modifier ce rendez-vous");
       return;
     }
     const startDate = formatDate(new Date(event.start));
     const endDate = formatDate(new Date(event.end));
     setInitialData({ ...event, start: startDate, end: endDate });
     setIsFormVisible(true);
-  }
-  const handleClose = () => setIsFormVisible(false);
+  };
+  const handleClose = () => {
+    setInitialData(undefined);
+    setIsFormVisible(false);
+  };
   const handleSubmit = async (value: AppointmentValue) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -96,7 +95,7 @@ const AppointmentPage = ({ params }: Props) => {
       return;
     }
     if (initialData?.state != "pending") {
-      toast.error("Le rendez-vous ne peut plus être modifier")
+      toast.error("Le rendez-vous ne peut plus être modifier");
       return;
     }
     //Verifier s'il y a pas de visite simultané, il dois avoir une difference de deux heures
@@ -129,19 +128,35 @@ const AppointmentPage = ({ params }: Props) => {
         propertyId: parseInt(params.id),
         end: new Date(value.end).toISOString(),
         start: new Date(value.start).toISOString(),
-        title: "Description : " + value.title.replace("Description : ", ""),})
-    }else results = await createAppointment({
-      userId: user.id,
-      propertyId: parseInt(params.id),
-      end: new Date(value.end).toISOString(),
-      start: new Date(value.start).toISOString(),
-      title: "Description : " + value.title,
-    });
+        title: "Description : " + value.title.replace("Description : ", ""),
+      });
+    } else
+      results = await createAppointment({
+        userId: user.id,
+        propertyId: parseInt(params.id),
+        end: new Date(value.end).toISOString(),
+        start: new Date(value.start).toISOString(),
+        title: "Description : " + value.title,
+      });
     if (results.success) {
       setEvents(results.data);
       toast.success(results.message);
     } else toast.error(results.message);
 
+    setInitialData(undefined);
+    setIsFormVisible(false);
+  };
+  const handleDelete = async () => {
+    if (!initialData?.id) {
+      toast.error("Erreur identifiant");
+      return;
+    }
+    const result = await deleteAppointment(initialData.id, parseInt(params.id));
+    if (result.success) {
+      setEvents(result.data)
+      toast.success(result.message);
+    } else toast.error(result.message);
+    setIsModalOpen(false);
     setInitialData(undefined);
     setIsFormVisible(false);
   };
@@ -172,7 +187,6 @@ const AppointmentPage = ({ params }: Props) => {
           view={view}
           date={date}
           onView={(view) => setView(view)}
-          // draggableAccessor={(event) => true}
           onNavigate={(date) => {
             setDate(new Date(date));
           }}
@@ -184,8 +198,15 @@ const AppointmentPage = ({ params }: Props) => {
           onClose={handleClose}
           onSubmit={handleSubmit}
           initialData={initialData}
+          onDelete={() => setIsModalOpen(true)}
         />
       )}
+      <ModalDelete
+        isOpen={isModalOpen}
+        handleCancel={() => setIsModalOpen(false)}
+        slug="le rendez-vous"
+        handleDelete={handleDelete}
+      />
     </div>
   );
 };

@@ -78,6 +78,7 @@ import {
 
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import ModalDelete from "@/app/components/ModalDelete";
 
 interface Props {
   params: { id: string };
@@ -113,22 +114,12 @@ const ModalDeletePropertyPage = ({ params }: Props) => {
     setIsOpen(false);
   };
   return (
-    <Modal isOpen={isOpen} onOpenChange={handleCancel}>
-      <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">
-          Supprimer l&apos;annonce
-        </ModalHeader>
-        <ModalBody>
-          <p>Êtes-vous sûr de supprimer l&apos;annonce ?</p>
-        </ModalBody>
-        <ModalFooter>
-          <Button onClick={handleCancel}>Annuler</Button>
-          <Button onClick={handldeDelete} color="danger" variant="light">
-            Supprimer
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+    <ModalDelete
+      handleCancel={handleCancel}
+      handleDelete={handldeDelete}
+      isOpen={isOpen}
+      slug="l'annonce"
+    />
   );
 };
 

@@ -16,12 +16,14 @@ interface AppointmentFormProps {
   onClose: () => void;
   onSubmit: (data: AppointmentValue) => void;
   initialData?: Partial<AppointmentEvent>;
+  onDelete: () => void;
 }
 
 const AppointmentForm = ({
   onClose,
   onSubmit,
   initialData,
+  onDelete,
 }: AppointmentFormProps) => {
   const [isVisible, setIsVisible] = useState(true);
 
@@ -96,6 +98,7 @@ const AppointmentForm = ({
             <div className="flex justify-end space-x-4">
               {initialData?.id && (
                 <button
+                  onClick={() => onDelete()}
                   type="button"
                   className="bg-red-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-red-600"
                 >

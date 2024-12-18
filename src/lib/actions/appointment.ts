@@ -119,6 +119,40 @@ export const updateAppointment = async (appointment: AppointmentEvent) => {
   }
 };
 
+export const deleteAppointment = async (id: number, propertyId: number) => {
+  try {
+    const deletedAppointment = await prisma.appointment.findUnique({
+      where: { id },
+    });
+    if (!deletedAppointment) {
+      console.error("Erreur données non trouvés");
+      return {
+        success: false,
+        message: "Erreur données non trouvés",
+        data: [],
+      };
+    }
+    await prisma.appointment.delete({ where: { id } });
+    console.log("Suppression du rendez-vous réussie");
+    const allAppointmentsByProperty = await getAppointmentsByProperty(
+      propertyId
+    );
+    return {
+      ...allAppointmentsByProperty,
+      message: allAppointmentsByProperty.success
+        ? "Rendez-vous supprimé"
+        : "Erreur lors de l'annulation du rendez-vous",
+    };
+  } catch (error) {
+    console.error("Erreur lors de l'annulation du rendez-vous");
+    return {
+      success: false,
+      message: "Erreur lors de l'annulation du rendez-vous",
+      data: [],
+    };
+  }
+};
+
 export const getAppointmentsByProperty = async (propertyId: number) => {
   try {
     const allAppointmentsByProperty = await prisma.appointment.findMany({
