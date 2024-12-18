@@ -57,6 +57,68 @@ export const createAppointment = async (appointment: AppointmentEvent) => {
   }
 };
 
+export const updateAppointment = async (appointment: AppointmentEvent) => {
+  if (!appointment?.id) {
+    console.error("Erreur données envoyé manquant");
+    return {
+      success: false,
+      message: "Erreur données envoyé manquant",
+      data: [],
+    };
+  }
+
+  try {
+    const updatedAppointment = await prisma.appointment.findUnique({
+      where: { id: appointment.id },
+    });
+    if (!updatedAppointment) {
+      console.error("Erreur rendez-vous non trouvé");
+      return {
+        success: false,
+        message: "Erreur rendez-vous non trouvé",
+        data: [],
+      };
+    }
+    if (updatedAppointment.state != "pending") {
+      console.error("Erreur le rendez-vous ne peut plus être modifier");
+      return {
+        success: false,
+        message: "Le rendez-vous ne peut plus être modifier",
+        data: [],
+      };
+    }
+    if (updatedAppointment.userId != appointment.userId) {
+      console.error("Erreur vous ne pouvez pas modifier ce rendez-vous");
+      return {
+        success: false,
+        message: "Erreur vous ne pouvez pas modifier ce rendez-vous",
+        data: [],
+      };
+    }
+    const result = await prisma.appointment.update({
+      where: { id: appointment.id },
+      data: { ...appointment },
+    });
+    console.log("Modification rendez-vous réussie : ", { result });
+    const allAppointmentsByProperty = await getAppointmentsByProperty(
+      appointment.propertyId
+    );
+    return {
+      ...allAppointmentsByProperty,
+      message: allAppointmentsByProperty.success
+        ? "Rendez-vous modifié"
+        : "Erreur lors de modification du rendez-vous",
+    };
+  } catch (error) {
+    console.error("Erreur lors de la modification : ", error);
+    return {
+      success: false,
+      message: "Erreur lors de la modification",
+      data: [],
+    };
+  }
+};
+
 export const getAppointmentsByProperty = async (propertyId: number) => {
   try {
     const allAppointmentsByProperty = await prisma.appointment.findMany({
