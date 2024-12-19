@@ -3,7 +3,7 @@ import * as Yup from "yup";
 export const appointmentValidationSchema = Yup.object({
   start: Yup.date()
     .required("La date de début est obligatoire")
-    .test("today", "La date de début est déjà passé", function (value) {
+    .test("today", "Nous vous prions de bien vouloir prendre rendez-vous au moins un jour à l'avance", function (value) {
       const today = new Date();
       today.setHours(23, 59, 59, 59);
       return value >= today;

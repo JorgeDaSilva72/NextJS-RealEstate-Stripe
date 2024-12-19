@@ -132,6 +132,20 @@ export const deleteAppointment = async (id: number, propertyId: number) => {
         data: [],
       };
     }
+    const date = new Date();
+    if (
+      deletedAppointment.start > date &&
+      deletedAppointment.state != "pending"
+    ) {
+      console.error(
+        "Erreur vous n'avez plus le droit d'annuler le rendez-vous"
+      );
+      return {
+        success: false,
+        message: "Erreur vous n'avez plus le droit d'annuler le rendez-vous",
+        data: [],
+      };
+    }
     await prisma.appointment.delete({ where: { id } });
     console.log("Suppression du rendez-vous réussie");
     const allAppointmentsByProperty = await getAppointmentsByProperty(
@@ -140,7 +154,7 @@ export const deleteAppointment = async (id: number, propertyId: number) => {
     return {
       ...allAppointmentsByProperty,
       message: allAppointmentsByProperty.success
-        ? "Rendez-vous supprimé"
+        ? "Rendez-vous annulé avec succès"
         : "Erreur lors de l'annulation du rendez-vous",
     };
   } catch (error) {

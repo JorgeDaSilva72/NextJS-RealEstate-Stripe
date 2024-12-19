@@ -55,7 +55,7 @@ const AppointmentPage = ({ params }: Props) => {
     today.setHours(0, 0, 0, 0);
     today.setDate(today.getDate() + 1);
     if (start < today) {
-      toast.error("Cette date est déjà passée");
+      toast.error("Nous vous prions de bien vouloir prendre rendez-vous au moins un jour à l'avance");
       return;
     }
     setIsFormVisible(true);
@@ -83,7 +83,7 @@ const AppointmentPage = ({ params }: Props) => {
     today.setHours(0, 0, 0, 0);
     today.setDate(today.getDate() + 1);
     if (value.start < today) {
-      toast.error("Cette date est déjà passée");
+      toast.error("Nous vous prions de bien vouloir prendre rendez-vous au moins un jour à l'avance");
       return;
     }
     if (!user?.id) {
@@ -150,6 +150,9 @@ const AppointmentPage = ({ params }: Props) => {
     if (!initialData?.id) {
       toast.error("Erreur identifiant");
       return;
+    }
+    if (initialData.userId != user?.id) {
+      toast.error("Erreur vous ne pouvez pas annuler ce rendez-vous")
     }
     const result = await deleteAppointment(initialData.id, parseInt(params.id));
     if (result.success) {
