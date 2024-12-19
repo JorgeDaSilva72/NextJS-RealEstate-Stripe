@@ -94,13 +94,13 @@ const AppointmentPage = ({ params }: Props) => {
       toast.error("Propriété non reconnue");
       return;
     }
-    if (initialData?.state != "pending") {
+    if (initialData && initialData?.state && initialData.state !== "pending") {
       toast.error("Le rendez-vous ne peut plus être modifier");
       return;
     }
     //Verifier s'il y a pas de visite simultané, il dois avoir une difference de deux heures
     const checkVisits = events
-      .filter((event) => event.id != initialData.id)
+      .filter((event) => event.id != initialData?.id)
       .map((event) => {
         const twoHoursInMs = 2 * 60 * 60 * 1000; // 2 heures en millisecondes
         const valueStart = new Date(value.start).getTime();
@@ -151,7 +151,7 @@ const AppointmentPage = ({ params }: Props) => {
       toast.error("Erreur identifiant");
       return;
     }
-    if (initialData.userId != user?.id) {
+    if (initialData.userId !== user?.id) {
       toast.error("Erreur vous ne pouvez pas annuler ce rendez-vous")
     }
     const result = await deleteAppointment(initialData.id, parseInt(params.id));
@@ -175,7 +175,7 @@ const AppointmentPage = ({ params }: Props) => {
   return (
     <div className="bg-gray-50">
       <PageTitle
-        title="Calendrier de Rendez-Vous"
+        title="Rendez-Vous"
         href="/result"
         linkCaption="Retour aux annonces"
       />
