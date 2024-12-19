@@ -169,6 +169,18 @@ export const deleteAppointment = async (id: number, propertyId: number) => {
 
 export const getAppointmentsByProperty = async (propertyId: number) => {
   try {
+    //Supprimer les rendez-vous qui sont déjà passer
+    const yesterday = new Date();
+    yesterday.setHours(59, 59, 59, 999);
+    yesterday.setDate(yesterday.getDate() - 1);
+    await prisma.appointment.deleteMany({
+      where: {
+        start: {
+          lt: yesterday,
+        },
+      },
+    });
+
     const allAppointmentsByProperty = await prisma.appointment.findMany({
       where: { propertyId },
     });
