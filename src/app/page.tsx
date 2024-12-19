@@ -271,14 +271,15 @@ const Hero = () => {
         <ImagesSlider
           className="h-full w-full object-cover"
           direction="down"
-          overlay={true}
-          autoplay={true}
+          overlay={false}
+          autoplay={false}
           overlayClassName=""
           images={images.map((img) => img.url)}
         />
       </div>
 
-      <div className="relative z-10 text-center text-white px-6 w-[80%] max-w-6xl flex flex-col items-center justify-center">
+      {/* <div className="relative z-10 text-center text-white px-6 w-[80%] max-w-6xl flex flex-col items-center justify-center"> */}
+      <div className="relative z-10 w-full text-center text-white px-6 flex flex-col items-center justify-center max-w-4xl bg-transparent backdrop-blur-sm rounded-lg p-4 ">
         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-tight mb-4 font-extrabold tracking-wide">
           Trouvez la propriété de vos rêves
         </h1>
