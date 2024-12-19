@@ -87,6 +87,12 @@ const UserProfilePanel = ({ user }: Props) => {
       ? "https://afriqueavenirimmobilier.com/"
       : "http://localhost:3000/";
 
+  const getName = (name: {firstName: string, lastName: string}) => {
+    const lastName = name.lastName.split(" ")[0].length > 15 ? name.lastName.split(" ")[0].slice(0, 13) + " ..." : name.lastName.split(" ")[0];
+    const firstName = name.firstName[0].toUpperCase() + ".";
+    return firstName + " " + lastName;
+  }
+
   return (
     <>
       <div
@@ -156,7 +162,7 @@ const UserProfilePanel = ({ user }: Props) => {
                 {option.svg}
                 <span>
                   {option.url == "/user/profile"
-                    ? ` ${user.firstName} ${user.lastName[0].toUpperCase()} `
+                    ? getName(user)
                     : option.name}
                 </span>
               </Link>
