@@ -4,7 +4,7 @@ import { Card, cn } from "@nextui-org/react";
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useCallback, useEffect, useState } from "react";
 
-export const ImagesSlider = ({
+const ImagesSlider = ({
   images,
   children,
   overlay = false,
@@ -168,3 +168,5 @@ export const ImagesSlider = ({
     </Card>
   );
 };
+
+export default ImagesSlider;

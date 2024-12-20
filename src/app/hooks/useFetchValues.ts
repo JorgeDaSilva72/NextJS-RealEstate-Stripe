@@ -19,3 +19,29 @@ const useFetchValues = () => {
 };
 
 export default useFetchValues;
+
+// todo A integrer - ransformez useFetchValues en une fonction générique qui retourne une promesse. Cela rendra la fonction compatible avec Promise.all et permettra de gérer différents types de données.
+// import { useCallback } from "react";
+
+// const useFetchValues = () => {
+//   return useCallback(
+//     async <T>(url: string, errorMessage: string): Promise<T> => {
+//       try {
+//         const response = await fetch(url);
+
+//         if (!response.ok) {
+//           throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+
+//         const data: T = await response.json();
+//         return data;
+//       } catch (error) {
+//         console.error(errorMessage, error);
+//         throw error; // Propagation de l'erreur si nécessaire
+//       }
+//     },
+//     []
+//   );
+// };
+
+// export default useFetchValues;
