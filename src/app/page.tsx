@@ -67,16 +67,12 @@ interface Image {
   url: string;
 }
 
-interface HeroProps {
-  className?: string;
-}
-
 const ImagesSlider = dynamic(() => import("./components/ImageSlider"), {
   ssr: false,
   loading: () => <div className="animate-pulse bg-gray-300 h-full w-full" />,
 });
 
-const Hero: React.FC<HeroProps> = ({ className }) => {
+const Hero: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const images: Image[] = [
@@ -97,8 +93,7 @@ const Hero: React.FC<HeroProps> = ({ className }) => {
       className={cn(
         "relative min-h-screen w-full flex items-center justify-center overflow-hidden",
         "transition-opacity duration-700 ease-in-out",
-        !isLoaded ? "opacity-0" : "opacity-100",
-        className
+        !isLoaded ? "opacity-0" : "opacity-100"
       )}
     >
       {/* Conteneur du slider */}
