@@ -64,11 +64,12 @@ const SubscriptionPage = async (): Promise<JSX.Element> => {
       </div>
     );
   } catch (error) {
+    console.log("PLAN ERROR", error)
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-red-500 text-lg font-bold">
           Une erreur est survenue : impossible de charger les plans
-          d&#39;abonnement.
+          d&#39;abonnement. 
         </p>
       </div>
     );

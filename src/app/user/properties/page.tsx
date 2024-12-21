@@ -21,6 +21,9 @@ const PropertiesPage = async ({ searchParams }: Props) => {
     include: {
       type: true,
       status: true,
+      appointments: {
+        where: {state: "pending"}
+      },
     },
     skip: (+pagenum - 1) * PAGE_SIZE,
     take: PAGE_SIZE,
@@ -38,8 +41,6 @@ const PropertiesPage = async ({ searchParams }: Props) => {
   ]);
 
   const totalPages = Math.floor(totalProperties / PAGE_SIZE + 1);
-
-  // console.log({ properties });
 
   return (
     <PropertiesTable
