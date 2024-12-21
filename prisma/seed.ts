@@ -1,3 +1,4 @@
+// executer : npm run seed
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -15,8 +16,7 @@ const plans = [
     shortVideosPerAd: 0,
     youtubeVideoDuration: "",
     zoneRadius: 0,
-    features:
-      "Visibilité normale, 3 annonces, 3 photos/annonce, pas de vidéos",
+    features: "Visibilité normale, 3 annonces, 3 photos/annonce, pas de vidéos",
   },
   {
     namePlan: "Bronze",

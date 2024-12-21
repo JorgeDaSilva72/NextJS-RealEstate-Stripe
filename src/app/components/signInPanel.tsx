@@ -244,40 +244,120 @@
 
 // export default signInPanel;
 
-import {
-  LoginLink,
-  RegisterLink,
-  getKindeServerSession,
-} from "@kinde-oss/kinde-auth-nextjs/server";
-import { Avatar, Button } from "@nextui-org/react";
-import React from "react";
-import UserProfilePanel from "./UserProfilePanel";
-import prisma from "@/lib/prisma";
+// import {
+//   LoginLink,
+//   RegisterLink,
+//   getKindeServerSession,
+// } from "@kinde-oss/kinde-auth-nextjs/server";
+// import { Avatar, Button } from "@nextui-org/react";
+// import React from "react";
+// import UserProfilePanel from "./UserProfilePanel";
+// import prisma from "@/lib/prisma";
+// import SigningAvatar from "./SigningAvatar";
+// import { toast } from "react-toastify";
+
+// const SignInPanel = async () => {
+//   // const { isAuthenticated, getUser } = await getKindeServerSession();
+
+//   // if (await isAuthenticated()) {
+//   //   const user = await getUser();
+//   //   const dbUser = await prisma.user.findUnique({
+//   //     where: {
+//   //       id: user?.id,
+//   //     },
+//   //   });
+//   //   console.log("Authenticated user:", dbUser);
+//   //   return (
+//   //     <div className="flex items-center gap-3">
+//   //       {dbUser && (
+//   //         <>
+//   //           <UserProfilePanel user={dbUser} />
+//   //         </>
+//   //       )}
+//   //     </div>
+//   //   );
+//   // }
+//   // console.log("User not authenticated, displaying SigningAvatar");
+//   // return <SigningAvatar />;
+//   try {
+//     const { isAuthenticated, getUser } = await getKindeServerSession();
+
+//     if (await isAuthenticated()) {
+//       const user = await getUser();
+//       console.log("User data:", user);
+//       console.log("Is authenticated:", isAuthenticated);
+//       const dbUser = await prisma.user.findUnique({
+//         where: {
+//           id: user?.id,
+//         },
+//       });
+//       console.log("Authenticated user:", dbUser);
+//       return (
+//         <div className="flex items-center gap-3">
+//           {dbUser && <UserProfilePanel user={dbUser} />}
+//         </div>
+//       );
+//     }
+//     console.log("User not authenticated, displaying SigningAvatar");
+//     return <SigningAvatar />;
+//   } catch (error) {
+//     console.error("Error during authentication check:", error);
+//     toast.error("Erreur lors du contrôle d'authentification");
+//   }
+// };
+
+// export default SignInPanel;
+
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import React, { Suspense } from "react";
+import { toast } from "react-toastify";
+import { AuthenticatedContent } from "./AuthenticatedContent";
+import { LoadingSpinner } from "./LoadingSpinner";
 import SigningAvatar from "./SigningAvatar";
+import { KindeUser } from "@/types/kinde";
 
 const SignInPanel = async () => {
-  const { isAuthenticated, getUser } = await getKindeServerSession();
+  try {
+    const { isAuthenticated, getUser } = await getKindeServerSession();
+    const authStatus = await isAuthenticated();
 
-  if (await isAuthenticated()) {
-    const user = await getUser();
-    const dbUser = await prisma.user.findUnique({
-      where: {
-        id: user?.id,
-      },
-    });
+    if (!authStatus) {
+      return <SigningAvatar />;
+    }
+
+    const user = (await getUser()) as KindeUser;
+    if (!user) {
+      console.error("Authentication status true but no user data", {
+        timestamp: new Date().toISOString(),
+        authStatus,
+      });
+      return <SigningAvatar />;
+    }
 
     return (
-      <div className="flex items-center gap-3">
-        {dbUser && (
-          <>
-            <UserProfilePanel user={dbUser} />
-          </>
-        )}
-      </div>
+      <Suspense fallback={<LoadingSpinner />}>
+        <AuthenticatedContent user={user} />
+      </Suspense>
     );
-  }
+  } catch (error) {
+    const err = error as Error;
+    console.error("Error during authentication check:", {
+      error: err.message,
+      stack: err.stack,
+      timestamp: new Date().toISOString(),
+    });
 
-  return <SigningAvatar />;
+    toast.error("Erreur lors du contrôle d'authentification", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+
+    return <SigningAvatar />;
+  }
 };
 
 export default SignInPanel;

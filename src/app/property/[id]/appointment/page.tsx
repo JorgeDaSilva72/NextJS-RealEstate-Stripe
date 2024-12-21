@@ -172,6 +172,8 @@ const AppointmentPage = ({ params }: Props) => {
     })();
   }, [params.id]);
 
+  console.log("Params:", params); // Débogage
+
   return (
     <div className="bg-gray-50">
       <PageTitle
