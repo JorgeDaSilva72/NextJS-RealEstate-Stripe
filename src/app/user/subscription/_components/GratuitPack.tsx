@@ -51,12 +51,13 @@ const GratuitPack: React.FC<GratuitPackProps> = ({
         {/* Liste des caractéristiques */}
         <ul className="mt-6 space-y-4 text-lg">
           <li className="flex items-center">
-            <span className="mr-2">💰</span> {premiumAds} annonces pour un
-            démarrage en douceur
+            {/* <span className="mr-2">💰</span> {premiumAds} annonces pour un
+            démarrage en douceur */}
+            <span className="mr-2">💰</span> Annonces illimitées
           </li>
           <li className="flex items-center">
-            <span className="mr-2">📸</span> {photosPerAd} photos
-            professionnelles par annonce
+            <span className="mr-2">📸</span> Limité à {photosPerAd} photos par
+            annonce
           </li>
           <li className="flex items-center">
             <span className="mr-2">📂</span> Espace dédié pour gérer vos

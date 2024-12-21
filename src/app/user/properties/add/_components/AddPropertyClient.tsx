@@ -69,7 +69,7 @@ const AddPropertyClient: React.FC<AddPropertyClientProps> = ({
       </Modal> */}
       <SubModal isOpen={isOpen} modalMessage={modalMessage} />
       <div>
-        {planDetails && (
+        {/* {planDetails && (
           <div className="mb-6 bg-gray-100 p-4 rounded shadow">
             <h3 className="font-semibold text-lg">
               Détails de votre abonnement
@@ -96,7 +96,7 @@ const AddPropertyClient: React.FC<AddPropertyClientProps> = ({
               </p>
             )}
           </div>
-        )}
+        )} */}
         <AddPropertyForm
           types={types}
           statuses={statuses}

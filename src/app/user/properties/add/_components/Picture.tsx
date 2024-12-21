@@ -563,6 +563,8 @@ import PictureCard from "./PictureCard";
 import { toast } from "react-toastify";
 import ButtonClose from "@/app/components/ButtonClose";
 
+import { PhotoIcon } from "@heroicons/react/24/outline";
+
 interface Props {
   next: () => void;
   prev: () => void;
@@ -704,9 +706,14 @@ const Picture = ({
         />
         <label
           htmlFor="image-upload"
-          className="cursor-pointer border border-dashed p-4 text-center rounded-lg hover:bg-gray-100"
+          className="cursor-pointer border border-dashed p-4 text-center rounded-lg hover:bg-gray-100 flex flex-col items-center"
         >
-          Cliquez pour sélectionner des images ou déposez-les ici
+          {/* Cliquez pour sélectionner des images ou déposez-les ici */}
+          <PhotoIcon className="w-8 h-8 text-gray-500" />
+
+          <span className="text-sm text-gray-500 mt-2">
+            Cliquer ici pour ajouter des images
+          </span>
         </label>
         {/* {error && <p className="text-red-500 mt-2">{error}</p>} */}
         {/* Affichage du Toast si une erreur existe */}
@@ -753,7 +760,7 @@ const Picture = ({
           Ajouter une vidéo YouTube
         </label>
         {/* {!isPremium ? ( */}
-        {false ? (
+        {!isPremium ? (
           <p className="text-gray-500 mt-2">
             <strong>Note :</strong> Seuls les utilisateurs avec le PACK ELITE
             DIAMANT peuvent ajouter une vidéo.

@@ -9,6 +9,7 @@ import { checkFileExists } from "@/lib/upload";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { userOptions } from "../data/userOptions";
+import { Avatar } from "@nextui-org/react";
 
 interface Props {
   user: PrismaUser;
@@ -101,13 +102,13 @@ const UserProfilePanel = ({ user }: Props) => {
           pathname == "/" ? "animate-shadowPulse" : "animate-shadowPulseBlue"
         }`}
       >
-        <Image
+        <Avatar
           // src={isAvatar && user.avatarUrl ? user.avatarUrl : "/user.png"}
-          src={user.avatarUrl || "/user.png"}
-          onError={(e) => (e.currentTarget.src = "/user.png")}
+          src={user?.avatarUrl && isAvatar ? user.avatarUrl  : "/user.png"}
+          // onError={(e) => (e.currentTarget.src = "/user.png")}
           alt="Image profil"
-          width={48}
-          height={48}
+          // width={40}
+          // height={40}
           className="w-full h-full object-cover rounded-full"
         />
       </div>
@@ -162,7 +163,10 @@ const UserProfilePanel = ({ user }: Props) => {
                 {option.svg}
                 <span>
                   {option.url == "/user/profile"
-                    ? getName(user)
+
+                    ? `${user?.firstName || ""} ${
+                        user?.lastName?.[0]?.toUpperCase() || ""
+                      }`
                     : option.name}
                 </span>
               </Link>

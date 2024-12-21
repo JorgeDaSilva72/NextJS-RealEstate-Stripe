@@ -132,10 +132,10 @@ export const saveFreeSubscription = async ({
   paymentId,
   startDate,
   endDate,
-  city,
+  // city,
 }: SubscriptionDataType) => {
   try {
-    if (!userId || !planId || !city)
+    if (!userId || !planId)
       return { success: false, message: "Données corrompu" };
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -154,19 +154,19 @@ export const saveFreeSubscription = async ({
         message: "Vous êtes déjà dans un abonnement payant",
       };
 
-    if (isUserInPacks && isUserInPacks?.includes(false))
-      return {
-        success: false,
-        message: "Vous avez déjà eu un abonnement gratuit",
-      };
-    const nbrUserFreeInCity = await numberOfSubInCity({ planId, city });
+    // if (isUserInPacks && isUserInPacks?.includes(false))
+    //   return {
+    //     success: false,
+    //     message: "Vous avez déjà eu un abonnement gratuit",
+    //   };
+    // const nbrUserFreeInCity = await numberOfSubInCity({ planId, city });
 
-    if (nbrUserFreeInCity >= 3)
-      return {
-        success: false,
-        message:
-          "La limite d'abonnement gratuit dans cette ville a été dépassé",
-      };
+    // if (nbrUserFreeInCity >= 3)
+    //   return {
+    //     success: false,
+    //     message:
+    //       "La limite d'abonnement gratuit dans cette ville a été dépassé",
+    //   };
 
     const result = await saveSubscription({
       paymentId,

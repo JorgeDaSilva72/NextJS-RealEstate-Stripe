@@ -404,7 +404,7 @@ import ModalCity from "./ModalCity";
 import useModalOpen from "@/app/hooks/useModalOpen";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { saveSubscription } from "@/lib/actions/subscription";
+import { saveFreeSubscription, saveSubscription } from "@/lib/actions/subscription";
 import { AnyNode } from "postcss";
 // import type { OnApproveData, OnApproveActions } from "@paypal/react-paypal-js";
 
@@ -430,8 +430,8 @@ const PurchasePlan = ({
   const [paymentProvider, setPaymentProvider] = useState<"paypal" | "stripe">(
     defaultPaymentProvider
   );
-  const [openModal, setOpenModal] = useState(false);
-  const handleModalOpen = useModalOpen();
+  // const [openModal, setOpenModal] = useState(false);
+  // const handleModalOpen = useModalOpen();
 
   const { user } = useKindeBrowserClient();
   const router = useRouter();
@@ -445,7 +445,9 @@ const PurchasePlan = ({
   //Vérification des clés d'environnement
   if (
     (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
+
     !process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID) && plan.namePlan.toLowerCase() != "gratuit"
+
   ) {
     console.error(
       "Les clés d'environnement Stripe ou PayPal sont manquantes !"
@@ -611,12 +613,31 @@ const PurchasePlan = ({
   if (plan.price === 0) {
     return (
       <>
-        {openModal && <ModalCity setOpenModal={setOpenModal} plan={plan} />}
+        {/* {openModal && <ModalCity setOpenModal={setOpenModal} plan={plan} />} */}
         <Button
           aria-label={`Essayez-le gratuitement! ${plan.namePlan}`}
           className="w-full text-gray-800 font-bold py-3 rounded-lg shadow-lg transition duration-300"
-          onClick={() => {
-            handleModalOpen(setOpenModal, "hidden", true);
+          onClick={async () => {
+            if (!user?.id) return;
+            const startDate = new Date();
+            // const startDate = new Date().toISOString();
+
+            // Date de fin de l'abonnement (par exemple, 12 mois après la date de début)
+            const endDate = new Date();
+            endDate.setMonth(endDate.getMonth() + 12);
+            const result = await saveFreeSubscription({
+              userId: user?.id,
+              planId: plan.id,
+              endDate,
+              startDate,
+              paymentId: "gratuit",
+            });
+
+            if (result.success) {
+              toast.success(result.message);
+              router.push("/user/profile");
+            } else toast.error(result.message);
+            // handleModalOpen(setOpenModal, "hidden", true);
           }}
         >
           Essayez-le gratuitement!
@@ -630,21 +651,19 @@ const PurchasePlan = ({
       <div className="flex items-center space-x-2 mb-2">
         <span className="text-white">Payer avec:</span>
         <button
-          className={`border-2 border-primary rounded-md px-4 py-2 transition-colors ${
-            paymentProvider === "paypal"
+          className={`border-2 border-primary rounded-md px-4 py-2 transition-colors ${paymentProvider === "paypal"
               ? "bg-primary text-white"
               : "hover:bg-primary/10"
-          }`}
+            }`}
           onClick={() => setPaymentProvider("paypal")}
         >
           PayPal
         </button>
         <button
-          className={`border-2 border-primary rounded-md px-4 py-2 transition-colors ${
-            paymentProvider === "stripe"
+          className={`border-2 border-primary rounded-md px-4 py-2 transition-colors ${paymentProvider === "stripe"
               ? "bg-primary text-white"
               : "hover:bg-primary/10"
-          }`}
+            }`}
           onClick={() => setPaymentProvider("stripe")}
         >
           Stripe
