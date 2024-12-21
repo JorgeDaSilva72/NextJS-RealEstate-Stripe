@@ -135,7 +135,7 @@ export const deleteAppointment = async (id: number, propertyId: number) => {
     const date = new Date();
     if (
       deletedAppointment.start > date &&
-      deletedAppointment.state != "pending"
+      deletedAppointment.state == "accepted"
     ) {
       console.error(
         "Erreur vous n'avez plus le droit d'annuler le rendez-vous"
@@ -170,19 +170,26 @@ export const deleteAppointment = async (id: number, propertyId: number) => {
 export const getAppointmentsByProperty = async (propertyId: number) => {
   try {
     //Supprimer les rendez-vous qui sont déjà passer
-    const yesterday = new Date();
-    yesterday.setHours(59, 59, 59, 999);
-    yesterday.setDate(yesterday.getDate() - 1);
+    const today = new Date();
     await prisma.appointment.deleteMany({
       where: {
         start: {
-          lt: yesterday,
+          lt: today,
         },
       },
     });
 
     const allAppointmentsByProperty = await prisma.appointment.findMany({
       where: { propertyId },
+      include: {
+        user: true,
+        property: {
+          include: {
+            user: true,
+            location: true,
+          },
+        },
+      },
     });
 
     return { success: true, data: allAppointmentsByProperty };
@@ -194,6 +201,34 @@ export const getAppointmentsByProperty = async (propertyId: number) => {
     return {
       success: false,
       message: "Erreur lors de la récupération du donnée des rendez-vous",
+      data: [],
+    };
+  }
+};
+
+export const changeAppointmentState = async (
+  id: number,
+  state: string,
+  propertyId: number
+) => {
+  try {
+    if (state == "accepted") {
+      await prisma.appointment.update({
+        where: { id },
+        data: { state: state },
+      });
+    } else {
+      await prisma.appointment.delete({ where: { id } });
+    }
+
+    const results = await getAppointmentsByProperty(propertyId);
+
+    return results;
+  } catch (error) {
+    console.error("Erreur lors du changement de state :", error);
+    return {
+      success: false,
+      message: "Erreur lors du changement de state",
       data: [],
     };
   }

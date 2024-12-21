@@ -1,0 +1,10 @@
+.option {
+  border-bottom: #248eec 2px solid;
+}
+
+.option.active {
+  border-left: #248eec 2px solid;
+  border-right: #248eec 2px solid;
+  border-top: #248eec 2px solid;
+  border-bottom: 0;
+}
