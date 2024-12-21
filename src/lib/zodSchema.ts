@@ -30,28 +30,56 @@ export const AddPropertyFormSchema = z.object({
     landmark: z.string(),
   }),
   propertyFeature: z.object({
+    // bedrooms: z
+    //   .string()
+    //   .regex(new RegExp("^[0-9]+$"), "Veuillez indiquer le nombre de chambres")
+    //   .transform((data: unknown) => Number(data)),
     bedrooms: z
-      .string()
-      .regex(new RegExp("^[0-9]+$"), "Veuillez indiquer le nombre de chambres")
-      .transform((data: unknown) => Number(data)),
+      .number({
+        invalid_type_error: "Veuillez indiquer le nombre de chambres",
+      })
+      .int()
+      .min(0, "Le nombre de chambres ne peut pas être négatif"),
+    // bathrooms: z
+    //   .string()
+    //   .regex(
+    //     new RegExp("^[0-9]+$"),
+    //     "Veuillez indiquer le nombre de salles de bains"
+    //   )
+    //   .transform((data: unknown) => Number(data)),
     bathrooms: z
-      .string()
-      .regex(
-        new RegExp("^[0-9]+$"),
-        "Veuillez indiquer le nombre de salles de bains"
-      )
-      .transform((data: unknown) => Number(data)),
+      .number({
+        invalid_type_error: "Veuillez indiquer le nombre de salles de bains",
+      })
+      .int()
+      .min(0, "Le nombre dealles de bains ne peut pas être négatif"),
+    // parkingSpots: z
+    //   .string()
+    //   .regex(
+    //     new RegExp("^[0-9]+$"),
+    //     "Veuillez indiquer le nombre de places de stationnement"
+    //   )
+    //   .transform((data: unknown) => Number(data)),
     parkingSpots: z
-      .string()
-      .regex(
-        new RegExp("^[0-9]+$"),
-        "Veuillez indiquer le nombre de places de stationnement"
-      )
-      .transform((data: unknown) => Number(data)),
+      .number({
+        invalid_type_error:
+          "Veuillez indiquer le nombre de places de stationnement",
+      })
+      .int()
+      .min(0, "Le nombre de places de stationnement ne peut pas être négatif"),
+
+    // area: z
+    //   .string()
+    //   .regex(new RegExp("^[0-9]+$"), "Veuillez indiquer la superficie en m²")
+    //   .transform((data: unknown) => Number(data)),
+
     area: z
-      .string()
-      .regex(new RegExp("^[0-9]+$"), "Veuillez indiquer la superficie en m²")
-      .transform((data: unknown) => Number(data)),
+      .number({
+        invalid_type_error: "Veuillez indiquer la superficie en m²",
+      })
+      .int()
+      .min(0, "La superficie ne peut pas être négatif"),
+
     hasSwimmingPool: z.boolean(),
     hasGardenYard: z.boolean(),
     hasBalcony: z.boolean(),
