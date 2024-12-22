@@ -29,7 +29,8 @@ const DiamondPack: React.FC<DiamondPackProps> = ({
   } = data;
 
   return (
-    <div className="bg-black text-white mx-auto p-6 rounded-2xl shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg h-full">
+    // <div className="bg-black text-white mx-auto p-6 rounded-2xl shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg h-full">
+    <div className="bg-black/90 text-white h-full rounded-2xl shadow-2xl w-full flex flex-col overflow-hidden p-6">
       {/* Titre */}
       <div>
         <h1 className="uppercase text-3xl sm:text-4xl text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-cyan-400 to-yellow-500 drop-shadow-[0_0_20px_rgba(255,255,255,1)] animate-glow">
@@ -57,7 +58,7 @@ const DiamondPack: React.FC<DiamondPackProps> = ({
         </p>
 
         {/* Liste des caractéristiques */}
-        <ul className="mt-6 space-y-3 text-xs sm:text-sm">
+        <ul className="flex-grow mt-6 space-y-3 text-xs sm:text-sm">
           <li>
             💎 <strong>Visibilité maximale et notoriété renforcée</strong>
           </li>

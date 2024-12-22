@@ -404,7 +404,10 @@ import ModalCity from "./ModalCity";
 import useModalOpen from "@/app/hooks/useModalOpen";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { saveFreeSubscription, saveSubscription } from "@/lib/actions/subscription";
+import {
+  saveFreeSubscription,
+  saveSubscription,
+} from "@/lib/actions/subscription";
 import { AnyNode } from "postcss";
 // import type { OnApproveData, OnApproveActions } from "@paypal/react-paypal-js";
 
@@ -445,9 +448,8 @@ const PurchasePlan = ({
   //Vérification des clés d'environnement
   if (
     (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
-
-    !process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID) && plan.namePlan.toLowerCase() != "gratuit"
-
+      !process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID) &&
+    plan.namePlan.toLowerCase() != "gratuit"
   ) {
     console.error(
       "Les clés d'environnement Stripe ou PayPal sont manquantes !"
@@ -649,21 +651,23 @@ const PurchasePlan = ({
   return (
     <div>
       <div className="flex items-center space-x-2 mb-2">
-        <span className="text-white">Payer avec:</span>
+        <span className="text-primary">Payer avec:</span>
         <button
-          className={`border-2 border-primary rounded-md px-4 py-2 transition-colors ${paymentProvider === "paypal"
+          className={`border-2 border-primary rounded-md px-4 py-2 transition-colors ${
+            paymentProvider === "paypal"
               ? "bg-primary text-white"
               : "hover:bg-primary/10"
-            }`}
+          }`}
           onClick={() => setPaymentProvider("paypal")}
         >
           PayPal
         </button>
         <button
-          className={`border-2 border-primary rounded-md px-4 py-2 transition-colors ${paymentProvider === "stripe"
+          className={`border-2 border-primary rounded-md px-4 py-2 transition-colors ${
+            paymentProvider === "stripe"
               ? "bg-primary text-white"
               : "hover:bg-primary/10"
-            }`}
+          }`}
           onClick={() => setPaymentProvider("stripe")}
         >
           Stripe
