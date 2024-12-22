@@ -648,53 +648,11 @@ import {
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { navigationItems } from "../data/navigationData";
 
 interface Props {
   children: ReactNode;
 }
-
-const navigationItems = [
-  {
-    label: "Acheter",
-    dropdownItems: [
-      {
-        key: "buy-apartment",
-        title: "Acheter appartement",
-        description: "Acheter le bien qui me ressemble",
-        href: "/buy",
-      },
-      {
-        key: "buy-house",
-        title: "Acheter maison",
-        description: "Trouvez la maison de vos rêves",
-        href: "/buy",
-      },
-    ],
-  },
-  {
-    label: "Louer",
-    dropdownItems: [
-      {
-        key: "rent-apartment",
-        title: "Louer appartement",
-        description: "Location d'appartements",
-        href: "/rent",
-      },
-      {
-        key: "rent-house",
-        title: "Louer maison",
-        description: "Location de maisons",
-        href: "/rent",
-      },
-      {
-        key: "furnished-rent",
-        title: "Louer un bien meublé",
-        description: "Location meublée",
-        href: "/furnished-rent",
-      },
-    ],
-  },
-];
 
 const Appbar = ({ children }: Props) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -751,8 +709,13 @@ const Appbar = ({ children }: Props) => {
     </Button>
   );
 
+  useEffect(() => {
+    setIsMenuOpen(false); // Fermer le menu lors d'un changement de route
+  }, [pathname]);
+
   return (
     <Navbar
+      isMenuOpen={isMenuOpen}
       className={`${navbarBackground}   top-0 left-0 right-0 h-16 transition-all duration-300 shadow-sm z-50`}
       onMenuOpenChange={setIsMenuOpen}
     >
@@ -760,6 +723,7 @@ const Appbar = ({ children }: Props) => {
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
           className="sm:hidden"
+          // onClick={() => setIsMenuOpen((prev) => !prev)} // Toggle de l'état
         />
         <NavbarBrand>
           <Link href="/" className="flex items-center gap-2">
@@ -823,6 +787,7 @@ const Appbar = ({ children }: Props) => {
                   key={dropdownItem.key}
                   href={dropdownItem.href}
                   className="text-foreground/70 hover:text-foreground pl-4"
+                  onClick={() => setIsMenuOpen(false)} // Fermer le menu
                 >
                   {dropdownItem.title}
                 </Link>
