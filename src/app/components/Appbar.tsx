@@ -711,11 +711,15 @@ const Appbar = ({ children }: Props) => {
   }, []);
 
   const isHomePage = pathname === "/";
+  // const navbarBackground = isHomePage
+  //   ? isScrolled
+  //     ? "bg-white/90 backdrop-blur-md"
+  //     : "bg-transparent"
+  //   : "bg-white";
+
   const navbarBackground = isHomePage
-    ? isScrolled
-      ? "bg-white/90 backdrop-blur-md"
-      : "bg-transparent"
-    : "bg-white";
+    ? "fixed bg-transparent backdrop-blur-md"
+    : "sticky bg-white";
 
   const textColor = isHomePage && !isScrolled ? "text-white" : "text-primary";
 
@@ -743,7 +747,7 @@ const Appbar = ({ children }: Props) => {
 
   return (
     <Navbar
-      className={`${navbarBackground} sticky  top-0 left-0 right-0 h-16 transition-all duration-300 shadow-sm z-50`}
+      className={`${navbarBackground}   top-0 left-0 right-0 h-16 transition-all duration-300 shadow-sm z-50`}
       onMenuOpenChange={setIsMenuOpen}
     >
       <NavbarContent className="flex items-center">
