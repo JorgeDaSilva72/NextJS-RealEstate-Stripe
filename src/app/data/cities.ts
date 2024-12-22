@@ -35,3 +35,48 @@ export const citiesOfMorocco = [
   { id: "Tiznit", value: "Tiznit" },
   { id: "Youssoufia", value: "Youssoufia" },
 ];
+
+export const topMoroccanCities = [
+  {
+    name: "Casablanca",
+    image: "/Maroc/Casablanca.jpg",
+    description: "La capitale économique du Maroc",
+    propertyCount: 450,
+    averagePrice: "1.5M - 5M MAD",
+  },
+  {
+    name: "Rabat",
+    image: "/Maroc/Rabat.jpg",
+    description: "La capitale administrative",
+    propertyCount: 320,
+    averagePrice: "1.2M - 4M MAD",
+  },
+  {
+    name: "Marrakech",
+    image: "/Maroc/Marrakech.jpg",
+    description: "La ville ocre",
+    propertyCount: 380,
+    averagePrice: "1M - 6M MAD",
+  },
+  {
+    name: "Tanger",
+    image: "/Maroc/Marrakech.jpg",
+    description: "La porte de l'Afrique",
+    propertyCount: 290,
+    averagePrice: "900K - 3.5M MAD",
+  },
+  {
+    name: "Agadir",
+    image: "/Maroc/Agadir.jpg",
+    description: "La perle du Sud",
+    propertyCount: 250,
+    averagePrice: "800K - 3M MAD",
+  },
+  {
+    name: "Fès",
+    image: "/Maroc/Fès.jpg",
+    description: "La capitale spirituelle",
+    propertyCount: 220,
+    averagePrice: "700K - 2.5M MAD",
+  },
+];
