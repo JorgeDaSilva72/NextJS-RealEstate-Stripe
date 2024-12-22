@@ -60,7 +60,7 @@ export const topMoroccanCities = [
   },
   {
     name: "Tanger",
-    image: "/Maroc/Marrakech.jpg",
+    image: "/Maroc/Tanger.jpg",
     description: "La porte de l'Afrique",
     propertyCount: 290,
     averagePrice: "900K - 3.5M MAD",
@@ -105,7 +105,7 @@ export const topMoroccanCitiesForRent = [
   },
   {
     name: "Tanger",
-    image: "/Maroc/Marrakech.jpg",
+    image: "/Maroc/Tanger.jpg",
     description: "La porte de l'Afrique",
     propertyCount: 480,
     averagePrice: "3500 - 10000 MAD/mois",
@@ -123,5 +123,56 @@ export const topMoroccanCitiesForRent = [
     description: "La capitale spirituelle",
     propertyCount: 380,
     averagePrice: "2500 - 8000 MAD/mois",
+  },
+];
+
+export const topMoroccanCitiesForFurnishedRental = [
+  {
+    name: "Casablanca",
+    image: "/Maroc/Casablanca.jpg",
+    description: "Appartements meublés haut standing",
+    propertyCount: 320,
+    averagePrice: "6000 - 20000 MAD/mois",
+    features: "Wifi, Smart TV, Électroménager complet",
+  },
+  {
+    name: "Rabat",
+    image: "/Maroc/Rabat.jpg",
+    description: "Résidences meublées modernes",
+    propertyCount: 280,
+    averagePrice: "5500 - 15000 MAD/mois",
+    features: "Sécurité 24/7, Parking, Climatisation",
+  },
+  {
+    name: "Marrakech",
+    image: "/Maroc/Marrakech.jpg",
+    description: "Riads meublés avec piscine",
+    propertyCount: 400,
+    averagePrice: "7000 - 25000 MAD/mois",
+    features: "Piscine, Jardin, Service de ménage",
+  },
+  {
+    name: "Tanger",
+    image: "/Maroc/Tanger.jpg",
+    description: "Villas meublées vue mer",
+    propertyCount: 180,
+    averagePrice: "8000 - 18000 MAD/mois",
+    features: "Vue mer, Terrasse, Mobilier design",
+  },
+  {
+    name: "Agadir",
+    image: "/Maroc/Agadir.jpg",
+    description: "Studios et appartements balnéaires",
+    propertyCount: 250,
+    averagePrice: "4500 - 12000 MAD/mois",
+    features: "Accès plage, Piscine commune, Wifi",
+  },
+  {
+    name: "Fès",
+    image: "/Maroc/Fès.jpg",
+    description: "Appartements meublés traditionnels",
+    propertyCount: 150,
+    averagePrice: "4000 - 10000 MAD/mois",
+    features: "Décoration traditionnelle, Terrasse",
   },
 ];

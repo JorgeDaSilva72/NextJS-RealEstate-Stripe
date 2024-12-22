@@ -686,6 +686,12 @@ const navigationItems = [
         description: "Location de maisons",
         href: "/rent",
       },
+      {
+        key: "furnished-rent",
+        title: "Louer un bien meublé",
+        description: "Location meublée",
+        href: "/furnished-rent",
+      },
     ],
   },
 ];

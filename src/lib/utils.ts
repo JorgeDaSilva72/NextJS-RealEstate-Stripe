@@ -4,7 +4,7 @@ export const capitalizeFirstLetter = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 };
 
-type QueryStatus = "Vente" | "Location";
+type QueryStatus = "Vente" | "Location" | "Location+meublée";
 // fonction pour construire l'URL
 export const buildUrl = (city: string, queryStatus: QueryStatus) => {
   const formattedCity = capitalizeFirstLetter(city);
