@@ -80,3 +80,48 @@ export const topMoroccanCities = [
     averagePrice: "700K - 2.5M MAD",
   },
 ];
+
+export const topMoroccanCitiesForRent = [
+  {
+    name: "Casablanca",
+    image: "/Maroc/Casablanca.jpg",
+    description: "La capitale économique du Maroc",
+    propertyCount: 750,
+    averagePrice: "5000 - 15000 MAD/mois",
+  },
+  {
+    name: "Rabat",
+    image: "/Maroc/Rabat.jpg",
+    description: "La capitale administrative",
+    propertyCount: 580,
+    averagePrice: "4500 - 12000 MAD/mois",
+  },
+  {
+    name: "Marrakech",
+    image: "/Maroc/Marrakech.jpg",
+    description: "La ville ocre",
+    propertyCount: 620,
+    averagePrice: "4000 - 20000 MAD/mois",
+  },
+  {
+    name: "Tanger",
+    image: "/Maroc/Marrakech.jpg",
+    description: "La porte de l'Afrique",
+    propertyCount: 480,
+    averagePrice: "3500 - 10000 MAD/mois",
+  },
+  {
+    name: "Agadir",
+    image: "/Maroc/Agadir.jpg",
+    description: "La perle du Sud",
+    propertyCount: 420,
+    averagePrice: "3000 - 9000 MAD/mois",
+  },
+  {
+    name: "Fès",
+    image: "/Maroc/Fès.jpg",
+    description: "La capitale spirituelle",
+    propertyCount: 380,
+    averagePrice: "2500 - 8000 MAD/mois",
+  },
+];
