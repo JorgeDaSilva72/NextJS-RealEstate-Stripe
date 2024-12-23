@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { topMoroccanCitiesForFurnishedRental } from "../data/cities";
 import { buildUrl } from "@/lib/utils";
+import SearchForm from "../components/SearchForm";
 
 const FurnishedRentPage = () => {
   return (
@@ -140,6 +141,25 @@ const FurnishedRentPage = () => {
               <p className="text-gray-600">Assistance 7j/7</p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Search Form */}
+      <div className="w-full max-w-7xl mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold mb-8 text-center">
+          Affinez votre recherche immobilière
+        </h2>
+        <div className="px-4">
+          <SearchForm
+            defaultValues={{
+              ville: "",
+              categorie: "",
+              budget: "",
+              chambres: "",
+            }}
+            defaultActiveTab="Location meublée"
+            backgroundColor="bg-black"
+          />
         </div>
       </div>
 

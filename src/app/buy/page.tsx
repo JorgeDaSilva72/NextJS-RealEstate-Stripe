@@ -5,7 +5,9 @@ import { Card, CardBody, CardFooter } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
 import { topMoroccanCities } from "../data/cities";
-import { buildUrl, capitalizeFirstLetter } from "@/lib/utils";
+import { buildUrl } from "@/lib/utils";
+import SearchForm from "../components/SearchForm";
+import { PropertyStatus, PropertyType } from "@prisma/client";
 
 const BuyPage = () => {
   return (
@@ -108,6 +110,25 @@ const BuyPage = () => {
               </Card>
             </Link>
           ))}
+        </div>
+      </div>
+
+      {/* Search Form */}
+      <div className="w-full max-w-7xl mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold mb-8 text-center">
+          Affinez votre recherche immobilière
+        </h2>
+        <div className="px-4">
+          <SearchForm
+            defaultValues={{
+              ville: "",
+              categorie: "Appartement",
+              budget: "",
+              chambres: "",
+            }}
+            defaultActiveTab="Vente"
+            backgroundColor="bg-black"
+          />
         </div>
       </div>
 

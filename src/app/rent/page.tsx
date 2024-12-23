@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { topMoroccanCitiesForRent } from "../data/cities";
 import { buildUrl, capitalizeFirstLetter } from "@/lib/utils";
+import SearchForm from "../components/SearchForm";
 
 const RentPage = () => {
   return (
@@ -102,6 +103,25 @@ const RentPage = () => {
               </Card>
             </Link>
           ))}
+        </div>
+      </div>
+
+      {/* Search Form */}
+      <div className="w-full max-w-7xl mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold mb-8 text-center">
+          Affinez votre recherche immobilière
+        </h2>
+        <div className="px-4">
+          <SearchForm
+            defaultValues={{
+              ville: "",
+              categorie: "Appartement",
+              budget: "",
+              chambres: "",
+            }}
+            defaultActiveTab="Location"
+            backgroundColor="bg-black"
+          />
         </div>
       </div>
 
