@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import SearchForm from "./components/SearchForm";
 import dynamic from "next/dynamic";
 import { cn } from "@nextui-org/theme";
+import Link from "next/link";
 
 interface Image {
   url: string;
@@ -94,7 +95,7 @@ const Hero: React.FC = () => {
           parfait où vivre
         </p>
 
-        {/* SearchForm avec animation */}
+        {/* SearchForm avec animation
         <div
           className={cn(
             "w-full max-w-2xl",
@@ -103,6 +104,36 @@ const Hero: React.FC = () => {
           )}
         >
           <SearchForm />
+        </div> */}
+
+        {/* Boutons */}
+        <div
+          className={cn(
+            "w-full max-w-2xl flex flex-col sm:flex-row justify-center gap-4",
+            "transition-all duration-700 delay-300",
+            isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+          )}
+        >
+          <Link
+            href="/user/properties/add"
+            className={cn(
+              "w-full sm:w-auto px-6 py-3 text-lg font-semibold",
+              "bg-black/20 hover:bg-black/40 text-white",
+              "rounded-lg shadow-md transition-transform transform hover:scale-105"
+            )}
+          >
+            Déposer une annonce
+          </Link>
+          <Link
+            href="/result"
+            className={cn(
+              "w-full sm:w-auto px-6 py-3 text-lg font-semibold",
+              "bg-black/20 hover:bg-black/40 text-white",
+              "rounded-lg shadow-md transition-transform transform hover:scale-105"
+            )}
+          >
+            Rechercher une annonce
+          </Link>
         </div>
       </div>
     </section>
