@@ -18,7 +18,7 @@ const FlagIcon = ({ countryCode, size = "sm", className }: FlagIconProps) => {
 
   return (
     <Image
-      src={`/flags/${countryCode.toLowerCase()}.svg`}
+      src={`/flags/${countryCode.toLowerCase()}.svg`} // j'ai renommé  les fichiers en minuscules
       alt={`Drapeau ${countryCode}`}
       width={width}
       height={height}
