@@ -114,12 +114,12 @@ import { SUPPORTED_COUNTRIES } from "@/data/countries";
 import { CountryName } from "@/types/country";
 import { Selection } from "@nextui-org/react";
 import { SelectedItems } from "@nextui-org/react";
+import FlagIcon from "./FlagIcon";
 
 type CountryOption = {
   code: string;
   label: string;
   value: string;
-  flag: string;
 };
 
 // Define the props type for the Select component
@@ -202,20 +202,18 @@ export function CountrySelector({
   const [selected, setSelected] = React.useState<Selection>(
     new Set([currentCountry])
   );
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
   const countries: CountryOption[] = React.useMemo(() => {
     const defaultTransform = () =>
       Object.entries(SUPPORTED_COUNTRIES).map(([code, country]) => ({
         code,
         label: country.name[lang] || code,
         value: code,
-        flag: new URL(`/flags/${code.toLowerCase()}.svg`, baseUrl).href,
       }));
 
     return transformCountryData
       ? transformCountryData(SUPPORTED_COUNTRIES)
       : defaultTransform();
-  }, [lang, transformCountryData, baseUrl]);
+  }, [lang, transformCountryData]);
 
   const handleSelectionChange = (keys: Selection) => {
     const selectedValue = Array.from(keys)[0] as string;
@@ -237,12 +235,7 @@ export function CountrySelector({
       if (!item?.data) return null;
       return (
         <div key={item.key} className="flex items-center gap-2">
-          <Avatar
-            alt={item.data.label}
-            className="flex-shrink-0"
-            size="sm"
-            src={item.data.flag}
-          />
+          <FlagIcon countryCode={item.data.code} size="sm" />
           <span>{item.data.label}</span>
         </div>
       );
@@ -277,12 +270,7 @@ export function CountrySelector({
         {(item) => (
           <SelectItem key={item.code} value={item.code} textValue={item.label}>
             <div className="flex items-center gap-2">
-              <Avatar
-                alt={item.label}
-                className="flex-shrink-0"
-                size="sm"
-                src={item.flag}
-              />
+              <FlagIcon countryCode={item.code} size="sm" />
               <span>{item.label}</span>
             </div>
           </SelectItem>
