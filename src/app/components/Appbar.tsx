@@ -650,6 +650,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { navigationItems } from "../../data/navigationData";
 import { CountrySelector } from "./CountrySelector";
+import PlusSVG from "../assets/svg/PlusSVG";
 
 interface Props {
   children: ReactNode;
@@ -737,7 +738,7 @@ const Appbar = ({ children }: Props) => {
             />
             <div className="hidden md:block">
               <p
-                className={`${textColor} font-medium text-lg tracking-wider whitespace-nowrap`}
+                className={`${textColor} text-xs sm:text-sm md:text-sm lg:text-lg xl:text-xl font-medium tracking-wide whitespace-nowrap`}
               >
                 AFRIQUE AVENIR IMMO
               </p>
@@ -791,13 +792,13 @@ const Appbar = ({ children }: Props) => {
       </NavbarContent>
 
       <NavbarContent justify="end">
-        {/* <Button
+        <Button
           as={Link}
           href="/user/properties/add"
           className="ml-4 flex items-center gap-2 bg-primary text-white hover:bg-primary/90 p-2 md:px-4 rounded-lg"
           radius="sm"
         >
-          <svg
+          {/* <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -810,9 +811,10 @@ const Appbar = ({ children }: Props) => {
               strokeLinejoin="round"
               d="M12 4v16m8-8H4"
             />
-          </svg>
+          </svg> */}
+          <PlusSVG />
           <span className="hidden sm:block">Déposer une annonce</span>
-        </Button> */}
+        </Button>
         {children}
       </NavbarContent>
 
