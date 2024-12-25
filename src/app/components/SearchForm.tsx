@@ -674,12 +674,12 @@
 // end ---------------------------------------
 
 import React, { useState, useEffect } from "react";
-import { citiesOfMorocco } from "../data/cities";
+import { citiesOfMorocco } from "../../data/cities";
 import { PropertyStatus, PropertyType } from "@prisma/client";
 import useFetchValues from "../hooks/useFetchValues";
 import { ChevronDown } from "lucide-react";
 import { Select, SelectItem } from "@nextui-org/react";
-import { bedroomOptions, budgetOptions } from "../data/constants";
+import { bedroomOptions, budgetOptions } from "../../data/constants";
 
 interface FormValues {
   ville: string;

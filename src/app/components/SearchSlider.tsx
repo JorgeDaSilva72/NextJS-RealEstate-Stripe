@@ -4,7 +4,7 @@ import { ReadonlyURLSearchParams } from "next/navigation";
 import useFilterChange, {
   SetArrayNumberAndStringType,
 } from "../hooks/useFilterChange";
-import { SelectNameType } from "../data/filters";
+import { SelectNameType } from "../../data/filters";
 import { Dispatch } from "react";
 
 interface SearchSliderPropsType {

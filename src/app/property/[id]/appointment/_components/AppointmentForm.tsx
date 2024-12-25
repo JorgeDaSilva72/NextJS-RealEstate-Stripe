@@ -4,7 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { motion } from "framer-motion";
 import { AppointmentEvent } from "../page";
 import { appointmentValidationSchema } from "@/lib/validations/appointmentValidation";
-import { appointmentFormFields } from "@/app/data/appointments";
+import { appointmentFormFields } from "@/data/appointments";
 
 export interface AppointmentValue {
   start: Date | string;

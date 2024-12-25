@@ -3,7 +3,7 @@ import {
   usePathname,
   useRouter,
 } from "next/navigation";
-import { SelectNameType } from "../data/filters";
+import { SelectNameType } from "../../data/filters";
 
 export interface FilterValueType {
   id: number | string;

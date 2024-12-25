@@ -1,5 +1,5 @@
 import ButtonClose from "@/app/components/ButtonClose";
-import { citiesOfMorocco } from "@/app/data/cities";
+import { citiesOfMorocco } from "@/data/cities";
 import useModalOpen from "@/app/hooks/useModalOpen";
 import { saveFreeSubscription } from "@/lib/actions/subscription";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";

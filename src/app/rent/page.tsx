@@ -4,7 +4,7 @@ import React from "react";
 import { Card, CardBody, CardFooter } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
-import { topMoroccanCitiesForRent } from "../data/cities";
+import { topMoroccanCitiesForRent } from "../../data/cities";
 import { buildUrl, capitalizeFirstLetter } from "@/lib/utils";
 import SearchForm from "../components/SearchForm";
 

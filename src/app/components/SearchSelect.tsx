@@ -6,7 +6,7 @@ import useFilterChange, {
   SetArrayNumberAndStringType,
 } from "../hooks/useFilterChange";
 import { ReadonlyURLSearchParams } from "next/navigation";
-import { SelectNameType } from "../data/filters";
+import { SelectNameType } from "../../data/filters";
 
 interface SearchSelectPropsType {
   value: string;

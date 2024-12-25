@@ -1,4 +1,4 @@
-import { FilterValueTypes } from "../hooks/useFilterChange";
+import { FilterValueTypes } from "../app/hooks/useFilterChange";
 
 export type SelectNameType =
   | "queryStatus"

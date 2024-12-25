@@ -8,7 +8,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { checkFileExists } from "@/lib/upload";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { userOptions } from "../data/userOptions";
+import { userOptions } from "../../data/userOptions";
 import { Avatar } from "@nextui-org/react";
 
 interface Props {
@@ -88,11 +88,14 @@ const UserProfilePanel = ({ user }: Props) => {
       ? "https://afriqueavenirimmobilier.com/"
       : "http://localhost:3000/";
 
-  const getName = (name: {firstName: string, lastName: string}) => {
-    const lastName = name.lastName.split(" ")[0].length > 15 ? name.lastName.split(" ")[0].slice(0, 13) + " ..." : name.lastName.split(" ")[0];
+  const getName = (name: { firstName: string; lastName: string }) => {
+    const lastName =
+      name.lastName.split(" ")[0].length > 15
+        ? name.lastName.split(" ")[0].slice(0, 13) + " ..."
+        : name.lastName.split(" ")[0];
     const firstName = name.firstName[0].toUpperCase() + ".";
     return firstName + " " + lastName;
-  }
+  };
 
   return (
     <>
@@ -104,7 +107,7 @@ const UserProfilePanel = ({ user }: Props) => {
       >
         <Avatar
           // src={isAvatar && user.avatarUrl ? user.avatarUrl : "/user.png"}
-          src={user?.avatarUrl && isAvatar ? user.avatarUrl  : "/user.png"}
+          src={user?.avatarUrl && isAvatar ? user.avatarUrl : "/user.png"}
           // onError={(e) => (e.currentTarget.src = "/user.png")}
           alt="Image profil"
           // width={40}
@@ -163,7 +166,6 @@ const UserProfilePanel = ({ user }: Props) => {
                 {option.svg}
                 <span>
                   {option.url == "/user/profile"
-
                     ? `${user?.firstName || ""} ${
                         user?.lastName?.[0]?.toUpperCase() || ""
                       }`

@@ -648,7 +648,8 @@ import {
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { navigationItems } from "../data/navigationData";
+import { navigationItems } from "../../data/navigationData";
+import { CountrySelector } from "./CountrySelector";
 
 interface Props {
   children: ReactNode;
@@ -773,9 +774,47 @@ const Appbar = ({ children }: Props) => {
             </DropdownMenu>
           </Dropdown>
         ))}
+        <NavbarItem>
+          {/* <CountrySelector
+            currentCountry="MA"
+            lang="fr"
+            color="primary"
+            variant="bordered"
+            size="lg"
+            isRequired
+            onSelectionChange={(country) => console.log(country)}
+            customNavigationPath={(lang, country) => `/${lang}/${country}`}
+            containerClassName="w-full max-w-md"
+            errorMessage="Veuillez sélectionner un pays"
+          /> */}
+        </NavbarItem>
       </NavbarContent>
 
-      <NavbarContent justify="end">{children}</NavbarContent>
+      <NavbarContent justify="end">
+        {/* <Button
+          as={Link}
+          href="/user/properties/add"
+          className="ml-4 flex items-center gap-2 bg-primary text-white hover:bg-primary/90 p-2 md:px-4 rounded-lg"
+          radius="sm"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="2"
+            stroke="currentColor"
+            className="w-5 h-5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          <span className="hidden sm:block">Déposer une annonce</span>
+        </Button> */}
+        {children}
+      </NavbarContent>
 
       <NavbarMenu className="pt-6 gap-6">
         {navigationItems.map((item) => (

@@ -335,8 +335,8 @@ import {
 import React, { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { AddPropertyInputType } from "./AddPropertyForm";
-import { citiesOfMorocco } from "@/app/data/cities";
-import { countries } from "@/app/data/countries";
+import { citiesOfMorocco } from "@/data/cities";
+import { countries } from "@/data/countries";
 // import { getUserSub, numberOfSubInCity } from "@/lib/actions/subscription";
 // import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 // import { useRouter } from "next/navigation";
