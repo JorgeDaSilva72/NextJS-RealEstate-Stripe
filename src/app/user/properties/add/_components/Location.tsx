@@ -336,7 +336,8 @@ import React, { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { AddPropertyInputType } from "./AddPropertyForm";
 import { citiesOfMorocco } from "@/data/cities";
-import { countries } from "@/data/countries";
+import { countries, SUPPORTED_COUNTRIES } from "@/data/countries";
+import { CountrySelector } from "@/app/components/CountrySelector";
 // import { getUserSub, numberOfSubInCity } from "@/lib/actions/subscription";
 // import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 // import { useRouter } from "next/navigation";
@@ -391,6 +392,24 @@ const Location = (props: Props) => {
     }
   };
 
+  // const handleCountryChange = (value: string) => {
+  //   setValue("location.state", value);
+  // };
+
+  const handleCountryChange = (code: string) => {
+    const countryName = SUPPORTED_COUNTRIES[code]?.name.fr || code;
+    setValue("location.state", countryName);
+  };
+
+  const getCurrentCountryCode = () => {
+    const currentName = getValues().location?.state;
+    return (
+      Object.entries(SUPPORTED_COUNTRIES).find(
+        ([_, country]) => country.name.fr === currentName
+      )?.[0] || ""
+    );
+  };
+
   return (
     <>
       {/* <SubModal isOpen={isOpen} modalMessage={message} /> */}
@@ -427,7 +446,7 @@ const Location = (props: Props) => {
 
         {/* Select pour le pays */}
 
-        <Select
+        {/* <Select
           {...register("location.state")}
           errorMessage={errors.location?.state?.message}
           isInvalid={!!errors.location?.state}
@@ -450,7 +469,21 @@ const Location = (props: Props) => {
               {country.value}
             </SelectItem>
           ))}
-        </Select>
+        </Select> */}
+        <div className="col-span-1">
+          <CountrySelector
+            // currentCountry={getValues().location?.state || ""}
+            currentCountry={getCurrentCountryCode()}
+            lang="fr"
+            onSelectionChange={handleCountryChange}
+            isInvalid={!!errors.location?.state}
+            errorMessage={errors.location?.state?.message}
+            disableNavigation
+            label="Pays"
+            containerClassName="w-full"
+            selectClassName="w-full"
+          />
+        </div>
 
         {/* Select pour la ville */}
 
