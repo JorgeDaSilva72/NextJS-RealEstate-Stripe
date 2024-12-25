@@ -209,7 +209,9 @@ export function CountrySelector({
         code,
         label: country.name[lang] || code,
         value: code,
-        flag: `/flags/${code.toLowerCase()}.svg`,
+        flag: `${
+          process.env.NEXT_PUBLIC_BASE_URL
+        }/flags/${code.toLowerCase()}.svg`,
       }));
 
     return transformCountryData
