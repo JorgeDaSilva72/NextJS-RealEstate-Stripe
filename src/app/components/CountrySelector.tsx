@@ -202,23 +202,20 @@ export function CountrySelector({
   const [selected, setSelected] = React.useState<Selection>(
     new Set([currentCountry])
   );
-
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
   const countries: CountryOption[] = React.useMemo(() => {
     const defaultTransform = () =>
       Object.entries(SUPPORTED_COUNTRIES).map(([code, country]) => ({
         code,
         label: country.name[lang] || code,
         value: code,
-        flag: new URL(
-          `/flags/${code.toLowerCase()}.svg`,
-          process.env.NEXT_PUBLIC_BASE_URL
-        ).href,
+        flag: new URL(`/flags/${code.toLowerCase()}.svg`, baseUrl).href,
       }));
 
     return transformCountryData
       ? transformCountryData(SUPPORTED_COUNTRIES)
       : defaultTransform();
-  }, [lang, transformCountryData]);
+  }, [lang, transformCountryData, baseUrl]);
 
   const handleSelectionChange = (keys: Selection) => {
     const selectedValue = Array.from(keys)[0] as string;
