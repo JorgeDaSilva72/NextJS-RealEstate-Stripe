@@ -674,14 +674,17 @@
 // end ---------------------------------------
 
 import React, { useState, useEffect } from "react";
+
 import { citiesOfMorocco } from "../../data/cities";
 import { PropertyStatus, PropertyType } from "@prisma/client";
 import useFetchValues from "../hooks/useFetchValues";
 import { ChevronDown } from "lucide-react";
 import { Select, SelectItem } from "@nextui-org/react";
 import { bedroomOptions, budgetOptions } from "../../data/constants";
+import { countries } from "@/data/countries";
 
 interface FormValues {
+  pays: string;
   ville: string;
   categorie: string;
   budget: string;
@@ -708,6 +711,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const [formValues, setFormValues] = useState<FormValues>({
+    pays: defaultValues.pays || "",
     ville: defaultValues.ville || "",
     categorie: defaultValues.categorie || "",
     budget: defaultValues.budget || "",
@@ -883,6 +887,27 @@ const SearchForm: React.FC<SearchFormProps> = ({
         </div>
 
         <div className="space-y-3">
+          {/* Pays - Toujours visible */}
+          <Select
+            aria-label="pays"
+            placeholder="Pays"
+            selectedKeys={formValues.pays ? [formValues.pays] : []}
+            variant="bordered"
+            onSelectionChange={(keys) => {
+              const selectedKey = Array.from(keys)[0] as string;
+              setFormValues((prev) => ({ ...prev, pays: selectedKey }));
+            }}
+            classNames={{
+              ...selectClassNames,
+              trigger: `${selectClassNames.trigger} ${
+                formValues.pays ? "bg-white" : ""
+              }`,
+            }}
+          >
+            {countries.map((country) => (
+              <SelectItem key={country.id}>{country.value}</SelectItem>
+            ))}
+          </Select>
           {/* Ville - Toujours visible */}
           <Select
             aria-label="ville"
