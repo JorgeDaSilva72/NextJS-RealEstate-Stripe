@@ -19,7 +19,7 @@ export const CI: CountryData = {
   cities: [
     {
       name: "Abidjan",
-      regions: ["Cocody", "Plateau", "Marcory", "Yopougon"],
+      regions: ["Lagunes"],
       coordinates: {
         lat: 5.36,
         lng: -4.0083,
