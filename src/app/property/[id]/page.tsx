@@ -429,6 +429,7 @@ import { ImagesSliderHero } from "@/app/components/ImageSliderHero";
 import ImageThumbnails from "@/app/components/ImageThumbnailsProps";
 import PageTitle from "@/app/components/pageTitle";
 import ShareButtons from "@/app/components/ShareButtons";
+import { isUserDiamant } from "@/lib/actions/user";
 import { formatPrice } from "@/lib/formatPrice";
 import prisma from "@/lib/prisma";
 import { Card, Image } from "@nextui-org/react";
@@ -462,6 +463,7 @@ const PropertyPage = async ({ params }: Props) => {
       videos: true,
     },
   });
+  const userFound = await isUserDiamant(+params.id);
 
   if (!property) return notFound();
 
@@ -552,11 +554,11 @@ const PropertyPage = async ({ params }: Props) => {
                   <span className="text-sm sm:text-sm ">{property.id}</span>
                 </p>
               </div>
-              <Link href={`/property/${property.id}/appointment`}
+              {userFound && <Link href={`/property/${property.id}/appointment`}
                 className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded shadow-lg hover:bg-indigo-700 mb-4 md:mb-0 text-center"
               >
                 Prendre Rendez-Vous
-              </Link>
+              </Link>}
             </Card>
 
             {/* Partager */}

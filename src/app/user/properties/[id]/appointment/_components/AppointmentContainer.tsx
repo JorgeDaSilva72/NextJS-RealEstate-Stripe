@@ -9,6 +9,9 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { usePathname } from "next/navigation";
 import emailjs from "@emailjs/browser";
+import { isUserDiamant } from "@/lib/actions/user";
+import { useRouter } from "next/router";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 
 interface AppointmentContainerProps {
   id: number;
@@ -28,15 +31,21 @@ const AppointmentContainer = ({ id }: AppointmentContainerProps) => {
   >([]);
   const pathname = usePathname();
   const classNameInfo = "flex gap-7";
+  const router = useRouter();
+  const { user } = useKindeAuth();
 
   useEffect(() => {
     (async () => {
+      if (user?.id) {
+        const foundUser = await isUserDiamant(undefined, user.id);
+        if (!foundUser) return router.back()
+      }
       const result = await getAppointmentsByProperty(id);
       if (result.success) {
         setAppointments(result.data);
       } else toast.error(result.message);
     })();
-  }, [id]);
+  }, [id, user?.id, router]);
 
   const handleClick = async (
     appointment: AppointmentWithUserAndProperty,
