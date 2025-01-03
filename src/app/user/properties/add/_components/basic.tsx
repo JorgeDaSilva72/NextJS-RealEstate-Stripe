@@ -228,7 +228,7 @@ const Basic = (props: Props) => {
         {...register("price", { setValueAs: (v: any) => v.toString() })}
         errorMessage={errors.price?.message}
         isInvalid={!!errors.price}
-        label="Prix en €"
+        label="Prix en monaie de votre pays"
         name="price"
         defaultValue={getValues().price ? getValues().price.toString() : "0"}
       />
