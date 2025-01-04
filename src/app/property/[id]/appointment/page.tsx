@@ -24,6 +24,8 @@ import {
   updateAppointment,
 } from "@/lib/actions/appointment";
 import ModalDelete from "@/app/components/ModalDelete";
+import { isUserDiamant } from "@/lib/actions/user";
+import { useRouter } from "next/navigation";
 
 const localizer = momentLocalizer(moment);
 
@@ -48,6 +50,7 @@ const AppointmentPage = ({ params }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [initialData, setInitialData] = useState<Partial<AppointmentEvent>>();
   const formatDate = useGetFormatDate();
+  const router = useRouter();
 
   const handleAdd = (start: Date) => {
     setInitialData(undefined);
@@ -166,11 +169,17 @@ const AppointmentPage = ({ params }: Props) => {
 
   useEffect(() => {
     (async () => {
+      const userFound = await isUserDiamant(+params.id);
+      if (!userFound) {
+        return router.back()
+      }
       const results = await getAppointmentsByProperty(parseInt(params.id));
       if (results.success) setEvents(results.data);
       else toast.error(results.message);
     })();
-  }, [params.id]);
+  }, [params.id, router]);
+
+
 
   return (
     <div className="bg-gray-50">

@@ -1,6 +1,8 @@
 "use client";
+import { isUserDiamant } from "@/lib/actions/user";
 import { CalendarIcon, TrashIcon } from "@heroicons/react/16/solid";
 import { EyeIcon, PencilIcon } from "@heroicons/react/16/solid";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 import {
   Pagination,
   Table,
@@ -14,6 +16,7 @@ import {
 import { Prisma, Property } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 type Props = {
   properties: Prisma.PropertyGetPayload<{
@@ -30,7 +33,19 @@ type Props = {
 // const PropertiesTable = ({ properties, totalPages, currentPage }: Props) => {
 const PropertiesTable = ({ properties, totalPages, currentPage }: any) => {
   // To DEPLOY
+  const { user } = useKindeAuth();
+  const [isDiamant, setIsDiamant] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    (async () => {
+      if (user?.id) {
+        const userFound = await isUserDiamant(undefined, user?.id);
+        setIsDiamant(userFound);
+      }
+    })()
+  }, [user?.id])
+
   return (
     <div className="flex flex-col items-center gap-4">
       <Table>
@@ -71,7 +86,7 @@ const PropertiesTable = ({ properties, totalPages, currentPage }: any) => {
                         <TrashIcon className="w-6 text-red-500" />
                       </Link>
                     </Tooltip>
-                    <Tooltip content="Rendez-vous" color="secondary">
+                    {isDiamant && <Tooltip content="Rendez-vous" color="secondary">
                       <Link
                         href={`/user/properties/${item.id}/appointment`}
                         className="flex gap-[2px]"
@@ -81,7 +96,7 @@ const PropertiesTable = ({ properties, totalPages, currentPage }: any) => {
                           {item.appointments.length}
                         </div>}
                       </Link>
-                    </Tooltip>
+                    </Tooltip>}
                   </div>
                 </TableCell>
               </TableRow>
