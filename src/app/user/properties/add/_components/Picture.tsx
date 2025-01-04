@@ -698,7 +698,7 @@ const Picture = ({
       <div>
         <input
           type="file"
-          accept="image/*"
+          accept=".jpg,.jpeg,.webp"
           multiple
           onChange={handleSelectImages}
           className="hidden"
@@ -713,6 +713,9 @@ const Picture = ({
 
           <span className="text-sm text-gray-500 mt-2">
             Cliquer ici pour ajouter des images
+          </span>
+          <span className="text-sm text-gray-500 mt-2">
+            Formats acceptés : JPG, JPEG, WEBP (max. 2 Mo par fichier)
           </span>
         </label>
         {/* {error && <p className="text-red-500 mt-2">{error}</p>} */}
