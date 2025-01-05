@@ -55,7 +55,7 @@ export const CityCard: React.FC<CityCardProps> = ({ city }) => {
                 propriétés disponibles
               </p>
               <p className="text-sm">
-                Prix moyen:{" "}
+                Prix moyen sur notre site:{" "}
                 <span className="font-semibold">{city.averagePrice}</span>
               </p>
             </div>

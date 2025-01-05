@@ -100,12 +100,15 @@ export type CityPropertyStats = {
   averagePrice: string;
 };
 
-// Fonction pour obtenir les détails d'une ville spécifique
-export async function getCityDetails(cityName: string) {
+// Fonction pour obtenir les détails d'une ville spécifique en fonction de status
+export async function getCityDetailsByStatus(
+  cityName: string,
+  statusId: number //1:Vente 2: Location 3: Location saisonnière 4:Location meublée
+) {
   try {
     const properties = await prisma.property.findMany({
       where: {
-        statusId: 1,
+        statusId: statusId,
         location: {
           city: cityName,
         },
@@ -133,7 +136,7 @@ export async function getCityDetails(cityName: string) {
             maximumFractionDigits: 0,
           }).format(averagePrice)
         : "N/A",
-      properties,
+      // properties,
     };
   } catch (error) {
     console.error(`Error fetching details for city ${cityName}:`, error);

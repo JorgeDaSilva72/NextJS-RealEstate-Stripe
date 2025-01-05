@@ -156,7 +156,7 @@
 import React from "react";
 import { getCityStatsData } from "./actions";
 import { CityGrid } from "./components/CityGrid";
-import SearchFormWrapper from "./components/SearchFormWrapper";
+import SearchFormWrapper from "../../components/ui/SearchFormWrapper";
 import HeroBanner from "@/components/ui/HeroBanner";
 import ContactSection from "@/components/ui/ContactSection";
 import BenefitsSection from "@/components/ui/BenefitsSection";
@@ -187,7 +187,7 @@ const BuyPage: React.FC = async () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <HeroBanner
-        imageSrc="/Maroc/maroc.jpg"
+        imageSrc="/Maroc/maroc_to_buy.jpg"
         imageAlt="Luxury properties in Morocco"
         title="Trouvez votre bien immobilier au Maroc"
         subtitle="Des propriétés exceptionnelles dans les plus belles villes du royaume"
@@ -204,16 +204,7 @@ const BuyPage: React.FC = async () => {
 
       <main className="max-w-7xl mx-auto px-4 py-16 space-y-16">
         {/* Benefits Section */}
-        {/* <section className="text-center" aria-labelledby="benefits-title">
-          <h2 id="benefits-title" className="text-3xl font-bold mb-8">
-            Pourquoi acheter au Maroc ?
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {benefits.map((benefit) => (
-              <BenefitCard key={benefit.title} {...benefit} />
-            ))}
-          </div>
-        </section> */}
+
         <BenefitsSection
           title="Pourquoi acheter au Maroc ?"
           benefits={benefits}
@@ -237,14 +228,22 @@ const BuyPage: React.FC = async () => {
             title="Affinez votre recherche immobilière"
           />
           <div className="px-4">
-            <SearchFormWrapper />
+            <SearchFormWrapper
+              defaultValues={{
+                ville: "",
+                categorie: "Appartement",
+                budget: "",
+                chambres: "",
+              }}
+              defaultActiveTab="Vente"
+              backgroundColor="bg-black"
+            />
           </div>
         </section>
+        {/* Contact Section */}
+
+        <ContactSection />
       </main>
-
-      {/* Contact Section */}
-
-      <ContactSection />
     </div>
   );
 };
