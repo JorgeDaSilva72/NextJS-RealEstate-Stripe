@@ -24,7 +24,7 @@ interface CityDetails {
   highlights: string;
 }
 
-export const seasonalBenefits: BenefitProps[] = [
+const seasonalBenefits: BenefitProps[] = [
   {
     title: "Liberté Totale",
     description:
