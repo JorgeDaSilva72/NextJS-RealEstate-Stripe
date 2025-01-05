@@ -154,88 +154,14 @@
 // export default BuyPage;
 
 import React from "react";
-import Image from "next/image";
 import { getCityStatsData } from "./actions";
 import { CityGrid } from "./components/CityGrid";
 import SearchFormWrapper from "./components/SearchFormWrapper";
-
-// Types
-
-interface BenefitProps {
-  title: string;
-  description: string;
-}
-
-// Components
-const BenefitCard: React.FC<BenefitProps> = ({ title, description }) => (
-  <div className="p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-    <h3 className="text-xl font-semibold mb-3">{title}</h3>
-    <p className="text-gray-600">{description}</p>
-  </div>
-);
-
-// const HeroBanner: React.FC = () => (
-//   <div className="relative h-[60vh] w-full">
-//     <Image
-//       src="/Maroc/maroc.jpg"
-//       alt="Luxury properties in Morocco"
-//       fill
-//       className="object-cover"
-//       priority
-//       sizes="100vw"
-//     />
-//     <div className="absolute inset-0 bg-black/50" />
-//     <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4">
-//       <h1 className="text-4xl md:text-6xl font-bold text-center mb-4">
-//         Trouvez votre bien immobilier au Maroc
-//       </h1>
-//       <p className="text-xl md:text-2xl text-center max-w-3xl">
-//         Des propriétés exceptionnelles dans les plus belles villes du royaume
-//       </p>
-//     </div>
-//   </div>
-// );
-const HeroBanner: React.FC = () => (
-  <section className="relative h-[60vh] w-full">
-    <Image
-      src="/Maroc/maroc.jpg"
-      alt="Luxury properties in Morocco"
-      fill
-      className="object-cover"
-      priority
-      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
-      quality={90}
-    />
-    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
-    <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4 max-w-6xl mx-auto">
-      <h1 className="text-4xl md:text-6xl font-bold text-center mb-6 drop-shadow-lg">
-        Trouvez votre bien immobilier au Maroc
-      </h1>
-      <p className="text-xl md:text-2xl text-center max-w-3xl leading-relaxed drop-shadow-md">
-        Des propriétés exceptionnelles dans les plus belles villes du royaume
-      </p>
-    </div>
-  </section>
-);
-
-const ContactSection: React.FC = () => (
-  <section className="bg-primary text-white py-16">
-    <div className="max-w-7xl mx-auto px-4 text-center">
-      <h2 className="text-3xl font-bold mb-6">
-        Besoin d&apos;aide pour votre projet immobilier ?
-      </h2>
-      <p className="text-xl mb-8 leading-relaxed">
-        Nos conseillers sont là pour vous accompagner dans votre recherche
-      </p>
-      <button
-        className="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary"
-        aria-label="Contactez-nous"
-      >
-        Contactez-nous
-      </button>
-    </div>
-  </section>
-);
+import HeroBanner from "@/components/ui/HeroBanner";
+import ContactSection from "@/components/ui/ContactSection";
+import BenefitsSection from "@/components/ui/BenefitsSection";
+import { BenefitProps } from "@/components/ui/BenefitsSection/BenefitCard";
+import SectionHeader from "@/components/ui/SectionHeader";
 
 const benefits: BenefitProps[] = [
   {
@@ -260,11 +186,25 @@ const BuyPage: React.FC = async () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <HeroBanner />
+      <HeroBanner
+        imageSrc="/Maroc/maroc.jpg"
+        imageAlt="Luxury properties in Morocco"
+        title="Trouvez votre bien immobilier au Maroc"
+        subtitle="Des propriétés exceptionnelles dans les plus belles villes du royaume"
+        imageQuality={95}
+        height="h-[60vh]"
+        overlayOpacity={60}
+        blurIntensity={2}
+        isPriority={true}
+        titleClassName="text-4xl md:text-6xl font-bold text-center mb-4"
+        subtitleClassName="text-xl md:text-2xl text-center max-w-3xl"
+      >
+        {/* <button className="mt-8">Call to Action</button> */}
+      </HeroBanner>
 
       <main className="max-w-7xl mx-auto px-4 py-16 space-y-16">
         {/* Benefits Section */}
-        <section className="text-center" aria-labelledby="benefits-title">
+        {/* <section className="text-center" aria-labelledby="benefits-title">
           <h2 id="benefits-title" className="text-3xl font-bold mb-8">
             Pourquoi acheter au Maroc ?
           </h2>
@@ -273,13 +213,18 @@ const BuyPage: React.FC = async () => {
               <BenefitCard key={benefit.title} {...benefit} />
             ))}
           </div>
-        </section>
+        </section> */}
+        <BenefitsSection
+          title="Pourquoi acheter au Maroc ?"
+          benefits={benefits}
+        />
 
         {/* Cities Section */}
         <section aria-labelledby="cities-title">
-          <h2 id="cities-title" className="text-3xl font-bold mb-8 text-center">
-            Découvrez nos propriétés par ville
-          </h2>
+          <SectionHeader
+            id="cities-title"
+            title="Découvrez nos propriétés par ville"
+          />
 
           <CityGrid cities={citiesWithStats} />
         </section>
@@ -287,9 +232,10 @@ const BuyPage: React.FC = async () => {
         {/* Search Form Section */}
 
         <section className="w-full" aria-labelledby="search-title">
-          <h2 id="search-title" className="text-3xl font-bold mb-8 text-center">
-            Affinez votre recherche immobilière
-          </h2>
+          <SectionHeader
+            id="search-title"
+            title="Affinez votre recherche immobilière"
+          />
           <div className="px-4">
             <SearchFormWrapper />
           </div>
