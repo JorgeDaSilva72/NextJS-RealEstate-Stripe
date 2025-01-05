@@ -193,7 +193,7 @@ const BuyPage: React.FC = async () => {
         subtitle="Des propriétés exceptionnelles dans les plus belles villes du royaume"
         imageQuality={95}
         height="h-[60vh]"
-        overlayOpacity={60}
+        overlayOpacity={20}
         blurIntensity={2}
         isPriority={true}
         titleClassName="text-4xl md:text-6xl font-bold text-center mb-4"

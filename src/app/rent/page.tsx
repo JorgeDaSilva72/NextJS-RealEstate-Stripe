@@ -114,7 +114,7 @@ const RentPage = () => {
         subtitle="Des locations de qualité dans les plus belles villes du royaume"
         imageQuality={95}
         height="h-[60vh]"
-        overlayOpacity={60}
+        overlayOpacity={20}
         blurIntensity={2}
         isPriority={true}
         titleClassName="text-4xl md:text-6xl font-bold text-center mb-4"
@@ -122,11 +122,13 @@ const RentPage = () => {
       />
 
       <div className="max-w-7xl mx-auto px-4 py-16 space-y-16">
+        {/* Seasonal Benefits Section */}
         <BenefitsSection
           title="Pourquoi louer au Maroc ?"
           benefits={benefits}
         />
 
+        {/* Cities Section */}
         <section>
           <h2 className="text-3xl font-bold mb-8 text-center">
             Trouvez votre location par ville
@@ -153,6 +155,7 @@ const RentPage = () => {
           )}
         </section>
 
+        {/* Search Form */}
         <section className="w-full" aria-labelledby="search-title">
           <SectionHeader
             id="search-title"
@@ -172,6 +175,7 @@ const RentPage = () => {
           </div>
         </section>
 
+        {/* Contact Section */}
         <ContactSection />
       </div>
     </div>
