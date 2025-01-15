@@ -8,7 +8,8 @@ type QueryStatus =
   | "Vente"
   | "Location"
   | "Location+meublée"
-  | "Location+saisonnière";
+  | "Location+saisonnière"
+  | "Location+exclusive";
 
 // todo:  utiliser les types générés automatiquement par Prisma
 // Prisma génère un type pour les valeurs possibles de PropertyStatus

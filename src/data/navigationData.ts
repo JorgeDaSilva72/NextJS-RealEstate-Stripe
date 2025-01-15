@@ -43,6 +43,12 @@ export const navigationItems = [
         description: "Location meublée",
         href: "/furnished-rent",
       },
+      {
+        key: "exclusive-rentals",
+        title: "Louer un bien exclusif",
+        description: "Location exclusive AFRIQUE AVENIR",
+        href: "/exclusive-rentals",
+      },
     ],
   },
 ];
