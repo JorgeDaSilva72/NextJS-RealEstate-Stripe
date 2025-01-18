@@ -20,13 +20,16 @@ export const AddPropertyFormSchema = z.object({
   location: z.object({
     streetAddress: z.string().min(1, "Veuillez indiquer l'adresse postale"),
     city: z.string().min(1, "Veuillez indiquer le nom de la ville"),
-    state: z.string().min(1, "Veuillez indiquer le nom de l'état"),
-    zip: z.string().min(1, "Veuillez indiquer le numéro de boîte postale"),
+    state: z.string().min(1, "Veuillez indiquer le nom du pays"),
+    // zip: z.string().min(1, "Veuillez indiquer le numéro de boîte postale"),
+    zip: z.string(),
+
     // .refine(
     //   (data) => validator.isPostalCode(data, "US"),
     //   "Enter the zip code"
     // ),
-    region: z.string().min(1, "Veuillez indiquer la région"),
+    // region: z.string().min(1, "Veuillez indiquer la région"),
+    region: z.string(),
     landmark: z.string(),
   }),
   propertyFeature: z.object({
