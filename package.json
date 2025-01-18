@@ -21,6 +21,7 @@
     "@nextui-org/theme": "^2.2.11",
     "@paypal/react-paypal-js": "^8.7.0",
     "@prisma/client": "^6.1.0",
+    "@react-google-maps/api": "^2.20.5",
     "@stripe/react-stripe-js": "^2.7.3",
     "@stripe/stripe-js": "^3.5.0",
     "@supabase/supabase-js": "^2.43.4",

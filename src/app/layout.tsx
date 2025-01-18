@@ -62,6 +62,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FavoriteProvider } from "./context/FavoriteContext";
 import FooterWrapper from "./components/FooterWrapper"; // Import du composant FooterWrapper
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -81,6 +82,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className={`${inter.className} h-full flex flex-col`}>
+        {/* Script Google Maps */}
+        {/* <Script
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
+          strategy="lazyOnload"
+        /> */}
         <FavoriteProvider>
           <Providers>
             {/* Appbar */}
