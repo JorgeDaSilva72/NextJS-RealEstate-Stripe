@@ -1723,9 +1723,254 @@
 
 // export default Location;
 
+// import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
+// import { Button, Card, Input, Textarea, cn } from "@nextui-org/react";
+// import React, { useEffect, useState, useRef } from "react";
+// import { useFormContext } from "react-hook-form";
+// import { AddPropertyInputType } from "./AddPropertyForm";
+// import { useLoadScript } from "@react-google-maps/api";
+// import { AFRICAN_COUNTRIES_SUPPORTED_FOR_GOOGLE_MAPS } from "@/data/countries";
+
+// interface Props {
+//   next: () => void;
+//   prev: () => void;
+//   className?: string;
+// }
+
+// const libraries = ["places"];
+
+// const Location = (props: Props) => {
+//   const {
+//     register,
+//     formState: { errors },
+//     trigger,
+//     setValue,
+//     watch,
+//   } = useFormContext<AddPropertyInputType>();
+
+//   const searchInputRef = useRef<HTMLInputElement>(null);
+//   const [searchValue, setSearchValue] = useState("");
+
+//   // Watch form values for updates
+//   const streetAddress = watch("location.streetAddress");
+//   const city = watch("location.city");
+//   const state = watch("location.state");
+//   const region = watch("location.region");
+//   const zip = watch("location.zip");
+
+//   const { isLoaded, loadError } = useLoadScript({
+//     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+//     libraries: libraries as any,
+//   });
+
+//   const updateFormValues = (place: google.maps.places.PlaceResult) => {
+//     let streetNumber = "";
+//     let route = "";
+//     let cityName = "";
+//     let stateName = "";
+//     let countryName = "";
+//     let postalCode = "";
+
+//     if (place.address_components) {
+//       for (const component of place.address_components) {
+//         const types = component.types;
+
+//         if (types.includes("street_number")) {
+//           streetNumber = component.long_name;
+//         } else if (types.includes("route")) {
+//           route = component.long_name;
+//         } else if (types.includes("locality")) {
+//           cityName = component.long_name;
+//         } else if (types.includes("administrative_area_level_1")) {
+//           stateName = component.long_name;
+//         } else if (types.includes("country")) {
+//           countryName = component.long_name;
+//         } else if (types.includes("postal_code")) {
+//           postalCode = component.long_name;
+//         }
+//       }
+//     }
+
+//     // Mise à jour synchrone des valeurs du formulaire
+//     setValue("location.streetAddress", `${streetNumber} ${route}`.trim(), {
+//       shouldValidate: true,
+//       shouldDirty: true,
+//     });
+//     setValue("location.city", cityName, {
+//       shouldValidate: true,
+//       shouldDirty: true,
+//     });
+//     setValue("location.state", countryName, {
+//       shouldValidate: true,
+//       shouldDirty: true,
+//     });
+//     setValue("location.region", stateName, {
+//       shouldValidate: true,
+//       shouldDirty: true,
+//     });
+//     setValue("location.zip", postalCode, {
+//       shouldValidate: true,
+//       shouldDirty: true,
+//     });
+
+//     // if (place.geometry?.location) {
+//     //   setValue("location.coordinates.lat", place.geometry.location.lat(), { shouldValidate: true, shouldDirty: true });
+//     //   setValue("location.coordinates.lng", place.geometry.location.lng(), { shouldValidate: true, shouldDirty: true });
+//     // }
+
+//     // Mettre à jour la valeur de recherche avec l'adresse formatée
+//     setSearchValue(place.formatted_address || "");
+//   };
+
+//   useEffect(() => {
+//     if (!isLoaded || !searchInputRef.current) return;
+
+//     const autocomplete = new google.maps.places.Autocomplete(
+//       searchInputRef.current,
+//       {
+//         componentRestrictions: {
+//           country: AFRICAN_COUNTRIES_SUPPORTED_FOR_GOOGLE_MAPS,
+//         },
+//         fields: ["address_components", "formatted_address", "geometry"],
+//       }
+//     );
+
+//     autocomplete.addListener("place_changed", () => {
+//       const place = autocomplete.getPlace();
+
+//       if (!place.geometry) {
+//         console.error("Aucun détail disponible pour cette adresse");
+//         return;
+//       }
+
+//       updateFormValues(place);
+//     });
+
+//     return () => {
+//       // Cleanup if needed
+//       google.maps.event.clearInstanceListeners(autocomplete);
+//     };
+//   }, [isLoaded]);
+
+//   const handleNext = async () => {
+//     if (
+//       await trigger([
+//         "location.streetAddress",
+//         "location.city",
+//         "location.state",
+//         // "location.zip",
+//         // "location.region",
+//       ])
+//     ) {
+//       props.next();
+//     }
+//   };
+
+//   if (loadError) {
+//     return <div>Erreur de chargement de Google Maps</div>;
+//   }
+
+//   return (
+//     <Card
+//       className={cn(
+//         "p-2 grid grid-cols-1 md:grid-cols-2 gap-3",
+//         props.className
+//       )}
+//     >
+//       <div className="col-span-1 md:col-span-2">
+//         <Input
+//           ref={searchInputRef}
+//           label="Rechercher une adresse"
+//           placeholder="Entrez une adresse du Maroc"
+//           value={searchValue}
+//           onChange={(e) => setSearchValue(e.target.value)}
+//           className="w-full"
+//         />
+//       </div>
+
+//       <Input
+//         value={streetAddress || ""}
+//         label="Adresse"
+//         isReadOnly
+//         errorMessage={errors.location?.streetAddress?.message}
+//         isInvalid={!!errors.location?.streetAddress}
+//       />
+
+//       <Input
+//         value={zip || ""}
+//         label="Code postal"
+//         isReadOnly
+//         errorMessage={errors.location?.zip?.message}
+//         isInvalid={!!errors.location?.zip}
+//       />
+
+//       <Input
+//         value={city || ""}
+//         label="Ville"
+//         isReadOnly
+//         errorMessage={errors.location?.city?.message}
+//         isInvalid={!!errors.location?.city}
+//       />
+
+//       <Input
+//         value={state || ""}
+//         label="Pays"
+//         isReadOnly
+//         errorMessage={errors.location?.state?.message}
+//         isInvalid={!!errors.location?.state}
+//       />
+
+//       <Input
+//         value={region || ""}
+//         label="Région"
+//         isReadOnly
+//         className="col-span-1 md:col-span-2"
+//         errorMessage={errors.location?.region?.message}
+//         isInvalid={!!errors.location?.region}
+//       />
+
+//       <Textarea
+//         {...register("location.landmark")}
+//         label="Informations complémentaires"
+//         className="col-span-1 md:col-span-2"
+//         errorMessage={errors.location?.landmark?.message}
+//         isInvalid={!!errors.location?.landmark}
+//       />
+
+//       <div className="flex flex-col md:flex-row justify-center col-span-1 md:col-span-2 gap-3 mt-4">
+//         <Button
+//           onClick={props.prev}
+//           startContent={<ChevronLeftIcon className="w-6" />}
+//           color="primary"
+//           className="w-full md:w-36"
+//         >
+//           Précédent
+//         </Button>
+//         <Button
+//           onClick={handleNext}
+//           endContent={<ChevronRightIcon className="w-6" />}
+//           color="primary"
+//           className="w-full md:w-36"
+//         >
+//           Suivant
+//         </Button>
+//       </div>
+//     </Card>
+//   );
+// };
+
+// export default Location;
+
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
 import { Button, Card, Input, Textarea, cn } from "@nextui-org/react";
-import React, { useEffect, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  RefObject,
+  ChangeEvent,
+} from "react";
 import { useFormContext } from "react-hook-form";
 import { AddPropertyInputType } from "./AddPropertyForm";
 import { useLoadScript } from "@react-google-maps/api";
@@ -1737,7 +1982,67 @@ interface Props {
   className?: string;
 }
 
-const libraries = ["places"];
+interface LocationField {
+  name: keyof AddPropertyInputType["location"];
+  label: string;
+  span?: number;
+  isTextArea?: boolean;
+  readonly?: boolean;
+}
+
+interface InputProps {
+  ref: RefObject<HTMLInputElement>;
+  label: string;
+  placeholder: string;
+  value: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  className: string;
+  errorMessage?: string;
+  isInvalid?: boolean;
+  isLoading?: boolean;
+}
+
+const LocationInput: React.FC<{
+  field: LocationField;
+  value: string;
+  error?: string;
+}> = ({ field, value, error }) => {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<AddPropertyInputType>();
+
+  const Component = field.isTextArea ? Textarea : Input;
+
+  if (field.name === "landmark") {
+    return (
+      <Component
+        {...register("location.landmark")}
+        label={field.label}
+        className={cn(
+          field.span === 2 ? "col-span-1 md:col-span-2" : "",
+          field.isTextArea ? "min-h-[100px]" : ""
+        )}
+        errorMessage={error}
+        isInvalid={!!error}
+      />
+    );
+  }
+
+  return (
+    <Component
+      value={value || ""}
+      label={field.label}
+      isReadOnly={true}
+      className={cn(
+        field.span === 2 ? "col-span-1 md:col-span-2" : "",
+        field.isTextArea ? "min-h-[100px]" : ""
+      )}
+      errorMessage={error}
+      isInvalid={!!error}
+    />
+  );
+};
 
 const Location = (props: Props) => {
   const {
@@ -1750,76 +2055,85 @@ const Location = (props: Props) => {
 
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [searchValue, setSearchValue] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+
+  // Configuration des champs de localisation
+  const locationFields: LocationField[] = useMemo(
+    () => [
+      { name: "streetAddress", label: "Adresse" },
+      { name: "zip", label: "Code postal" },
+      { name: "city", label: "Ville" },
+      { name: "state", label: "Pays" },
+      { name: "region", label: "Région", span: 2 },
+      {
+        name: "landmark",
+        label: "Informations complémentaires",
+        span: 2,
+        isTextArea: true,
+      },
+    ],
+    []
+  );
 
   // Watch form values for updates
-  const streetAddress = watch("location.streetAddress");
-  const city = watch("location.city");
-  const state = watch("location.state");
-  const region = watch("location.region");
-  const zip = watch("location.zip");
+  const locationValues = watch("location");
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-    libraries: libraries as any,
+    libraries: ["places"] as any,
   });
 
-  const updateFormValues = (place: google.maps.places.PlaceResult) => {
-    let streetNumber = "";
-    let route = "";
-    let cityName = "";
-    let stateName = "";
-    let countryName = "";
-    let postalCode = "";
+  const updateFormValues = async (place: google.maps.places.PlaceResult) => {
+    setIsSearching(true);
+    try {
+      const addressMapping: Record<string, string> = {};
 
-    if (place.address_components) {
-      for (const component of place.address_components) {
-        const types = component.types;
-
-        if (types.includes("street_number")) {
-          streetNumber = component.long_name;
-        } else if (types.includes("route")) {
-          route = component.long_name;
-        } else if (types.includes("locality")) {
-          cityName = component.long_name;
-        } else if (types.includes("administrative_area_level_1")) {
-          stateName = component.long_name;
-        } else if (types.includes("country")) {
-          countryName = component.long_name;
-        } else if (types.includes("postal_code")) {
-          postalCode = component.long_name;
-        }
+      if (place.address_components) {
+        place.address_components.forEach((component) => {
+          const value = component.long_name;
+          if (component.types.includes("street_number")) {
+            addressMapping.streetNumber = value;
+          } else if (component.types.includes("route")) {
+            addressMapping.route = value;
+          } else if (component.types.includes("locality")) {
+            addressMapping.city = value;
+          } else if (component.types.includes("administrative_area_level_1")) {
+            addressMapping.region = value;
+          } else if (component.types.includes("country")) {
+            addressMapping.state = value;
+          } else if (component.types.includes("postal_code")) {
+            addressMapping.zip = value;
+          }
+        });
       }
+
+      // Mise à jour groupée des valeurs
+      const updates = {
+        "location.streetAddress": `${addressMapping.streetNumber || ""} ${
+          addressMapping.route || ""
+        }`.trim(),
+        "location.city": addressMapping.city || "",
+        "location.state": addressMapping.state || "",
+        "location.region": addressMapping.region || "",
+        "location.zip": addressMapping.zip || "",
+      };
+
+      Object.entries(updates).forEach(([key, value]) => {
+        setValue(key as any, value, {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+      });
+
+      setSearchValue(place.formatted_address || "");
+      setSearchError(null);
+    } catch (error) {
+      setSearchError("Erreur lors de la mise à jour de l'adresse");
+      console.error("Erreur lors de la mise à jour des valeurs:", error);
+    } finally {
+      setIsSearching(false);
     }
-
-    // Mise à jour synchrone des valeurs du formulaire
-    setValue("location.streetAddress", `${streetNumber} ${route}`.trim(), {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-    setValue("location.city", cityName, {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-    setValue("location.state", countryName, {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-    setValue("location.region", stateName, {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-    setValue("location.zip", postalCode, {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-
-    // if (place.geometry?.location) {
-    //   setValue("location.coordinates.lat", place.geometry.location.lat(), { shouldValidate: true, shouldDirty: true });
-    //   setValue("location.coordinates.lng", place.geometry.location.lng(), { shouldValidate: true, shouldDirty: true });
-    // }
-
-    // Mettre à jour la valeur de recherche avec l'adresse formatée
-    setSearchValue(place.formatted_address || "");
   };
 
   useEffect(() => {
@@ -1835,109 +2149,101 @@ const Location = (props: Props) => {
       }
     );
 
-    autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
+    const placeChangedListener = autocomplete.addListener(
+      "place_changed",
+      () => {
+        const place = autocomplete.getPlace();
 
-      if (!place.geometry) {
-        console.error("Aucun détail disponible pour cette adresse");
-        return;
+        if (!place.geometry) {
+          setSearchError("Aucun détail disponible pour cette adresse");
+          return;
+        }
+
+        updateFormValues(place);
       }
-
-      updateFormValues(place);
-    });
+    );
 
     return () => {
-      // Cleanup if needed
-      google.maps.event.clearInstanceListeners(autocomplete);
+      google.maps.event.removeListener(placeChangedListener);
     };
   }, [isLoaded]);
 
   const handleNext = async () => {
-    if (
-      await trigger([
-        "location.streetAddress",
-        "location.city",
-        "location.state",
-        // "location.zip",
-        // "location.region",
-      ])
-    ) {
+    type LocationPath = `location.${keyof AddPropertyInputType["location"]}`;
+
+    const fieldsToValidate: LocationPath[] = [
+      "location.streetAddress",
+      "location.city",
+      "location.state",
+    ];
+
+    if (await trigger(fieldsToValidate)) {
       props.next();
     }
   };
 
   if (loadError) {
-    return <div>Erreur de chargement de Google Maps</div>;
+    return (
+      <Card className={cn("p-6", props.className)}>
+        <div className="text-center text-red-500">
+          Erreur de chargement de Google Maps. Veuillez réessayer
+          ultérieurement.
+        </div>
+      </Card>
+    );
   }
+
+  const getLocationValue = (fieldName: string) => {
+    const location = watch("location");
+    return location ? location[fieldName as keyof typeof location] || "" : "";
+  };
 
   return (
     <Card
       className={cn(
-        "p-2 grid grid-cols-1 md:grid-cols-2 gap-3",
+        "p-4 grid grid-cols-1 md:grid-cols-2 gap-4",
         props.className
       )}
     >
       <div className="col-span-1 md:col-span-2">
-        <Input
+        {/* <Input
           ref={searchInputRef}
           label="Rechercher une adresse"
           placeholder="Entrez une adresse du Maroc"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           className="w-full"
+          errorMessage={searchError}
+          isInvalid={!!searchError}
+          isLoading={isSearching}
+        /> */}
+        <Input
+          {...{
+            ref: searchInputRef,
+            label: "Rechercher une adresse",
+            placeholder: "Entrez une adresse du Maroc",
+            value: searchValue,
+            onChange: (e: any) => setSearchValue(e.target.value),
+            className: "w-full",
+            errorMessage: searchError,
+            isInvalid: !!searchError,
+            isLoading: isSearching,
+          }}
         />
       </div>
 
-      <Input
-        value={streetAddress || ""}
-        label="Adresse"
-        isReadOnly
-        errorMessage={errors.location?.streetAddress?.message}
-        isInvalid={!!errors.location?.streetAddress}
-      />
+      {locationFields.map((field) => (
+        <LocationInput
+          key={field.name}
+          field={field}
+          value={
+            field.name === "landmark" ? "" : locationValues?.[field.name] || ""
+          }
+          error={errors.location?.[field.name]?.message}
+        />
+      ))}
 
-      <Input
-        value={zip || ""}
-        label="Code postal"
-        isReadOnly
-        errorMessage={errors.location?.zip?.message}
-        isInvalid={!!errors.location?.zip}
-      />
-
-      <Input
-        value={city || ""}
-        label="Ville"
-        isReadOnly
-        errorMessage={errors.location?.city?.message}
-        isInvalid={!!errors.location?.city}
-      />
-
-      <Input
-        value={state || ""}
-        label="Pays"
-        isReadOnly
-        errorMessage={errors.location?.state?.message}
-        isInvalid={!!errors.location?.state}
-      />
-
-      <Input
-        value={region || ""}
-        label="Région"
-        isReadOnly
-        className="col-span-1 md:col-span-2"
-        errorMessage={errors.location?.region?.message}
-        isInvalid={!!errors.location?.region}
-      />
-
-      <Textarea
-        {...register("location.landmark")}
-        label="Informations complémentaires"
-        className="col-span-1 md:col-span-2"
-        errorMessage={errors.location?.landmark?.message}
-        isInvalid={!!errors.location?.landmark}
-      />
-
-      <div className="flex flex-col md:flex-row justify-center col-span-1 md:col-span-2 gap-3 mt-4">
+      <div className="flex flex-col md:flex-row justify-center col-span-1 md:col-span-2 gap-4 mt-4">
         <Button
           onClick={props.prev}
           startContent={<ChevronLeftIcon className="w-6" />}
@@ -1951,6 +2257,7 @@ const Location = (props: Props) => {
           endContent={<ChevronRightIcon className="w-6" />}
           color="primary"
           className="w-full md:w-36"
+          isLoading={isSearching}
         >
           Suivant
         </Button>
