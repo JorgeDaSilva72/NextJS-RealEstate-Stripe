@@ -813,7 +813,7 @@ const Appbar = ({ children }: Props) => {
             />
           </svg> */}
           <PlusSVG />
-          <span className="hidden sm:block">Déposer une annonce</span>
+          <span className="hidden sm:block">Publier une annonce</span>
         </Button>
         {children}
       </NavbarContent>

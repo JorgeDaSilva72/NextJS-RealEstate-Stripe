@@ -348,7 +348,7 @@ export const FooterSection = () => {
               Nous contacter
             </Link>
             <Link
-              href="#faq"
+              href="faq"
               className="opacity-60 hover:opacity-100 hover:text-orange-500 transition-all"
             >
               FAQ
