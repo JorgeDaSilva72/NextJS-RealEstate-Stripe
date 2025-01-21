@@ -1,4 +1,5 @@
 // "use client";
+
 // import {
 //   Linkedin,
 //   Twitter,
@@ -18,9 +19,13 @@
 
 // export const FooterSection = () => {
 //   const [isModalOpen, setIsModalOpen] = useState(false);
+//   const [isLoading, setIsLoading] = useState(false);
+
 //   const handleFeedbackRequest = async (formData: FeedbackFormData) => {
 //     try {
+//       setIsLoading(true);
 //       const templateParams = {
+//         category: formData.category,
 //         name: formData.name,
 //         email: formData.email,
 //         phone: formData.phone,
@@ -35,27 +40,26 @@
 //       );
 
 //       if (response.status === 200) {
-//         toast.success(
-//           "Votre demande de rendez-vous a été envoyée avec succès !"
-//         );
+//         toast.success("Votre feedback a été envoyé avec succès !.Merci.");
 //         setIsModalOpen(false);
 //       } else {
 //         throw new Error("Erreur lors de l'envoi de la demande");
 //       }
 //     } catch (error) {
-//       toast.error(
-//         "Une erreur est survenue lors de l'envoi de la demande. Veuillez réessayer."
-//       );
+//       toast.error("Une erreur est survenue. Veuillez réessayer.");
 //       console.error("Erreur:", error);
+//     } finally {
+//       setIsLoading(false);
 //     }
 //   };
+
 //   return (
 //     <footer
 //       id="footer"
 //       className="flex items-center justify-center min-h-screen px-4 py-8 bg-gray-100"
 //     >
 //       <div className="w-full max-w-7xl p-10 bg-card border border-secondary rounded-2xl">
-//         <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-x-12 gap-y-8">
+//         <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-x-8 gap-y-6">
 //           {/* Logo Section */}
 //           <div className="col-span-full xl:col-span-2">
 //             <Link href="#" className="flex items-center space-x-3">
@@ -77,7 +81,7 @@
 //             <h3 className="font-bold text-lg">Contact</h3>
 //             <Link
 //               href="#footer"
-//               className="flex items-center gap-2 opacity-60 hover:opacity-100"
+//               className="flex items-center gap-2 opacity-60 hover:opacity-100 hover:text-blue-500 transition-all"
 //             >
 //               <Linkedin className="w-5 h-5" />
 //               LinkedIn
@@ -86,7 +90,7 @@
 //               href="https://x.com/afriqueavenir9?s=21"
 //               target="_blank"
 //               rel="noopener noreferrer"
-//               className="flex items-center gap-2 opacity-60 hover:opacity-100"
+//               className="flex items-center gap-2 opacity-60 hover:opacity-100 hover:text-blue-500 transition-all"
 //             >
 //               <Twitter className="w-5 h-5" />
 //               Twitter
@@ -95,7 +99,7 @@
 //               href="https://m.twitch.tv/afriqueavenir/home"
 //               target="_blank"
 //               rel="noopener noreferrer"
-//               className="flex items-center gap-2 opacity-60 hover:opacity-100"
+//               className="flex items-center gap-2 opacity-60 hover:opacity-100 hover:text-blue-500 transition-all"
 //             >
 //               <Twitch className="w-5 h-5" />
 //               Twitch
@@ -107,21 +111,21 @@
 //             <h3 className="font-bold text-lg">Plateformes</h3>
 //             <Link
 //               href="#footer"
-//               className="flex items-center gap-2 opacity-60 hover:opacity-100"
+//               className="flex items-center gap-2 opacity-60 hover:opacity-100 hover:text-green-500 transition-all"
 //             >
 //               <SmartphoneIcon className="w-5 h-5" />
 //               iOS
 //             </Link>
 //             <Link
 //               href="#footer"
-//               className="flex items-center gap-2 opacity-60 hover:opacity-100"
+//               className="flex items-center gap-2 opacity-60 hover:opacity-100 hover:text-green-500 transition-all"
 //             >
 //               <SmartphoneIcon className="w-5 h-5" />
 //               Android
 //             </Link>
 //             <Link
 //               href="#footer"
-//               className="flex items-center gap-2 opacity-60 hover:opacity-100"
+//               className="flex items-center gap-2 opacity-60 hover:opacity-100 hover:text-green-500 transition-all"
 //             >
 //               <GlobeIcon className="w-5 h-5" />
 //               Web
@@ -131,21 +135,28 @@
 //           {/* Aide Section */}
 //           <div className="flex flex-col gap-3">
 //             <h3 className="font-bold text-lg">Aide</h3>
-//             <Link href="#contact" className="opacity-60 hover:opacity-100">
+//             <Link
+//               href="#contact"
+//               className="opacity-60 hover:opacity-100 hover:text-orange-500 transition-all"
+//             >
 //               Nous contacter
 //             </Link>
-//             <Link href="#faq" className="opacity-60 hover:opacity-100">
+//             <Link
+//               href="faq"
+//               className="opacity-60 hover:opacity-100 hover:text-orange-500 transition-all"
+//             >
 //               FAQ
 //             </Link>
-//             <Link href="#contact" className="opacity-60 hover:opacity-100">
-//               Feedback
-//             </Link>
-//             <button
-//               onClick={() => setIsModalOpen(true)}
-//               className="bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 transition duration-300 text-sm sm:text-base mt-4"
+//             <Link
+//               href="#footer"
+//               onClick={(e) => {
+//                 e.preventDefault();
+//                 setIsModalOpen(true);
+//               }}
+//               className="opacity-60 hover:opacity-100 hover:text-orange-500 transition-all"
 //             >
 //               Feedback
-//             </button>
+//             </Link>
 //             <FeedbackModal
 //               isOpen={isModalOpen}
 //               onClose={() => setIsModalOpen(false)}
@@ -160,7 +171,7 @@
 //               href="https://www.youtube.com/@Afriqueavenir-m5g"
 //               target="_blank"
 //               rel="noopener noreferrer"
-//               className="flex items-center gap-2 opacity-60 hover:opacity-100"
+//               className="flex items-center gap-2 opacity-60 hover:opacity-100 hover:text-red-500 transition-all"
 //             >
 //               <Youtube className="w-5 h-5" />
 //               YouTube
@@ -169,7 +180,7 @@
 //               href="https://www.instagram.com/afriqueavenir9/profilecard/"
 //               target="_blank"
 //               rel="noopener noreferrer"
-//               className="flex items-center gap-2 opacity-60 hover:opacity-100"
+//               className="flex items-center gap-2 opacity-60 hover:opacity-100 hover:text-pink-500 transition-all"
 //             >
 //               <Instagram className="w-5 h-5" />
 //               Instagram
@@ -178,7 +189,7 @@
 //               href="https://www.facebook.com/profile.php?id=61568365453332&mibextid=wwXIfr&rdid=T1Uukh3inyp1lt68&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F19TQgmn4dJ%2F%3Fmibextid%3DwwXIfr"
 //               target="_blank"
 //               rel="noopener noreferrer"
-//               className="flex items-center gap-2 opacity-60 hover:opacity-100"
+//               className="flex items-center gap-2 opacity-60 hover:opacity-100 hover:text-red-500 transition-all"
 //             >
 //               <Facebook className="w-5 h-5" />
 //               Facebook
@@ -222,9 +233,12 @@ import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import { toast } from "react-toastify";
 import FeedbackModal, { FeedbackFormData } from "@/components/ui/FeedbackModal";
+import ContactModal, { ContactFormData } from "@/components/ui/ContactModal";
+// import ContactModal, { ContactFormData } from "@/components/ui/ContactModal";
 
 export const FooterSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFeedbackRequest = async (formData: FeedbackFormData) => {
@@ -250,6 +264,39 @@ export const FooterSection = () => {
         setIsModalOpen(false);
       } else {
         throw new Error("Erreur lors de l'envoi de la demande");
+      }
+    } catch (error) {
+      toast.error("Une erreur est survenue. Veuillez réessayer.");
+      console.error("Erreur:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleContactRequest = async (formData: ContactFormData) => {
+    try {
+      setIsLoading(true);
+      const templateParams = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        message: formData.message,
+      };
+
+      const response = await emailjs.send(
+        process.env.NEXT_PUBLIC_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_TEMPLATE_FOR_DIAMOND_PACK_ID!,
+        templateParams,
+        process.env.NEXT_PUBLIC_PUBLIC_KEY_EMAIL!
+      );
+
+      if (response.status === 200) {
+        toast.success(
+          "Votre message a été envoyé avec succès ! Nous vous répondrons bientôt."
+        );
+        setIsContactModalOpen(false);
+      } else {
+        throw new Error("Erreur lors de l'envoi du message");
       }
     } catch (error) {
       toast.error("Une erreur est survenue. Veuillez réessayer.");
@@ -342,7 +389,11 @@ export const FooterSection = () => {
           <div className="flex flex-col gap-3">
             <h3 className="font-bold text-lg">Aide</h3>
             <Link
-              href="#contact"
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsContactModalOpen(true);
+              }}
               className="opacity-60 hover:opacity-100 hover:text-orange-500 transition-all"
             >
               Nous contacter
@@ -354,7 +405,7 @@ export const FooterSection = () => {
               FAQ
             </Link>
             <Link
-              href="#footer"
+              href="#"
               onClick={(e) => {
                 e.preventDefault();
                 setIsModalOpen(true);
@@ -363,11 +414,6 @@ export const FooterSection = () => {
             >
               Feedback
             </Link>
-            <FeedbackModal
-              isOpen={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
-              onSubmit={handleFeedbackRequest}
-            />
           </div>
 
           {/* Réseaux sociaux */}
@@ -417,6 +463,18 @@ export const FooterSection = () => {
             </Link>
           </h3>
         </section>
+
+        {/* Modals */}
+        <FeedbackModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleFeedbackRequest}
+        />
+        <ContactModal
+          isOpen={isContactModalOpen}
+          onClose={() => setIsContactModalOpen(false)}
+          onSubmit={handleContactRequest}
+        />
       </div>
     </footer>
   );
