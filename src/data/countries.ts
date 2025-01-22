@@ -33,43 +33,29 @@ export const AFRICAN_COUNTRIES_SUPPORTED_FOR_GOOGLE_MAPS = [
   "RW", // Rwanda
   "SC", // Seychelles
   "KM", // Comores
-
   // Pays francophones en Afrique australe :
   "MG", // Madagascar
   "MU", // Maurice
   // "AO", // Angola
-
   // "BW", // Botswana
-
   // "CV", // Cap-Vert
-
   // "EG", // Égypte
-
   // "ER", // Érythrée
   // "ET", // Éthiopie
-
   // "GM", // Gambie
   // "GH", // Ghana
-
   // "GW", // Guinée-Bissau
-
   // "KE", // Kenya
   // "LS", // Lesotho
   // "LR", // Libéria
   // "LY", // Libye
-
   // "MW", // Malawi
-
   // "MU", // Maurice
-
   // "MZ", // Mozambique
   // "NA", // Namibie
-
   // "NG", // Nigéria
-
   // "ST", // Sao Tomé-et-Principe
   // "SN", // Sénégal
-
   // "SL", // Sierra Leone
   // "SO", // Somalie
   // "ZA", // Afrique du Sud
@@ -77,7 +63,6 @@ export const AFRICAN_COUNTRIES_SUPPORTED_FOR_GOOGLE_MAPS = [
   // "SD", // Soudan
   // "SZ", // Eswatini (anciennement Swaziland)
   // "TZ", // Tanzanie
-
   // "UG", // Ouganda
   // "ZM", // Zambie
   // "ZW", // Zimbabwe

@@ -1962,7 +1962,15 @@
 // export default Location;
 
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
-import { Button, Card, Input, Textarea, cn } from "@nextui-org/react";
+import {
+  Button,
+  Card,
+  Input,
+  Select,
+  SelectItem,
+  Textarea,
+  cn,
+} from "@nextui-org/react";
 import React, {
   useEffect,
   useState,
@@ -1975,6 +1983,39 @@ import { useFormContext } from "react-hook-form";
 import { AddPropertyInputType } from "./AddPropertyForm";
 import { useLoadScript } from "@react-google-maps/api";
 import { AFRICAN_COUNTRIES_SUPPORTED_FOR_GOOGLE_MAPS } from "@/data/countries";
+
+// Liste des pays africains francophones
+const AFRICAN_FRANCOPHONE_COUNTRIES = [
+  { code: "DZ", name: "Algérie" },
+  { code: "BJ", name: "Bénin" },
+  { code: "BF", name: "Burkina Faso" },
+  { code: "BI", name: "Burundi" },
+  { code: "CM", name: "Cameroun" },
+  { code: "CF", name: "République centrafricaine" },
+  { code: "KM", name: "Comores" },
+  { code: "CG", name: "Congo-Brazzaville" },
+  { code: "CD", name: "Congo-Kinshasa (RDC)" },
+  { code: "CI", name: "Côte d'Ivoire" },
+  { code: "DJ", name: "Djibouti" },
+  { code: "EG", name: "Égypte" },
+  { code: "GA", name: "Gabon" },
+  { code: "GN", name: "Guinée" },
+  { code: "GQ", name: "Guinée équatoriale" },
+  { code: "GW", name: "Guinée-Bissau" },
+  { code: "MG", name: "Madagascar" },
+  { code: "ML", name: "Mali" },
+  { code: "MA", name: "Maroc" },
+  { code: "MR", name: "Mauritanie" },
+  { code: "MU", name: "Maurice" },
+  { code: "NE", name: "Niger" },
+  { code: "RE", name: "Réunion" },
+  { code: "RW", name: "Rwanda" },
+  { code: "SN", name: "Sénégal" },
+  { code: "SC", name: "Seychelles" },
+  { code: "TD", name: "Tchad" },
+  { code: "TG", name: "Togo" },
+  { code: "TN", name: "Tunisie" },
+];
 
 interface Props {
   next: () => void;
@@ -2055,6 +2096,7 @@ const Location = (props: Props) => {
 
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [searchValue, setSearchValue] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
@@ -2139,11 +2181,21 @@ const Location = (props: Props) => {
   useEffect(() => {
     if (!isLoaded || !searchInputRef.current) return;
 
+    // const autocomplete = new google.maps.places.Autocomplete(
+    //   searchInputRef.current,
+    //   {
+    //     componentRestrictions: {
+    //       country: AFRICAN_COUNTRIES_SUPPORTED_FOR_GOOGLE_MAPS,
+    //     },
+    //     fields: ["address_components", "formatted_address", "geometry"],
+    //   }
+    // );
+
     const autocomplete = new google.maps.places.Autocomplete(
       searchInputRef.current,
       {
         componentRestrictions: {
-          country: AFRICAN_COUNTRIES_SUPPORTED_FOR_GOOGLE_MAPS,
+          country: [selectedCountry.toLowerCase()], // Google Maps API attend le code pays en minuscules
         },
         fields: ["address_components", "formatted_address", "geometry"],
       }
@@ -2166,7 +2218,7 @@ const Location = (props: Props) => {
     return () => {
       google.maps.event.removeListener(placeChangedListener);
     };
-  }, [isLoaded]);
+  }, [isLoaded, selectedCountry]);
 
   const handleNext = async () => {
     type LocationPath = `location.${keyof AddPropertyInputType["location"]}`;
@@ -2205,18 +2257,25 @@ const Location = (props: Props) => {
         props.className
       )}
     >
-      <div className="col-span-1 md:col-span-2">
-        {/* <Input
-          ref={searchInputRef}
-          label="Rechercher une adresse"
-          placeholder="Entrez une adresse du Maroc"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-          className="w-full"
-          errorMessage={searchError}
-          isInvalid={!!searchError}
-          isLoading={isSearching}
-        /> */}
+      {/* Sélection du pays */}
+      <div className="col-span-1 md:col-span-2 mb-4">
+        <Select
+          label="Sélectionnez un pays"
+          placeholder="Choisissez un pays"
+          value={selectedCountry}
+          onChange={(e) => {
+            setSelectedCountry(e.target.value);
+            setSearchValue(""); // Réinitialiser la recherche d'adresse
+          }}
+        >
+          {AFRICAN_FRANCOPHONE_COUNTRIES.map((country) => (
+            <SelectItem key={country.code} value={country.code}>
+              {country.name}
+            </SelectItem>
+          ))}
+        </Select>
+      </div>
+      {/* <div className="col-span-1 md:col-span-2">
         <Input
           {...{
             ref: searchInputRef,
@@ -2229,6 +2288,25 @@ const Location = (props: Props) => {
             isInvalid: !!searchError,
             isLoading: isSearching,
           }}
+        />
+      </div> */}
+      {/* Recherche d'adresse - désactivée tant qu'un pays n'est pas sélectionné */}
+      <div className="col-span-1 md:col-span-2">
+        <Input
+          ref={searchInputRef}
+          label="Rechercher une adresse"
+          placeholder={
+            selectedCountry
+              ? `Rechercher une adresse`
+              : "Veuillez d'abord sélectionner un pays"
+          }
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          className="w-full"
+          errorMessage={searchError}
+          isInvalid={!!searchError}
+          // isLoading={isSearching}
+          isDisabled={!selectedCountry}
         />
       </div>
 
