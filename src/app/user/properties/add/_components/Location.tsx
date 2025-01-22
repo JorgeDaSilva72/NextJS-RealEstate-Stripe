@@ -2172,7 +2172,7 @@ const Location = (props: Props) => {
     type LocationPath = `location.${keyof AddPropertyInputType["location"]}`;
 
     const fieldsToValidate: LocationPath[] = [
-      "location.streetAddress",
+      // "location.streetAddress",
       "location.city",
       "location.state",
     ];

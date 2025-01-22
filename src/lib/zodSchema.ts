@@ -18,7 +18,8 @@ export const AddPropertyFormSchema = z.object({
     .regex(new RegExp("^[0-9]+$"), "Veuillez indiquer le prix")
     .transform((data: unknown) => Number(data)),
   location: z.object({
-    streetAddress: z.string().min(1, "Veuillez indiquer l'adresse postale"),
+    // streetAddress: z.string().min(1, "Veuillez indiquer l'adresse postale"),
+    streetAddress: z.string(),
     city: z.string().min(1, "Veuillez indiquer le nom de la ville"),
     state: z.string().min(1, "Veuillez indiquer le nom du pays"),
     // zip: z.string().min(1, "Veuillez indiquer le numéro de boîte postale"),
