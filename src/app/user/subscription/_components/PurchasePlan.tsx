@@ -662,7 +662,7 @@ const PurchasePlan = ({
         >
           PayPal
         </button>
-        <button
+        {/* <button
           className={`border-2 border-primary rounded-md px-4 py-2 transition-colors ${
             paymentProvider === "stripe"
               ? "bg-primary text-white"
@@ -671,7 +671,7 @@ const PurchasePlan = ({
           onClick={() => setPaymentProvider("stripe")}
         >
           Stripe
-        </button>
+        </button> */}
       </div>
 
       <button
