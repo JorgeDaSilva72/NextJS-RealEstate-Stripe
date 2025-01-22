@@ -2221,7 +2221,7 @@ const Location = (props: Props) => {
           {...{
             ref: searchInputRef,
             label: "Rechercher une adresse",
-            placeholder: "Entrez une adresse du Maroc",
+            placeholder: "Adresse d'un pays africain francophone",
             value: searchValue,
             onChange: (e: any) => setSearchValue(e.target.value),
             className: "w-full",

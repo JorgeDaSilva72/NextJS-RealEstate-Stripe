@@ -5,49 +5,71 @@ import { MA } from "./countries/maroc";
 import { SN } from "./countries/senegal";
 
 export const AFRICAN_COUNTRIES_SUPPORTED_FOR_GOOGLE_MAPS = [
+  // Pays francophones en Afrique du Nord
   "MA", // Maroc
-  // "DZ", // Algérie
+  "DZ", // Algérie
+  "TN", // Tunisie
+  "MR", // Mauritanie
+  // Pays francophones en Afrique de l'Ouest :
+  "BJ", // Bénin
+  "BF", // Burkina Faso
+  "CI", // Côte d'Ivoire
+  "GN", // Guinée
+  "ML", // Mali
+  "NE", // Niger
+  "SN", // Sénégal
+  "TG", // Togo
+  // Pays francophones en Afrique centrale :
+  "CM", // Cameroun
+  "CF", // République centrafricaine
+  "CG", // Congo
+  "TD", // Tchad
+  "GA", // Gabon
+  "GQ", // Guinée équatoriale
+  "CD", // République démocratique du Congo
+  // Pays francophones en Afrique de l'Est :
+  "BI", // Burundi
+  "DJ", // Djibouti
+  "RW", // Rwanda
+  "SC", // Seychelles
+  "KM", // Comores
+
+  // Pays francophones en Afrique australe :
+  "MG", // Madagascar
+  "MU", // Maurice
   // "AO", // Angola
-  // "BJ", // Bénin
+
   // "BW", // Botswana
-  // "BF", // Burkina Faso
-  // "BI", // Burundi
-  // "CM", // Cameroun
+
   // "CV", // Cap-Vert
-  // "CF", // République centrafricaine
-  // "TD", // Tchad
-  // "KM", // Comores
-  // "CG", // Congo
-  // "CD", // République démocratique du Congo
-  // "DJ", // Djibouti
+
   // "EG", // Égypte
-  // "GQ", // Guinée équatoriale
+
   // "ER", // Érythrée
   // "ET", // Éthiopie
-  // "GA", // Gabon
+
   // "GM", // Gambie
   // "GH", // Ghana
-  // "GN", // Guinée
+
   // "GW", // Guinée-Bissau
-  // "CI", // Côte d'Ivoire
+
   // "KE", // Kenya
   // "LS", // Lesotho
   // "LR", // Libéria
   // "LY", // Libye
-  // "MG", // Madagascar
+
   // "MW", // Malawi
-  // "ML", // Mali
-  // "MR", // Mauritanie
+
   // "MU", // Maurice
-  // "MA", // Maroc
+
   // "MZ", // Mozambique
   // "NA", // Namibie
-  // "NE", // Niger
+
   // "NG", // Nigéria
-  // "RW", // Rwanda
+
   // "ST", // Sao Tomé-et-Principe
   // "SN", // Sénégal
-  // "SC", // Seychelles
+
   // "SL", // Sierra Leone
   // "SO", // Somalie
   // "ZA", // Afrique du Sud
@@ -55,8 +77,7 @@ export const AFRICAN_COUNTRIES_SUPPORTED_FOR_GOOGLE_MAPS = [
   // "SD", // Soudan
   // "SZ", // Eswatini (anciennement Swaziland)
   // "TZ", // Tanzanie
-  // "TG", // Togo
-  // "TN", // Tunisie
+
   // "UG", // Ouganda
   // "ZM", // Zambie
   // "ZW", // Zimbabwe
