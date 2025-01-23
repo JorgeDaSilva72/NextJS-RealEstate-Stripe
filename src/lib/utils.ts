@@ -23,3 +23,13 @@ export const buildUrl = (city: string, queryStatus: QueryStatus) => {
   const formattedCity = capitalizeFirstLetter(city);
   return `/result?city=${formattedCity}&queryStatus=${queryStatus}`;
 };
+
+// Transformation du tableau de pays francophones
+export function transformCountries(
+  countries: Array<{ code: string; name: string }>
+): Array<{ id: string; value: string }> {
+  return countries.map((country) => ({
+    id: country.code,
+    value: country.name,
+  }));
+}

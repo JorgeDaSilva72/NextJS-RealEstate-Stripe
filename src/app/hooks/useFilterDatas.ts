@@ -3,9 +3,10 @@ import { PropertyStatus, PropertyType } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { citiesOfMorocco } from "../../data/cities";
-import { countries } from "../../data/countries";
+import { AFRICAN_FRANCOPHONE_COUNTRIES, countries } from "../../data/countries";
 import useFetchValues from "./useFetchValues";
 import { FilterValueTypes } from "./useFilterChange";
+import { transformCountries } from "@/lib/utils";
 
 export type SelectNameType =
   | "queryStatus"
@@ -59,10 +60,13 @@ const useFilterDatas = () => {
     { id: "none", value: "Toutes les villes" },
     ...citiesOfMorocco,
   ];
-  const countriesWithNoneOption = [
-    { id: "none", value: "Tous les pays" },
-    ...countries,
-  ];
+  // const countriesWithNoneOption = [
+  //   { id: "none", value: "Tous les pays" },
+  //   ...countries,
+  // ];
+  const AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED = transformCountries(
+    AFRICAN_FRANCOPHONE_COUNTRIES
+  );
   const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [areaRange, setAreaRange] = useState([0, 1000]);
   const [bedroomsRange, setBedroomsRange] = useState([0, 10]);
@@ -111,7 +115,8 @@ const useFilterDatas = () => {
         ariaLabel: "Pays",
         placeholder: "Choisir un pays",
         name: "country",
-        items: countriesWithNoneOption,
+        // items: countriesWithNoneOption,
+        items: AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED,
         value: selectedCountry,
         setValue: setSelectedCountry,
       },

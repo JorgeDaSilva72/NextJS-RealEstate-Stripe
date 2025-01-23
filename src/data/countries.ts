@@ -67,7 +67,38 @@ export const AFRICAN_COUNTRIES_SUPPORTED_FOR_GOOGLE_MAPS = [
   // "ZM", // Zambie
   // "ZW", // Zimbabwe
 ];
-
+// Liste des pays africains francophones
+export const AFRICAN_FRANCOPHONE_COUNTRIES = [
+  { code: "DZ", name: "Algérie" },
+  { code: "BJ", name: "Bénin" },
+  { code: "BF", name: "Burkina Faso" },
+  { code: "BI", name: "Burundi" },
+  { code: "CM", name: "Cameroun" },
+  { code: "CF", name: "République centrafricaine" },
+  { code: "KM", name: "Comores" },
+  { code: "CG", name: "Congo-Brazzaville" },
+  { code: "CD", name: "Congo-Kinshasa (RDC)" },
+  { code: "CI", name: "Côte d'Ivoire" },
+  { code: "DJ", name: "Djibouti" },
+  { code: "EG", name: "Égypte" },
+  { code: "GA", name: "Gabon" },
+  { code: "GN", name: "Guinée" },
+  { code: "GQ", name: "Guinée équatoriale" },
+  { code: "GW", name: "Guinée-Bissau" },
+  { code: "MG", name: "Madagascar" },
+  { code: "ML", name: "Mali" },
+  { code: "MA", name: "Maroc" },
+  { code: "MR", name: "Mauritanie" },
+  { code: "MU", name: "Maurice" },
+  { code: "NE", name: "Niger" },
+  { code: "RE", name: "Réunion" },
+  { code: "RW", name: "Rwanda" },
+  { code: "SN", name: "Sénégal" },
+  { code: "SC", name: "Seychelles" },
+  { code: "TD", name: "Tchad" },
+  { code: "TG", name: "Togo" },
+  { code: "TN", name: "Tunisie" },
+];
 export const countries = [{ id: "Maroc", value: "Maroc" }];
 
 export const SUPPORTED_COUNTRIES: Countries = { MA, SN, CI, CM };
