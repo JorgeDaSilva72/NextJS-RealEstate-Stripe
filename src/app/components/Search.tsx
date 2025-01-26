@@ -11,7 +11,7 @@ import SearchSelect from "./SearchSelect";
 import useFilterDatas from "../hooks/useFilterDatas";
 import ButtonClose from "./ButtonClose";
 import { capitalizeFirstLetter } from "@/lib/utils";
-import { X } from "lucide-react";
+import { motion } from "framer-motion";
 
 const Search = () => {
   const [loading, setLoading] = useState(false);
@@ -302,9 +302,13 @@ const Search = () => {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
           onClick={() => handleModalOpen(setOpenModal, "auto", false)} // Ferme la modale en cliquant en dehors
         >
-          <div
+          <motion.div
             className="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl max-h-[90vh] bg-gradient-to-br from-sky-400 to-indigo-500 rounded-lg shadow-2xl animate-fadeDown p-4 sm:p-6 md:p-8 overflow-y-auto scrollbar-hide"
             onClick={(e) => e.stopPropagation()} // Empêche la fermeture si on clique à l’intérieur
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
           >
             {/* Close Button */}
             <button
@@ -371,7 +375,7 @@ const Search = () => {
                 Effacer les filtres
               </button>
             </div>
-          </div>
+          </motion.div>
         </div>
       )}
 
