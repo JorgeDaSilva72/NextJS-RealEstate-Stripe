@@ -67,6 +67,11 @@ const useFilterDatas = () => {
   const AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED = transformCountries(
     AFRICAN_FRANCOPHONE_COUNTRIES
   );
+
+  const AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED_WITH_NONE_OPTION = [
+    { id: "none", value: "Tous les pays" },
+    ...AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED,
+  ];
   const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [areaRange, setAreaRange] = useState([0, 1000]);
   const [bedroomsRange, setBedroomsRange] = useState([0, 10]);
@@ -116,7 +121,7 @@ const useFilterDatas = () => {
         placeholder: "Choisir un pays",
         name: "country",
         // items: countriesWithNoneOption,
-        items: AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED,
+        items: AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED_WITH_NONE_OPTION,
         value: selectedCountry,
         setValue: setSelectedCountry,
       },
