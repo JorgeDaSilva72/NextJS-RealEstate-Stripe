@@ -11,6 +11,7 @@ import SearchSelect from "./SearchSelect";
 import useFilterDatas from "../hooks/useFilterDatas";
 import ButtonClose from "./ButtonClose";
 import { capitalizeFirstLetter } from "@/lib/utils";
+import { X } from "lucide-react";
 
 const Search = () => {
   const [loading, setLoading] = useState(false);
@@ -283,38 +284,35 @@ const Search = () => {
           </div>
         </div>
       )}
-      <div className="p-2 pl-20 bg-gradient-to-br sm:p-3 from-sky-400 to-indigo-500 shadow-lg w-full mx-auto">
-        {/* Section 1 : Filtres principaux */}
-        <div
-          key={resetKey}
-          className="flex flex-col space-y-4  lg:space-y-8  w-full"
-        >
-          <div className="flex flex-row gap-2 items-center sm:justify-center">
-            <Input
-              isClearable
-              onClear={resetSearchQuery}
-              placeholder="Recherche dans les titres"
-              onChange={(e) => handleInputChange(e.target.value)}
-              className="w-full max-w-md shadow-lg"
-              // endContent={
-              //   loading ? (
-              //     <Spinner />
-              //   ) : (
-              //     <MagnifyingGlassIcon className="w-4 text-slate-500" />
-              //   )
-              // }
-              value={searchQuery} // Utilise value au lieu de defaultValue
-              // defaultValue={searchParams.get("query") ?? ""}
-            />
-            <div
-              onClick={() => handleModalOpen(setOpenModal, "hidden", true)}
-              className="flex flex-row text-white gap-2 mt-0 border border-[#717273] p-1 rounded-lg cursor-pointer transition duration-200 ease-in-out hover:border-white hover:text-[#717273] hover:bg-[#e2e4e6]"
-            >
-              <span>Filtres</span>
-              <FilterSVG width="30" height="30" />
+      <div className="p-4 bg-gradient-to-br from-sky-600 to-indigo-700 shadow-xl w-full mx-auto rounded-xl">
+        <div key={resetKey} className="flex flex-col space-y-4 w-full">
+          <div className="flex flex-row gap-4 items-center sm:justify-center">
+            <div className="relative flex-1 w-full sm:max-w-lg">
+              <Input
+                isClearable
+                onClear={resetSearchQuery}
+                placeholder="Rechercher une annonce..."
+                onChange={(e) => handleInputChange(e.target.value)}
+                className="w-full px-4 py-2.5 shadow-lg rounded-xl border-none focus:ring-2 focus:ring-white/50 bg-white/20 text-white placeholder-white/70 pr-10"
+                value={searchQuery}
+              />
+              {searchQuery && (
+                <button
+                  onClick={resetSearchQuery}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
+                >
+                  <X size={20} />
+                </button>
+              )}
             </div>
+            <button
+              onClick={() => handleModalOpen(setOpenModal, "hidden", true)}
+              className="flex flex-row items-center gap-2 px-4 py-2.5 text-white bg-white/20 rounded-xl shadow-lg border border-white/10 transition-all duration-200 ease-in-out hover:bg-white hover:text-indigo-700"
+            >
+              <span className="font-medium">Filtres</span>
+              <FilterSVG width="24" height="24" />
+            </button>
           </div>
-          {/* Filtres principaux */}
         </div>
       </div>
     </>
