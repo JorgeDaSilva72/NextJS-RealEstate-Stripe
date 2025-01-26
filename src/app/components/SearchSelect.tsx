@@ -29,7 +29,7 @@ const SearchSelect = ({
 }: SearchSelectPropsType) => {
   const handleFilterChange = useFilterChange();
 
-  console.log("VALUE", value);
+  // console.log("VALUE", value);
   return (
     <Select
       aria-label={ariaLabel}

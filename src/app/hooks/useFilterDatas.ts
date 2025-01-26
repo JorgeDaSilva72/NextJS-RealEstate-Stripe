@@ -24,7 +24,7 @@ export interface SelectFilterType {
   placeholder?: string;
   name: SelectNameType;
   items?: FilterValueTypes;
-  type?: "slider";
+  type?: "slider" | "text";
   rangeName?: string[];
   rangeValue?: number[];
   step?: number;
@@ -125,13 +125,21 @@ const useFilterDatas = () => {
         value: selectedCountry,
         setValue: setSelectedCountry,
       },
+      // {
+      //   ariaLabel: "Ville",
+      //   placeholder: "Choisir une ville",
+      //   name: "city",
+      //   items: citiesOfMoroccoWithNoneOption,
+      //   value: selectedCity,
+      //   setValue: setSelectedCity,
+      // },
       {
         ariaLabel: "Ville",
-        placeholder: "Choisir une ville",
+        placeholder: "Entrez une ville",
         name: "city",
-        items: citiesOfMoroccoWithNoneOption,
         value: selectedCity,
         setValue: setSelectedCity,
+        type: "text", // Add this to indicate free text input
       },
       {
         ariaLabel: "Trier par",
