@@ -133,14 +133,14 @@ const useFilterDatas = () => {
       //   value: selectedCity,
       //   setValue: setSelectedCity,
       // },
-      {
-        ariaLabel: "Ville",
-        placeholder: "Entrez une ville",
-        name: "city",
-        value: selectedCity,
-        setValue: setSelectedCity,
-        type: "text", // Add this to indicate free text input
-      },
+      // {
+      //   ariaLabel: "Ville",
+      //   placeholder: "Entrez une ville",
+      //   name: "city",
+      //   value: selectedCity,
+      //   setValue: setSelectedCity,
+      //   type: "text", // Add this to indicate free text input
+      // },
       {
         ariaLabel: "Trier par",
         placeholder: "Trier par",
