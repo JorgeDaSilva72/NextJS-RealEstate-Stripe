@@ -269,7 +269,8 @@
 
 "use server";
 
-import { AddPropertyInputType } from "@/app/user/properties/add/_components/AddPropertyForm";
+import { AddPropertyInputType } from "@/app/[locale]/user/properties/add/_components/AddPropertyForm";
+// import { AddPropertyInputType } from "@/app/user/properties/add/_components/AddPropertyForm";
 import prisma from "../prisma";
 import { Property } from "@prisma/client";
 
