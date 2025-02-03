@@ -1,11 +1,12 @@
 import React, { ReactNode } from "react";
 import Options, { TypeOptions } from "./_components/Options";
-import PageTitle from "@/app/components/pageTitle";
+// import PageTitle from "@/app/components/pageTitle";
 import AppointmentContainer from "./_components/AppointmentContainer";
+import PageTitle from "@/app/[locale]/components/pageTitle";
 
 interface Layout {
   children: ReactNode;
-  params: {id: string}
+  params: { id: string };
 }
 
 const layout = ({ children, params }: Layout) => {
