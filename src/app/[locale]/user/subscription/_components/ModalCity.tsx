@@ -1,4 +1,4 @@
-import ButtonClose from "@/app/components/ButtonClose";
+// import ButtonClose from "@/app/components/ButtonClose";
 import { citiesOfMorocco } from "@/data/cities";
 import useModalOpen from "@/app/[locale]/hooks/useModalOpen";
 import { saveFreeSubscription } from "@/lib/actions/subscription";
@@ -8,6 +8,7 @@ import { SubscriptionPlan } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import ButtonClose from "@/app/[locale]/components/ButtonClose";
 
 interface ModalCityPropsType {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
