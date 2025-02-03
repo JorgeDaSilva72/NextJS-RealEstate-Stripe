@@ -1,6 +1,6 @@
 "use server";
 
-import { AppointmentEvent } from "@/app/property/[id]/appointment/page";
+import { AppointmentEvent } from "@/app/[locale]/property/[id]/appointment/page";
 import prisma from "../prisma";
 
 export const createAppointment = async (appointment: AppointmentEvent) => {

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getCityDetailsByStatus } from "@/lib/db/queries/property";
-import { topMoroccanCitiesForSeasonalRent } from "@/data/cities";
+import { getLocale } from "next-intl/server"; // Utilisez next-intl pour récupérer la locale
+import { topMoroccanCitiesForSeasonalRentFR } from "@/data/cities/fr";
+import { topMoroccanCitiesForSeasonalRentEN } from "@/data/cities/en";
 
 interface CityDetails {
   name: string;
@@ -12,8 +14,16 @@ interface CityDetails {
   avgPriceLow: string;
   highlights: string;
 }
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    // Récupérez la locale depuis les paramètres de requête
+    const { searchParams } = new URL(request.url);
+    const locale = searchParams.get("locale") || "fr"; // Par défaut, utilisez le français
+    // Sélectionnez le tableau de données en fonction de la locale
+    const topMoroccanCitiesForSeasonalRent =
+      locale === "fr"
+        ? topMoroccanCitiesForSeasonalRentFR
+        : topMoroccanCitiesForSeasonalRentEN;
     const cityDetails = await Promise.all(
       topMoroccanCitiesForSeasonalRent.map(async (city) => {
         const details = await getCityDetailsByStatus(city.name, 3);

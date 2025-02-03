@@ -21,7 +21,8 @@
 // export default SearchFormWrapper;
 "use client";
 
-import SearchForm from "@/app/components/SearchForm";
+import SearchForm from "@/app/[locale]/components/SearchForm";
+// import SearchForm from "@/app/components/SearchForm";
 import React from "react";
 
 interface SearchFormWrapperProps {

@@ -1,9 +1,18 @@
 import { NextResponse } from "next/server";
 import { getCityDetailsByStatus } from "@/lib/db/queries/property";
-import { topMoroccanCitiesForRent } from "@/data/cities";
+import { topMoroccanCitiesForRentFR } from "@/data/cities/fr";
+import { topMoroccanCitiesForRentEN } from "@/data/cities/en";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    // Récupérez la locale depuis les paramètres de requête
+    const { searchParams } = new URL(request.url);
+    const locale = searchParams.get("locale") || "fr"; // Par défaut, utilisez le français
+
+    // Sélectionnez le tableau de données en fonction de la locale
+    const topMoroccanCitiesForRent =
+      locale === "fr" ? topMoroccanCitiesForRentFR : topMoroccanCitiesForRentEN;
+
     const cityDetails = await Promise.all(
       topMoroccanCitiesForRent.map(async (city) => {
         const details = await getCityDetailsByStatus(city.name, 2);
