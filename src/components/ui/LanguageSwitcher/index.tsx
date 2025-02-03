@@ -738,14 +738,14 @@ const LanguageSwitcher = () => {
       label: t("languages.en"),
     },
     {
-      code: "pt",
-      flag: PtFlag,
-      label: t("languages.pt"),
-    },
-    {
       code: "ar",
       flag: ArFlag,
       label: t("languages.ar"),
+    },
+    {
+      code: "pt",
+      flag: PtFlag,
+      label: t("languages.pt"),
     },
   ];
 

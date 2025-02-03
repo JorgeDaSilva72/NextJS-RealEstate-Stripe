@@ -72,12 +72,23 @@ import { FC } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 
+// interface NoPropertiesFoundProps {
+//   redirectPath?: string; // Chemin vers lequel rediriger
+//   Icon?: FC<{ className?: string }>; // Composant pour une icône personnalisée
+// }
+
 interface NoPropertiesFoundProps {
-  redirectPath?: string; // Chemin vers lequel rediriger
-  Icon?: FC<{ className?: string }>; // Composant pour une icône personnalisée
+  title?: string;
+  message?: string;
+  buttonText?: string;
+  redirectPath?: string;
+  Icon?: FC<{ className?: string }>;
 }
 
 const NoPropertiesFound: FC<NoPropertiesFoundProps> = ({
+  title,
+  message,
+  buttonText,
   redirectPath = "/result", // Valeur par défaut pour la redirection
   Icon, // Icône personnalisée
 }) => {
@@ -109,15 +120,18 @@ const NoPropertiesFound: FC<NoPropertiesFoundProps> = ({
           />
         </svg>
       )}
-      <h2 className="text-xl font-bold text-center">{t("title")}</h2>
+      <h2 className="text-xl font-bold text-center">
+        {" "}
+        {t("title", { title: title ?? t("title") })}
+      </h2>
       <p className="max-w-xs mt-2 text-sm text-center text-gray-500">
-        {t("message")}
+        {t("message", { message: message ?? t("message") })}
       </p>
       <Button
         className="px-4 py-2 mt-6 text-white transition-colors duration-300 bg-blue-500 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
         onPress={handleButtonClick}
       >
-        {t("buttonText")}
+        {t("buttonText", { buttonText: buttonText ?? t("buttonText") })}
       </Button>
     </div>
   );

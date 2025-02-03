@@ -2,11 +2,11 @@
 import React, { useEffect, useState } from "react";
 // import PropertyContainer from "@/app/components/PropertyContainer";
 // import PropertyCard from "@/app/components/PropertyCard";
-import NoPropertiesFound from "@/app/[locale]/result/_components/noPropertiesFound";
 import { useFavorites } from "@/app/[locale]/context/FavoriteContext";
 import PageTitle from "../../components/pageTitle";
 import PropertyContainer from "../../components/PropertyContainer";
 import PropertyCard from "../../components/PropertyCard";
+import NoPropertiesFound from "../../result/_components/noPropertiesFound";
 // import PageTitle from "@/app/components/pageTitle";
 
 export default function FavoriteProperties() {
