@@ -30,9 +30,9 @@
 // Cedrico 10/12/2024
 
 import React from "react";
-import AboutSVG from "../app/assets/svg/AboutSVG";
-import HomeSVG from "../app/assets/svg/HomeSVG";
-import ContactSVG from "../app/assets/svg/ContactSVG";
+import AboutSVG from "../app/[locale]/assets/svg/AboutSVG";
+import HomeSVG from "../app/[locale]/assets/svg/HomeSVG";
+import ContactSVG from "../app/[locale]/assets/svg/ContactSVG";
 
 export type NavBarsType = {
   url: string;

@@ -1,7 +1,7 @@
-import HeartSVG from "../app/assets/svg/HeartSVG";
-import LogoutSVG from "../app/assets/svg/LogoutSVG";
-import PropertySVG from "../app/assets/svg/PropertySVG";
-import UserSVG from "../app/assets/svg/UserSVG";
+import HeartSVG from "../app/[locale]/assets/svg/HeartSVG";
+import LogoutSVG from "../app/[locale]/assets/svg/LogoutSVG";
+import PropertySVG from "../app/[locale]/assets/svg/PropertySVG";
+import UserSVG from "../app/[locale]/assets/svg/UserSVG";
 import { NavBarsType } from "./navbars";
 
 export const userOptions: NavBarsType = [

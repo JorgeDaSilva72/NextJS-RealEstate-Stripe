@@ -1,0 +1,815 @@
+{
+  "hero": {
+    "title": "ابحث عن العقار الذي تحلم به",
+    "description": "تصفح مئات الإعلانات للعثور على المكان المثالي للعيش",
+    "postButton": "نشر إعلان",
+    "searchButton": "البحث عن إعلان"
+  },
+  "appbar": {
+    "siteTitle": "AFRIQUE AVENIR IMMO",
+    "openMenu": "فتح القائمة",
+    "closeMenu": "إغلاق القائمة",
+    "publishAd": "نشر إعلان",
+    "home": "الرئيسية",
+    "menu": {
+      "realEstate": "العقارات",
+      "services": "الخدمات",
+      "contact": "اتصل بنا",
+      "aboutUs": "معلومات عنا"
+    },
+    "dropdown": {
+      "viewAll": "عرض الكل",
+      "rent": "الإيجار",
+      "buy": "الشراء"
+    }
+  },
+  "navigation": {
+    "acheter": "شراء",
+    "louer": "إيجار",
+    "buy-apartment": {
+      "title": "شراء شقة",
+      "description": "اشترِ العقار الذي يناسبك"
+    },
+    "buy-house": {
+      "title": "شراء منزل",
+      "description": "اعثر على منزل أحلامك"
+    },
+    "rent-apartment": {
+      "title": "إيجار شقة",
+      "description": "إيجار الشقق"
+    },
+    "rent-house": {
+      "title": "إيجار منزل",
+      "description": "إيجار المنازل"
+    },
+    "seasonal-rent": {
+      "title": "إيجار موسمي",
+      "description": "إيجار لفترة محددة"
+    },
+    "furnished-rent": {
+      "title": "إيجار مفروش",
+      "description": "إيجار الشقق المفروشة"
+    },
+    "exclusive-rentals": {
+      "title": "إيجار حصري",
+      "description": "إيجارات حصرية AFRIQUE AVENIR"
+    }
+  },
+  "LanguageSwitcher": {
+    "selectLanguage": "تغيير اللغة",
+    "languages": {
+      "fr": "الفرنسية",
+      "en": "الإنجليزية",
+      "pt": "البرتغالية",
+      "ar": "العربية"
+    }
+  },
+  "Footer": {
+    "logoAlt": "أيقونة",
+    "companyName": "AFRIQUE AVENIR",
+    "contact": "اتصل بنا",
+    "platforms": "المنصات",
+    "help": "المساعدة",
+    "contactUs": "تواصل معنا",
+    "feedback": "ملاحظات",
+    "socialMedia": "وسائل التواصل الاجتماعي",
+    "feedbackSuccess": "تم إرسال ملاحظاتك بنجاح! شكراً لك.",
+    "contactSuccess": "تم إرسال رسالتك بنجاح! سنرد عليك قريباً.",
+    "sendError": "حدث خطأ أثناء إرسال الرسالة",
+    "generalError": "حدث خطأ. يرجى المحاولة مرة أخرى."
+  },
+  "faq": {
+    "title": "الأسئلة الشائعة",
+    "publishAd": {
+      "question": "كيف يمكنني نشر إعلان عقاري؟",
+      "answer": "لنشر إعلان، قم بتسجيل الدخول إلى حسابك، ثم اضغط على 'نشر إعلان' واملأ النموذج بتفاصيل العقار: الصور، الوصف، السعر، والمواصفات. سيتم عرض إعلانك بعد الموافقة عليه من قبل فريقنا."
+    },
+    "fees": {
+      "question": "ما هي رسوم نشر الإعلان؟",
+      "answer": "نشر الإعلان مجاني ولكنه محدود بـ 5 صور كحد أقصى. للمزيد من الميزات، خاصةً للمحترفين، نقدم خطط اشتراك سنوية مختلفة حسب عدد الإعلانات وعدد الصور والفيديوهات لكل إعلان. راجع جدول الأسعار لمزيد من التفاصيل."
+    },
+    "duration": {
+      "question": "كم من الوقت يبقى إعلاني على الموقع؟",
+      "answer": "تبقى الإعلانات على الموقع لمدة 30 يومًا. يمكنك تجديدها مجانًا قبل انتهاء المدة. إذا لم يتم تجديد الإعلان، سيتم أرشفته تلقائيًا لكنه سيظل متاحًا في حسابك الشخصي."
+    },
+    "modify": {
+      "question": "كيف يمكنني تعديل أو حذف إعلاني؟",
+      "answer": "قم بتسجيل الدخول إلى حسابك وانتقل إلى قسم 'إعلاناتي'. يمكنك تعديل أو حذف إعلاناتك في أي وقت. التعديلات تخضع لموافقة جديدة من فريقنا."
+    },
+    "contact": {
+      "question": "كيف يمكنني التواصل مع البائع أو الوكالة؟",
+      "answer": "في كل إعلان، ستجد زر 'اتصال' الذي يسمح لك بإرسال رسالة مباشرة إلى البائع. يمكنك أيضًا حفظ الإعلانات التي تهمك في المفضلة للرجوع إليها لاحقًا."
+    }
+  },
+  "FeedbackModal": {
+    "title": "التقييم",
+    "form": {
+      "category": {
+        "label": "نوع التقييم",
+        "placeholder": "اختر فئة"
+      },
+      "name": {
+        "label": "الاسم الكامل",
+        "placeholder": "اسمك"
+      },
+      "email": {
+        "label": "البريد الإلكتروني",
+        "placeholder": "your@email.com"
+      },
+      "phone": {
+        "label": "رقم الهاتف",
+        "placeholder": "+1234567890 أو 0612345678",
+        "description": "يُقبل التنسيق الدولي (مثلاً: +1234567890)"
+      },
+      "message": {
+        "label": "الرسالة",
+        "placeholder": "اكتب رسالتك..."
+      }
+    },
+    "buttons": {
+      "cancel": "إلغاء",
+      "submit": "إرسال التقييم",
+      "submitting": "جارٍ الإرسال..."
+    },
+    "errors": {
+      "formValidationFailed": "يرجى تصحيح الأخطاء في النموذج.",
+      "submissionFailed": "حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى.",
+      "category": {
+        "required": "يجب اختيار فئة",
+        "invalid": "فئة غير صالحة"
+      },
+      "email": {
+        "required": "البريد الإلكتروني مطلوب",
+        "invalid": "تنسيق البريد الإلكتروني غير صالح"
+      },
+      "phone": {
+        "required": "رقم الهاتف مطلوب",
+        "invalidFormat": "تنسيق رقم الهاتف غير صالح",
+        "invalidLength": "يجب أن يحتوي الرقم على 8 إلى 15 رقمًا"
+      },
+      "name": {
+        "required": "الاسم مطلوب",
+        "tooShort": "يجب أن يحتوي الاسم على حرفين على الأقل"
+      },
+      "message": {
+        "required": "الرسالة مطلوبة",
+        "tooShort": "يجب أن تحتوي الرسالة على 10 أحرف على الأقل"
+      }
+    },
+    "feedback": {
+      "categories": {
+        "bug": {
+          "label": "الإبلاغ عن خطأ",
+          "description": "الإبلاغ عن مشكلة أو سلوك غير متوقع"
+        },
+        "feature": {
+          "label": "ميزة جديدة",
+          "description": "اقتراح ميزة جديدة"
+        },
+        "improvement": {
+          "label": "تحسين",
+          "description": "اقتراح تحسين لميزة موجودة"
+        },
+        "performance": {
+          "label": "الأداء",
+          "description": "الإبلاغ عن مشاكل الأداء"
+        },
+        "security": {
+          "label": "الأمان",
+          "description": "الإبلاغ عن مشكلة أمنية"
+        },
+        "other": {
+          "label": "أخرى",
+          "description": "نوع آخر من التقييم"
+        }
+      }
+    }
+  },
+  "ContactModal": {
+    "title": "اتصل بنا",
+    "form": {
+      "name": {
+        "label": "الاسم الكامل",
+        "placeholder": "اسمك"
+      },
+      "email": {
+        "label": "البريد الإلكتروني",
+        "placeholder": "your@email.com"
+      },
+      "phone": {
+        "label": "رقم الهاتف",
+        "placeholder": "+1234567890 أو 0612345678",
+        "description": "يُقبل التنسيق الدولي (مثلاً: +1234567890)"
+      },
+      "message": {
+        "label": "الرسالة",
+        "placeholder": "اكتب رسالتك..."
+      }
+    },
+    "buttons": {
+      "cancel": "إلغاء",
+      "submit": "إرسال الرسالة",
+      "submitting": "جارٍ الإرسال..."
+    },
+    "errors": {
+      "formValidationFailed": "يرجى تصحيح الأخطاء في النموذج.",
+      "submissionFailed": "حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى.",
+      "email": {
+        "required": "البريد الإلكتروني مطلوب",
+        "invalid": "تنسيق البريد الإلكتروني غير صالح"
+      },
+      "phone": {
+        "required": "رقم الهاتف مطلوب",
+        "invalidFormat": "تنسيق رقم الهاتف غير صالح",
+        "invalidLength": "يجب أن يحتوي الرقم على 8 إلى 15 رقمًا"
+      },
+      "name": {
+        "required": "الاسم مطلوب",
+        "tooShort": "يجب أن يحتوي الاسم على حرفين على الأقل"
+      },
+      "message": {
+        "required": "الرسالة مطلوبة",
+        "tooShort": "يجب أن تحتوي الرسالة على 10 أحرف على الأقل"
+      }
+    }
+  },
+
+  "Property": {
+    "pageTitle": "إعلان",
+    "backToListings": "العودة إلى الإعلانات",
+    "reference": "المرجع:",
+    "bookAppointment": "حجز موعد",
+    "share": "مشاركة",
+    "shareTitle": "اكتشف هذا العقار: {propertyName}",
+    "description": "الوصف",
+    "features": "المميزات",
+    "bedrooms": "غرفة/غرف",
+    "bathrooms": "حمام/حمامات",
+    "parking": "موقف سيارات",
+    "area": "المساحة",
+    "swimmingPool": "مسبح",
+    "garden": "حديقة/فناء",
+    "balcony": "شرفة/تراس",
+    "yes": "نعم",
+    "no": "لا",
+    "address": "العنوان",
+    "country": "البلد",
+    "region": "المنطقة",
+    "city": "المدينة",
+    "streetAddress": "العنوان",
+    "zipCode": "الرمز البريدي",
+    "information": "معلومات",
+    "contact": "اتصال",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "videos": "فيديوهات",
+    "videoTitle": "فيديو {id}"
+  },
+  "ProfilePage": {
+    "title": "ملفي الشخصي",
+    "backToHome": "العودة إلى الصفحة الرئيسية",
+    "information": "معلومات",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "accountCreated": "تم إنشاء الحساب في:",
+    "numberOfListings": "عدد الإعلانات",
+    "viewListings": "عرض إعلاناتي",
+    "subscription": "الاشتراك",
+    "changeSubscription": "تغيير الاشتراك",
+    "price": "السعر باليورو",
+    "purchasedOn": "تم الشراء في",
+    "expiresOn": "تنتهي في",
+    "noSubscription": "لم يتم العثور على اشتراك!",
+    "buySubscription": "اشترِ اشتراكك"
+  },
+  "BuyPage": {
+    "heroTitle": "ابحث عن عقارك في المغرب",
+    "heroSubtitle": "عقارات استثنائية في أجمل مدن المملكة",
+    "benefitsTitle": "لماذا تشتري في المغرب؟",
+    "benefits": [
+      {
+        "title": "سوق ديناميكي",
+        "description": "قطاع عقاري متطور باستمرار مع فرص استثمارية جذابة"
+      },
+      {
+        "title": "جودة الحياة",
+        "description": "مناخ لطيف، ثقافة غنية، وضيافة أسطورية"
+      },
+      {
+        "title": "بنية تحتية حديثة",
+        "description": "مدن تشهد تطورًا كبيرًا مع بنية تحتية عالية الجودة"
+      }
+    ],
+    "citiesTitle": "اكتشف عقاراتنا حسب المدينة",
+    "searchTitle": "حدد بحثك عن العقارات"
+  },
+  "ContactSection": {
+    "title": "هل تحتاج إلى مساعدة في مشروعك العقاري؟",
+    "description": "مستشارونا هنا لمساعدتك في البحث",
+    "buttonLabel": "اتصل بنا"
+  },
+  "CityCard": {
+    "propertiesAvailable": "{count} عقارات متاحة",
+    "averagePrice": "متوسط السعر على موقعنا: {price}",
+    "viewProperties": "عرض العقارات →"
+  },
+  "SearchForm": {
+    "operationType": "نوع العملية",
+    "propertyType": "نوع العقار",
+    "city": "المدينة",
+    "budget": "الميزانية",
+    "bedrooms": "غرفة/غرف",
+    "moreFilters": "المزيد من الفلاتر",
+    "search": "بحث",
+    "searching": "جارٍ البحث...",
+    "placeholder": {
+      "operationType": "اختر نوع العملية",
+      "propertyType": "اختر نوع العقار",
+      "city": "اختر مدينة",
+      "budget": "اختر الميزانية",
+      "bedrooms": "اختر عدد الغرف"
+    },
+    "error": {
+      "fetchStatuses": "فشل في استرجاع أنواع العمليات",
+      "fetchTypes": "فشل في استرجاع أنواع العقارات"
+    }
+  },
+  "RentPage": {
+    "heroTitle": "استأجر عقارك في المغرب",
+    "heroSubtitle": "عقارات للإيجار في أجمل مدن المملكة",
+    "benefitsTitle": "لماذا تستأجر في المغرب؟",
+    "benefits": [
+      {
+        "title": "مرونة",
+        "description": "خيارات تأجير متنوعة تناسب جميع الميزانيات والفترات"
+      },
+      {
+        "title": "جودة الحياة",
+        "description": "أسلوب حياة مريح في أحياء حيوية ذات خدمات متكاملة"
+      },
+      {
+        "title": "سهولة",
+        "description": "عملية تأجير شفافة مع مرافقة شخصية"
+      }
+    ],
+    "citiesTitle": "ابحث عن الإيجارات حسب المدينة",
+    "searchTitle": "قم بتضييق نطاق بحثك العقاري",
+    "error": {
+      "fetchError": "تعذر تحميل تفاصيل المدن",
+      "retry": "إعادة المحاولة"
+    },
+    "cityCard": {
+      "availableProperties": "{count} عقارات متاحة للإيجار",
+      "averageRent": "متوسط الإيجار على موقعنا: {price}",
+      "viewProperties": "عرض الإيجارات →"
+    }
+  },
+  "SeasonalRentPage": {
+    "heroTitle": "الإيجارات الموسمية في المغرب",
+    "heroSubtitle": "إقامة لا تُنسى في أجمل وجهات المملكة",
+    "benefitsTitle": "لماذا تختار الإيجار الموسمي؟",
+    "benefits": [
+      {
+        "title": "حرية كاملة",
+        "description": "مساحة ومرونة أكثر من الفنادق، مثالية للعائلات والمجموعات"
+      },
+      {
+        "title": "أصالة",
+        "description": "عِش كالمحلي في منازل ذات طابع خاص"
+      },
+      {
+        "title": "أفضل قيمة مقابل السعر",
+        "description": "أسعار مناسبة مع خدمات عالية الجودة"
+      }
+    ],
+    "citiesTitle": "ابحث عن الإيجارات الموسمية حسب المدينة",
+    "searchTitle": "قم بتضييق نطاق بحثك العقاري",
+    "error": {
+      "fetchError": "تعذر تحميل تفاصيل المدن",
+      "retry": "إعادة المحاولة"
+    },
+    "cityCard": {
+      "seasonalRentals": "{count} عقارات متاحة للإيجار الموسمي",
+      "peakSeason": "الموسم العالي: {season}",
+      "highSeasonPrice": "سعر الموسم العالي: {price}",
+      "lowSeasonPrice": "سعر الموسم المنخفض: {price}",
+      "highlights": "أبرز الميزات: {highlights}",
+      "viewAvailability": "عرض التوافر →"
+    },
+    "seasonalCalendar": {
+      "title": "تقويم المواسم",
+      "spring": {
+        "title": "الربيع (مارس - مايو)",
+        "description": "مناخ مثالي، أسعار معتدلة، مهرجانات ثقافية"
+      },
+      "summer": {
+        "title": "الصيف (يونيو - أغسطس)",
+        "description": "ذروة الموسم السياحي، أنشطة ليلية مفعمة بالحيوية"
+      },
+      "autumn": {
+        "title": "الخريف (سبتمبر - نوفمبر)",
+        "description": "طقس لطيف، أسعار جذابة، سياحة أقل ازدحامًا"
+      },
+      "winter": {
+        "title": "الشتاء (ديسمبر - فبراير)",
+        "description": "رياضات شتوية في إفران، سياحة ثقافية"
+      }
+    }
+  },
+
+  "FurnishedRentPage": {
+    "benefits": {
+      "immediateSettlement": {
+        "title": "انتقال فوري",
+        "description": "منازل مجهزة بالكامل وجاهزة للسكن فور وصولك"
+      },
+      "premiumComfort": {
+        "title": "راحة فائقة",
+        "description": "أثاث عالي الجودة، تجهيزات حديثة وخدمات متكاملة"
+      },
+      "maximumFlexibility": {
+        "title": "مرونة قصوى",
+        "description": "عقود إيجار قابلة للتعديل مع إمكانية الإيجار القصير أو الطويل الأجل"
+      }
+    },
+    "furnishedRent": "إيجار مفروش",
+    "propertiesAvailable": "عقارات مفروشة متاحة",
+    "averageRent": "متوسط الإيجار على موقعنا:",
+    "included": "متضمن",
+    "discoverProperties": "اكتشف العقارات",
+    "fetchError": "خطأ أثناء استرجاع البيانات",
+    "loadError": "تعذر تحميل تفاصيل المدن",
+    "heroBanner": {
+      "alt": "إيجارات مفروشة في المغرب",
+      "title": "إيجارات مفروشة في المغرب",
+      "subtitle": "شقق وفيلات مفروشة وجاهزة للسكن في أجمل مدن المملكة"
+    },
+    "benefitsSection": {
+      "title": "مزايا الإيجار المفروش"
+    },
+    "citiesSection": {
+      "title": "ابحث عن الإيجار المفروش حسب المدينة"
+    },
+    "servicesSection": {
+      "title": "الخدمات المتوفرة في الإيجارات المفروشة",
+      "internet": {
+        "title": "إنترنت عالي السرعة",
+        "description": "واي فاي ألياف بصرية متوفر"
+      },
+      "appliances": {
+        "title": "الأجهزة الكهربائية",
+        "description": "معدات حديثة وكاملة"
+      },
+      "maintenance": {
+        "title": "الصيانة",
+        "description": "خدمة تنظيف متوفرة"
+      },
+      "concierge": {
+        "title": "الكونسيرج",
+        "description": "مساعدة متوفرة 7 أيام في الأسبوع"
+      }
+    },
+    "searchSection": {
+      "title": "قم بتضييق نطاق بحثك العقاري"
+    },
+    "retry": "إعادة المحاولة"
+  },
+  "ExclusiveRentals": {
+    "common": {
+      "exclusiveRental": "إيجار حصري",
+      "retry": "إعادة المحاولة"
+    },
+    "hero": {
+      "imageAlt": "إيجارات حصرية إفريقيا أفينير",
+      "title": "إيجارات حصرية",
+      "subtitle": "إقامات فريدة في عقارات مختارة من شركائنا في إفريقيا أفينير"
+    },
+    "benefits": {
+      "exclusivity": {
+        "title": "حصري",
+        "description": "الوصول إلى عقارات فاخرة منتقاة خصيصًا وحصرية لدى AFRIQUE AVENIR."
+      },
+      "trust": {
+        "title": "ثقة وأمان",
+        "description": "عقارات معتمدة من إفريقيا أفينير لضمان الجودة"
+      },
+      "comfort": {
+        "title": "راحة مثالية",
+        "description": "إقامات تناسب العائلات والأصدقاء"
+      }
+    },
+    "cityCard": {
+      "availableProperties": "عقارات متاحة",
+      "peakSeason": "الموسم العالي",
+      "peakSeasonPrice": "سعر الموسم العالي",
+      "lowSeasonPrice": "سعر الموسم المنخفض",
+      "highlights": "أبرز الميزات",
+      "checkAvailability": "تحقق من التوافر"
+    },
+    "sections": {
+      "benefits": {
+        "title": "لماذا تختار إيجاراتنا الحصرية؟"
+      },
+      "cities": {
+        "title": "اكتشف وجهاتنا الشريكة"
+      },
+      "search": {
+        "title": "قم بتضييق نطاق بحثك العقاري"
+      },
+      "contact": {
+        "title": "اتصل بنا لحجز إقامتك الحصرية"
+      }
+    },
+    "errors": {
+      "fetchFailed": "خطأ أثناء استرجاع البيانات",
+      "loadFailed": "تعذر تحميل تفاصيل الإيجارات الحصرية"
+    }
+  },
+  "GratuitPack": {
+    "header": {
+      "title": "الباقة المبتدئة"
+    },
+    "features": {
+      "unlimitedAds": "إعلانات غير محدودة",
+      "photosLimit": "محدود بـ {count} صور لكل إعلان",
+      "dedicatedSpace": "مساحة مخصصة لإدارة إعلاناتك",
+      "shortVideo": "{count} فيديو قصير (1 دقيقة) لكل إعلان",
+      "youtubeVideo": "فيديو تقديمي على YouTube مدته {duration}",
+      "exclusiveZone": "منطقة استهداف حصرية تبلغ {radius} كم"
+    },
+    "footer": {
+      "description": "رؤية أكبر في سوق العقارات من خلال تواصل محسن عبر YouTube ووسائل التواصل الاجتماعي."
+    }
+  },
+  "DiamondPack": {
+    "packElite": "الباقة النخبوية",
+    "specialOffer": "عرض خاص {country} صالح من {startDate} إلى {endDate}",
+    "maxVisibility": "أقصى رؤية وشهرة معززة",
+    "premiumAds": "{count} إعلانات مميزة",
+    "premiumAdsDescription": "سلط الضوء على أفضل عقاراتك",
+    "photosPerAd": "{count} صور احترافية لكل إعلان",
+    "photosDescription": "صور عالية الجودة لجذب المشترين",
+    "shortVideos": "{count} فيديو قصير ومؤثر (1 دقيقة) لكل إعلان",
+    "shortVideosDescription": "اعرض عقاراتك من جميع الزوايا",
+    "youtubeVideo": "فيديو تقديمي على YouTube مدته {duration}",
+    "youtubeVideoDescription": "عزز صورتك التجارية",
+    "exclusiveZone": "منطقة استهداف حصرية تبلغ {radius} كم أو 100,000 نسمة",
+    "footerDescription": "متابعة شخصية طوال فترة التعاون. رؤية معززة في سوق العقارات، مبيعات أسرع بفضل الإعلانات عالية الجودة، وعائد استثمار سريع.",
+    "scheduleAppointment": "حدد موعدًا",
+    "meetingRequestSuccess": "تم إرسال طلب موعدك بنجاح!",
+    "meetingRequestError": "خطأ أثناء إرسال الطلب",
+    "meetingRequestErrorTryAgain": "حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى."
+  },
+  "PurchasePlan": {
+    "payWith": "الدفع بواسطة:",
+    "paypal": "باي بال",
+    "stripe": "سترايب",
+    "subscribe": "اشترك",
+    "subscribeToPlan": "اشترك في الباقة {planName}",
+    "tryForFree": "جربه مجانًا!",
+    "paymentSuccess": "شكرًا لاشتراكك.",
+    "paymentError": "حدث خطأ أثناء عملية الدفع.",
+    "loginRequired": "يجب عليك تسجيل الدخول لإجراء عملية الشراء.",
+    "redirecting": "جارٍ إعادة التوجيه...",
+    "environmentKeysMissing": "مفاتيح بيئة سترايب أو باي بال مفقودة!",
+    "configError": "حدث خطأ في التكوين. يرجى المحاولة لاحقًا.",
+    "transactionSuccess": "تمت العملية بنجاح! شكرًا لك، {userName}. المرجع: {transactionId}",
+    "paypalError": "خطأ في الدفع عبر باي بال: {errorMessage}",
+    "subscriptionSaved": "تم حفظ الاشتراك بنجاح.",
+    "subscriptionError": "حدث خطأ أثناء حفظ الاشتراك."
+  },
+  "AddPropertyPage": {
+    "authError": "حدثت مشكلة في المصادقة",
+    "subscriptionRequired": "الاشتراك مطلوب لنشر الإعلانات.",
+    "subscriptionExpired": "انتهت صلاحية اشتراكك. يرجى تجديده لمتابعة نشر الإعلانات.",
+    "limitReached": "لقد وصلت إلى الحد الأقصى {limit} من الإعلانات في خطتك الحالية {plan}. قم بترقية اشتراكك للمتابعة."
+  },
+  "SubModal": {
+    "subscriptionRequired": "الاشتراك مطلوب",
+    "viewSubscriptions": "عرض الاشتراكات"
+  },
+  "AddPropertyForm": {
+    "validation": {
+      "titleRequired": "يرجى إدخال عنوان",
+      "descriptionRequired": "يرجى إدخال وصف",
+      "typeRequired": "يرجى اختيار النوع",
+      "statusRequired": "يرجى تحديد الحالة",
+      "priceRequired": "يرجى إدخال السعر",
+      "priceInvalid": "يجب أن يكون السعر رقمًا",
+      "cityRequired": "يرجى إدخال اسم المدينة",
+      "countryRequired": "يرجى إدخال اسم البلد",
+      "bedroomsRequired": "يرجى تحديد عدد الغرف",
+      "bedroomsNegative": "لا يمكن أن يكون عدد الغرف سلبيًا",
+      "bathroomsRequired": "يرجى تحديد عدد الحمامات",
+      "bathroomsNegative": "لا يمكن أن يكون عدد الحمامات سلبيًا",
+      "parkingRequired": "يرجى تحديد عدد مواقف السيارات",
+      "parkingNegative": "لا يمكن أن يكون عدد مواقف السيارات سلبيًا",
+      "areaRequired": "يرجى إدخال المساحة بالمتر المربع",
+      "areaNegative": "لا يمكن أن تكون المساحة سلبية",
+      "contactNameRequired": "يرجى إدخال اسم جهة الاتصال",
+      "phoneInvalid": "يرجى إدخال رقم هاتف صالح",
+      "emailInvalid": "يرجى إدخال بريد إلكتروني صالح"
+    },
+    "steps": {
+      "basic": "أساسي",
+      "location": "الموقع",
+      "features": "المواصفات",
+      "photos": "الصور",
+      "contact": "الاتصال"
+    },
+    "propertyEdited": "تم تعديل الإعلان!",
+    "propertyAdded": "تمت إضافة الإعلان!",
+    "photoLimitExceeded": "لقد تجاوزت الحد الأقصى {limit} من الصور.",
+    "videoLimitExceeded": "لقد تجاوزت الحد الأقصى {limit} من الفيديوهات.",
+    "unlimited": "غير محدود"
+  },
+
+  "PropertyForm": {
+    "Basic": {
+      "title": "عنوان الإعلان",
+      "description": "الوصف",
+      "propertyType": "نوع العقار المطلوب",
+      "transactionType": "نوع المعاملة",
+      "priceInEuros": "السعر باليورو",
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "Location": {
+      "address": "العنوان",
+      "zipCode": "الرمز البريدي",
+      "city": "المدينة",
+      "country": "البلد",
+      "region": "المنطقة",
+      "additionalInfo": "معلومات إضافية",
+      "selectCountry": "اختر بلداً",
+      "chooseCountry": "اختر بلداً",
+      "searchAddress": "ابحث عن عنوان",
+      "searchAddressPlaceholder": "ابحث عن عنوان",
+      "selectCountryFirst": "يرجى اختيار بلد أولاً",
+      "addressUpdateError": "حدث خطأ أثناء تحديث العنوان",
+      "noAddressDetails": "لا توجد تفاصيل متاحة لهذا العنوان",
+      "googleMapsError": "خطأ في تحميل خرائط Google. يرجى المحاولة لاحقًا.",
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "Features": {
+      "bedrooms": "غرفة/غرف نوم",
+      "bathrooms": "حمام/حمامات",
+      "parkingSpots": "موقف/مواقف سيارات",
+      "area": "المساحة بالمتر المربع",
+      "hasSwimmingPool": "يحتوي على مسبح",
+      "hasGardenYard": "يحتوي على حديقة/فناء",
+      "hasBalcony": "يحتوي على شرفة/تراس",
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "Picture": {
+      "maxImagesError": "لا يمكنك تحميل أكثر من {count} صور.",
+      "invalidFilesError": "بعض الملفات ليست صورًا صالحة.",
+      "fileSizeError": "بعض الملفات أكبر من {size} ميغابايت.",
+      "premiumOnlyError": "يمكن للمستخدمين الذين لديهم باقة ELITE DIAMANT فقط إضافة فيديو.",
+      "invalidYoutubeLink": "رابط يوتيوب غير صالح.",
+      "maxVideosError": "لا يمكنك إضافة أكثر من {count} فيديو.",
+      "clickToAddImages": "انقر هنا لإضافة صور",
+      "acceptedFormats": "الصيغ المقبولة: JPG، JPEG، WEBP (بحد أقصى 2 ميغابايت لكل ملف)",
+      "addYoutubeVideo": "إضافة فيديو يوتيوب",
+      "note": "ملاحظة",
+      "premiumFeatureNote": "يمكن للمستخدمين الذين لديهم باقة ELITE DIAMANT فقط إضافة فيديو.",
+      "enterYoutubeLink": "أدخل رابط يوتيوب",
+      "add": "إضافة",
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "Contact": {
+      "name": "اسم جهة الاتصال",
+      "phone": "الهاتف",
+      "email": "البريد الإلكتروني",
+      "previous": "السابق",
+      "save": "حفظ"
+    }
+  },
+  "HeaderProperties": {
+    "myListings": "إعلاناتي",
+    "createListing": "إنشاء إعلان"
+  },
+  "PropertiesTable": {
+    "title": "العنوان",
+    "price": "السعر",
+    "type": "النوع",
+    "status": "الحالة",
+    "actions": "الإجراءات",
+    "details": "التفاصيل",
+    "edit": "تحرير",
+    "delete": "حذف",
+    "appointment": "موعد"
+  },
+  "DeletePropertyPage": {
+    "confirmDelete": "هل أنت متأكد أنك تريد حذف هذا الإعلان؟",
+    "title": "العنوان",
+    "cancel": "إلغاء",
+    "delete": "حذف"
+  },
+  "NoPropertiesFound": {
+    "title": "لم يتم العثور على إعلانات",
+    "message": "عذرًا، لم نعثر على أي إعلانات تطابق بحثك. حاول تعديل معايير البحث.",
+    "buttonText": "تعديل البحث"
+  },
+  "Search": {
+    "searchPlaceholder": "ابحث عن إعلان...",
+    "cityPlaceholder": "المدينة",
+    "filters": "الفلاتر",
+    "accept": "قبول",
+    "clearFilters": "مسح الفلاتر",
+    "closeModal": "إغلاق نافذة الفلاتر"
+  },
+  "filters": {
+    "allPropertyTypes": "كل أنواع العقارات",
+    "allOperations": "كل العمليات",
+    "allCountries": "كل البلدان",
+    "operation": "العملية",
+    "chooseOperation": "اختر العملية",
+    "propertyType": "نوع العقار",
+    "choosePropertyType": "اختر نوع العقار",
+    "country": "البلد",
+    "chooseCountry": "اختر بلداً",
+    "sortBy": "الترتيب حسب",
+    "noSorting": "بدون ترتيب",
+    "priceAsc": "السعر تصاعدي",
+    "priceDesc": "السعر تنازلي",
+    "surfaceAsc": "المساحة تصاعدي",
+    "surfaceDesc": "المساحة تنازلي",
+    "oldest": "الأقدم",
+    "newest": "الأحدث",
+    "price": "السعر (€)",
+    "area": "المساحة (م²)",
+    "bedrooms": "غرف النوم",
+    "bathrooms": "الحمامات",
+    "fetchErrorStatuses": "خطأ أثناء جلب الحالات:",
+    "fetchErrorTypes": "خطأ أثناء جلب الأنواع:"
+  },
+  "PropertyCard": {
+    "imageNotAvailable": "الصورة غير متاحة",
+    "imageAlt": "{propertyName} - صورة {imageNumber}",
+    "previousImage": "الصورة السابقة",
+    "nextImage": "الصورة التالية",
+    "imageCounter": "{current} / {total}",
+    "notAvailable": "غير متاح",
+    "toggleFavorite": "إضافة/إزالة من المفضلة",
+    "viewDetails": "عرض التفاصيل",
+    "detailsNotAvailable": "التفاصيل غير متاحة",
+    "area": "{area} م²"
+  },
+  "DescriptionCard": {
+    "showMore": "عرض المزيد",
+    "showLess": "عرض أقل"
+  },
+  "MeetingModal": {
+    "title": "طلب موعد - باقة {planName}",
+    "fields": {
+      "name": {
+        "label": "الاسم الكامل",
+        "placeholder": "اسمك"
+      },
+      "email": {
+        "label": "البريد الإلكتروني",
+        "placeholder": "your@email.com"
+      },
+      "phone": {
+        "label": "الهاتف",
+        "placeholder": "+1234567890 أو 0612345678",
+        "description": "يُقبل التنسيق الدولي (مثال: +1234567890)"
+      },
+      "message": {
+        "label": "الرسالة",
+        "placeholder": "رسالتك..."
+      }
+    },
+    "validation": {
+      "nameRequired": "الاسم مطلوب",
+      "nameLength": "يجب أن يحتوي الاسم على حرفين على الأقل",
+      "emailRequired": "البريد الإلكتروني مطلوب",
+      "emailInvalid": "تنسيق البريد الإلكتروني غير صالح",
+      "phoneRequired": "رقم الهاتف مطلوب",
+      "phoneInvalid": "تنسيق رقم الهاتف غير صالح",
+      "phoneLength": "يجب أن يحتوي الرقم على 8 إلى 15 رقمًا",
+      "messageRequired": "الرسالة مطلوبة",
+      "messageLength": "يجب أن تحتوي الرسالة على 10 أحرف على الأقل"
+    },
+    "errors": {
+      "formValidation": "يرجى تصحيح الأخطاء في النموذج.",
+      "submitError": "حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى."
+    },
+    "buttons": {
+      "cancel": "إلغاء",
+      "submit": "إرسال الطلب",
+      "sending": "جاري الإرسال..."
+    }
+  },
+  "ModalDelete": {
+    "title": "حذف",
+    "confirmation": "هل أنت متأكد أنك تريد حذف {slug}؟",
+    "cancel": "إلغاء",
+    "delete": "حذف"
+  }
+}

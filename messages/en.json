@@ -1,0 +1,866 @@
+{
+  "hero": {
+    "title": "Find your dream property",
+    "description": "Browse hundreds of listings to find the perfect place to live",
+    "postButton": "Post a listing",
+    "searchButton": "Search listings"
+  },
+  "appbar": {
+    "siteTitle": "AFRIQUE AVENIR IMMO",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "publishAd": "Post an ad",
+    "home": "Home",
+    "menu": {
+      "realEstate": "Real Estate",
+      "services": "Services",
+      "contact": "Contact",
+      "aboutUs": "About Us"
+    },
+    "dropdown": {
+      "viewAll": "View all",
+      "rent": "Rent",
+      "buy": "Buy"
+    }
+  },
+  "navigation": {
+    "acheter": "Buy",
+    "louer": "Rent",
+    "buy-apartment": {
+      "title": "Buy an apartment",
+      "description": "Find the perfect property for you"
+    },
+    "buy-house": {
+      "title": "Buy a house",
+      "description": "Find the house of your dreams"
+    },
+    "rent-apartment": {
+      "title": "Rent an apartment",
+      "description": "Apartment rentals"
+    },
+    "rent-house": {
+      "title": "Rent a house",
+      "description": "House rentals"
+    },
+    "seasonal-rent": {
+      "title": "Seasonal rental",
+      "description": "Short-term vacation rentals"
+    },
+    "furnished-rent": {
+      "title": "Rent a furnished property",
+      "description": "Furnished rentals"
+    },
+    "exclusive-rentals": {
+      "title": "Rent an exclusive property",
+      "description": "Exclusive AFRIQUE AVENIR rentals"
+    }
+  },
+  "LanguageSwitcher": {
+    "selectLanguage": "Change language",
+    "languages": {
+      "fr": "French",
+      "en": "English",
+      "pt": "Portuguese",
+      "ar": "Arabic"
+    }
+  },
+  "Footer": {
+    "logoAlt": "Icon",
+    "companyName": "AFRIQUE AVENIR",
+    "contact": "Contact",
+    "platforms": "Platforms",
+    "help": "Help",
+    "contactUs": "Contact Us",
+    "feedback": "Feedback",
+    "socialMedia": "Social Media",
+    "feedbackSuccess": "Your feedback has been sent successfully! Thank you.",
+    "contactSuccess": "Your message has been sent successfully! We'll get back to you soon.",
+    "sendError": "Error sending the message",
+    "generalError": "An error occurred. Please try again."
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "publishAd": {
+      "question": "How can I post a real estate ad?",
+      "answer": "To post an ad, log into your account, click on 'Post an ad,' and fill out the form with your property details: photos, description, price, and features. Your ad will be visible after validation by our team."
+    },
+    "fees": {
+      "question": "What are the fees for posting an ad?",
+      "answer": "Posting an ad is free but limited to 5 photos. For more features, especially for professionals, we offer various annual plans based on the number of ads, photos, and videos per listing. Check our pricing table for more details."
+    },
+    "duration": {
+      "question": "How long does my ad stay online?",
+      "answer": "Ads remain online for 30 days. You can renew them for free before expiration. If an ad is not renewed, it will be automatically archived but will remain accessible in your personal space."
+    },
+    "modify": {
+      "question": "How can I edit or delete my ad?",
+      "answer": "Log into your account and go to the 'My Ads' section. You can edit or delete your ads anytime. Changes are subject to a new validation by our team."
+    },
+    "contact": {
+      "question": "How can I contact a seller or an agency?",
+      "answer": "On each listing, you will find a 'Contact' button that allows you to send a direct message to the seller. You can also save listings to your favorites to find them easily."
+    }
+  },
+
+  "FeedbackModal": {
+    "title": "Feedback",
+    "form": {
+      "category": {
+        "label": "Feedback Type",
+        "placeholder": "Select a category"
+      },
+      "name": {
+        "label": "Full Name",
+        "placeholder": "Your name"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "your@email.com"
+      },
+      "phone": {
+        "label": "Phone",
+        "placeholder": "+1234567890 or 0612345678",
+        "description": "International format accepted (e.g., +1234567890)"
+      },
+      "message": {
+        "label": "Message",
+        "placeholder": "Your message ..."
+      }
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "submit": "Submit Feedback",
+      "submitting": "Submitting..."
+    },
+    "errors": {
+      "formValidationFailed": "Please correct the errors in the form.",
+      "submissionFailed": "An error occurred while submitting. Please try again.",
+      "category": {
+        "required": "Category is required",
+        "invalid": "Invalid category"
+      },
+      "email": {
+        "required": "Email is required",
+        "invalid": "Invalid email format"
+      },
+      "phone": {
+        "required": "Phone is required",
+        "invalidFormat": "Invalid phone format",
+        "invalidLength": "The number must contain between 8 and 15 digits"
+      },
+      "name": {
+        "required": "Name is required",
+        "tooShort": "Name must contain at least 2 characters"
+      },
+      "message": {
+        "required": "Message is required",
+        "tooShort": "Message must contain at least 10 characters"
+      }
+    },
+    "feedback": {
+      "categories": {
+        "bug": {
+          "label": "Bug Report",
+          "description": "Report a problem or unexpected behavior"
+        },
+        "feature": {
+          "label": "Feature Request",
+          "description": "Suggest a new feature"
+        },
+        "improvement": {
+          "label": "Improvement",
+          "description": "Suggest improvements for an existing feature"
+        },
+        "performance": {
+          "label": "Performance",
+          "description": "Report performance issues"
+        },
+        "security": {
+          "label": "Security",
+          "description": "Report a security issue"
+        },
+        "other": {
+          "label": "Other",
+          "description": "Other type of feedback"
+        }
+      }
+    }
+  },
+
+  "ContactModal": {
+    "title": "Contact Us",
+    "form": {
+      "name": {
+        "label": "Full Name",
+        "placeholder": "Your name"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "your@email.com"
+      },
+      "phone": {
+        "label": "Phone",
+        "placeholder": "+1234567890 or 0612345678",
+        "description": "International format accepted (e.g., +1234567890)"
+      },
+      "message": {
+        "label": "Message",
+        "placeholder": "Your message ..."
+      }
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "submit": "Send Message",
+      "submitting": "Submitting..."
+    },
+    "errors": {
+      "formValidationFailed": "Please correct the errors in the form.",
+      "submissionFailed": "An error occurred while submitting. Please try again.",
+      "email": {
+        "required": "Email is required",
+        "invalid": "Invalid email format"
+      },
+      "phone": {
+        "required": "Phone is required",
+        "invalidFormat": "Invalid phone format",
+        "invalidLength": "The number must contain between 8 and 15 digits"
+      },
+      "name": {
+        "required": "Name is required",
+        "tooShort": "Name must contain at least 2 characters"
+      },
+      "message": {
+        "required": "Message is required",
+        "tooShort": "Message must contain at least 10 characters"
+      }
+    }
+  },
+  "Property": {
+    "pageTitle": "Listing",
+    "backToListings": "Back to listings",
+    "reference": "Ref:",
+    "bookAppointment": "Book Appointment",
+    "share": "Share",
+    "shareTitle": "Discover this property: {propertyName}",
+    "description": "Description",
+    "features": "Features",
+    "bedrooms": "Bedroom(s)",
+    "bathrooms": "Bathroom(s)",
+    "parking": "Parking",
+    "area": "Area",
+    "swimmingPool": "Swimming Pool",
+    "garden": "Garden/Yard",
+    "balcony": "Balcony/Terrace",
+    "yes": "Yes",
+    "no": "No",
+    "address": "Address",
+    "country": "Country",
+    "region": "Region",
+    "city": "City",
+    "streetAddress": "Street Address",
+    "zipCode": "Zip Code",
+    "information": "Information",
+    "contact": "Contact",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "videos": "Videos",
+    "videoTitle": "Video {id}"
+  },
+  "ProfilePage": {
+    "title": "My Profile",
+    "backToHome": "Back to Home",
+    "information": "Information",
+    "name": "Name",
+    "email": "Email",
+    "accountCreated": "Account created on:",
+    "numberOfListings": "Number of listings",
+    "viewListings": "View my listings",
+    "subscription": "Subscription",
+    "changeSubscription": "Change your subscription",
+    "price": "Price in euros",
+    "purchasedOn": "Purchased on",
+    "expiresOn": "Expires on",
+    "noSubscription": "No subscription found!",
+    "buySubscription": "Buy your subscription"
+  },
+  "BuyPage": {
+    "heroTitle": "Find your property in Morocco",
+    "heroSubtitle": "Exceptional properties in the most beautiful cities of the kingdom",
+    "benefitsTitle": "Why buy in Morocco?",
+    "benefits": [
+      {
+        "title": "Dynamic Market",
+        "description": "A constantly evolving real estate sector with attractive investment opportunities"
+      },
+      {
+        "title": "Quality of Life",
+        "description": "A pleasant climate, rich culture, and legendary hospitality"
+      },
+      {
+        "title": "Modern Infrastructure",
+        "description": "Cities under development with quality infrastructure"
+      }
+    ],
+    "citiesTitle": "Discover our properties by city",
+    "searchTitle": "Refine your real estate search"
+  },
+  "ContactSection": {
+    "title": "Need help with your real estate project?",
+    "description": "Our advisors are here to assist you in your search",
+    "buttonLabel": "Contact us"
+  },
+  "CityCard": {
+    "propertiesAvailable": "{count} properties available",
+    "averagePrice": "Average price on our site: {price}",
+    "viewProperties": "View properties →"
+  },
+  "SearchForm": {
+    "operationType": "Operation Type",
+    "propertyType": "Property Type",
+    "city": "City",
+    "budget": "Budget",
+    "bedrooms": "Bedrooms",
+    "moreFilters": "More Filters",
+    "search": "SEARCH",
+    "searching": "Searching...",
+    "placeholder": {
+      "operationType": "Select operation type",
+      "propertyType": "Select property type",
+      "city": "Select city",
+      "budget": "Select budget",
+      "bedrooms": "Select bedrooms"
+    },
+    "error": {
+      "fetchStatuses": "Failed to fetch operation types",
+      "fetchTypes": "Failed to fetch property types"
+    }
+  },
+  "RentPage": {
+    "heroTitle": "Rent your property in Morocco",
+    "heroSubtitle": "Quality rentals in the most beautiful cities of the kingdom",
+    "benefitsTitle": "Why rent in Morocco?",
+    "benefits": [
+      {
+        "title": "Flexibility",
+        "description": "Various rental options for all budgets and durations"
+      },
+      {
+        "title": "Quality of Life",
+        "description": "A pleasant lifestyle in dynamic and well-connected neighborhoods"
+      },
+      {
+        "title": "Simplicity",
+        "description": "A transparent rental process with personalized support"
+      }
+    ],
+    "citiesTitle": "Find your rental by city",
+    "searchTitle": "Refine your real estate search",
+    "error": {
+      "fetchError": "Failed to fetch city details",
+      "retry": "Try again"
+    },
+    "cityCard": {
+      "availableProperties": "{count} properties available",
+      "averageRent": "Average rent on our site: {price}",
+      "viewProperties": "View rentals →"
+    }
+  },
+
+  "SeasonalRentPage": {
+    "heroTitle": "Seasonal Rentals in Morocco",
+    "heroSubtitle": "Unforgettable stays in the most beautiful destinations of the kingdom",
+    "benefitsTitle": "Why choose a seasonal rental?",
+    "benefits": [
+      {
+        "title": "Total Freedom",
+        "description": "More space and flexibility than a hotel, ideal for families and groups"
+      },
+      {
+        "title": "Authenticity",
+        "description": "Live like a local in typical and characterful accommodations"
+      },
+      {
+        "title": "Value for Money",
+        "description": "Competitive rates for high-end services"
+      }
+    ],
+    "citiesTitle": "Find your rental by city",
+    "searchTitle": "Refine your real estate search",
+    "error": {
+      "fetchError": "Failed to fetch city details",
+      "retry": "Try again"
+    },
+    "cityCard": {
+      "seasonalRentals": "{count} seasonal rentals",
+      "peakSeason": "Peak season: {season}",
+      "highSeasonPrice": "High season price: {price}",
+      "lowSeasonPrice": "Low season price: {price}",
+      "highlights": "Highlights: {highlights}",
+      "viewAvailability": "View availability →"
+    },
+    "seasonalCalendar": {
+      "title": "Seasonal Calendar",
+      "spring": {
+        "title": "Spring (March - May)",
+        "description": "Ideal climate, moderate prices, cultural festivals"
+      },
+      "summer": {
+        "title": "Summer (June - August)",
+        "description": "Beach high season, nightlife"
+      },
+      "autumn": {
+        "title": "Autumn (Sept - Nov)",
+        "description": "Pleasant weather, attractive prices, fewer tourists"
+      },
+      "winter": {
+        "title": "Winter (Dec - Feb)",
+        "description": "Winter sports in Ifrane, cultural tourism"
+      }
+    }
+  },
+
+  "FurnishedRentPage": {
+    "benefits": {
+      "immediateSettlement": {
+        "title": "Immediate Move-In",
+        "description": "Fully equipped homes ready to live in upon arrival"
+      },
+      "premiumComfort": {
+        "title": "Premium Comfort",
+        "description": "Quality furniture, modern amenities, and included services"
+      },
+      "maximumFlexibility": {
+        "title": "Maximum Flexibility",
+        "description": "Adaptable leases and short or long-term rental options"
+      }
+    },
+    "furnishedRent": "Furnished Rent",
+    "propertiesAvailable": "furnished properties available",
+    "averageRent": "Average rent on our site:",
+    "included": "Included",
+    "discoverProperties": "Discover properties →",
+    "fetchError": "Error fetching data",
+    "loadError": "Unable to load city details",
+    "heroBanner": {
+      "alt": "Furnished Rentals in Morocco",
+      "title": "Furnished Rentals in Morocco",
+      "subtitle": "Fully furnished apartments and villas ready to live in the most beautiful cities of the kingdom"
+    },
+    "benefitsSection": {
+      "title": "Benefits of Furnished Rentals"
+    },
+    "citiesSection": {
+      "title": "Find Your Furnished Rental by City"
+    },
+    "servicesSection": {
+      "title": "Services Included in Our Furnished Rentals",
+      "internet": {
+        "title": "High-Speed Internet",
+        "description": "Fiber optic Wi-Fi included"
+      },
+      "appliances": {
+        "title": "Appliances",
+        "description": "Complete and modern equipment"
+      },
+      "maintenance": {
+        "title": "Maintenance",
+        "description": "Cleaning service available"
+      },
+      "concierge": {
+        "title": "Concierge",
+        "description": "7-day assistance"
+      }
+    },
+    "searchSection": {
+      "title": "Refine Your Property Search"
+    },
+    "retry": "Retry"
+  },
+
+  "ExclusiveRentals": {
+    "common": {
+      "exclusiveRental": "Exclusive Rental",
+      "retry": "Try Again"
+    },
+    "hero": {
+      "imageAlt": "Afrique Avenir Exclusive Rentals",
+      "title": "Exclusive Rentals",
+      "subtitle": "Unique stays in Afrique Avenir partner properties"
+    },
+    "benefits": {
+      "exclusivity": {
+        "title": "Exclusivity",
+        "description": "Access high-end rentals selected by our partners and exclusive to AFRIQUE AVENIR."
+      },
+      "trust": {
+        "title": "Trust and Security",
+        "description": "Properties validated by Afrique Avenir to ensure quality."
+      },
+      "comfort": {
+        "title": "Optimal Comfort",
+        "description": "Accommodations suitable for stays with family or friends."
+      }
+    },
+    "cityCard": {
+      "availableProperties": "available properties",
+      "peakSeason": "Peak season",
+      "peakSeasonPrice": "Peak season price",
+      "lowSeasonPrice": "Low season price",
+      "highlights": "Highlights",
+      "checkAvailability": "Check availability"
+    },
+    "sections": {
+      "benefits": {
+        "title": "Why choose our exclusive rentals?"
+      },
+      "cities": {
+        "title": "Discover our partner destinations"
+      },
+      "search": {
+        "title": "Refine your property search"
+      },
+      "contact": {
+        "title": "Contact us to book your exclusive stay"
+      }
+    },
+    "errors": {
+      "fetchFailed": "Error while fetching data",
+      "loadFailed": "Unable to load exclusive rental details"
+    }
+  },
+  "GratuitPack": {
+    "header": {
+      "title": "STARTER PACK"
+    },
+    "features": {
+      "unlimitedAds": "Unlimited listings",
+      "photosLimit": "Limited to {count} photos per listing",
+      "dedicatedSpace": "Dedicated space to manage your listings",
+      "shortVideo": "{count} short video (1min) per listing",
+      "youtubeVideo": "1 YouTube presentation video of {duration}",
+      "exclusiveZone": "Exclusive catchment area of {radius} km"
+    },
+    "footer": {
+      "description": "Visibility in the real estate market through optimized communication on YouTube and social networks."
+    }
+  },
+  "BronzePack": {
+    "header": {
+      "title": "COMFORT PACK"
+    },
+    "features": {
+      "premiumAds": "{count} ads for a smooth start",
+      "photosPerAd": "{count} professional photos per listing",
+      "dedicatedSpace": "Dedicated space to manage your listings",
+      "shortVideo": "{count} short video (1min) per listing",
+      "youtubeVideo": "1 YouTube presentation video of {duration}",
+      "exclusiveZone": "Exclusive catchment area of {radius} km"
+    },
+    "footer": {
+      "description": "Visibility in the real estate market through optimized communication on YouTube and social networks."
+    }
+  },
+  "SilverPack": {
+    "header": {
+      "title": "PRESTIGE PACK"
+    },
+    "features": {
+      "premiumAds": "{count} ads for a smooth start",
+      "photosPerAd": "{count} professional photos per listing",
+      "dedicatedSpace": "Dedicated space to manage your listings",
+      "shortVideo": "{count} short video (1min) per listing",
+      "youtubeVideo": "1 YouTube presentation video of {duration}",
+      "exclusiveZone": "Exclusive catchment area of {radius} km"
+    },
+    "footer": {
+      "description": "Visibility in the real estate market through optimized communication on YouTube and social networks."
+    }
+  },
+  "GoldPack": {
+    "header": {
+      "title": "PRIVILEGE PACK"
+    },
+    "features": {
+      "premiumAds": "{count} ads for a smooth start",
+      "photosPerAd": "{count} professional photos per listing",
+      "dedicatedSpace": "Dedicated space to manage your listings",
+      "shortVideo": "{count} short video (1min) per listing",
+      "youtubeVideo": "1 YouTube presentation video of {duration}",
+      "exclusiveZone": "Exclusive catchment area of {radius} km"
+    },
+    "footer": {
+      "description": "Visibility in the real estate market through optimized communication on YouTube and social networks."
+    }
+  },
+  "DiamondPack": {
+    "packElite": "ELITE PACK",
+    "specialOffer": "Special {country} offer valid from {startDate} to {endDate}",
+    "maxVisibility": "Maximum visibility and enhanced reputation",
+    "premiumAds": "{count} premium listings",
+    "premiumAdsDescription": "Highlight your best properties",
+    "photosPerAd": "{count} professional photos per listing",
+    "photosDescription": "High-quality visuals to attract buyers",
+    "shortVideos": "{count} impactful short video (1min) per listing",
+    "shortVideosDescription": "Showcase your properties from every angle",
+    "youtubeVideo": "1 YouTube presentation video ({duration})",
+    "youtubeVideoDescription": "Strengthen your brand image",
+    "exclusiveZone": "Exclusive trading area of {radius} km or 100,000 inhabitants",
+    "footerDescription": "Personalized support throughout the collaboration. Increased visibility in the real estate market, faster sales through quality listings, and quick return on investment.",
+    "scheduleAppointment": "Schedule Meeting",
+    "meetingRequestSuccess": "Your meeting request has been sent successfully!",
+    "meetingRequestError": "Error sending the request",
+    "meetingRequestErrorTryAgain": "An error occurred while sending the request. Please try again."
+  },
+
+  "PurchasePlan": {
+    "payWith": "Pay with:",
+    "paypal": "PayPal",
+    "stripe": "Stripe",
+    "subscribe": "Subscribe",
+    "subscribeToPlan": "Subscribe to the {planName} Plan",
+    "tryForFree": "Try it for free!",
+    "paymentSuccess": "Thank you for your subscription.",
+    "paymentError": "An error occurred during the payment.",
+    "loginRequired": "You must be logged in to make a purchase.",
+    "redirecting": "Redirecting...",
+    "environmentKeysMissing": "Stripe or PayPal environment keys are missing!",
+    "configError": "A configuration error occurred. Please try again later.",
+    "transactionSuccess": "Transaction successful! Thank you, {userName}. Ref: {transactionId}",
+    "paypalError": "PayPal payment error: {errorMessage}",
+    "subscriptionSaved": "Subscription successfully saved.",
+    "subscriptionError": "Error while saving the subscription."
+  },
+  "AddPropertyPage": {
+    "authError": "Something went wrong with authentication",
+    "subscriptionRequired": "A subscription is required to publish listings.",
+    "subscriptionExpired": "Your subscription has expired. Please renew it to continue publishing listings.",
+    "limitReached": "You have reached the limit of {limit} listings for your current {plan} plan. Upgrade your subscription to continue."
+  },
+  "SubModal": {
+    "subscriptionRequired": "Subscription Required",
+    "viewSubscriptions": "View Subscriptions"
+  },
+  "AddPropertyForm": {
+    "validation": {
+      "titleRequired": "Please enter a title",
+      "descriptionRequired": "Please enter a description",
+      "typeRequired": "Please select a type",
+      "statusRequired": "Please select a status",
+      "priceRequired": "Please enter the price",
+      "priceInvalid": "The price must be a number",
+      "cityRequired": "Please enter the city name",
+      "countryRequired": "Please enter the country name",
+      "bedroomsRequired": "Please enter the number of bedrooms",
+      "bedroomsNegative": "The number of bedrooms cannot be negative",
+      "bathroomsRequired": "Please enter the number of bathrooms",
+      "bathroomsNegative": "The number of bathrooms cannot be negative",
+      "parkingRequired": "Please enter the number of parking spots",
+      "parkingNegative": "The number of parking spots cannot be negative",
+      "areaRequired": "Please enter the area in m²",
+      "areaNegative": "The area cannot be negative",
+      "contactNameRequired": "Please enter the contact name",
+      "phoneInvalid": "Please enter a valid phone number",
+      "emailInvalid": "Please enter a valid email address"
+    },
+    "steps": {
+      "basic": "Basic",
+      "location": "Location",
+      "features": "Features",
+      "photos": "Photos",
+      "contact": "Contact"
+    },
+    "propertyEdited": "Property updated!",
+    "propertyAdded": "Property added!",
+    "photoLimitExceeded": "You have exceeded the limit of {limit} photos.",
+    "videoLimitExceeded": "You have exceeded the limit of {limit} video.",
+    "unlimited": "Unlimited"
+  },
+  "PropertyForm": {
+    "Basic": {
+      "title": "Property Title",
+      "description": "Description",
+      "propertyType": "Property Type",
+      "transactionType": "Transaction Type",
+      "priceInEuros": "Price in Euros",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "Location": {
+      "address": "Address",
+      "zipCode": "Zip Code",
+      "city": "City",
+      "country": "Country",
+      "region": "Region",
+      "additionalInfo": "Additional Information",
+      "selectCountry": "Select a Country",
+      "chooseCountry": "Choose a Country",
+      "searchAddress": "Search for an Address",
+      "searchAddressPlaceholder": "Search for an Address",
+      "selectCountryFirst": "Please select a country first",
+      "addressUpdateError": "Error updating the address",
+      "noAddressDetails": "No details available for this address",
+      "googleMapsError": "Error loading Google Maps. Please try again later.",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "Features": {
+      "bedrooms": "Bedroom(s)",
+      "bathrooms": "Bathroom(s)",
+      "parkingSpots": "Parking spot(s)",
+      "area": "Living area in m²",
+      "hasSwimmingPool": "Has a swimming pool",
+      "hasGardenYard": "Has a garden/yard",
+      "hasBalcony": "Has a balcony/terrace",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "Picture": {
+      "maxImagesError": "You cannot upload more than {count} images.",
+      "invalidFilesError": "Some files are not valid images.",
+      "fileSizeError": "Some files are larger than {size}MB.",
+      "premiumOnlyError": "Only ELITE DIAMOND PACK users can add a video.",
+      "invalidYoutubeLink": "Invalid YouTube link.",
+      "maxVideosError": "You cannot add more than {count} videos.",
+      "clickToAddImages": "Click here to add images",
+      "acceptedFormats": "Accepted formats: JPG, JPEG, WEBP (max. 2MB per file)",
+      "addYoutubeVideo": "Add a YouTube video",
+      "note": "Note",
+      "premiumFeatureNote": "Only ELITE DIAMOND PACK users can add a video.",
+      "enterYoutubeLink": "Enter a YouTube link",
+      "add": "Add",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "Contact": {
+      "name": "Contact Name",
+      "phone": "Phone",
+      "email": "Email",
+      "previous": "Previous",
+      "save": "Save"
+    }
+  },
+  "HeaderProperties": {
+    "myListings": "My Listings",
+    "createListing": "Create a Listing"
+  },
+  "PropertiesTable": {
+    "title": "Title",
+    "price": "Price",
+    "type": "Type",
+    "status": "Status",
+    "actions": "Actions",
+    "details": "Details",
+    "edit": "Edit",
+    "delete": "Delete",
+    "appointment": "Appointment"
+  },
+  "DeletePropertyPage": {
+    "confirmDelete": "Are you sure you want to delete this listing?",
+    "title": "Title",
+    "cancel": "Cancel",
+    "delete": "Delete"
+  },
+  "NoPropertiesFound": {
+    "title": "No listings found",
+    "message": "Sorry, we couldn't find any listings matching your search. Try adjusting your criteria.",
+    "buttonText": "Modify search"
+  },
+  "Search": {
+    "searchPlaceholder": "Search for a listing...",
+    "cityPlaceholder": "City",
+    "filters": "Filters",
+    "accept": "Accept",
+    "clearFilters": "Clear filters",
+    "closeModal": "Close filters window"
+  },
+  "filters": {
+    "allPropertyTypes": "All Property Types",
+    "allOperations": "All Operations",
+    "allCountries": "All Countries",
+    "operation": "Operation",
+    "chooseOperation": "Choose Operation",
+    "propertyType": "Property Type",
+    "choosePropertyType": "Choose Property Type",
+    "country": "Country",
+    "chooseCountry": "Choose Country",
+    "sortBy": "Sort By",
+    "noSorting": "No Sorting",
+    "priceAsc": "Price Ascending",
+    "priceDesc": "Price Descending",
+    "surfaceAsc": "Area Ascending",
+    "surfaceDesc": "Area Descending",
+    "oldest": "Oldest",
+    "newest": "Newest",
+    "price": "Price (€)",
+    "area": "Living Area (m²)",
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "fetchErrorStatuses": "Error fetching statuses:",
+    "fetchErrorTypes": "Error fetching types:"
+  },
+  "PropertyCard": {
+    "imageNotAvailable": "Image not available",
+    "imageAlt": "{propertyName} - Image {imageNumber}",
+    "previousImage": "Previous image",
+    "nextImage": "Next image",
+    "imageCounter": "{current} / {total}",
+    "notAvailable": "N/A",
+    "toggleFavorite": "Add/Remove from favorites",
+    "viewDetails": "View details",
+    "detailsNotAvailable": "Details not available",
+    "area": "{area} m²"
+  },
+  "DescriptionCard": {
+    "showMore": "Show more",
+    "showLess": "Show less"
+  },
+  "MeetingModal": {
+    "title": "Meeting Request - {planName} Package",
+    "fields": {
+      "name": {
+        "label": "Full Name",
+        "placeholder": "Your name"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "your@email.com"
+      },
+      "phone": {
+        "label": "Phone",
+        "placeholder": "+1234567890 or 0612345678",
+        "description": "International format accepted (e.g., +1234567890)"
+      },
+      "message": {
+        "label": "Message",
+        "placeholder": "Your message..."
+      }
+    },
+    "validation": {
+      "nameRequired": "Name is required",
+      "nameLength": "Name must be at least 2 characters long",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email format",
+      "phoneRequired": "Phone is required",
+      "phoneInvalid": "Invalid phone format",
+      "phoneLength": "Phone number must be between 8 and 15 digits",
+      "messageRequired": "Message is required",
+      "messageLength": "Message must be at least 10 characters long"
+    },
+    "errors": {
+      "formValidation": "Please correct the errors in the form.",
+      "submitError": "An error occurred while sending. Please try again."
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "submit": "Send Request",
+      "sending": "Sending..."
+    }
+  },
+  "ModalDelete": {
+    "title": "Delete",
+    "confirmation": "Are you sure you want to delete {slug} ?",
+    "cancel": "Cancel",
+    "delete": "Delete"
+  }
+}
