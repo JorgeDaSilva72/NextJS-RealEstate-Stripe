@@ -88,8 +88,10 @@ import BronzePack from "./_components/BronzePack";
 import GratuitPack from "./_components/GratuitPack";
 import SubscriptionCarousel from "./_components/SubscriptionCarousel";
 import PageTitle from "../../components/pageTitle";
+import Visit3DPack from "./_components/Visit3DPack";
 
-type PlanName = "gratuit" | "bronze" | "argent" | "or" | "diamant";
+// type PlanName = "gratuit" | "bronze" | "argent" | "or" | "diamant";
+type PlanName = "gratuit" | "bronze" | "argent" | "or" | "diamant" | "visite3d";
 
 const COMPONENT_MAPPING: Record<PlanName, React.FC<any>> = {
   gratuit: GratuitPack,
@@ -97,6 +99,7 @@ const COMPONENT_MAPPING: Record<PlanName, React.FC<any>> = {
   argent: SilverPack,
   or: GoldPack,
   diamant: DiamondPack,
+  visite3d: Visit3DPack, //ajout
 };
 
 const SubscriptionPage = async (): Promise<JSX.Element> => {
@@ -108,12 +111,39 @@ const SubscriptionPage = async (): Promise<JSX.Element> => {
       throw new Error("Aucun plan d'abonnement disponible.");
     }
 
+    // Créer les données en dur pour le plan visite3d
+
+    // const visit3dPlan = {
+    //   id: 21212112,
+    //   namePlan: "VISITE 3D",
+    //   price: null,
+    //   country: null,
+    //   startDate: null,
+    //   endDate: null,
+    //   duration: null,
+    //   premiumAds: "10",
+    //   photosPerAd: "10",
+    //   shortVideosPerAd: "1",
+    //   youtubeVideoDuration: 60,
+    //   zoneRadius: null,
+    //   createdAt: null,
+    //   updatedAt: null,
+    //   features: [
+    //     // ajout du tableau features
+    //     "Vues panoramiques 360°",
+    //     "Photos HD incluses",
+    //     "Vidéo de présentation",
+    //     "Hébergement et partage inclus",
+    //   ],
+    // };
+
     const PLAN_ORDER: PlanName[] = [
       "gratuit",
       "bronze",
       "argent",
       "or",
       "diamant",
+      "visite3d", // ajout
     ];
 
     const sortedPlans = subscriptionPlans.sort((a, b) => {

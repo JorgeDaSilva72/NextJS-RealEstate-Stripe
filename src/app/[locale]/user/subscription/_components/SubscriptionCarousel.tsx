@@ -10,7 +10,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-type PlanName = "gratuit" | "bronze" | "argent" | "or" | "diamant";
+// type PlanName = "gratuit" | "bronze" | "argent" | "or" | "diamant";
+type PlanName = "gratuit" | "bronze" | "argent" | "or" | "diamant" | "visite3d";
 
 type Props = {
   plans: SubscriptionPlan[];
