@@ -613,6 +613,36 @@
     "meetingRequestErrorTryAgain": "An error occurred while sending the request. Please try again."
   },
 
+  "Visit3DPack": {
+    "packVisit3D": "Virtual Tour Pack",
+    "scheduleAppointment": "Schedule an Appointment",
+    "meetingRequestSuccess": "Meeting request sent successfully!",
+    "meetingRequestError": "Failed to send meeting request.",
+    "meetingRequestErrorTryAgain": "An error occurred. Please try again.",
+    "features": {
+      "immersion": {
+        "title": "Immerse Yourself",
+        "description": "Discover our properties as if you were there with high-definition virtual tours."
+      },
+      "timeSaving": {
+        "title": "Save Time and Simplify Choices",
+        "description": "Visit multiple properties from home before moving."
+      },
+      "technology": {
+        "title": "Technology at the Service of Real Estate",
+        "description": "Offer your clients an interactive and realistic experience for informed decision-making."
+      },
+      "propertyValue": {
+        "title": "Highlight Your Properties",
+        "description": "Increase buyer and tenant engagement with immersive tours."
+      },
+      "marketing": {
+        "title": "A Powerful Marketing Asset",
+        "description": "Stand out from the competition by offering attractive and engaging 3D tours."
+      }
+    }
+  },
+
   "PurchasePlan": {
     "payWith": "Pay with:",
     "paypal": "PayPal",

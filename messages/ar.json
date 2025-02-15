@@ -542,6 +542,55 @@
       "description": "رؤية أكبر في سوق العقارات من خلال تواصل محسن عبر YouTube ووسائل التواصل الاجتماعي."
     }
   },
+
+  "BronzePack": {
+    "header": {
+      "title": "باقة الراحة"
+    },
+    "features": {
+      "premiumAds": "{count} إعلانات لبداية ناعمة",
+      "photosPerAd": "{count} صور احترافية لكل إعلان",
+      "dedicatedSpace": "مساحة مخصصة لإدارة إعلاناتك",
+      "shortVideo": "{count} فيديو قصير (1 دقيقة) لكل إعلان",
+      "youtubeVideo": "1 فيديو عرض على YouTube مدته {duration}",
+      "exclusiveZone": "منطقة جذب حصرية بقطر {radius} كم"
+    },
+    "footer": {
+      "description": "ظهور في سوق العقارات من خلال اتصال محسن على YouTube ووسائل التواصل الاجتماعي."
+    }
+  },
+  "SilverPack": {
+    "header": {
+      "title": "باقة النخبة"
+    },
+    "features": {
+      "premiumAds": "{count} إعلانات لبداية ناعمة",
+      "photosPerAd": "{count} صور احترافية لكل إعلان",
+      "dedicatedSpace": "مساحة مخصصة لإدارة إعلاناتك",
+      "shortVideo": "{count} فيديو قصير (1 دقيقة) لكل إعلان",
+      "youtubeVideo": "1 فيديو عرض على YouTube مدته {duration}",
+      "exclusiveZone": "منطقة جذب حصرية بقطر {radius} كم"
+    },
+    "footer": {
+      "description": "ظهور في سوق العقارات من خلال اتصال محسن على YouTube ووسائل التواصل الاجتماعي."
+    }
+  },
+  "GoldPack": {
+    "header": {
+      "title": "باقة الامتياز"
+    },
+    "features": {
+      "premiumAds": "{count} إعلانات لبداية ناعمة",
+      "photosPerAd": "{count} صور احترافية لكل إعلان",
+      "dedicatedSpace": "مساحة مخصصة لإدارة إعلاناتك",
+      "shortVideo": "{count} فيديو قصير (1 دقيقة) لكل إعلان",
+      "youtubeVideo": "1 فيديو عرض على YouTube مدته {duration}",
+      "exclusiveZone": "منطقة جذب حصرية بقطر {radius} كم"
+    },
+    "footer": {
+      "description": "ظهور في سوق العقارات من خلال اتصال محسن على YouTube ووسائل التواصل الاجتماعي."
+    }
+  },
   "DiamondPack": {
     "packElite": "الباقة النخبوية",
     "specialOffer": "عرض خاص {country} صالح من {startDate} إلى {endDate}",
@@ -561,6 +610,37 @@
     "meetingRequestError": "خطأ أثناء إرسال الطلب",
     "meetingRequestErrorTryAgain": "حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى."
   },
+
+  "Visit3DPack": {
+    "packVisit3D": "باقة الجولة الافتراضية",
+    "scheduleAppointment": "حجز موعد",
+    "meetingRequestSuccess": "تم إرسال طلب الاجتماع بنجاح!",
+    "meetingRequestError": "فشل في إرسال طلب الاجتماع.",
+    "meetingRequestErrorTryAgain": "حدث خطأ. يرجى المحاولة مرة أخرى.",
+    "features": {
+      "immersion": {
+        "title": "اغمر نفسك في التجربة الكاملة",
+        "description": "اكتشف عقاراتنا كما لو كنت هناك مع جولات افتراضية عالية الدقة."
+      },
+      "timeSaving": {
+        "title": "وفر الوقت ويسر اختياراتك",
+        "description": "قم بزيارة عدة عقارات من المنزل قبل الانتقال."
+      },
+      "technology": {
+        "title": "التكنولوجيا في خدمة العقارات",
+        "description": "قدم لعملائك تجربة تفاعلية وواقعية لاتخاذ قرارات مستنيرة."
+      },
+      "propertyValue": {
+        "title": "عزز قيمة عقاراتك",
+        "description": "زود تفاعل المشترين والمستأجرين مع جولات غامرة."
+      },
+      "marketing": {
+        "title": "أداة تسويقية قوية",
+        "description": "تميز عن المنافسة من خلال تقديم جولات ثلاثية الأبعاد جذابة ومشوقة."
+      }
+    }
+  },
+
   "PurchasePlan": {
     "payWith": "الدفع بواسطة:",
     "paypal": "باي بال",

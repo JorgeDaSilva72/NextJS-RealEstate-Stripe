@@ -607,6 +607,37 @@
     "meetingRequestError": "Erro ao enviar a solicitação",
     "meetingRequestErrorTryAgain": "Ocorreu um erro ao enviar a solicitação. Por favor, tente novamente."
   },
+
+  "Visit3DPack": {
+    "packVisit3D": "Pacote de Visita Virtual",
+    "scheduleAppointment": "Agendar uma Reunião",
+    "meetingRequestSuccess": "Pedido de reunião enviado com sucesso!",
+    "meetingRequestError": "Falha ao enviar o pedido de reunião.",
+    "meetingRequestErrorTryAgain": "Ocorreu um erro. Por favor, tente novamente.",
+    "features": {
+      "immersion": {
+        "title": "Mergulhe na Imersão Total",
+        "description": "Descubra nossos imóveis como se estivesse lá com visitas virtuais em alta definição."
+      },
+      "timeSaving": {
+        "title": "Ganhe Tempo e Simplifique Escolhas",
+        "description": "Visite vários imóveis de casa antes de se deslocar."
+      },
+      "technology": {
+        "title": "Tecnologia a Serviço do Imobiliário",
+        "description": "Ofereça aos seus clientes uma experiência interativa e realista para uma tomada de decisão informada."
+      },
+      "propertyValue": {
+        "title": "Valorize Seus Imóveis",
+        "description": "Aumente o engajamento de compradores e inquilinos com visitas imersivas."
+      },
+      "marketing": {
+        "title": "Um Poderoso Diferencial de Marketing",
+        "description": "Destaque-se da concorrência oferecendo visitas 3D atraentes e envolventes."
+      }
+    }
+  },
+
   "PurchasePlan": {
     "payWith": "Pagar com:",
     "paypal": "PayPal",
