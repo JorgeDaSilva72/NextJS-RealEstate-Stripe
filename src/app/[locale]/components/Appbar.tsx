@@ -215,207 +215,208 @@
 // };
 
 // export default Appbar;
-"use client";
+// "use client";
 
-import React, { ReactNode, useEffect, useState } from "react";
-import {
-  Navbar,
-  NavbarContent,
-  NavbarMenuToggle,
-  NavbarBrand,
-  NavbarItem,
-  Button,
-  NavbarMenu,
-  NavbarMenuItem,
-  DropdownTrigger,
-  DropdownItem,
-  Dropdown,
-  DropdownMenu,
-} from "@nextui-org/react";
-// import { usePathname } from "next/navigation";
-import Image from "next/image";
-// import Link from "next/link";
-import { useLocale, useTranslations } from "next-intl";
-import { useNavigationItems } from "@/data/navigationData";
-import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
-import PlusSVG from "../assets/svg/PlusSVG";
-import { Link, usePathname } from "@/i18n/routing";
+// import React, { ReactNode, useEffect, useState } from "react";
+// import {
+//   Navbar,
+//   NavbarContent,
+//   NavbarMenuToggle,
+//   NavbarBrand,
+//   NavbarItem,
+//   Button,
+//   NavbarMenu,
+//   NavbarMenuItem,
+//   DropdownTrigger,
+//   DropdownItem,
+//   Dropdown,
+//   DropdownMenu,
+// } from "@nextui-org/react";
+// // import { usePathname } from "next/navigation";
+// import Image from "next/image";
+// // import Link from "next/link";
+// import { useLocale, useTranslations } from "next-intl";
+// import { useNavigationItems } from "@/data/navigationData";
+// import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
+// import PlusSVG from "../assets/svg/PlusSVG";
+// import { Link, usePathname } from "@/i18n/routing";
 
-interface Props {
-  children: ReactNode;
-}
+// interface Props {
+//   children: ReactNode;
+// }
 
-const Appbar = ({ children }: Props) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const pathname = usePathname();
-  const locale = useLocale(); // Récupérer la langue actuelle
-  const t = useTranslations("appbar");
-  const navigationItems = useNavigationItems(); // Charge les éléments traduits
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrolled = window.scrollY > 0;
-      setIsScrolled(scrolled);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+// const Appbar = ({ children }: Props) => {
+//   const [isMenuOpen, setIsMenuOpen] = useState(false);
+//   const [isScrolled, setIsScrolled] = useState(false);
+//   const pathname = usePathname();
+//   const locale = useLocale(); // Récupérer la langue actuelle
+//   const t = useTranslations("appbar");
+//   const navigationItems = useNavigationItems(); // Charge les éléments traduits
+//   useEffect(() => {
+//     const handleScroll = () => {
+//       const scrolled = window.scrollY > 0;
+//       setIsScrolled(scrolled);
+//     };
+//     window.addEventListener("scroll", handleScroll);
+//     return () => window.removeEventListener("scroll", handleScroll);
+//   }, []);
 
-  const isHomePage = pathname === "/";
-  const navbarBackground = isHomePage
-    ? "fixed bg-transparent backdrop-blur-md"
-    : "sticky bg-white";
-  const textColor = isHomePage && !isScrolled ? "text-white" : "text-primary";
+//   const isHomePage = pathname === "/";
+//   const navbarBackground = isHomePage
+//     ? "fixed bg-transparent backdrop-blur-md"
+//     : "sticky bg-white";
+//   const textColor =
+//     isHomePage && !isScrolled ? "text-red" : "text-primary";
 
-  const renderDropdownButton = (label: string) => (
-    <Button
-      disableRipple
-      className={`p-0 bg-transparent data-[hover=true]:bg-transparent ${textColor} font-medium`}
-      endContent={
-        <svg
-          className={`w-4 h-4 ${textColor}`}
-          fill="none"
-          strokeWidth="2"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path d="M19 9l-7 7-7-7" />
-        </svg>
-      }
-      radius="sm"
-      variant="light"
-    >
-      {label}
-    </Button>
-  );
+//   const renderDropdownButton = (label: string) => (
+//     <Button
+//       disableRipple
+//       className={`p-0 bg-transparent data-[hover=true]:bg-transparent ${textColor} font-medium`}
+//       endContent={
+//         <svg
+//           className={`w-4 h-4 ${textColor}`}
+//           fill="none"
+//           strokeWidth="2"
+//           stroke="currentColor"
+//           viewBox="0 0 24 24"
+//         >
+//           <path d="M19 9l-7 7-7-7" />
+//         </svg>
+//       }
+//       radius="sm"
+//       variant="light"
+//     >
+//       {label}
+//     </Button>
+//   );
 
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [pathname]);
+//   useEffect(() => {
+//     setIsMenuOpen(false);
+//   }, [pathname]);
 
-  return (
-    <Navbar
-      isMenuOpen={isMenuOpen}
-      className={`${navbarBackground} top-0 left-0 right-0 h-16 transition-all duration-300 shadow-sm z-50`}
-      onMenuOpenChange={setIsMenuOpen}
-    >
-      <NavbarContent className="flex items-center">
-        <NavbarMenuToggle
-          aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
-          className="lg:hidden"
-        />
-        <NavbarBrand>
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/logo-topaz-enhance-coupe.jpeg"
-              alt="Logo Afrique Avenir"
-              width={32}
-              height={32}
-              className="rounded-lg"
-            />
-            <div className="hidden sm:block">
-              <p
-                className={`${textColor} text-xs sm:text-sm md:text-md   font-medium tracking-wide whitespace-nowrap`}
-              >
-                {t("siteTitle")}
-              </p>
-            </div>
-          </Link>
-        </NavbarBrand>
-      </NavbarContent>
+//   return (
+//     <Navbar
+//       isMenuOpen={isMenuOpen}
+//       className={`${navbarBackground} top-0 left-0 right-0 h-16 transition-all duration-300 shadow-sm z-50`}
+//       onMenuOpenChange={setIsMenuOpen}
+//     >
+//       <NavbarContent className="flex items-center">
+//         <NavbarMenuToggle
+//           aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
+//           className="lg:hidden"
+//         />
+//         <NavbarBrand>
+//           <Link href="/" className="flex items-center gap-2">
+//             <Image
+//               src="/logo-topaz-enhance-coupe.jpeg"
+//               alt="Logo Afrique Avenir"
+//               width={32}
+//               height={32}
+//               className="rounded-lg"
+//             />
+//             <div className="hidden sm:block">
+//               <p
+//                 className={`${textColor} text-xs sm:text-sm md:text-md   font-medium tracking-wide whitespace-nowrap`}
+//               >
+//                 {t("siteTitle")}
+//               </p>
+//             </div>
+//           </Link>
+//         </NavbarBrand>
+//       </NavbarContent>
 
-      <NavbarContent className="hidden lg:flex gap-6" justify="center">
-        {navigationItems.map((item) => (
-          <Dropdown key={item.label}>
-            <NavbarItem>
-              <DropdownTrigger>
-                {renderDropdownButton(item.label)}
-              </DropdownTrigger>
-            </NavbarItem>
-            <DropdownMenu
-              key={locale} // Forcer le re-render si la langue change
-              aria-label={item.label}
-              className="w-[340px]"
-              itemClasses={{ base: "gap-4" }}
-            >
-              {item.dropdownItems.map((dropdownItem) => (
-                <DropdownItem
-                  key={dropdownItem.key}
-                  description={dropdownItem.description}
-                  as={Link}
-                  href={dropdownItem.href}
-                >
-                  {dropdownItem.title}
-                </DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
-        ))}
-        <NavbarItem>
-          <LanguageSwitcher />
-        </NavbarItem>
-      </NavbarContent>
+//       <NavbarContent className="hidden lg:flex gap-6" justify="center">
+//         {navigationItems.map((item) => (
+//           <Dropdown key={item.label}>
+//             <NavbarItem>
+//               <DropdownTrigger>
+//                 {renderDropdownButton(item.label)}
+//               </DropdownTrigger>
+//             </NavbarItem>
+//             <DropdownMenu
+//               key={locale} // Forcer le re-render si la langue change
+//               aria-label={item.label}
+//               className="w-[340px]"
+//               itemClasses={{ base: "gap-4" }}
+//             >
+//               {item.dropdownItems.map((dropdownItem) => (
+//                 <DropdownItem
+//                   key={dropdownItem.key}
+//                   description={dropdownItem.description}
+//                   as={Link}
+//                   href={dropdownItem.href}
+//                 >
+//                   {dropdownItem.title}
+//                 </DropdownItem>
+//               ))}
+//             </DropdownMenu>
+//           </Dropdown>
+//         ))}
+//         <NavbarItem>
+//           <LanguageSwitcher />
+//         </NavbarItem>
+//       </NavbarContent>
 
-      <NavbarContent justify="end">
-        <Button
-          as={Link}
-          // href={`/${locale}/user/properties/add`}
-          href={`/user/properties/add`}
-          className="ml-4 flex items-center gap-2 bg-primary text-white hover:bg-primary/90 p-2 md:px-4 rounded-lg"
-          radius="sm"
-        >
-          <PlusSVG />
-          <span className="hidden sm:block">{t("publishAd")}</span>
-        </Button>
-        {children}
-      </NavbarContent>
+//       <NavbarContent justify="end">
+//         <Button
+//           as={Link}
+//           // href={`/${locale}/user/properties/add`}
+//           href={`/user/properties/add`}
+//           className="ml-4 flex items-center gap-2 bg-primary text-white hover:bg-primary/90 p-2 md:px-4 rounded-lg"
+//           radius="sm"
+//         >
+//           <PlusSVG />
+//           <span className="hidden sm:block">{t("publishAd")}</span>
+//         </Button>
+//         {children}
+//       </NavbarContent>
 
-      <NavbarMenu className="pt-6 gap-6">
-        <div className="flex flex-col gap-6">
-          <NavbarBrand>
-            <Link href="/" className="flex  items-center gap-2">
-              <Image
-                src="/logo-topaz-enhance-coupe.jpeg"
-                alt="Logo Afrique Avenir"
-                width={40}
-                height={40}
-                className="rounded-lg"
-              />
-              <div className="">
-                <p
-                  className={`${textColor} text-sm  md:text-md   font-medium tracking-wide whitespace-nowrap`}
-                >
-                  {t("siteTitle")}
-                </p>
-              </div>
-            </Link>
-          </NavbarBrand>
+//       <NavbarMenu className="pt-6 gap-6">
+//         <div className="flex flex-col gap-6">
+//           <NavbarBrand>
+//             <Link href="/" className="flex  items-center gap-2">
+//               <Image
+//                 src="/logo-topaz-enhance-coupe.jpeg"
+//                 alt="Logo Afrique Avenir"
+//                 width={40}
+//                 height={40}
+//                 className="rounded-lg"
+//               />
+//               <div className="">
+//                 <p
+//                   className={`${textColor} text-sm  md:text-md   font-medium tracking-wide whitespace-nowrap`}
+//                 >
+//                   {t("siteTitle")}
+//                 </p>
+//               </div>
+//             </Link>
+//           </NavbarBrand>
 
-          {navigationItems.map((item) => (
-            <NavbarMenuItem key={item.label}>
-              <div className="flex flex-col gap-2">
-                <p className="font-medium text-primary text-sm">{item.label}</p>
-                {item.dropdownItems.map((dropdownItem) => (
-                  <Link
-                    key={dropdownItem.key}
-                    href={dropdownItem.href}
-                    className="text-foreground/70 hover:text-foreground pl-4"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {dropdownItem.title}
-                  </Link>
-                ))}
-              </div>
-            </NavbarMenuItem>
-          ))}
-          <LanguageSwitcher />
-        </div>
-      </NavbarMenu>
-    </Navbar>
-  );
-};
+//           {navigationItems.map((item) => (
+//             <NavbarMenuItem key={item.label}>
+//               <div className="flex flex-col gap-2">
+//                 <p className="font-medium text-primary text-sm">{item.label}</p>
+//                 {item.dropdownItems.map((dropdownItem) => (
+//                   <Link
+//                     key={dropdownItem.key}
+//                     href={dropdownItem.href}
+//                     className="text-foreground/70 hover:text-foreground pl-4"
+//                     onClick={() => setIsMenuOpen(false)}
+//                   >
+//                     {dropdownItem.title}
+//                   </Link>
+//                 ))}
+//               </div>
+//             </NavbarMenuItem>
+//           ))}
+//           <LanguageSwitcher />
+//         </div>
+//       </NavbarMenu>
+//     </Navbar>
+//   );
+// };
 
-export default Appbar;
+// export default Appbar;
 
 // "use client";
 
@@ -653,3 +654,413 @@ export default Appbar;
 // };
 
 // export default Appbar;
+
+// "use client";
+
+// import React, { ReactNode, useEffect, useState } from "react";
+// import {
+//   Navbar,
+//   NavbarContent,
+//   NavbarMenuToggle,
+//   NavbarBrand,
+//   NavbarItem,
+//   Button,
+//   NavbarMenu,
+//   NavbarMenuItem,
+//   DropdownTrigger,
+//   DropdownItem,
+//   Dropdown,
+//   DropdownMenu,
+// } from "@nextui-org/react";
+// import Image from "next/image";
+// import { useLocale, useTranslations } from "next-intl";
+// import { useNavigationItems } from "@/data/navigationData";
+// import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
+// import PlusSVG from "../assets/svg/PlusSVG";
+// import { Link, usePathname } from "@/i18n/routing";
+
+// interface Props {
+//   children: ReactNode;
+// }
+
+// const Appbar = ({ children }: Props) => {
+//   const [isMenuOpen, setIsMenuOpen] = useState(false);
+//   const [isScrolled, setIsScrolled] = useState(false);
+//   const pathname = usePathname();
+//   const locale = useLocale();
+//   const t = useTranslations("appbar");
+//   const navigationItems = useNavigationItems();
+
+//   useEffect(() => {
+//     const handleScroll = () => {
+//       const scrolled = window.scrollY > 0;
+//       setIsScrolled(scrolled);
+//     };
+//     window.addEventListener("scroll", handleScroll);
+//     return () => window.removeEventListener("scroll", handleScroll);
+//   }, []);
+
+//   const isHomePage = pathname === "/";
+//   const navbarBackground = isHomePage
+//     ? "fixed bg-transparent backdrop-blur-md"
+//     : "sticky bg-white";
+//   const textColor = isHomePage && !isScrolled ? "text-white" : "text-primary";
+//   const textShadow = isHomePage && !isScrolled ? "text-shadow" : ""; // Ajouter une ombre portée sur la page d'accueil
+
+//   const renderDropdownButton = (label: string) => (
+//     <Button
+//       disableRipple
+//       className={`p-0 bg-transparent data-[hover=true]:bg-transparent ${textColor} ${textShadow} font-medium`}
+//       endContent={
+//         <svg
+//           className={`w-4 h-4 ${textColor} ${textShadow}`}
+//           fill="none"
+//           strokeWidth="2"
+//           stroke="currentColor"
+//           viewBox="0 0 24 24"
+//         >
+//           <path d="M19 9l-7 7-7-7" />
+//         </svg>
+//       }
+//       radius="sm"
+//       variant="light"
+//     >
+//       {label}
+//     </Button>
+//   );
+
+//   useEffect(() => {
+//     setIsMenuOpen(false);
+//   }, [pathname]);
+
+//   return (
+//     <Navbar
+//       isMenuOpen={isMenuOpen}
+//       className={`${navbarBackground} top-0 left-0 right-0 h-16 transition-all duration-300 shadow-sm z-50`}
+//       onMenuOpenChange={setIsMenuOpen}
+//     >
+//       <NavbarContent className="flex items-center">
+//         <NavbarMenuToggle
+//           aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
+//           className="lg:hidden"
+//         />
+//         <NavbarBrand>
+//           <Link href="/" className="flex items-center gap-2">
+//             <Image
+//               src="/logo-topaz-enhance-coupe.jpeg"
+//               alt="Logo Afrique Avenir"
+//               width={32}
+//               height={32}
+//               className="rounded-lg"
+//             />
+//             <div className="hidden sm:block">
+//               <p
+//                 className={`${textColor} ${textShadow} text-xs sm:text-sm md:text-md font-medium tracking-wide whitespace-nowrap`}
+//               >
+//                 {t("siteTitle")}
+//               </p>
+//             </div>
+//           </Link>
+//         </NavbarBrand>
+//       </NavbarContent>
+
+//       <NavbarContent className="hidden lg:flex gap-6" justify="center">
+//         {navigationItems.map((item) => (
+//           <Dropdown key={item.label}>
+//             <NavbarItem>
+//               <DropdownTrigger>
+//                 {renderDropdownButton(item.label)}
+//               </DropdownTrigger>
+//             </NavbarItem>
+//             <DropdownMenu
+//               key={locale}
+//               aria-label={item.label}
+//               className="w-[340px]"
+//               itemClasses={{ base: "gap-4" }}
+//             >
+//               {item.dropdownItems.map((dropdownItem) => (
+//                 <DropdownItem
+//                   key={dropdownItem.key}
+//                   description={dropdownItem.description}
+//                   as={Link}
+//                   href={dropdownItem.href}
+//                 >
+//                   {dropdownItem.title}
+//                 </DropdownItem>
+//               ))}
+//             </DropdownMenu>
+//           </Dropdown>
+//         ))}
+//         <NavbarItem>
+//           <LanguageSwitcher />
+//         </NavbarItem>
+//       </NavbarContent>
+
+//       <NavbarContent justify="end">
+//         <Button
+//           as={Link}
+//           href={`/user/properties/add`}
+//           className="ml-4 flex items-center gap-2 bg-primary text-white hover:bg-primary/90 p-2 md:px-4 rounded-lg"
+//           radius="sm"
+//         >
+//           <PlusSVG />
+//           <span className="hidden sm:block">{t("publishAd")}</span>
+//         </Button>
+//         {children}
+//       </NavbarContent>
+
+//       <NavbarMenu className="pt-6 gap-6">
+//         <div className="flex flex-col gap-6">
+//           <NavbarBrand>
+//             <Link href="/" className="flex items-center gap-2">
+//               <Image
+//                 src="/logo-topaz-enhance-coupe.jpeg"
+//                 alt="Logo Afrique Avenir"
+//                 width={40}
+//                 height={40}
+//                 className="rounded-lg"
+//               />
+//               <div className="">
+//                 <p
+//                   className={`${textColor} text-sm md:text-md font-medium tracking-wide whitespace-nowrap`}
+//                 >
+//                   {t("siteTitle")}
+//                 </p>
+//               </div>
+//             </Link>
+//           </NavbarBrand>
+
+//           {navigationItems.map((item) => (
+//             <NavbarMenuItem key={item.label}>
+//               <div className="flex flex-col gap-2">
+//                 <p className="font-medium text-primary text-sm">{item.label}</p>
+//                 {item.dropdownItems.map((dropdownItem) => (
+//                   <Link
+//                     key={dropdownItem.key}
+//                     href={dropdownItem.href}
+//                     className="text-foreground/70 hover:text-foreground pl-4"
+//                     onClick={() => setIsMenuOpen(false)}
+//                   >
+//                     {dropdownItem.title}
+//                   </Link>
+//                 ))}
+//               </div>
+//             </NavbarMenuItem>
+//           ))}
+//           <LanguageSwitcher />
+//         </div>
+//       </NavbarMenu>
+//     </Navbar>
+//   );
+// };
+
+// export default Appbar;
+
+"use client";
+
+import React, { ReactNode, useEffect, useState } from "react";
+import {
+  Navbar,
+  NavbarContent,
+  NavbarMenuToggle,
+  NavbarBrand,
+  NavbarItem,
+  Button,
+  NavbarMenu,
+  NavbarMenuItem,
+  DropdownTrigger,
+  DropdownItem,
+  Dropdown,
+  DropdownMenu,
+} from "@nextui-org/react";
+import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
+import { useNavigationItems } from "@/data/navigationData";
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
+import PlusSVG from "../assets/svg/PlusSVG";
+import { Link, usePathname } from "@/i18n/routing";
+
+interface Props {
+  children: ReactNode;
+}
+
+const Appbar = ({ children }: Props) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
+  const locale = useLocale();
+  const t = useTranslations("appbar");
+  const navigationItems = useNavigationItems();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.scrollY > 0;
+      setIsScrolled(scrolled);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const isHomePage = pathname === "/";
+
+  // Mise à jour des styles pour améliorer la visibilité
+  const navbarBackground = isHomePage
+    ? isScrolled
+      ? "fixed bg-white/90 backdrop-blur-md"
+      : "fixed bg-black/20 backdrop-blur-sm"
+    : "sticky bg-white";
+
+  // Ajout d'une classe de texte avec un contour subtil pour la page d'accueil
+  const textColor =
+    isHomePage && !isScrolled
+      ? "text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]"
+      : "text-primary";
+
+  const renderDropdownButton = (label: string) => (
+    <Button
+      disableRipple
+      className={`p-0 bg-transparent data-[hover=true]:bg-transparent ${textColor} font-medium transition-colors duration-300`}
+      endContent={
+        <svg
+          className={`w-4 h-4 ${textColor} transition-colors duration-300`}
+          fill="none"
+          strokeWidth="2"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path d="M19 9l-7 7-7-7" />
+        </svg>
+      }
+      radius="sm"
+      variant="light"
+    >
+      {label}
+    </Button>
+  );
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
+
+  return (
+    <Navbar
+      isMenuOpen={isMenuOpen}
+      className={`${navbarBackground} top-0 left-0 right-0 h-16 transition-all duration-300 shadow-sm z-50`}
+      onMenuOpenChange={setIsMenuOpen}
+    >
+      <NavbarContent className="flex items-center">
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
+          className={`lg:hidden ${textColor}`}
+        />
+        <NavbarBrand>
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/logo-topaz-enhance-coupe.jpeg"
+              alt="Logo Afrique Avenir"
+              width={32}
+              height={32}
+              className="rounded-lg"
+            />
+            <div className="hidden sm:block">
+              <p
+                className={`${textColor} text-xs sm:text-sm md:text-md font-medium tracking-wide whitespace-nowrap transition-colors duration-300`}
+              >
+                {t("siteTitle")}
+              </p>
+            </div>
+          </Link>
+        </NavbarBrand>
+      </NavbarContent>
+
+      <NavbarContent className="hidden lg:flex gap-6" justify="center">
+        {navigationItems.map((item) => (
+          <Dropdown key={item.label}>
+            <NavbarItem>
+              <DropdownTrigger>
+                {renderDropdownButton(item.label)}
+              </DropdownTrigger>
+            </NavbarItem>
+            <DropdownMenu
+              key={locale}
+              aria-label={item.label}
+              className="w-[340px]"
+              itemClasses={{ base: "gap-4" }}
+            >
+              {item.dropdownItems.map((dropdownItem) => (
+                <DropdownItem
+                  key={dropdownItem.key}
+                  description={dropdownItem.description}
+                  as={Link}
+                  href={dropdownItem.href}
+                >
+                  {dropdownItem.title}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
+        ))}
+        <NavbarItem>
+          <LanguageSwitcher />
+        </NavbarItem>
+      </NavbarContent>
+
+      <NavbarContent justify="end">
+        <Button
+          as={Link}
+          href={`/user/properties/add`}
+          className="ml-4 flex items-center gap-2 bg-primary text-white hover:bg-primary/90 p-2 md:px-4 rounded-lg transition-colors duration-300"
+          radius="sm"
+        >
+          <PlusSVG />
+          <span className="hidden sm:block">{t("publishAd")}</span>
+        </Button>
+        {children}
+      </NavbarContent>
+
+      <NavbarMenu className="pt-6 gap-6">
+        <div className="flex flex-col gap-6">
+          <NavbarBrand>
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="/logo-topaz-enhance-coupe.jpeg"
+                alt="Logo Afrique Avenir"
+                width={40}
+                height={40}
+                className="rounded-lg"
+              />
+              <div>
+                <p
+                  className={`${textColor} text-sm md:text-md font-medium tracking-wide whitespace-nowrap transition-colors duration-300`}
+                >
+                  {t("siteTitle")}
+                </p>
+              </div>
+            </Link>
+          </NavbarBrand>
+
+          {navigationItems.map((item) => (
+            <NavbarMenuItem key={item.label}>
+              <div className="flex flex-col gap-2">
+                <p className="font-medium text-primary text-sm">{item.label}</p>
+                {item.dropdownItems.map((dropdownItem) => (
+                  <Link
+                    key={dropdownItem.key}
+                    href={dropdownItem.href}
+                    className="text-foreground/70 hover:text-foreground pl-4"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {dropdownItem.title}
+                  </Link>
+                ))}
+              </div>
+            </NavbarMenuItem>
+          ))}
+          <LanguageSwitcher />
+        </div>
+      </NavbarMenu>
+    </Navbar>
+  );
+};
+
+export default Appbar;

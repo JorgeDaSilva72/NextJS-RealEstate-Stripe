@@ -280,7 +280,6 @@ import React from "react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import {
-  Laptop,
   Star,
   Users,
   Clock,
@@ -305,12 +304,6 @@ interface Testimonial {
 interface Statistic {
   value: string;
   label: string;
-  icon: React.ComponentType<any>;
-}
-
-interface Benefit {
-  title: string;
-  description: string;
   icon: React.ComponentType<any>;
 }
 
