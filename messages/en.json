@@ -899,5 +899,63 @@
     "confirmation": "Are you sure you want to delete {slug} ?",
     "cancel": "Cancel",
     "delete": "Delete"
+  },
+
+  "VirtualTourPage": {
+    "hero": {
+      "title": "Experience the Future of Real Estate",
+      "subtitle": "Explore properties like never before with our immersive 3D tours."
+    },
+    "stats": {
+      "timeReduction": "Time Reduction",
+      "conversionRate": "Conversion Rate",
+      "visitorsServed": "Visitors Served"
+    },
+    "services": {
+      "title": "The Advantages of Virtual Tours",
+      "subtitle": "Discover how virtual tours are revolutionizing the real estate experience.",
+      "immersion": {
+        "title": "Total Immersion",
+        "description": "Offer a unique experience to your potential buyers with 360° virtual tours."
+      },
+      "timeSaving": {
+        "title": "Save Time",
+        "description": "Optimize the property search process by allowing buyers to pre-select properties."
+      },
+      "technology": {
+        "title": "Cutting-Edge Technology",
+        "description": "Benefit from high-definition virtual tours and interactive plans."
+      },
+      "propertyShowcase": {
+        "title": "Showcase Your Properties",
+        "description": "Present your properties in the best light with professional virtual tours."
+      },
+      "marketing": {
+        "title": "Powerful Marketing Tool",
+        "description": "Stand out from the competition with innovative marketing tools."
+      }
+    },
+    "testimonials": {
+      "title": "What Our Clients Say",
+      "kwame": {
+        "name": "Kwame Mensah",
+        "role": "Real Estate Agent",
+        "content": "An indispensable tool that has revolutionized the way I work."
+      },
+      "marie": {
+        "name": "Marie Martin",
+        "role": "Homeowner",
+        "content": "I sold my house in 2 weeks thanks to the virtual tour!"
+      },
+      "tafari": {
+        "name": "Tafari Ndlovu",
+        "role": "Buyer",
+        "content": "Significant time savings in my property search."
+      }
+    },
+    "cta": {
+      "title": "Ready to Transform Your Real Estate Experience?",
+      "description": "Get started today and take your property listings to the next level."
+    }
   }
 }

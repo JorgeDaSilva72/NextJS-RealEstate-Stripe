@@ -898,5 +898,63 @@
     "confirmation": "Tem certeza de que deseja excluir {slug}?",
     "cancel": "Cancelar",
     "delete": "Excluir"
+  },
+
+  "VirtualTourPage": {
+    "hero": {
+      "title": "Experimente o futuro do mercado imobiliário",
+      "subtitle": "Explore propriedades como nunca antes com nossos tours 3D imersivos."
+    },
+    "stats": {
+      "timeReduction": "Redução de tempo",
+      "conversionRate": "Taxa de conversão",
+      "visitorsServed": "Visitantes atendidos"
+    },
+    "services": {
+      "title": "As vantagens dos tours virtuais",
+      "subtitle": "Descubra como os tours virtuais estão revolucionando a experiência imobiliária.",
+      "immersion": {
+        "title": "Imersão total",
+        "description": "Ofereça uma experiência única aos seus compradores com tours virtuais em 360°."
+      },
+      "timeSaving": {
+        "title": "Economize tempo",
+        "description": "Otimize o processo de busca de imóveis, permitindo que os compradores pré-selecionem propriedades."
+      },
+      "technology": {
+        "title": "Tecnologia de ponta",
+        "description": "Beneficie-se de tours virtuais em alta definição e plantas interativas."
+      },
+      "propertyShowcase": {
+        "title": "Mostre suas propriedades",
+        "description": "Apresente suas propriedades da melhor forma com tours virtuais profissionais."
+      },
+      "marketing": {
+        "title": "Uma poderosa ferramenta de marketing",
+        "description": "Destaque-se da concorrência com ferramentas de marketing inovadoras."
+      }
+    },
+    "testimonials": {
+      "title": "O que nossos clientes dizem",
+      "kwame": {
+        "name": "Kwame Mensah",
+        "role": "Corretor de imóveis",
+        "content": "Uma ferramenta indispensável que revolucionou minha forma de trabalhar."
+      },
+      "marie": {
+        "name": "Marie Martin",
+        "role": "Proprietária",
+        "content": "Vendi minha casa em 2 semanas graças ao tour virtual!"
+      },
+      "tafari": {
+        "name": "Tafari Ndlovu",
+        "role": "Comprador",
+        "content": "Economia significativa de tempo na minha busca por imóveis."
+      }
+    },
+    "cta": {
+      "title": "Pronto para transformar sua experiência imobiliária?",
+      "description": "Comece hoje mesmo e leve seus anúncios para o próximo nível."
+    }
   }
 }

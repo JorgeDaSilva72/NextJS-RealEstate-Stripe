@@ -901,23 +901,62 @@
     "cancel": "Annuler",
     "delete": "Supprimer"
   },
+
   "VirtualTourPage": {
     "hero": {
-      "title": "Visite Virtuelle 3D Immersive",
-      "subtitle": "Révolutionnez vos visites immobilières avec notre technologie de pointe"
+      "title": "Découvrez l'avenir de l'immobilier",
+      "subtitle": "Explorez les propriétés comme jamais auparavant avec nos visites 3D immersives."
     },
     "stats": {
-      "timeReduction": "Réduction du temps de visite",
+      "timeReduction": "Réduction du temps",
       "conversionRate": "Taux de conversion",
-      "visitorsServed": "Visiteurs satisfaits"
+      "visitorsServed": "Visiteurs servis"
+    },
+    "services": {
+      "title": "Les atouts des visites virtuelles",
+      "subtitle": "Découvrez comment les visites virtuelles révolutionnent l'expérience immobilière.",
+      "immersion": {
+        "title": "Immersion totale",
+        "description": "Offrez une expérience unique à vos acheteurs potentiels avec des visites virtuelles à 360°."
+      },
+      "timeSaving": {
+        "title": "Gagnez du temps",
+        "description": "Optimisez le processus de recherche en permettant aux acheteurs de présélectionner les propriétés."
+      },
+      "technology": {
+        "title": "Technologie de pointe",
+        "description": "Bénéficiez de visites virtuelles haute définition et de plans interactifs."
+      },
+      "propertyShowcase": {
+        "title": "Mettez en valeur vos propriétés",
+        "description": "Présentez vos propriétés sous leur meilleur jour avec des visites virtuelles professionnelles."
+      },
+      "marketing": {
+        "title": "Un outil marketing puissant",
+        "description": "Démarquez-vous de la concurrence avec des outils marketing innovants."
+      }
     },
     "testimonials": {
-      "title": "Ce que nos clients en disent"
+      "title": "Ce que disent nos clients",
+      "kwame": {
+        "name": "Kwame Mensah",
+        "role": "Agent immobilier",
+        "content": "Un outil indispensable qui a révolutionné ma façon de travailler."
+      },
+      "marie": {
+        "name": "Marie Martin",
+        "role": "Propriétaire",
+        "content": "J'ai vendu ma maison en 2 semaines grâce à la visite virtuelle !"
+      },
+      "tafari": {
+        "name": "Tafari Ndlovu",
+        "role": "Acheteur",
+        "content": "Gain de temps considérable dans ma recherche de bien."
+      }
     },
     "cta": {
-      "title": "Prêt à transformer vos visites ?",
-      "description": "Commencez dès aujourd'hui à offrir une expérience unique à vos clients",
-      "button": "Prendre un RDV"
+      "title": "Prêt à transformer votre expérience immobilière ?",
+      "description": "Commencez dès aujourd'hui et faites passer vos annonces au niveau supérieur."
     }
   }
 }
