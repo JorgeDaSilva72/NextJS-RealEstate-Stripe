@@ -26,6 +26,12 @@
   "navigation": {
     "acheter": "شراء",
     "louer": "إيجار",
+    "services": "الخدمات",
+
+    "service-visite3D": {
+      "title": "جولة افتراضية",
+      "description": "جولة افتراضية غامرة"
+    },
     "buy-apartment": {
       "title": "شراء شقة",
       "description": "اشترِ العقار الذي يناسبك"

@@ -26,6 +26,13 @@
   "navigation": {
     "acheter": "Buy",
     "louer": "Rent",
+    "services": "Services",
+
+    "service-visite3D": {
+      "title": "Virtual Tour",
+      "description": "Immersive virtual tour"
+    },
+
     "buy-apartment": {
       "title": "Buy an apartment",
       "description": "Find the perfect property for you"

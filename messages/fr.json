@@ -26,6 +26,12 @@
   "navigation": {
     "acheter": "Acheter",
     "louer": "Louer",
+    "services": "Services",
+
+    "service-visite3D": {
+      "title": "Visite Virtuelle",
+      "description": "Visite virtuelle immersive"
+    },
     "buy-apartment": {
       "title": "Acheter appartement",
       "description": "Acheter le bien qui me ressemble"
@@ -894,5 +900,24 @@
     "confirmation": "Êtes-vous sûr de vouloir supprimer {slug} ?",
     "cancel": "Annuler",
     "delete": "Supprimer"
+  },
+  "VirtualTourPage": {
+    "hero": {
+      "title": "Visite Virtuelle 3D Immersive",
+      "subtitle": "Révolutionnez vos visites immobilières avec notre technologie de pointe"
+    },
+    "stats": {
+      "timeReduction": "Réduction du temps de visite",
+      "conversionRate": "Taux de conversion",
+      "visitorsServed": "Visiteurs satisfaits"
+    },
+    "testimonials": {
+      "title": "Ce que nos clients en disent"
+    },
+    "cta": {
+      "title": "Prêt à transformer vos visites ?",
+      "description": "Commencez dès aujourd'hui à offrir une expérience unique à vos clients",
+      "button": "Prendre un RDV"
+    }
   }
 }

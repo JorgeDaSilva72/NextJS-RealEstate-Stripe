@@ -54,7 +54,19 @@
 // ];
 import { useTranslations } from "next-intl";
 
-export const useNavigationItems = () => {
+interface DropdownItem {
+  key: string;
+  title: string;
+  href: string;
+  description?: string;
+}
+
+interface NavigationItem {
+  label: string;
+  dropdownItems: DropdownItem[];
+}
+
+export const useNavigationItems = (): NavigationItem[] => {
   const t = useTranslations("navigation");
 
   return [
@@ -107,6 +119,17 @@ export const useNavigationItems = () => {
           title: t("exclusive-rentals.title"),
           description: t("exclusive-rentals.description"),
           href: "/exclusive-rentals",
+        },
+      ],
+    },
+    {
+      label: t("services"),
+      dropdownItems: [
+        {
+          key: "service-visite3D",
+          title: t("service-visite3D.title"),
+          description: t("service-visite3D.description"),
+          href: "/services",
         },
       ],
     },

@@ -26,6 +26,12 @@
   "navigation": {
     "acheter": "Comprar",
     "louer": "Alugar",
+    "services": "Serviços",
+
+    "service-visite3D": {
+      "title": "Visita Virtual",
+      "description": "Visita virtual imersiva"
+    },
     "buy-apartment": {
       "title": "Comprar apartamento",
       "description": "Compre o imóvel que combina com você"
