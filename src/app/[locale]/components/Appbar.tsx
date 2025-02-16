@@ -313,9 +313,9 @@ const Appbar = ({ children }: Props) => {
               height={32}
               className="rounded-lg"
             />
-            <div className="">
+            <div className="hidden sm:block">
               <p
-                className={`${textColor} text-sm  md:text-md   font-medium tracking-wide whitespace-nowrap`}
+                className={`${textColor} text-xs sm:text-sm md:text-md   font-medium tracking-wide whitespace-nowrap`}
               >
                 {t("siteTitle")}
               </p>
@@ -371,24 +371,45 @@ const Appbar = ({ children }: Props) => {
       </NavbarContent>
 
       <NavbarMenu className="pt-6 gap-6">
-        {navigationItems.map((item) => (
-          <NavbarMenuItem key={item.label}>
-            <div className="flex flex-col gap-2">
-              <p className="font-medium text-primary text-sm">{item.label}</p>
-              {item.dropdownItems.map((dropdownItem) => (
-                <Link
-                  key={dropdownItem.key}
-                  href={dropdownItem.href}
-                  className="text-foreground/70 hover:text-foreground pl-4"
-                  onClick={() => setIsMenuOpen(false)}
+        <div className="flex flex-col gap-6">
+          <NavbarBrand>
+            <Link href="/" className="flex  items-center gap-2">
+              <Image
+                src="/logo-topaz-enhance-coupe.jpeg"
+                alt="Logo Afrique Avenir"
+                width={40}
+                height={40}
+                className="rounded-lg"
+              />
+              <div className="">
+                <p
+                  className={`${textColor} text-sm  md:text-md   font-medium tracking-wide whitespace-nowrap`}
                 >
-                  {dropdownItem.title}
-                </Link>
-              ))}
-            </div>
-          </NavbarMenuItem>
-        ))}
-        <LanguageSwitcher />
+                  {t("siteTitle")}
+                </p>
+              </div>
+            </Link>
+          </NavbarBrand>
+
+          {navigationItems.map((item) => (
+            <NavbarMenuItem key={item.label}>
+              <div className="flex flex-col gap-2">
+                <p className="font-medium text-primary text-sm">{item.label}</p>
+                {item.dropdownItems.map((dropdownItem) => (
+                  <Link
+                    key={dropdownItem.key}
+                    href={dropdownItem.href}
+                    className="text-foreground/70 hover:text-foreground pl-4"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {dropdownItem.title}
+                  </Link>
+                ))}
+              </div>
+            </NavbarMenuItem>
+          ))}
+          <LanguageSwitcher />
+        </div>
       </NavbarMenu>
     </Navbar>
   );
