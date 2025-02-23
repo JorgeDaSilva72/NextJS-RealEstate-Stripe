@@ -211,12 +211,19 @@ import React from "react";
 import { SubscriptionPlan } from "@prisma/client";
 import { useTranslations } from "next-intl";
 import PurchasePlan from "./PurchasePlan";
+import { Link } from "@/i18n/routing";
+import { LoginLink } from "@kinde-oss/kinde-auth-nextjs";
+import { Button } from "@nextui-org/react";
 
 interface BronzePackProps {
   data: SubscriptionPlan;
+  isAuthenticated?: boolean;
 }
 
-const BronzePack: React.FC<BronzePackProps> = ({ data }) => {
+const BronzePack: React.FC<BronzePackProps> = ({
+  data,
+  isAuthenticated = false,
+}) => {
   const t = useTranslations("BronzePack");
 
   const {
@@ -229,6 +236,13 @@ const BronzePack: React.FC<BronzePackProps> = ({ data }) => {
     youtubeVideoDuration,
     zoneRadius,
   } = data;
+
+  // Bouton de connexion pour les utilisateurs non authentifiés
+  const LoginButton = () => (
+    <Button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 rounded-lg transition duration-300 text-center block">
+      <LoginLink>Se connecter pour souscrire</LoginLink>
+    </Button>
+  );
 
   return (
     <div className="bg-white h-full rounded-2xl shadow-2xl w-full flex flex-col overflow-hidden">
@@ -298,10 +312,14 @@ const BronzePack: React.FC<BronzePackProps> = ({ data }) => {
 
       {/* Footer with button - always at bottom */}
       <div className="p-6 bg-orange-50">
-        <PurchasePlan
-          plan={data}
-          buttonClassName="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-3 rounded-lg transition duration-300"
-        />
+        {isAuthenticated ? (
+          <PurchasePlan
+            plan={data}
+            buttonClassName="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-3 rounded-lg transition duration-300"
+          />
+        ) : (
+          <LoginButton />
+        )}
       </div>
     </div>
   );

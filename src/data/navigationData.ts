@@ -131,6 +131,12 @@ export const useNavigationItems = (): NavigationItem[] => {
           description: t("service-visite3D.description"),
           href: "/services",
         },
+        {
+          key: "pricing",
+          title: t("pricing.title"),
+          description: t("pricing.description"),
+          href: "/pricing",
+        },
       ],
     },
   ];

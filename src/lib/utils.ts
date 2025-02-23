@@ -33,3 +33,16 @@ export function transformCountries(
     value: country.name,
   }));
 }
+
+export const isValidDate = (
+  date: string | Date | null | undefined
+): boolean => {
+  // Si la date est null, undefined ou une chaîne vide, elle est invalide
+  if (!date) return false;
+
+  // Convertir la date en objet Date si ce n'est pas déjà le cas
+  const dateObj = date instanceof Date ? date : new Date(date);
+
+  // Vérifier si la date est valide
+  return !isNaN(dateObj.getTime());
+};

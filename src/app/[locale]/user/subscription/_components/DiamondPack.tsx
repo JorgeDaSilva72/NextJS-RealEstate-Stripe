@@ -199,12 +199,20 @@ import PurchasePlan from "./PurchasePlan";
 import emailjs from "@emailjs/browser";
 import { toast } from "react-toastify";
 import MeetingModal, { MeetingFormData } from "@/components/ui/MeetingModal";
+import { Link } from "@/i18n/routing";
+import { isValidDate } from "@/lib/utils";
+import { LoginLink } from "@kinde-oss/kinde-auth-nextjs";
+import { Button } from "@nextui-org/react";
 
 interface DiamondPackProps {
   data: SubscriptionPlan;
+  isAuthenticated?: boolean;
 }
 
-const DiamondPack: React.FC<DiamondPackProps> = ({ data }) => {
+const DiamondPack: React.FC<DiamondPackProps> = ({
+  data,
+  isAuthenticated = false,
+}) => {
   const t = useTranslations("DiamondPack");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -221,6 +229,13 @@ const DiamondPack: React.FC<DiamondPackProps> = ({ data }) => {
     youtubeVideoDuration,
     zoneRadius,
   } = data;
+
+  // Bouton de connexion pour les utilisateurs non authentifiés
+  const LoginButton = () => (
+    <Button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 rounded-lg transition duration-300 text-center block">
+      <LoginLink>Se connecter pour souscrire</LoginLink>
+    </Button>
+  );
 
   const handleMeetingRequest = async (formData: MeetingFormData) => {
     try {
@@ -270,16 +285,20 @@ const DiamondPack: React.FC<DiamondPackProps> = ({ data }) => {
             <p className="text-xs sm:text-sm text-gray-400 text-center mt-2">
               {t("specialOffer", {
                 country,
-                startDate: new Intl.DateTimeFormat("fr-FR", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                }).format(new Date(startDate)),
-                endDate: new Intl.DateTimeFormat("fr-FR", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                }).format(new Date(endDate)),
+                startDate: isValidDate(startDate)
+                  ? new Intl.DateTimeFormat("fr-FR", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    }).format(new Date(startDate))
+                  : "Date invalide", // ou une autre valeur par défaut
+                endDate: isValidDate(endDate)
+                  ? new Intl.DateTimeFormat("fr-FR", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    }).format(new Date(endDate))
+                  : "Date invalide", // ou une autre valeur par défaut
               })}
             </p>
 
@@ -330,25 +349,34 @@ const DiamondPack: React.FC<DiamondPackProps> = ({ data }) => {
           </div>
 
           <div className="mt-6">
-            <PurchasePlan
-              plan={data}
-              buttonClassName="bg-gradient-to-r from-blue-500 to-yellow-500 text-black hover:from-blue-600 hover:to-yellow-600"
-            />
+            {isAuthenticated ? (
+              <PurchasePlan
+                plan={data}
+                buttonClassName="bg-gradient-to-r from-blue-500 to-yellow-500 text-black hover:from-blue-600 hover:to-yellow-600"
+              />
+            ) : (
+              <LoginButton />
+            )}
           </div>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 transition duration-300 text-sm sm:text-base mt-4"
-          >
-            {t("scheduleAppointment")}
-          </button>
+          {isAuthenticated ? (
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 transition duration-300 text-sm sm:text-base mt-4"
+            >
+              {t("scheduleAppointment")}
+            </button>
+          ) : null}
         </div>
       </div>
-      <MeetingModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleMeetingRequest}
-        planName={namePlan}
-      />
+      {/* Modal uniquement disponible pour les utilisateurs authentifiés */}
+      {isAuthenticated && (
+        <MeetingModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleMeetingRequest}
+          planName={namePlan}
+        />
+      )}
     </>
   );
 };

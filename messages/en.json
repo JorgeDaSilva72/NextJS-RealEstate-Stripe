@@ -32,6 +32,10 @@
       "title": "Virtual Tour",
       "description": "Immersive virtual tour"
     },
+    "pricing": {
+      "title": "Pricing & Plans",
+      "description": "Discover our offers. "
+    },
 
     "buy-apartment": {
       "title": "Buy an apartment",

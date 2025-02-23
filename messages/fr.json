@@ -32,6 +32,10 @@
       "title": "Visite Virtuelle",
       "description": "Visite virtuelle immersive"
     },
+    "pricing": {
+      "title": "Tarifs et Abonnements",
+      "description": "Découvrez nos offres"
+    },
     "buy-apartment": {
       "title": "Acheter appartement",
       "description": "Acheter le bien qui me ressemble"

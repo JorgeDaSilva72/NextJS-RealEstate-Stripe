@@ -158,6 +158,7 @@ const SubscriptionPage = async (): Promise<JSX.Element> => {
         <SubscriptionCarousel
           plans={sortedPlans}
           COMPONENT_MAPPING={COMPONENT_MAPPING}
+          isAuthenticated={true}
         />
       </div>
     );
