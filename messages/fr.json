@@ -909,7 +909,11 @@
   "VirtualTourPage": {
     "hero": {
       "title": "Découvrez l'avenir de l'immobilier",
-      "subtitle": "Explorez les propriétés comme jamais auparavant avec nos visites 3D immersives."
+      "subtitle": "Explorez les propriétés comme jamais auparavant avec nos visites 3D immersives.",
+      "button": "Prendre rendez-vous ",
+      "meetingRequestSuccess": "Votre demande de rendez-vous a été envoyée avec succès !",
+      "meetingRequestError": "Erreur lors de l'envoi de la demande",
+      "meetingRequestErrorTryAgain": "Une erreur est survenue lors de l'envoi de la demande. Veuillez réessayer."
     },
     "stats": {
       "timeReduction": "Réduction du temps",

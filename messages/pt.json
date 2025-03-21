@@ -907,7 +907,11 @@
   "VirtualTourPage": {
     "hero": {
       "title": "Experimente o futuro do mercado imobiliário",
-      "subtitle": "Explore propriedades como nunca antes com nossos tours 3D imersivos."
+      "subtitle": "Explore propriedades como nunca antes com nossos tours 3D imersivos.",
+      "button": "Marque uma consulta",
+      "meetingRequestSuccess": "O seu pedido de agendamento foi enviado com sucesso!",
+      "meetingRequestError": "Erro ao enviar pedido",
+      "meetingRequestErrorTryAgain": "Ocorreu um erro ao enviar o pedido. Por favor, tente novamente."
     },
     "stats": {
       "timeReduction": "Redução de tempo",

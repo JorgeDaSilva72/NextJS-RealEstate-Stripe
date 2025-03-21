@@ -908,7 +908,11 @@
   "VirtualTourPage": {
     "hero": {
       "title": "Experience the Future of Real Estate",
-      "subtitle": "Explore properties like never before with our immersive 3D tours."
+      "subtitle": "Explore properties like never before with our immersive 3D tours.",
+      "button": "Make an appointment ",
+      "meetingRequestSuccess": "Your appointment request has been sent successfully!",
+      "meetingRequestError": "Error sending request",
+      "meetingRequestErrorTryAgain": "An error occurred while sending the request. Please try again."
     },
     "stats": {
       "timeReduction": "Time Reduction",

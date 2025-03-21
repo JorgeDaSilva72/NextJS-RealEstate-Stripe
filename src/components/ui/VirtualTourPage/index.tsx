@@ -276,7 +276,7 @@
 
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import {
@@ -291,6 +291,9 @@ import {
   TrendingUp,
 } from "lucide-react";
 import Visit3DPack from "@/app/[locale]/user/subscription/_components/Visit3DPack";
+import MeetingModal, { MeetingFormData } from "../MeetingModal";
+import emailjs from "@emailjs/browser";
+import { toast } from "react-toastify";
 
 // Types pour les données
 interface Testimonial {
@@ -316,6 +319,94 @@ interface Service {
   title: string;
   description: string;
 }
+
+const HeroSection = () => {
+  const t = useTranslations("VirtualTourPage");
+  const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
+
+  const handleMeetingRequest = async (formData: MeetingFormData) => {
+    try {
+      const templateParams = {
+        plan_name: "Visite Virtuelle 3D",
+        plan_price: "",
+        plan_duration: "",
+        country: "",
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        message: formData.message,
+      };
+
+      const serviceId = process.env.NEXT_PUBLIC_SERVICE_ID!;
+      const templateId = process.env.NEXT_PUBLIC_TEMPLATE_FOR_DIAMOND_PACK_ID!;
+      const publicKey = process.env.NEXT_PUBLIC_PUBLIC_KEY_EMAIL!;
+
+      const response = await emailjs.send(
+        serviceId,
+        templateId,
+        templateParams,
+        publicKey
+      );
+
+      if (response.status === 200) {
+        toast.success(t("hero.meetingRequestSuccess"));
+        setIsMeetingModalOpen(false);
+      } else {
+        throw new Error(t("hero.meetingRequestError"));
+      }
+    } catch (error) {
+      toast.error(t("hero.meetingRequestErrorTryAgain"));
+      console.error("Erreur:", error);
+    }
+  };
+
+  return (
+    <>
+      {/* Hero Section */}
+      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-black via-blue-950 to-black text-white"></div>
+        </div>
+        <div className="container mx-auto px-4 z-10 text-center text-white">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-5xl md:text-6xl font-bold mb-6"
+          >
+            {t("hero.title")}
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-xl md:text-2xl text-blue-200 mb-8 max-w-2xl mx-auto"
+          >
+            {t("hero.subtitle")}
+          </motion.p>
+
+          {/* Bouton pour ouvrir la modale */}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsMeetingModalOpen(true)}
+            // className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold text-lg rounded-lg shadow-lg"
+            className="relative overflow-hidden bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300 group"
+          >
+            {t("hero.button")}
+          </motion.button>
+        </div>
+      </section>
+
+      {/* Modale de prise de rendez-vous */}
+      <MeetingModal
+        isOpen={isMeetingModalOpen}
+        onClose={() => setIsMeetingModalOpen(false)}
+        onSubmit={handleMeetingRequest}
+        planName="Visite Virtuelle 3D"
+      />
+    </>
+  );
+};
 
 // Composant de témoignage
 const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
@@ -429,6 +520,8 @@ const VirtualTourPage: React.FC<VirtualTourPageProps> = ({
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
+
+      {/*
       <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-br from-black via-blue-950 to-black text-white "></div>
@@ -449,8 +542,23 @@ const VirtualTourPage: React.FC<VirtualTourPageProps> = ({
           >
             {t("hero.subtitle")}
           </motion.p>
+
+          
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300"
+            onClick={() => true}
+          >
+            {t("hero.bookAppointment")}
+          </motion.button>
         </div>
       </section>
+
+      */}
+
+      <HeroSection />
 
       {/* Service Section */}
       <section className="py-20 bg-white">
