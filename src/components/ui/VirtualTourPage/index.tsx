@@ -323,6 +323,7 @@ interface Service {
 const HeroSection = () => {
   const t = useTranslations("VirtualTourPage");
   const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   const handleMeetingRequest = async (formData: MeetingFormData) => {
     try {
@@ -361,13 +362,72 @@ const HeroSection = () => {
   };
 
   return (
+    // <>
+    //   {/* Hero Section */}
+    //   <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
+    //     <div className="absolute inset-0 z-0">
+    //       <div className="absolute inset-0 bg-gradient-to-br from-black via-blue-950 to-black text-white"></div>
+    //     </div>
+    //     <div className="container mx-auto px-4 z-10 text-center text-white">
+    //       <motion.h1
+    //         initial={{ opacity: 0, y: 20 }}
+    //         animate={{ opacity: 1, y: 0 }}
+    //         className="text-5xl md:text-6xl font-bold mb-6"
+    //       >
+    //         {t("hero.title")}
+    //       </motion.h1>
+    //       <motion.p
+    //         initial={{ opacity: 0, y: 20 }}
+    //         animate={{ opacity: 1, y: 0 }}
+    //         transition={{ delay: 0.2 }}
+    //         className="text-xl md:text-2xl text-blue-200 mb-8 max-w-2xl mx-auto"
+    //       >
+    //         {t("hero.subtitle")}
+    //       </motion.p>
+
+    //       {/* Bouton pour ouvrir la modale */}
+    //       <motion.button
+    //         whileHover={{ scale: 1.05 }}
+    //         whileTap={{ scale: 0.95 }}
+    //         onClick={() => setIsMeetingModalOpen(true)}
+    //         // className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold text-lg rounded-lg shadow-lg"
+    //         className="relative overflow-hidden bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300 group"
+    //       >
+    //         {t("hero.button")}
+    //       </motion.button>
+    //     </div>
+    //   </section>
+
+    //   {/* Modale de prise de rendez-vous */}
+    //   <MeetingModal
+    //     isOpen={isMeetingModalOpen}
+    //     onClose={() => setIsMeetingModalOpen(false)}
+    //     onSubmit={handleMeetingRequest}
+    //     planName="Visite Virtuelle 3D"
+    //   />
+    // </>
+
     <>
       {/* Hero Section */}
       <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-black via-blue-950 to-black text-white"></div>
+          {/* Fond avec overlay vidéo - opacité réduite */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-blue-950/50 to-black/50 z-10"></div>
+
+          {/* Vidéo en arrière-plan */}
+          <video
+            className="w-full h-full object-cover absolute inset-0"
+            autoPlay
+            muted
+            loop
+            playsInline
+          >
+            <source src="/videos/presentation-complete.mp4" type="video/mp4" />
+            Votre navigateur ne supporte pas la lecture vidéo.
+          </video>
         </div>
-        <div className="container mx-auto px-4 z-10 text-center text-white">
+
+        <div className="container mx-auto px-4 z-20 text-center text-white">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -384,18 +444,83 @@ const HeroSection = () => {
             {t("hero.subtitle")}
           </motion.p>
 
-          {/* Bouton pour ouvrir la modale */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setIsMeetingModalOpen(true)}
-            // className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold text-lg rounded-lg shadow-lg"
-            className="relative overflow-hidden bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300 group"
-          >
-            {t("hero.button")}
-          </motion.button>
+          {/* Boutons */}
+          <div className="flex flex-col md:flex-row gap-4 justify-center">
+            {/* Bouton pour ouvrir la modale */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsMeetingModalOpen(true)}
+              className="relative overflow-hidden bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300 group"
+            >
+              {t("hero.button")}
+            </motion.button>
+
+            {/* Bouton pour voir la vidéo de présentation complète */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsVideoPlaying(true)}
+              className="relative overflow-hidden bg-white text-blue-600 font-bold py-4 px-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"
+                />
+              </svg>
+              Voir la vidéo
+            </motion.button>
+          </div>
         </div>
       </section>
+
+      {/* Modal pour la vidéo de présentation */}
+      {isVideoPlaying && (
+        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
+          <div className="relative w-full max-w-4xl">
+            {/* Bouton de fermeture */}
+            <button
+              onClick={() => setIsVideoPlaying(false)}
+              className="absolute -top-12 right-0 text-white hover:text-blue-400"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-8 h-8"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+
+            {/* Vidéo de présentation */}
+            <div className="aspect-video w-full bg-black rounded-lg overflow-hidden">
+              <video className="w-full h-full" controls autoPlay>
+                <source
+                  src="/videos/presentation-complete.mp4"
+                  type="video/mp4"
+                />
+                Votre navigateur ne supporte pas la lecture vidéo.
+              </video>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modale de prise de rendez-vous */}
       <MeetingModal
