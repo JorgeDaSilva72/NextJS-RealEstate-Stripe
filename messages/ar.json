@@ -911,7 +911,8 @@
       "button": "تحديد موعد",
       "meetingRequestSuccess": "لقد تم إرسال طلب موعدك بنجاح",
       "meetingRequestError": "خطأ في إرسال الطلب",
-      "meetingRequestErrorTryAgain": "حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى."
+      "meetingRequestErrorTryAgain": "حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.",
+      "buttonSeeTheVideo": "شاهد الفيديو"
     },
     "stats": {
       "timeReduction": "تقليل الوقت",

@@ -913,7 +913,8 @@
       "button": "Prendre rendez-vous ",
       "meetingRequestSuccess": "Votre demande de rendez-vous a été envoyée avec succès !",
       "meetingRequestError": "Erreur lors de l'envoi de la demande",
-      "meetingRequestErrorTryAgain": "Une erreur est survenue lors de l'envoi de la demande. Veuillez réessayer."
+      "meetingRequestErrorTryAgain": "Une erreur est survenue lors de l'envoi de la demande. Veuillez réessayer.",
+      "buttonSeeTheVideo": "Voir la vidéo"
     },
     "stats": {
       "timeReduction": "Réduction du temps",

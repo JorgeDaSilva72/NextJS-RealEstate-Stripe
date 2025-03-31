@@ -912,7 +912,8 @@
       "button": "Make an appointment ",
       "meetingRequestSuccess": "Your appointment request has been sent successfully!",
       "meetingRequestError": "Error sending request",
-      "meetingRequestErrorTryAgain": "An error occurred while sending the request. Please try again."
+      "meetingRequestErrorTryAgain": "An error occurred while sending the request. Please try again.",
+      "buttonSeeTheVideo": "Watch the video"
     },
     "stats": {
       "timeReduction": "Time Reduction",

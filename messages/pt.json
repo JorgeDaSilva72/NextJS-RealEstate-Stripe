@@ -911,7 +911,8 @@
       "button": "Marque uma consulta",
       "meetingRequestSuccess": "O seu pedido de agendamento foi enviado com sucesso!",
       "meetingRequestError": "Erro ao enviar pedido",
-      "meetingRequestErrorTryAgain": "Ocorreu um erro ao enviar o pedido. Por favor, tente novamente."
+      "meetingRequestErrorTryAgain": "Ocorreu um erro ao enviar o pedido. Por favor, tente novamente.",
+      "buttonSeeTheVideo": "Assista ao vídeo"
     },
     "stats": {
       "timeReduction": "Redução de tempo",
