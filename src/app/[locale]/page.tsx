@@ -149,6 +149,7 @@ import { cn } from "@nextui-org/theme";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import PropertyCategoriesSlider from "@/components/ui/PropertyCategoriesSlider";
+import FeaturedPropertiesSlider from "./components/FeaturedPropertiesSlider";
 
 interface Image {
   url: string;
@@ -273,6 +274,7 @@ const Hero: React.FC = () => {
       </section>
 
       <PropertyCategoriesSlider />
+      <FeaturedPropertiesSlider />
     </>
   );
 };

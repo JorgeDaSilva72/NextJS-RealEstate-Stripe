@@ -23,6 +23,10 @@ const nextConfig = {
         hostname: "api.dicebear.com",
         pathname: "/6.x/identicon/svg",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
     ],
     dangerouslyAllowSVG: true,
   },
