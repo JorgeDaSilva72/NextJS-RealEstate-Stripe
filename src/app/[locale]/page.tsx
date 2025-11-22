@@ -150,6 +150,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import PropertyCategoriesSlider from "@/components/ui/PropertyCategoriesSlider";
 import FeaturedPropertiesSlider from "./components/FeaturedPropertiesSlider";
+import { FooterSection } from "./components/footer";
 
 interface Image {
   url: string;
@@ -275,6 +276,7 @@ const Hero: React.FC = () => {
 
       <PropertyCategoriesSlider />
       <FeaturedPropertiesSlider />
+      <FooterSection />
     </>
   );
 };
