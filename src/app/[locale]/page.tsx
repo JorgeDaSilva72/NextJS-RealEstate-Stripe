@@ -151,6 +151,8 @@ import { Link } from "@/i18n/routing";
 import PropertyCategoriesSlider from "@/components/ui/PropertyCategoriesSlider";
 import FeaturedPropertiesSlider from "./components/FeaturedPropertiesSlider";
 import { FooterSection } from "./components/footer";
+import SectionHeader from "@/components/ui/SectionHeader";
+import SearchFormWrapper from "@/components/ui/SearchFormWrapper";
 
 interface Image {
   url: string;
@@ -274,9 +276,31 @@ const Hero: React.FC = () => {
         </div>
       </section>
 
-      <PropertyCategoriesSlider />
-      <FeaturedPropertiesSlider />
-      <FooterSection />
+      {/* <section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8"
+        aria-labelledby="search-title"
+      >
+        <SectionHeader
+          id="search-title"
+          title="Affinez votre recherche immobilière"
+        />
+        <div className="px-4">
+          <SearchFormWrapper
+            defaultValues={{
+              ville: "",
+              categorie: "Appartement",
+              budget: "",
+              chambres: "",
+            }}
+            defaultActiveTab={"Location meublée"}
+            backgroundColor="bg-black"
+          />
+        </div>
+      </section> */}
+
+      {/* <PropertyCategoriesSlider /> */}
+      {/* <FeaturedPropertiesSlider /> */}
+      {/* <FooterSection /> */}
     </>
   );
 };
