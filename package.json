@@ -8,7 +8,12 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "node --loader ts-node/esm prisma/seed.ts"
+    "seed": "node --loader ts-node/esm prisma/seed3.ts",
+    "3listingsSeed": "node --loader ts-node/esm prisma/3listingsSeed.ts",
+    "prisma:generate": "node node_modules/.bin/prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "prisma:reset": "node node_modules/.bin/prisma migrate reset --force"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

@@ -1,176 +1,964 @@
+// // This is your Prisma schema file,
+// // learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// generator client {
+//   provider = "prisma-client-js"
+// }
+// //Developement
+
+// // datasource db {
+// //   provider = "sqlite"
+// //   url      = env("DATABASE_URL")
+// // }
+
+// // PRODUCTION avec Postgres DB IN VERCEL 
+// // datasource db {
+// //   provider = "postgresql"
+// //   url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+// //   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+// // }
+// // PRODUCTION avec Postgres DB IN NEON
+
+// datasource db {
+//   provider  = "postgresql"
+//   url  	    = env("DATABASE_URL")
+//   //uncomment next line if you use Prisma <5.10
+//   // directUrl = env("DATABASE_URL_UNPOOLED")
+// }
+
+// model User {
+//   id            String          @id
+//   firstName     String
+//   lastName      String
+//   email         String
+//   avatarUrl     String?
+//   createdAt     DateTime        @default(now())
+//   Property      Property[]
+//   subscriptions Subscriptions[]
+
+//   // Relation avec les rendez-vous
+//   appointments  Appointment[]
+
+// }
+
+// model Property {
+//   id          Int               @id @default(autoincrement())
+//   name        String
+//   description String
+//   price       Int
+//   userId      String
+//   user        User              @relation(fields: [userId], references: [id])
+//   typeId      Int
+//   type        PropertyType      @relation(fields: [typeId], references: [id])
+//   statusId    Int
+//   status      PropertyStatus    @relation(fields: [statusId], references: [id])
+//   location    PropertyLocation?
+//   feature     PropertyFeature?
+//   images      PropertyImage[]
+//   videos      PropertyVideo[]   // Nouvelle relation pour les vidéos
+//   contact     Contact?
+//   createdAt   DateTime @default(now()) // Nouvelle colonne
+
+//   // Relation avec les rendez-vous
+//   appointments Appointment[]
+// }
+
+// model Appointment {
+//   id          Int       @id @default(autoincrement())
+//   start       DateTime  // Heure de début du rendez-vous
+//   end         DateTime  // Heure de fin du rendez-vous
+//   title       String    @default("Visite de l'immobilier")// Optionnel : Description du rendez-vous
+//   createdAt   DateTime  @default(now())
+//   state       String    @default("pending")
+
+//   // Relation avec User
+//   userId      String
+//   user        User      @relation(fields: [userId], references: [id])
+
+//   // Relation avec Property
+//   propertyId  Int
+//   property    Property   @relation(fields: [propertyId], references: [id])
+// }
+
+// model PropertyType {
+//   id       Int        @id @default(autoincrement())
+//   value    String @unique
+//   Property Property[]
+// }
+
+// model PropertyStatus {
+//   id       Int        @id @default(autoincrement())
+//   value    String @unique
+//   Property Property[]
+// }
+
+// model PropertyLocation {
+//   id            Int      @id @default(autoincrement())
+//   streetAddress String
+//   city          String
+//   state         String
+//   zip           String
+//   region        String
+//   landmark      String
+//   propertyId    Int      @unique
+//   property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+// }
+
+// model PropertyFeature {
+//   id              Int      @id @default(autoincrement())
+//   bedrooms        Int
+//   bathrooms       Int
+//   parkingSpots    Int
+//   area            Int
+//   hasSwimmingPool Boolean
+//   hasGardenYard   Boolean
+//   hasBalcony      Boolean
+//   property        Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+//   propertyId      Int      @unique
+// }
+
+// model PropertyImage {
+//   id         Int      @id @default(autoincrement())
+//   url        String
+//   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+//   propertyId Int
+// }
+
+// model PropertyVideo {
+//   id          Int      @id @default(autoincrement())
+//   url         String   // Lien YouTube de la vidéo
+//   propertyId  Int      // Référence à la propriété associée
+//   property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+//   createdAt   DateTime @default(now()) // Date d'ajout
+// }
+
+// model Contact {
+//   id         Int      @id @default(autoincrement())
+//   name       String
+//   phone      String
+//   email      String
+//   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+//   propertyId Int      @unique
+// }
+
+// model SubscriptionPlan {
+//   id                    Int             @id @default(autoincrement())
+//   namePlan              String
+//   price                 Float // Prix en euros
+//   duration           String   @default("AN")// Durée, ex: "AN" ou"Mois"
+//   country            String   // Pays concerné
+//   startDate          DateTime // Date de début
+//   endDate            DateTime // Date de fin
+//   premiumAds         Int      // Nombre d'annonces premium incluses
+//   photosPerAd        Int      // Nombre de photos par annonce
+//   shortVideosPerAd   Int      // Nombre de vidéos courtes par annonce
+//   youtubeVideoDuration String // Durée des vidéos YouTube
+//   zoneRadius         Int      // Zone de couverture (en km)
+//   features              String
+//   createdAt          DateTime @default(now()) // Date de création du plan
+//   updatedAt          DateTime @updatedAt // Dernière mise à jour
+//   subscriptions         Subscriptions[]
+// }
+
+// model Subscriptions {
+//   id        Int              @id @default(autoincrement())
+//   paymentID String
+//   createdAt DateTime         @default(now())
+//   updatedAt DateTime         @updatedAt
+//   startDate DateTime
+//   endDate DateTime
+//   plan      SubscriptionPlan @relation(fields: [palnId], references: [id])
+//   palnId    Int
+//   userId    String
+//   user      User             @relation(fields: [userId], references: [id])
+// }
+
+// ---------------------------------------------------------------
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// modification branche feature/multilingual-countries
+
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
+
+// model User {
+//   id            String          @id
+//   firstName     String
+//   lastName      String
+//   email         String
+//   avatarUrl     String?
+//   createdAt     DateTime        @default(now())
+//   Property      Property[]
+//   subscriptions Subscriptions[]
+//   appointments  Appointment[]
+// }
+
+// model Property {
+//   id          Int            @id @default(autoincrement())
+//   name        String
+//   description String
+//   price       Int
+//   userId      String
+//   user        User           @relation(fields: [userId], references: [id])
+//   typeId      Int
+//   type        PropertyType   @relation(fields: [typeId], references: [id])
+//   statusId    Int
+//   status      PropertyStatus @relation(fields: [statusId], references: [id])
+
+//   // Relation avec le pays
+//   countryId Int?
+//   country   Country? @relation(fields: [countryId], references: [id])
+
+//   location     PropertyLocation?
+//   feature      PropertyFeature?
+//   images       PropertyImage[]
+//   videos       PropertyVideo[]
+//   contact      Contact?
+//   createdAt    DateTime          @default(now())
+//   appointments Appointment[]
+// }
+
+// model Appointment {
+//   id         Int      @id @default(autoincrement())
+//   start      DateTime
+//   end        DateTime
+//   title      String   @default("Visite de l'immobilier")
+//   createdAt  DateTime @default(now())
+//   state      String   @default("pending")
+//   userId     String
+//   user       User     @relation(fields: [userId], references: [id])
+//   propertyId Int
+//   property   Property @relation(fields: [propertyId], references: [id])
+// }
+
+// // ============================================
+// // SYSTÈME MULTILINGUE - TABLES PRINCIPALES
+// // ============================================
+
+// model Language {
+//   id        Int      @id @default(autoincrement())
+//   code      String   @unique // "fr", "en", "ar", etc.
+//   name      String // "Français", "English", "العربية"
+//   isActive  Boolean  @default(true)
+//   isDefault Boolean  @default(false) // Langue par défaut du site
+//   createdAt DateTime @default(now())
+
+//   // Relations avec les traductions
+//   countryTranslations        CountryTranslation[]
+//   regionTranslations         RegionTranslation[]
+//   cityTranslations           CityTranslation[]
+//   propertyTypeTranslations   PropertyTypeTranslation[]
+//   propertyStatusTranslations PropertyStatusTranslation[]
+// }
+
+// // ============================================
+// // GESTION DES PAYS AFRICAINS
+// // ============================================
+
+// model Country {
+//   id             Int      @id @default(autoincrement())
+//   code           String   @unique // Code ISO (ex: "SN", "CI", "MA")
+//   phonePrefix    String // Préfixe téléphonique (ex: "+221")
+//   currency       String // Devise (ex: "XOF", "MAD")
+//   currencySymbol String // Symbole (ex: "FCFA", "DH")
+//   flagEmoji      String? // Emoji du drapeau (ex: "🇸🇳")
+//   latitude       Float? // Centre géographique du pays
+//   longitude      Float?
+//   isActive       Boolean  @default(true)
+//   displayOrder   Int      @default(0) // Ordre d'affichage
+//   createdAt      DateTime @default(now())
+//   updatedAt      DateTime @updatedAt
+
+//   // Relations
+//   translations      CountryTranslation[]
+//   regions           Region[]
+//   cities            City[]
+//   properties        Property[]
+//   subscriptionPlans SubscriptionPlan[]
+// }
+
+// model CountryTranslation {
+//   id          Int      @id @default(autoincrement())
+//   countryId   Int
+//   country     Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+//   languageId  Int
+//   language    Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+//   name        String // Nom traduit (ex: "Sénégal" / "Senegal")
+//   description String? // Description optionnelle du pays
+
+//   @@unique([countryId, languageId]) // Une seule traduction par langue
+//   @@index([languageId])
+// }
+
+// // ============================================
+// // GESTION DES RÉGIONS
+// // ============================================
+
+// model Region {
+//   id        Int      @id @default(autoincrement())
+//   countryId Int
+//   country   Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+//   code      String? // Code de la région (optionnel)
+//   latitude  Float?
+//   longitude Float?
+//   isActive  Boolean  @default(true)
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   // Relations
+//   translations RegionTranslation[]
+//   cities       City[]
+
+//   @@index([countryId])
+// }
+
+// model RegionTranslation {
+//   id         Int      @id @default(autoincrement())
+//   regionId   Int
+//   region     Region   @relation(fields: [regionId], references: [id], onDelete: Cascade)
+//   languageId Int
+//   language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+//   name       String // Nom traduit de la région
+
+//   @@unique([regionId, languageId])
+//   @@index([languageId])
+// }
+
+// // ============================================
+// // GESTION DES VILLES
+// // ============================================
+
+// model City {
+//   id         Int      @id @default(autoincrement())
+//   regionId   Int?
+//   region     Region?  @relation(fields: [regionId], references: [id], onDelete: SetNull)
+//   countryId  Int
+//   country    Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+//   code       String? // Code postal ou code ville
+//   latitude   Float?
+//   longitude  Float?
+//   population Int? // Population (optionnel)
+//   isActive   Boolean  @default(true)
+//   isFeatured Boolean  @default(false) // Pour mettre en avant certaines villes
+//   createdAt  DateTime @default(now())
+//   updatedAt  DateTime @updatedAt
+
+//   // Relations
+//   translations      CityTranslation[]
+//   propertyLocations PropertyLocation[]
+
+//   @@index([countryId])
+//   @@index([regionId])
+// }
+
+// model CityTranslation {
+//   id         Int      @id @default(autoincrement())
+//   cityId     Int
+//   city       City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+//   languageId Int
+//   language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+//   name       String // Nom traduit de la ville
+
+//   @@unique([cityId, languageId])
+//   @@index([languageId])
+// }
+
+// // ============================================
+// // MODÈLES EXISTANTS AVEC MULTILINGUE
+// // ============================================
+
+// model PropertyType {
+//   id           Int     @id @default(autoincrement())
+//   code         String?  // Code technique (ex: "apartment", "house")
+//   isActive     Boolean @default(true)
+//   displayOrder Int     @default(0)
+
+//   // Relations
+//   translations PropertyTypeTranslation[]
+//   properties   Property[]
+// }
+
+// model PropertyTypeTranslation {
+//   id             Int          @id @default(autoincrement())
+//   propertyTypeId Int
+//   propertyType   PropertyType @relation(fields: [propertyTypeId], references: [id], onDelete: Cascade)
+//   languageId     Int
+//   language       Language     @relation(fields: [languageId], references: [id], onDelete: Cascade)
+//   value          String // Traduction (ex: "Appartement" / "Apartment")
+//   description    String? // Description optionnelle
+
+//   @@unique([propertyTypeId, languageId])
+//   @@index([languageId])
+// }
+
+// model PropertyStatus {
+//   id           Int     @id @default(autoincrement())
+//   code         String? // Code technique (ex: "for_sale", "for_rent")
+//   isActive     Boolean @default(true)
+//   displayOrder Int     @default(0)
+
+//   // Relations
+//   translations PropertyStatusTranslation[]
+//   properties   Property[]
+// }
+
+// model PropertyStatusTranslation {
+//   id               Int            @id @default(autoincrement())
+//   propertyStatusId Int
+//   propertyStatus   PropertyStatus @relation(fields: [propertyStatusId], references: [id], onDelete: Cascade)
+//   languageId       Int
+//   language         Language       @relation(fields: [languageId], references: [id], onDelete: Cascade)
+//   value            String // Traduction (ex: "À vendre" / "For Sale")
+//   description      String?
+
+//   @@unique([propertyStatusId, languageId])
+//   @@index([languageId])
+// }
+
+// // ============================================
+// // AUTRES MODÈLES
+// // ============================================
+
+// model PropertyLocation {
+//   id            Int    @id @default(autoincrement())
+//   streetAddress String
+//   country String?
+
+//   // Nouvelle relation avec City
+//   cityId Int?
+//   city   City? @relation(fields: [cityId], references: [id], onDelete: SetNull)
+
+//   // Champs conservés pour compatibilité et détails
+//   neighborhood String? // Quartier
+//   zip          String?
+//   landmark     String? // Point de repère
+
+//   // Coordonnées GPS précises de la propriété
+//   latitude  Float?
+//   longitude Float?
+
+//   propertyId Int      @unique
+//   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+//   @@index([cityId])
+// }
+
+// model PropertyFeature {
+//   id              Int      @id @default(autoincrement())
+//   bedrooms        Int
+//   bathrooms       Int
+//   parkingSpots    Int
+//   area            Int
+//   hasSwimmingPool Boolean
+//   hasGardenYard   Boolean
+//   hasBalcony      Boolean
+//   property        Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+//   propertyId      Int      @unique
+// }
+
+// model PropertyImage {
+//   id         Int      @id @default(autoincrement())
+//   url        String
+//   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+//   propertyId Int
+// }
+
+// model PropertyVideo {
+//   id         Int      @id @default(autoincrement())
+//   url        String
+//   propertyId Int
+//   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+//   createdAt  DateTime @default(now())
+// }
+
+// model Contact {
+//   id         Int      @id @default(autoincrement())
+//   name       String
+//   phone      String
+//   email      String
+//   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+//   propertyId Int      @unique
+// }
+
+// model SubscriptionPlan {
+//   id       Int    @id @default(autoincrement())
+//   namePlan String
+//   price    Float
+//   duration String @default("AN")
+
+//   // Relation avec le pays
+//   countryId Int?
+//   country   Country? @relation(fields: [countryId], references: [id])
+
+//   startDate            DateTime
+//   endDate              DateTime
+//   premiumAds           Int
+//   photosPerAd          Int
+//   shortVideosPerAd     Int
+//   youtubeVideoDuration String
+//   zoneRadius           Int
+//   features             String
+//   createdAt            DateTime        @default(now())
+//   updatedAt            DateTime        @updatedAt
+//   subscriptions        Subscriptions[]
+// }
+
+// model Subscriptions {
+//   id        Int              @id @default(autoincrement())
+//   paymentID String
+//   createdAt DateTime         @default(now())
+//   updatedAt DateTime         @updatedAt
+//   startDate DateTime
+//   endDate   DateTime
+//   plan      SubscriptionPlan @relation(fields: [planId], references: [id])
+//   planId    Int
+//   userId    String
+//   user      User             @relation(fields: [userId], references: [id])
+// }
+
+// ----------------------------------------------------------
 
 generator client {
   provider = "prisma-client-js"
 }
-//Developement
-
-// datasource db {
-//   provider = "sqlite"
-//   url      = env("DATABASE_URL")
-// }
-
-// PRODUCTION avec Postgres DB IN VERCEL 
-// datasource db {
-//   provider = "postgresql"
-//   url = env("POSTGRES_PRISMA_URL") // uses connection pooling
-//   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
-// }
-// PRODUCTION avec Postgres DB IN NEON
-
 
 datasource db {
-  provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
-  //uncomment next line if you use Prisma <5.10
-  // directUrl = env("DATABASE_URL_UNPOOLED")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
   id            String          @id
   firstName     String
   lastName      String
-  email         String
+  email         String          @unique // AJOUT: index unique pour performances
   avatarUrl     String?
   createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt // AJOUT: tracking des modifications
   Property      Property[]
   subscriptions Subscriptions[]
-
-  // Relation avec les rendez-vous
   appointments  Appointment[]
 
+  @@index([email]) // AJOUT: index pour recherche rapide
+  @@index([createdAt]) // AJOUT: pour trier par date
 }
 
 model Property {
-  id          Int               @id @default(autoincrement())
+  id          Int    @id @default(autoincrement())
   name        String
-  description String
+  description String @db.Text // CHANGEMENT: Text au lieu de String pour longs textes
   price       Int
-  userId      String
-  user        User              @relation(fields: [userId], references: [id])
-  typeId      Int
-  type        PropertyType      @relation(fields: [typeId], references: [id])
-  statusId    Int
-  status      PropertyStatus    @relation(fields: [statusId], references: [id])
-  location    PropertyLocation?
-  feature     PropertyFeature?
-  images      PropertyImage[]
-  videos      PropertyVideo[]   // Nouvelle relation pour les vidéos
-  contact     Contact?
-  createdAt   DateTime @default(now()) // Nouvelle colonne
+  currency    String @default("XOF") // AJOUT: devise de l'annonce
 
-  // Relation avec les rendez-vous
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // AJOUT: Cascade
+
+  typeId Int
+  type   PropertyType @relation(fields: [typeId], references: [id])
+
+  statusId Int
+  status   PropertyStatus @relation(fields: [statusId], references: [id])
+
+  countryId Int? // CHANGEMENT: devrait être obligatoire
+  country   Country? @relation(fields: [countryId], references: [id])
+
+  // AJOUT: Champs de performance
+  isActive   Boolean @default(true)
+  isFeatured Boolean @default(false) // Pour les annonces premium
+  viewCount  Int     @default(0) // Compteur de vues
+
+  location PropertyLocation?
+  feature  PropertyFeature?
+  images   PropertyImage[]
+  videos   PropertyVideo[]
+  contact  Contact?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt // AJOUT
+  publishedAt DateTime? // AJOUT: date de publication
+  expiresAt   DateTime? // AJOUT: date d'expiration
+
   appointments Appointment[]
+
+  // AJOUT: Indexes pour performances
+  @@index([userId])
+  @@index([typeId])
+  @@index([statusId])
+  @@index([countryId])
+  @@index([isActive, isFeatured]) // Recherche des annonces actives/premium
+  @@index([createdAt(sort: Desc)]) // Tri par date décroissante
+  @@index([price]) // Recherche par prix
 }
 
 model Appointment {
-  id          Int       @id @default(autoincrement())
-  start       DateTime  // Heure de début du rendez-vous
-  end         DateTime  // Heure de fin du rendez-vous
-  title       String    @default("Visite de l'immobilier")// Optionnel : Description du rendez-vous
-  createdAt   DateTime  @default(now())
-  state       String    @default("pending")
+  id        Int      @id @default(autoincrement())
+  start     DateTime
+  end       DateTime
+  title     String   @default("Visite de l'immobilier")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt // AJOUT
+  state     String   @default("pending") // AMÉLIORATION: utiliser enum
 
-  // Relation avec User
-  userId      String
-  user        User      @relation(fields: [userId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // AJOUT: Cascade
 
-  // Relation avec Property
-  propertyId  Int
-  property    Property   @relation(fields: [propertyId], references: [id])
+  propertyId Int
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade) // AJOUT: Cascade
+
+  // AJOUT: Indexes
+  @@index([userId])
+  @@index([propertyId])
+  @@index([start])
+  @@index([state])
 }
 
+// ============================================
+// SYSTÈME MULTILINGUE - TABLES PRINCIPALES
+// ============================================
+
+model Language {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique // "fr", "en",  etc.
+  name      String
+  isActive  Boolean  @default(true)
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  // Relations avec les traductions
+
+  countryTranslations        CountryTranslation[]
+  regionTranslations         RegionTranslation[]
+  cityTranslations           CityTranslation[]
+  propertyTypeTranslations   PropertyTypeTranslation[]
+  propertyStatusTranslations PropertyStatusTranslation[]
+}
+
+// ============================================
+// GESTION DES PAYS AFRICAINS
+// ============================================
+
+model Country {
+  id             Int      @id @default(autoincrement())
+  code           String   @unique // Code ISO (ex: "SN", "CI", "MA")
+  phonePrefix    String   // Préfixe téléphonique (ex: "+221")
+  currency       String   // Devise (ex: "XOF", "MAD")
+  currencySymbol String   // Symbole (ex: "FCFA", "DH")
+  flagEmoji      String?  // Emoji du drapeau (ex: "🇸🇳")
+  latitude       Float?   // Centre géographique du pays
+  longitude      Float?
+  isActive       Boolean  @default(true)
+  displayOrder   Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+
+  translations      CountryTranslation[]
+  regions           Region[]
+  cities            City[]
+  properties        Property[]
+  subscriptionPlans SubscriptionPlan[]
+
+  @@index([isActive, displayOrder]) // AJOUT
+}
+
+model CountryTranslation {
+  id          Int      @id @default(autoincrement())
+  countryId   Int
+  country     Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  languageId  Int
+  language    Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  name        String   // Nom traduit (ex: "Sénégal" / "Senegal")
+  description String?  @db.Text // CHANGEMENT
+
+  @@unique([countryId, languageId])
+  @@index([languageId])
+}
+
+// ============================================
+// GESTION DES RÉGIONS
+// ============================================
+
+model Region {
+  id        Int      @id @default(autoincrement())
+  countryId Int
+  country   Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  code      String?  // Code de la région (optionnel)
+  latitude  Float?
+  longitude Float?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+
+  translations RegionTranslation[]
+  cities       City[]
+
+  @@index([countryId])
+  @@index([isActive]) // AJOUT
+}
+
+model RegionTranslation {
+  id         Int      @id @default(autoincrement())
+  regionId   Int
+  region     Region   @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  languageId Int
+  language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  name       String   // Nom traduit de la région
+
+  @@unique([regionId, languageId])
+  @@index([languageId])
+}
+
+// ============================================
+// GESTION DES VILLES
+// ============================================
+
+model City {
+  id         Int      @id @default(autoincrement())
+  regionId   Int?
+  region     Region?  @relation(fields: [regionId], references: [id], onDelete: SetNull)
+  countryId  Int
+  country    Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  code       String?  // Code postal ou code ville
+  latitude   Float?
+  longitude  Float?
+  population Int?     // Population (optionnel)
+  isActive   Boolean  @default(true)
+  isFeatured Boolean  @default(false) // Pour mettre en avant certaines villes
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+
+  // Relations
+  translations      CityTranslation[]
+  propertyLocations PropertyLocation[]
+
+  @@index([countryId])
+  @@index([regionId])
+  @@index([isActive, isFeatured]) // AJOUT
+}
+
+model CityTranslation {
+  id         Int      @id @default(autoincrement())
+  cityId     Int
+  city       City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  languageId Int
+  language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  name       String // Nom traduit de la ville
+
+  @@unique([cityId, languageId])
+  @@index([languageId])
+  @@index([name]) // AJOUT: recherche par nom de ville
+}
+
+// ============================================
+// MODÈLES EXISTANTS AVEC MULTILINGUE
+// ============================================
+
 model PropertyType {
-  id       Int        @id @default(autoincrement())
-  value    String @unique
-  Property Property[]
+  id           Int     @id @default(autoincrement())
+  code         String  @unique // CHANGEMENT: devrait être obligatoire et unique // Code technique (ex: "apartment", "house")
+  isActive     Boolean @default(true)
+  displayOrder Int     @default(0)
+
+
+  // Relations
+  translations PropertyTypeTranslation[]
+  properties   Property[]
+
+  @@index([isActive, displayOrder]) // AJOUT
+}
+
+model PropertyTypeTranslation {
+  id             Int          @id @default(autoincrement())
+  propertyTypeId Int
+  propertyType   PropertyType @relation(fields: [propertyTypeId], references: [id], onDelete: Cascade)
+  languageId     Int
+  language       Language     @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  value          String       // Traduction (ex: "Appartement" / "Apartment")
+  description    String?      @db.Text // CHANGEMENT // Description optionnelle
+
+  @@unique([propertyTypeId, languageId])
+  @@index([languageId])
 }
 
 model PropertyStatus {
-  id       Int        @id @default(autoincrement())
-  value    String @unique
-  Property Property[]
+  id           Int     @id @default(autoincrement())
+  code         String  @unique // CHANGEMENT: devrait être obligatoire et unique Code technique (ex: "for_sale", "for_rent")
+  isActive     Boolean @default(true)
+  displayOrder Int     @default(0)
+
+  // Relations
+  translations PropertyStatusTranslation[]
+  properties   Property[]
+
+  @@index([isActive, displayOrder]) // AJOUT
 }
 
+model PropertyStatusTranslation {
+  id               Int            @id @default(autoincrement())
+  propertyStatusId Int
+  propertyStatus   PropertyStatus @relation(fields: [propertyStatusId], references: [id], onDelete: Cascade)
+  languageId       Int
+  language         Language       @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  value            String         // Traduction (ex: "À vendre" / "For Sale")
+  description      String?        @db.Text // CHANGEMENT
+
+  @@unique([propertyStatusId, languageId])
+  @@index([languageId])
+}
+
+// ============================================
+// AUTRES MODÈLES
+// ============================================
+
 model PropertyLocation {
-  id            Int      @id @default(autoincrement())
+  id            Int     @id @default(autoincrement())
   streetAddress String
-  city          String
-  state         String
-  zip           String
-  region        String
-  landmark      String
-  propertyId    Int      @unique
-  property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  country       String? // SUGGESTION: retirer ce champ, redondant avec Country
+
+  // Nouvelle relation avec City
+  cityId Int?
+  city   City? @relation(fields: [cityId], references: [id], onDelete: SetNull)
+
+  // Champs conservés pour compatibilité et détails
+  neighborhood String?
+  zip          String?
+  landmark     String?
+
+  // Coordonnées GPS précises de la propriété
+  latitude  Float?
+  longitude Float?
+
+  propertyId Int      @unique
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([cityId])
+  @@index([latitude, longitude]) // AJOUT: recherche géographique
 }
 
 model PropertyFeature {
-  id              Int      @id @default(autoincrement())
+  id              Int     @id @default(autoincrement())
   bedrooms        Int
   bathrooms       Int
   parkingSpots    Int
-  area            Int
+  area            Int // SUGGESTION: ajouter unité (m2, ft2)
   hasSwimmingPool Boolean
   hasGardenYard   Boolean
   hasBalcony      Boolean
-  property        Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  propertyId      Int      @unique
+
+  // AJOUT: Autres features utiles
+  floor       Int? // Étage
+  totalFloors Int? // Nombre total d'étages
+  yearBuilt   Int? // Année de construction
+
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId Int      @unique
+
+  // AJOUT: Indexes pour recherche avancée
+  @@index([bedrooms])
+  @@index([area])
 }
 
 model PropertyImage {
-  id         Int      @id @default(autoincrement())
-  url        String
+  id           Int     @id @default(autoincrement())
+  url          String
+  caption      String? // AJOUT: légende de l'image
+  displayOrder Int     @default(0) // AJOUT: ordre d'affichage
+  isMain       Boolean @default(false) // AJOUT: image principale
+
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   propertyId Int
+
+  createdAt DateTime @default(now()) // AJOUT
+
+  @@index([propertyId])
+  @@index([isMain]) // AJOUT
 }
 
 model PropertyVideo {
-  id          Int      @id @default(autoincrement())
-  url         String   // Lien YouTube de la vidéo
-  propertyId  Int      // Référence à la propriété associée
-  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now()) // Date d'ajout
+  id       Int     @id @default(autoincrement())
+  url      String
+  title    String? // AJOUT
+  duration Int? // AJOUT: durée en secondes
+
+  propertyId Int
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([propertyId])
 }
 
-
 model Contact {
-  id         Int      @id @default(autoincrement())
-  name       String
-  phone      String
-  email      String
+  id    Int    @id @default(autoincrement())
+  name  String
+  phone String
+  email String
+
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   propertyId Int      @unique
 }
 
 model SubscriptionPlan {
-  id                    Int             @id @default(autoincrement())
-  namePlan              String
-  price                 Float // Prix en euros
-  duration           String   @default("AN")// Durée, ex: "AN" ou"Mois"
-  country            String   // Pays concerné
-  startDate          DateTime // Date de début
-  endDate            DateTime // Date de fin
-  premiumAds         Int      // Nombre d'annonces premium incluses
-  photosPerAd        Int      // Nombre de photos par annonce
-  shortVideosPerAd   Int      // Nombre de vidéos courtes par annonce
-  youtubeVideoDuration String // Durée des vidéos YouTube
-  zoneRadius         Int      // Zone de couverture (en km)
-  features              String
-  createdAt          DateTime @default(now()) // Date de création du plan
-  updatedAt          DateTime @updatedAt // Dernière mise à jour
-  subscriptions         Subscriptions[]
+  id       Int    @id @default(autoincrement())
+  namePlan String
+  price    Float
+  duration String @default("AN")
+
+
+  // Relation avec le pays
+  countryId Int?
+  country   Country? @relation(fields: [countryId], references: [id])
+
+  startDate            DateTime
+  endDate              DateTime
+  premiumAds           Int
+  photosPerAd          Int
+  shortVideosPerAd     Int
+  youtubeVideoDuration String
+  zoneRadius           Int
+  features             String   @db.Text // CHANGEMENT
+
+  isActive     Boolean @default(true) // AJOUT
+  displayOrder Int     @default(0) // AJOUT
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subscriptions Subscriptions[]
+
+  @@index([countryId])
+  @@index([isActive, displayOrder]) // AJOUT
 }
 
 model Subscriptions {
-  id        Int              @id @default(autoincrement())
-  paymentID String
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+  id        Int    @id @default(autoincrement())
+  paymentID String @unique // AJOUT: unique
+  status    String @default("active") // AJOUT: statut de l'abonnement
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   startDate DateTime
-  endDate DateTime
-  plan      SubscriptionPlan @relation(fields: [palnId], references: [id])
-  palnId    Int
-  userId    String
-  user      User             @relation(fields: [userId], references: [id])
+  endDate   DateTime
+
+  plan   SubscriptionPlan @relation(fields: [planId], references: [id])
+  planId Int
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // AJOUT: Cascade
+
+  @@index([userId])
+  @@index([planId])
+  @@index([endDate]) // AJOUT: pour vérifier les expirations
+  @@index([status]) // AJOUT
 }
