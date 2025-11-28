@@ -12,6 +12,7 @@ export default function AnalyticsDashboardPage() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    // Only check connection once on mount
     checkConnection();
     
     // Check for success/error messages from OAuth callback
@@ -28,17 +29,27 @@ export default function AnalyticsDashboardPage() {
     if (error) {
       console.error("OAuth error:", error);
     }
-  }, [searchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount
 
   const checkConnection = async () => {
     try {
       const response = await fetch("/api/analytics/status");
+      
+      if (!response.ok) {
+        // If 401 or 500, user might not be authenticated
+        setConnected(false);
+        setLoading(false);
+        return;
+      }
+      
       const data = await response.json();
       
-      // If user is not authenticated, redirect to login
+      // If user is not authenticated, show message instead of redirecting
+      // (redirect should be handled by middleware or server-side)
       if (data.authenticated === false) {
-        const returnUrl = encodeURIComponent(window.location.href);
-        window.location.href = `/api/auth/login?post_login_redirect_url=${returnUrl}`;
+        setConnected(false);
+        setLoading(false);
         return;
       }
       
