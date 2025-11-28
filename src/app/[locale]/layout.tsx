@@ -76,47 +76,60 @@ const inter = Inter({ subsets: ["latin"] });
 
 // Metadata doit être générée dynamiquement pour supporter les différentes langues
 export async function generateMetadata({
-  params: { locale },
+  params,
 }: {
   params: { locale: string };
 }): Promise<Metadata> {
-  return {
-    title: locale === "fr" ? "AFRIQUE AVENIR IMMO" : "AFRIQUE AVENIR IMMO",
-    description:
-      locale === "fr"
-        ? "Site d'annonces immobilières pour l'AFRIQUE"
-        : "Real estate listings site for AFRICA",
-    icons: {
-      icon: "/favicon.ico",
-    },
-  };
+  try {
+    const locale = params?.locale || "fr";
+    return {
+      title: locale === "fr" ? "AFRIQUE AVENIR IMMO" : "AFRIQUE AVENIR IMMO",
+      description:
+        locale === "fr"
+          ? "Site d'annonces immobilières pour l'AFRIQUE"
+          : "Real estate listings site for AFRICA",
+      icons: {
+        icon: "/favicon.ico",
+      },
+    };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    // Return default metadata on error
+    return {
+      title: "AFRIQUE AVENIR IMMO",
+      description: "Site d'annonces immobilières pour l'AFRIQUE",
+      icons: {
+        icon: "/favicon.ico",
+      },
+    };
+  }
 }
 
 export default async function RootLayout({
   children,
-  params: { locale },
+  params,
 }: Readonly<{
   children: React.ReactNode;
   params: { locale: string };
 }>) {
-  // Vérifie si la locale est supportée
-  // if (!["en", "fr"].includes(locale)) notFound();
+  // Extract locale from params (handle both sync and async params)
+  const locale = params?.locale || "fr";
 
-  if (!routing.locales.includes(locale as any)) {
+  // Vérifie si la locale est supportée
+  if (!locale || !routing.locales.includes(locale as any)) {
     notFound();
   }
 
-  // Charge les traductions
-  // let messages;
-  // try {
-  //   messages = (await import(`../../messages/${locale}.json`)).default;
-  // } catch (error) {
-  //   notFound();
-  // }
-
   // Providing all messages to the client
   // side is the easiest way to get started
-  const messages = await getMessages();
+  let messages;
+  try {
+    messages = await getMessages();
+  } catch (error) {
+    console.error("Error loading messages:", error);
+    // Fallback to empty messages object to prevent render failure
+    messages = {};
+  }
 
   return (
     <html lang={locale} className="h-full">
@@ -126,7 +139,7 @@ export default async function RootLayout({
           src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
           strategy="lazyOnload"
         /> */}
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider locale={locale} messages={messages || {}}>
           <LanguageProvider>
             <FavoriteProvider>
               <Providers>

@@ -100,20 +100,19 @@ export async function GET(
     );
 
     // Redirect to dashboard with locale
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    // Use req.url to get the correct origin (works in both dev and production)
+    const origin = new URL(req.url).origin;
     return NextResponse.redirect(
-      new URL(`/${locale}/analytics/dashboard?success=true`, baseUrl)
+      `${origin}/${locale}/analytics/dashboard?success=true`
     );
   } catch (error) {
     console.error("Error in OAuth callback:", error);
     const locale = params.locale || "fr";
+    const origin = new URL(req.url).origin;
     return NextResponse.redirect(
-      new URL(
-        `/${locale}/analytics/dashboard?error=${encodeURIComponent(
-          (error as Error).message
-        )}`,
-        req.url
-      )
+      `${origin}/${locale}/analytics/dashboard?error=${encodeURIComponent(
+        (error as Error).message
+      )}`
     );
   }
 }
