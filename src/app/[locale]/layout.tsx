@@ -80,16 +80,28 @@ export async function generateMetadata({
 }: {
   params: { locale: string };
 }): Promise<Metadata> {
-  return {
-    title: locale === "fr" ? "AFRIQUE AVENIR IMMO" : "AFRIQUE AVENIR IMMO",
-    description:
-      locale === "fr"
-        ? "Site d'annonces immobilières pour l'AFRIQUE"
-        : "Real estate listings site for AFRICA",
-    icons: {
-      icon: "/favicon.ico",
-    },
-  };
+  try {
+    return {
+      title: locale === "fr" ? "AFRIQUE AVENIR IMMO" : "AFRIQUE AVENIR IMMO",
+      description:
+        locale === "fr"
+          ? "Site d'annonces immobilières pour l'AFRIQUE"
+          : "Real estate listings site for AFRICA",
+      icons: {
+        icon: "/favicon.ico",
+      },
+    };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    // Return default metadata on error
+    return {
+      title: "AFRIQUE AVENIR IMMO",
+      description: "Site d'annonces immobilières pour l'AFRIQUE",
+      icons: {
+        icon: "/favicon.ico",
+      },
+    };
+  }
 }
 
 export default async function RootLayout({
@@ -116,7 +128,14 @@ export default async function RootLayout({
 
   // Providing all messages to the client
   // side is the easiest way to get started
-  const messages = await getMessages();
+  let messages;
+  try {
+    messages = await getMessages();
+  } catch (error) {
+    console.error("Error loading messages:", error);
+    // Fallback to empty messages object to prevent render failure
+    messages = {};
+  }
 
   return (
     <html lang={locale} className="h-full">
@@ -126,7 +145,7 @@ export default async function RootLayout({
           src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
           strategy="lazyOnload"
         /> */}
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider locale={locale} messages={messages || {}}>
           <LanguageProvider>
             <FavoriteProvider>
               <Providers>

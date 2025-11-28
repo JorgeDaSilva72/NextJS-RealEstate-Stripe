@@ -58,7 +58,22 @@ interface TrafficSourcesProps {
 }
 
 export default function TrafficSources({ data }: TrafficSourcesProps) {
-  const rows = data?.rows || [];
+  // Handle null/undefined data gracefully
+  if (!data || !data.rows || !Array.isArray(data.rows)) {
+    return (
+      <div className="space-y-6">
+        <Card className="border border-gray-200 shadow-lg">
+          <CardBody className="p-12 text-center">
+            <ChartBarIcon className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+            <p className="text-gray-500 text-lg">No traffic source data available</p>
+            <p className="text-gray-400 text-sm mt-2">Traffic sources will appear here</p>
+          </CardBody>
+        </Card>
+      </div>
+    );
+  }
+
+  const rows = data.rows;
 
   const sources: TrafficSource[] = rows.map((row: AnalyticsRow): TrafficSource => {
     const dimensions = row.dimensionValues || [];
