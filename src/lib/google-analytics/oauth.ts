@@ -31,15 +31,19 @@ export const SCOPES = [
 export function getAuthUrl(): string {
   const redirectUri = getRedirectUri();
   
-  // Update the OAuth2 client with the current redirect URI
-  oauth2Client.redirectUri = redirectUri;
+  // Create a new OAuth2 client with the correct redirect URI
+  const client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    redirectUri
+  );
   
   // Log for debugging
   if (process.env.NODE_ENV === "development") {
     console.log("Using redirect URI:", redirectUri);
   }
   
-  return oauth2Client.generateAuthUrl({
+  return client.generateAuthUrl({
     access_type: "offline",
     scope: SCOPES,
     prompt: "consent", // Force consent to get refresh token
