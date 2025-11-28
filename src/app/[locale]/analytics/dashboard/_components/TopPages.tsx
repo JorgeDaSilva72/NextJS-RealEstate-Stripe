@@ -34,7 +34,7 @@ export default function TopPages({ data }: TopPagesProps) {
     };
   });
 
-  const totalViews = pages.reduce((sum, page) => sum + page.views, 0);
+  const totalViews = pages.reduce((sum: number, page) => sum + page.views, 0);
   const maxViews = Math.max(...pages.map(p => p.views), 1);
 
   const formatDuration = (seconds: number) => {
@@ -199,14 +199,14 @@ export default function TopPages({ data }: TopPagesProps) {
               <div>
                 <p className="text-xs text-gray-500 mb-1">Total Users</p>
                 <p className="text-lg font-bold text-gray-800">
-                  {pages.reduce((sum, p) => sum + p.users, 0).toLocaleString()}
+                  {pages.reduce((sum: number, p) => sum + p.users, 0).toLocaleString()}
                 </p>
               </div>
               <div>
                 <p className="text-xs text-gray-500 mb-1">Avg. Duration</p>
                 <p className="text-lg font-bold text-gray-800">
                   {formatDuration(
-                    pages.reduce((sum, p) => sum + p.avgDuration, 0) / pages.length
+                    pages.reduce((sum: number, p) => sum + p.avgDuration, 0) / pages.length
                   )}
                 </p>
               </div>
