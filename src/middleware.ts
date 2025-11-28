@@ -310,6 +310,12 @@ const nextIntlMiddleware = createMiddleware({
 export default async function middleware(request: any) {
   const pathname = request.nextUrl.pathname;
 
+  // Exclude oauth2callback from locale routing (works at /oauth2callback or /[locale]/oauth2callback)
+  if (pathname === "/oauth2callback" || pathname.startsWith("/oauth2callback")) {
+    // Allow the route to be accessed without locale prefix
+    return NextResponse.next();
+  }
+
   // Vérifier si la route actuelle nécessite une authentification
   if (pathname.includes("/user/")) {
     // Appliquer l'authentification uniquement pour les routes /user/*
@@ -329,9 +335,10 @@ export const config = {
     // Routes authentifiées
     "/user/:path*",
     // Routes pour next-intl (ne pas localiser les images et autres fichiers statiques)
-    "/((?!api|_next|_vercel|.*\\..*).*)", // Exclure `api/`
+    // Exclure `api/`, `oauth2callback`, `_next`, `_vercel`, et fichiers statiques
+    "/((?!api|oauth2callback|_next|_vercel|.*\\..*).*)", 
 
     // Assurer que les préfixes de langue sont gérés
-    "/(fr|en)/:path*",
+    "/(fr|en|pt|ar)/:path*",
   ],
 };
