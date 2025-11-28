@@ -10,7 +10,7 @@ The `GoogleAnalyticsToken` table might not exist if the migration failed or wasn
 If the migration fails, you can create the table manually:
 
 ```bash
-npx prisma db execute --file prisma/migrations/20251128171514_add_google_analytics_token/create_ga_token_only.sql
+npx prisma db execute --file scripts/create_ga_token_table.sql
 ```
 
 ### Option 2: Use Prisma Migrate
@@ -36,7 +36,7 @@ If the migration is stuck:
 npx prisma migrate resolve --applied 20251128171514_add_google_analytics_token
 
 # Or create table manually
-npx prisma db execute --file prisma/migrations/20251128171514_add_google_analytics_token/create_ga_token_only.sql
+npx prisma db execute --file scripts/create_ga_token_table.sql
 ```
 
 ## Verify Table Exists
