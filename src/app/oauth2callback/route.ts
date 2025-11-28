@@ -38,6 +38,8 @@ export async function GET(req: NextRequest) {
 
     if (!dbUser) {
       // Create user if they don't exist
+      // Note: updatedAt should be handled by Prisma @updatedAt, but we set it explicitly
+      // to avoid null constraint violations if the database requires it
       const now = new Date();
       await prisma.user.create({
         data: {
