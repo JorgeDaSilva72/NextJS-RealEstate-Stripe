@@ -112,55 +112,85 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { locale: string };
 }>) {
-  // Extract locale from params (handle both sync and async params)
-  const locale = params?.locale || "fr";
-
-  // Vérifie si la locale est supportée
-  if (!locale || !routing.locales.includes(locale as any)) {
-    notFound();
-  }
-
-  // Providing all messages to the client
-  // side is the easiest way to get started
-  let messages;
   try {
-    messages = await getMessages();
+    // Extract locale from params (handle both sync and async params)
+    const locale = params?.locale || "fr";
+
+    // Vérifie si la locale est supportée
+    if (!locale || !routing.locales.includes(locale as any)) {
+      notFound();
+    }
+
+    // Providing all messages to the client
+    // side is the easiest way to get started
+    let messages;
+    try {
+      messages = await getMessages();
+    } catch (error) {
+      console.error("Error loading messages:", error);
+      // Fallback to empty messages object to prevent render failure
+      messages = {};
+    }
+
+    return (
+      <html lang={locale} className="h-full">
+        <body className={`${inter.className} h-full flex flex-col`}>
+          {/* Script Google Maps */}
+          {/* <Script
+            src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
+            strategy="lazyOnload"
+          /> */}
+          <NextIntlClientProvider locale={locale} messages={messages || {}}>
+            <LanguageProvider>
+              <FavoriteProvider>
+                <Providers>
+                  {/* Appbar */}
+                  <Appbar>
+                    <SignInPanel />
+                  </Appbar>
+
+                  {/* Contenu principal */}
+                  <main className="flex-grow">{children}</main>
+
+                  {/* FooterWrapper conditionne l'affichage du Footer */}
+                  <FooterWrapper />
+
+                  {/* Toast notifications */}
+                  <ToastContainer />
+                </Providers>
+              </FavoriteProvider>
+            </LanguageProvider>
+          </NextIntlClientProvider>
+        </body>
+      </html>
+    );
   } catch (error) {
-    console.error("Error loading messages:", error);
-    // Fallback to empty messages object to prevent render failure
-    messages = {};
+    // Log the error for debugging
+    console.error("Critical error in RootLayout:", error);
+    
+    // Return a minimal fallback layout to prevent complete failure
+    const locale = params?.locale || "fr";
+    return (
+      <html lang={locale} className="h-full">
+        <body className={`${inter.className} h-full flex flex-col`}>
+          <div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <div className="text-center p-6">
+              <h1 className="text-2xl font-bold text-gray-800 mb-4">
+                Something went wrong
+              </h1>
+              <p className="text-gray-600 mb-4">
+                An error occurred while loading the page. Please try refreshing.
+              </p>
+              <a
+                href="/"
+                className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Go to Home
+              </a>
+            </div>
+          </div>
+        </body>
+      </html>
+    );
   }
-
-  return (
-    <html lang={locale} className="h-full">
-      <body className={`${inter.className} h-full flex flex-col`}>
-        {/* Script Google Maps */}
-        {/* <Script
-          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
-          strategy="lazyOnload"
-        /> */}
-        <NextIntlClientProvider locale={locale} messages={messages || {}}>
-          <LanguageProvider>
-            <FavoriteProvider>
-              <Providers>
-                {/* Appbar */}
-                <Appbar>
-                  <SignInPanel />
-                </Appbar>
-
-                {/* Contenu principal */}
-                <main className="flex-grow">{children}</main>
-
-                {/* FooterWrapper conditionne l'affichage du Footer */}
-                <FooterWrapper />
-
-                {/* Toast notifications */}
-                <ToastContainer />
-              </Providers>
-            </FavoriteProvider>
-          </LanguageProvider>
-        </NextIntlClientProvider>
-      </body>
-    </html>
-  );
 }
