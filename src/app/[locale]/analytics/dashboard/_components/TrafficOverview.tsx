@@ -301,19 +301,19 @@ export default function TrafficOverview({
                 <div className="text-center">
                   <p className="text-xs text-gray-500 mb-1">Peak Users</p>
                   <p className="text-lg font-bold text-gray-800">
-                    {Math.max(...dailyData.map(d => d.users), 0).toLocaleString()}
+                    {Math.max(...dailyData.map((d: DailyData) => d.users), 0).toLocaleString()}
                   </p>
                 </div>
                 <div className="text-center">
                   <p className="text-xs text-gray-500 mb-1">Peak Sessions</p>
                   <p className="text-lg font-bold text-gray-800">
-                    {Math.max(...dailyData.map(d => d.sessions), 0).toLocaleString()}
+                    {Math.max(...dailyData.map((d: DailyData) => d.sessions), 0).toLocaleString()}
                   </p>
                 </div>
                 <div className="text-center">
                   <p className="text-xs text-gray-500 mb-1">Peak Page Views</p>
                   <p className="text-lg font-bold text-gray-800">
-                    {Math.max(...dailyData.map(d => d.pageViews), 0).toLocaleString()}
+                    {Math.max(...dailyData.map((d: DailyData) => d.pageViews), 0).toLocaleString()}
                   </p>
                 </div>
               </div>
