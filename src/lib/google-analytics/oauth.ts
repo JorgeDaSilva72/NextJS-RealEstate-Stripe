@@ -17,6 +17,13 @@ export const SCOPES = [
  * Generate the OAuth2 authorization URL
  */
 export function getAuthUrl(): string {
+  const redirectUri = process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/api/analytics/oauth2callback";
+  
+  // Log for debugging (remove in production)
+  if (process.env.NODE_ENV === "development") {
+    console.log("Using redirect URI:", redirectUri);
+  }
+  
   return oauth2Client.generateAuthUrl({
     access_type: "offline",
     scope: SCOPES,
