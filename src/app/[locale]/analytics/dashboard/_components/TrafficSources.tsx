@@ -21,27 +21,59 @@ import {
   ChartBarIcon,
 } from "@heroicons/react/24/outline";
 
+interface TrafficSource {
+  source: string;
+  medium: string;
+  sessions: number;
+  users: number;
+  pageViews: number;
+}
+
+interface MediumStats {
+  sessions: number;
+  users: number;
+  pageViews: number;
+  count: number;
+}
+
+interface MediumBreakdown {
+  medium: string;
+  sessions: number;
+  users: number;
+  pageViews: number;
+  percentage: number;
+}
+
+interface AnalyticsRow {
+  dimensionValues?: Array<{ value?: string }>;
+  metricValues?: Array<{ value?: string }>;
+}
+
+interface AnalyticsData {
+  rows?: AnalyticsRow[];
+}
+
 interface TrafficSourcesProps {
-  data: any;
+  data: AnalyticsData | null | undefined;
 }
 
 export default function TrafficSources({ data }: TrafficSourcesProps) {
   const rows = data?.rows || [];
 
-  const sources = rows.map((row: any) => {
+  const sources: TrafficSource[] = rows.map((row: AnalyticsRow): TrafficSource => {
     const dimensions = row.dimensionValues || [];
     const metrics = row.metricValues || [];
     return {
       source: dimensions[0]?.value || "(direct)",
       medium: dimensions[1]?.value || "(none)",
-      sessions: parseInt(metrics[0]?.value || "0"),
-      users: parseInt(metrics[1]?.value || "0"),
-      pageViews: parseInt(metrics[2]?.value || "0"),
+      sessions: parseInt(metrics[0]?.value || "0", 10),
+      users: parseInt(metrics[1]?.value || "0", 10),
+      pageViews: parseInt(metrics[2]?.value || "0", 10),
     };
   });
 
-  const totalSessions = sources.reduce((sum: number, s) => sum + s.sessions, 0);
-  const maxSessions = Math.max(...sources.map(s => s.sessions), 1);
+  const totalSessions = sources.reduce((sum: number, s: TrafficSource) => sum + s.sessions, 0);
+  const maxSessions = Math.max(...sources.map((s: TrafficSource) => s.sessions), 1);
 
   const getSourceIcon = (source: string, medium: string) => {
     const sourceLower = source.toLowerCase();
@@ -86,8 +118,8 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
   };
 
   // Group by medium for summary
-  const mediumStats: Record<string, any> = {};
-  sources.forEach((source) => {
+  const mediumStats: Record<string, MediumStats> = {};
+  sources.forEach((source: TrafficSource) => {
     const medium = source.medium || "(none)";
     if (!mediumStats[medium]) {
       mediumStats[medium] = {
@@ -103,15 +135,15 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
     mediumStats[medium].count += 1;
   });
 
-  const mediumBreakdown = Object.entries(mediumStats)
-    .map(([medium, stats]) => ({
+  const mediumBreakdown: MediumBreakdown[] = Object.entries(mediumStats)
+    .map(([medium, stats]: [string, MediumStats]): MediumBreakdown => ({
       medium: medium === "(none)" ? "Other" : medium,
       sessions: stats.sessions,
       users: stats.users,
       pageViews: stats.pageViews,
-      percentage: (stats.sessions / totalSessions) * 100,
+      percentage: totalSessions > 0 ? (stats.sessions / totalSessions) * 100 : 0,
     }))
-    .sort((a, b) => b.sessions - a.sessions);
+    .sort((a: MediumBreakdown, b: MediumBreakdown) => b.sessions - a.sessions);
 
   return (
     <div className="space-y-6">
@@ -204,9 +236,9 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
                   <TableColumn align="center">SHARE</TableColumn>
                 </TableHeader>
                 <TableBody>
-                  {sources.map((source: any, index: number) => {
-                    const percentage = (source.sessions / totalSessions) * 100;
-                    const barPercentage = (source.sessions / maxSessions) * 100;
+                  {sources.map((source: TrafficSource, index: number) => {
+                    const percentage = totalSessions > 0 ? (source.sessions / totalSessions) * 100 : 0;
+                    const barPercentage = maxSessions > 0 ? (source.sessions / maxSessions) * 100 : 0;
                     const Icon = getSourceIcon(source.source, source.medium);
                     const gradient = getSourceColor(source.source, source.medium);
                     const label = getSourceLabel(source.source, source.medium);
@@ -262,7 +294,7 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
                               {source.users.toLocaleString()}
                             </p>
                             <p className="text-xs text-gray-500">
-                              {source.sessions > 0 
+                              {source.users > 0 
                                 ? (source.sessions / source.users).toFixed(1) 
                                 : '0'} sessions/user
                             </p>
@@ -321,7 +353,7 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
               <div className="text-center">
                 <p className="text-xs text-gray-500 mb-1">Total Users</p>
                 <p className="text-2xl font-bold text-gray-800">
-                  {sources.reduce((sum: number, s) => sum + s.users, 0).toLocaleString()}
+                  {sources.reduce((sum: number, s: TrafficSource) => sum + s.users, 0).toLocaleString()}
                 </p>
               </div>
             </CardBody>
@@ -331,7 +363,7 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
               <div className="text-center">
                 <p className="text-xs text-gray-500 mb-1">Total Page Views</p>
                 <p className="text-2xl font-bold text-gray-800">
-                  {sources.reduce((sum: number, s) => sum + s.pageViews, 0).toLocaleString()}
+                  {sources.reduce((sum: number, s: TrafficSource) => sum + s.pageViews, 0).toLocaleString()}
                 </p>
               </div>
             </CardBody>
