@@ -2,10 +2,22 @@ import { google } from "googleapis";
 import { prisma } from "../prisma";
 
 // Google OAuth2 configuration
+// Use environment variable or auto-detect based on NODE_ENV
+const getRedirectUri = () => {
+  if (process.env.GOOGLE_REDIRECT_URI) {
+    return process.env.GOOGLE_REDIRECT_URI;
+  }
+  // Auto-detect production vs development
+  if (process.env.NODE_ENV === "production" && process.env.NEXT_PUBLIC_BASE_URL) {
+    return `${process.env.NEXT_PUBLIC_BASE_URL}/oauth2callback`;
+  }
+  return "http://localhost:3000/oauth2callback";
+};
+
 export const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/oauth2callback"
+  getRedirectUri()
 );
 
 // Scopes required for Google Analytics Data API
@@ -17,9 +29,12 @@ export const SCOPES = [
  * Generate the OAuth2 authorization URL
  */
 export function getAuthUrl(): string {
-  const redirectUri = process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/oauth2callback";
+  const redirectUri = getRedirectUri();
   
-  // Log for debugging (remove in production)
+  // Update the OAuth2 client with the current redirect URI
+  oauth2Client.redirectUri = redirectUri;
+  
+  // Log for debugging
   if (process.env.NODE_ENV === "development") {
     console.log("Using redirect URI:", redirectUri);
   }
