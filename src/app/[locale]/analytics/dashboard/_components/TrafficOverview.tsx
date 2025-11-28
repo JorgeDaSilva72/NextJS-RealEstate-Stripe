@@ -261,7 +261,7 @@ export default function TrafficOverview({
             <div className="space-y-4">
               {/* Chart Visualization */}
               <div className="h-64 flex items-end justify-between gap-1">
-                {dailyData.slice(-14).map((day, index) => (
+                {dailyData.slice(-14).map((day: DailyData, index: number) => (
                   <div key={index} className="flex-1 flex flex-col items-center gap-1 group">
                     <div className="w-full flex flex-col items-center gap-0.5 relative">
                       {/* Tooltip on hover */}
