@@ -40,7 +40,7 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
     };
   });
 
-  const totalSessions = sources.reduce((sum, s) => sum + s.sessions, 0);
+  const totalSessions = sources.reduce((sum: number, s) => sum + s.sessions, 0);
   const maxSessions = Math.max(...sources.map(s => s.sessions), 1);
 
   const getSourceIcon = (source: string, medium: string) => {
@@ -321,7 +321,7 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
               <div className="text-center">
                 <p className="text-xs text-gray-500 mb-1">Total Users</p>
                 <p className="text-2xl font-bold text-gray-800">
-                  {sources.reduce((sum, s) => sum + s.users, 0).toLocaleString()}
+                  {sources.reduce((sum: number, s) => sum + s.users, 0).toLocaleString()}
                 </p>
               </div>
             </CardBody>
@@ -331,7 +331,7 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
               <div className="text-center">
                 <p className="text-xs text-gray-500 mb-1">Total Page Views</p>
                 <p className="text-2xl font-bold text-gray-800">
-                  {sources.reduce((sum, s) => sum + s.pageViews, 0).toLocaleString()}
+                  {sources.reduce((sum: number, s) => sum + s.pageViews, 0).toLocaleString()}
                 </p>
               </div>
             </CardBody>
