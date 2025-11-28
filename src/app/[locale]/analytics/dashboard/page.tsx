@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { Card, CardBody, CardHeader, Button, Spinner } from "@nextui-org/react";
 import { ChartBarIcon, UsersIcon, EyeIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { useSearchParams } from "next/navigation";
 import AnalyticsDashboard from "./_components/AnalyticsDashboard";
 
-export default function AnalyticsDashboardPage() {
+function AnalyticsDashboardContent() {
   const [connected, setConnected] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
@@ -33,6 +33,11 @@ export default function AnalyticsDashboardPage() {
   const checkConnection = async () => {
     try {
       const response = await fetch("/api/analytics/status");
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
       
       // If user is not authenticated, redirect to login
@@ -42,9 +47,10 @@ export default function AnalyticsDashboardPage() {
         return;
       }
       
-      setConnected(data.connected);
+      setConnected(data.connected ?? false);
     } catch (error) {
       console.error("Error checking connection:", error);
+      // Don't redirect on error, just show the connect screen
       setConnected(false);
     } finally {
       setLoading(false);
@@ -99,5 +105,19 @@ export default function AnalyticsDashboardPage() {
   }
 
   return <AnalyticsDashboard />;
+}
+
+export default function AnalyticsDashboardPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <Spinner size="lg" />
+        </div>
+      }
+    >
+      <AnalyticsDashboardContent />
+    </Suspense>
+  );
 }
 
