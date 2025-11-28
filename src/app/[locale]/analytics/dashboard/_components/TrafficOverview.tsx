@@ -67,9 +67,18 @@ export default function TrafficOverview({
     };
   });
 
-  const maxUsers = Math.max(...dailyData.map(d => d.users), 1);
-  const maxSessions = Math.max(...dailyData.map(d => d.sessions), 1);
-  const maxPageViews = Math.max(...dailyData.map(d => d.pageViews), 1);
+  interface DailyData {
+    date: string;
+    users: number;
+    sessions: number;
+    pageViews: number;
+    avgDuration: number;
+    bounceRate: number;
+  }
+
+  const maxUsers = Math.max(...dailyData.map((d: DailyData) => d.users), 1);
+  const maxSessions = Math.max(...dailyData.map((d: DailyData) => d.sessions), 1);
+  const maxPageViews = Math.max(...dailyData.map((d: DailyData) => d.pageViews), 1);
 
   const stats = [
     {
