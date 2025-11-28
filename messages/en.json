@@ -966,5 +966,21 @@
       "title": "Ready to Transform Your Real Estate Experience?",
       "description": "Get started today and take your property listings to the next level."
     }
+  },
+  "Common": {
+    "for_sale": "For Sale",
+    "for_rent": "For Rent",
+    "seasonal_rent": "Seasonal Rental",
+    "furnished_rent": "Furnished Rental",
+    "house": "House",
+    "apartment": "Apartment",
+    "land": "Land",
+    "villa": "Villa",
+    "commercial": "Commercial",
+    "riad": "Riad",
+    "office": "Office",
+    "farm": "Farm",
+    "warehouse": "Warehouse",
+    "hotel": "Hotel"
   }
 }

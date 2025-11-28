@@ -967,5 +967,21 @@
       "title": "Prêt à transformer votre expérience immobilière ?",
       "description": "Commencez dès aujourd'hui et faites passer vos annonces au niveau supérieur."
     }
+  },
+  "Common": {
+    "for_sale": "À Vendre",
+    "for_rent": "À Louer",
+    "seasonal_rent": "Location Saisonnière",
+    "furnished_rent": "Location Meublée",
+    "house": "Maison",
+    "apartment": "Appartement",
+    "land": "Terrain",
+    "villa": "Villa",
+    "commercial": "Commercial",
+    "riad": "Riad",
+    "office": "Bureau",
+    "farm": "Ferme",
+    "warehouse": "Entrepôt",
+    "hotel": "Hôtel"
   }
 }

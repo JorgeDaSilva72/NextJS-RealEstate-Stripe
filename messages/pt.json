@@ -965,5 +965,21 @@
       "title": "Pronto para transformar sua experiência imobiliária?",
       "description": "Comece hoje mesmo e leve seus anúncios para o próximo nível."
     }
+  },
+  "Common": {
+    "for_sale": "Para Venda",
+    "for_rent": "Para Alugar",
+    "seasonal_rent": "Aluguel por Temporada",
+    "furnished_rent": "Aluguel Mobiliado",
+    "house": "Casa",
+    "apartment": "Apartamento",
+    "land": "Terreno",
+    "villa": "Vivenda",
+    "commercial": "Comercial",
+    "riad": "Riad",
+    "office": "Escritório",
+    "farm": "Quinta/Fazenda",
+    "warehouse": "Armazém",
+    "hotel": "Hotel"
   }
 }
