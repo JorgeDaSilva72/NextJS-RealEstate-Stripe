@@ -5,7 +5,7 @@ import { prisma } from "../prisma";
 export const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/api/analytics/oauth2callback"
+  process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/oauth2callback"
 );
 
 // Scopes required for Google Analytics Data API
@@ -17,7 +17,7 @@ export const SCOPES = [
  * Generate the OAuth2 authorization URL
  */
 export function getAuthUrl(): string {
-  const redirectUri = process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/api/analytics/oauth2callback";
+  const redirectUri = process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/oauth2callback";
   
   // Log for debugging (remove in production)
   if (process.env.NODE_ENV === "development") {
