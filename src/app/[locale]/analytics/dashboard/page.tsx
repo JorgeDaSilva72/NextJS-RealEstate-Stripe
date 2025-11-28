@@ -34,6 +34,14 @@ export default function AnalyticsDashboardPage() {
     try {
       const response = await fetch("/api/analytics/status");
       const data = await response.json();
+      
+      // If user is not authenticated, redirect to login
+      if (data.authenticated === false) {
+        const returnUrl = encodeURIComponent(window.location.href);
+        window.location.href = `/api/auth/login?post_login_redirect_url=${returnUrl}`;
+        return;
+      }
+      
       setConnected(data.connected);
     } catch (error) {
       console.error("Error checking connection:", error);

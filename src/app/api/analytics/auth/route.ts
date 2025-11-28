@@ -14,10 +14,13 @@ export async function GET(req: NextRequest) {
     const user = await getUser();
 
     if (!user || !user.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      // Redirect to Kinde login with return URL
+      // Get the current URL to redirect back after login
+      const currentUrl = new URL(req.url);
+      const returnUrl = encodeURIComponent(currentUrl.toString());
+      const loginUrl = new URL("/api/auth/login", currentUrl.origin);
+      loginUrl.searchParams.set("post_login_redirect_url", returnUrl);
+      return NextResponse.redirect(loginUrl);
     }
 
     // Generate OAuth2 URL

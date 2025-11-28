@@ -14,10 +14,12 @@ export async function GET(req: NextRequest) {
     const user = await getUser();
 
     if (!user || !user.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      // Return not connected instead of error for better UX
+      return NextResponse.json({
+        connected: false,
+        authenticated: false,
+        message: "Please log in to connect Google Analytics",
+      });
     }
 
     const tokens = await getStoredTokens(user.id);
@@ -25,6 +27,7 @@ export async function GET(req: NextRequest) {
     if (!tokens) {
       return NextResponse.json({
         connected: false,
+        authenticated: true,
         message: "Google Analytics not connected",
       });
     }
@@ -33,13 +36,18 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       connected: true,
+      authenticated: true,
       expired,
       expiryDate: tokens.expiryDate,
     });
   } catch (error) {
     console.error("Error checking analytics status:", error);
     return NextResponse.json(
-      { error: "Failed to check analytics status" },
+      { 
+        connected: false,
+        authenticated: false,
+        error: "Failed to check analytics status" 
+      },
       { status: 500 }
     );
   }
