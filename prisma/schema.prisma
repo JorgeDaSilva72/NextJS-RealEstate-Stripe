@@ -4,6 +4,7 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 //Developement
 
 // datasource db {
@@ -19,10 +20,9 @@ generator client {
 // }
 // PRODUCTION avec Postgres DB IN NEON
 
-
 datasource db {
-  provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
   //uncomment next line if you use Prisma <5.10
   // directUrl = env("DATABASE_URL_UNPOOLED")
 }
@@ -38,8 +38,10 @@ model User {
   subscriptions Subscriptions[]
 
   // Relation avec les rendez-vous
-  appointments  Appointment[]
+  appointments Appointment[]
 
+  // Google Analytics OAuth tokens
+  googleAnalyticsToken GoogleAnalyticsToken?
 }
 
 model Property {
@@ -56,40 +58,40 @@ model Property {
   location    PropertyLocation?
   feature     PropertyFeature?
   images      PropertyImage[]
-  videos      PropertyVideo[]   // Nouvelle relation pour les vidéos
+  videos      PropertyVideo[] // Nouvelle relation pour les vidéos
   contact     Contact?
-  createdAt   DateTime @default(now()) // Nouvelle colonne
+  createdAt   DateTime          @default(now()) // Nouvelle colonne
 
   // Relation avec les rendez-vous
   appointments Appointment[]
 }
 
 model Appointment {
-  id          Int       @id @default(autoincrement())
-  start       DateTime  // Heure de début du rendez-vous
-  end         DateTime  // Heure de fin du rendez-vous
-  title       String    @default("Visite de l'immobilier")// Optionnel : Description du rendez-vous
-  createdAt   DateTime  @default(now())
-  state       String    @default("pending")
+  id        Int      @id @default(autoincrement())
+  start     DateTime // Heure de début du rendez-vous
+  end       DateTime // Heure de fin du rendez-vous
+  title     String   @default("Visite de l'immobilier") // Optionnel : Description du rendez-vous
+  createdAt DateTime @default(now())
+  state     String   @default("pending")
 
   // Relation avec User
-  userId      String
-  user        User      @relation(fields: [userId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   // Relation avec Property
-  propertyId  Int
-  property    Property   @relation(fields: [propertyId], references: [id])
+  propertyId Int
+  property   Property @relation(fields: [propertyId], references: [id])
 }
 
 model PropertyType {
   id       Int        @id @default(autoincrement())
-  value    String @unique
+  value    String     @unique
   Property Property[]
 }
 
 model PropertyStatus {
   id       Int        @id @default(autoincrement())
-  value    String @unique
+  value    String     @unique
   Property Property[]
 }
 
@@ -126,13 +128,12 @@ model PropertyImage {
 }
 
 model PropertyVideo {
-  id          Int      @id @default(autoincrement())
-  url         String   // Lien YouTube de la vidéo
-  propertyId  Int      // Référence à la propriété associée
-  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now()) // Date d'ajout
+  id         Int      @id @default(autoincrement())
+  url        String // Lien YouTube de la vidéo
+  propertyId Int // Référence à la propriété associée
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now()) // Date d'ajout
 }
-
 
 model Contact {
   id         Int      @id @default(autoincrement())
@@ -144,22 +145,22 @@ model Contact {
 }
 
 model SubscriptionPlan {
-  id                    Int             @id @default(autoincrement())
-  namePlan              String
-  price                 Float // Prix en euros
-  duration           String   @default("AN")// Durée, ex: "AN" ou"Mois"
-  country            String   // Pays concerné
-  startDate          DateTime // Date de début
-  endDate            DateTime // Date de fin
-  premiumAds         Int      // Nombre d'annonces premium incluses
-  photosPerAd        Int      // Nombre de photos par annonce
-  shortVideosPerAd   Int      // Nombre de vidéos courtes par annonce
+  id                   Int             @id @default(autoincrement())
+  namePlan             String
+  price                Float // Prix en euros
+  duration             String          @default("AN") // Durée, ex: "AN" ou"Mois"
+  country              String // Pays concerné
+  startDate            DateTime // Date de début
+  endDate              DateTime // Date de fin
+  premiumAds           Int // Nombre d'annonces premium incluses
+  photosPerAd          Int // Nombre de photos par annonce
+  shortVideosPerAd     Int // Nombre de vidéos courtes par annonce
   youtubeVideoDuration String // Durée des vidéos YouTube
-  zoneRadius         Int      // Zone de couverture (en km)
-  features              String
-  createdAt          DateTime @default(now()) // Date de création du plan
-  updatedAt          DateTime @updatedAt // Dernière mise à jour
-  subscriptions         Subscriptions[]
+  zoneRadius           Int // Zone de couverture (en km)
+  features             String
+  createdAt            DateTime        @default(now()) // Date de création du plan
+  updatedAt            DateTime        @updatedAt // Dernière mise à jour
+  subscriptions        Subscriptions[]
 }
 
 model Subscriptions {
@@ -168,9 +169,20 @@ model Subscriptions {
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
   startDate DateTime
-  endDate DateTime
+  endDate   DateTime
   plan      SubscriptionPlan @relation(fields: [palnId], references: [id])
   palnId    Int
   userId    String
   user      User             @relation(fields: [userId], references: [id])
+}
+
+model GoogleAnalyticsToken {
+  id           Int      @id @default(autoincrement())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken  String // Encrypted access token
+  refreshToken String // Encrypted refresh token
+  expiryDate   DateTime // Token expiration date
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
