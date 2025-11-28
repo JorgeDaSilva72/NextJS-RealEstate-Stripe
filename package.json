@@ -28,6 +28,7 @@
     "@types/react-big-calendar": "^1.16.0",
     "formik": "^2.4.6",
     "framer-motion": "^11.18.2",
+    "googleapis": "^166.0.0",
     "lucide-react": "^0.460.0",
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.46",
