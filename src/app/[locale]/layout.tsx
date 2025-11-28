@@ -76,11 +76,12 @@ const inter = Inter({ subsets: ["latin"] });
 
 // Metadata doit être générée dynamiquement pour supporter les différentes langues
 export async function generateMetadata({
-  params: { locale },
+  params,
 }: {
   params: { locale: string };
 }): Promise<Metadata> {
   try {
+    const locale = params?.locale || "fr";
     return {
       title: locale === "fr" ? "AFRIQUE AVENIR IMMO" : "AFRIQUE AVENIR IMMO",
       description:
@@ -106,25 +107,18 @@ export async function generateMetadata({
 
 export default async function RootLayout({
   children,
-  params: { locale },
+  params,
 }: Readonly<{
   children: React.ReactNode;
   params: { locale: string };
 }>) {
-  // Vérifie si la locale est supportée
-  // if (!["en", "fr"].includes(locale)) notFound();
+  // Extract locale from params (handle both sync and async params)
+  const locale = params?.locale || "fr";
 
-  if (!routing.locales.includes(locale as any)) {
+  // Vérifie si la locale est supportée
+  if (!locale || !routing.locales.includes(locale as any)) {
     notFound();
   }
-
-  // Charge les traductions
-  // let messages;
-  // try {
-  //   messages = (await import(`../../messages/${locale}.json`)).default;
-  // } catch (error) {
-  //   notFound();
-  // }
 
   // Providing all messages to the client
   // side is the easiest way to get started
