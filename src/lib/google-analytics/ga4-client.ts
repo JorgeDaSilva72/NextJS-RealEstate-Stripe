@@ -13,6 +13,13 @@ const PROPERTY_ID = process.env.GOOGLE_ANALYTICS_PROPERTY_ID || "";
  * Initialize GA4 client with user credentials
  */
 async function getGA4Client(userId: string) {
+  if (!PROPERTY_ID) {
+    throw new Error(
+      "GOOGLE_ANALYTICS_PROPERTY_ID is not set. Please add it to your .env.local file. " +
+      "You can find your Property ID in Google Analytics: Admin > Property Settings"
+    );
+  }
+  
   const auth = await setOAuth2Credentials(userId);
   return { analyticsData, auth, propertyId: PROPERTY_ID };
 }

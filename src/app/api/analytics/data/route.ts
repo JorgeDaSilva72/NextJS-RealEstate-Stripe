@@ -66,11 +66,34 @@ export async function GET(req: NextRequest) {
   } catch (error: any) {
     console.error("Error fetching analytics data:", error);
     
+    // Check if it's a property ID error
+    if (error.message?.includes("GOOGLE_ANALYTICS_PROPERTY_ID")) {
+      return NextResponse.json(
+        { 
+          error: error.message,
+          hint: "Please add GOOGLE_ANALYTICS_PROPERTY_ID to your .env.local file. " +
+                "You can find it in Google Analytics: Admin > Property Settings"
+        },
+        { status: 400 }
+      );
+    }
+    
     // Check if it's an authentication error
-    if (error.message?.includes("token") || error.message?.includes("auth")) {
+    if (error.message?.includes("token") || error.message?.includes("auth") || error.message?.includes("401") || error.message?.includes("403")) {
       return NextResponse.json(
         { error: "Authentication required. Please reconnect your Google Analytics account." },
         { status: 401 }
+      );
+    }
+
+    // Check if it's a property not found error
+    if (error.message?.includes("404") || error.message?.includes("not found") || error.message?.includes("runReport")) {
+      return NextResponse.json(
+        { 
+          error: "Google Analytics property not found. Please verify your GOOGLE_ANALYTICS_PROPERTY_ID is correct.",
+          hint: "The Property ID should be a numeric value (e.g., 123456789). Check it in Google Analytics: Admin > Property Settings"
+        },
+        { status: 404 }
       );
     }
 
