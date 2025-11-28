@@ -18,8 +18,8 @@ import {
   ClockIcon,
   ArrowPathIcon,
   CalendarIcon,
-  TrendingUpIcon,
-  TrendingDownIcon,
+  ArrowTrendingUpIcon,
+  ArrowTrendingDownIcon,
 } from "@heroicons/react/24/outline";
 import TrafficOverview from "./TrafficOverview";
 import TopPages from "./TopPages";
@@ -307,7 +307,7 @@ export default function AnalyticsDashboard() {
               key="sources" 
               title={
                 <div className="flex items-center gap-2">
-                  <TrendingUpIcon className="w-5 h-5" />
+                  <ArrowTrendingUpIcon className="w-5 h-5" />
                   <span>Traffic Sources</span>
                 </div>
               }
