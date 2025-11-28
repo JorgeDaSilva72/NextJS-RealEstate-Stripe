@@ -38,6 +38,7 @@ export async function GET(req: NextRequest) {
 
     if (!dbUser) {
       // Create user if they don't exist
+      const now = new Date();
       await prisma.user.create({
         data: {
           id: user.id,
@@ -45,6 +46,7 @@ export async function GET(req: NextRequest) {
           lastName: user.family_name ?? "",
           email: user.email ?? "",
           avatarUrl: generateAvatarUrl(user.id),
+          updatedAt: now,
         },
       });
       console.log("User created during OAuth callback:", user.id);
