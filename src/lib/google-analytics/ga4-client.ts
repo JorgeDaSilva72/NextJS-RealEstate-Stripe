@@ -59,7 +59,6 @@ export async function getTrafficOverview(
     const { analyticsData, auth, propertyId } = await getGA4Client(userId);
 
     const response = await analyticsData.properties.runReport({
-      auth,
       property: `properties/${propertyId}`,
       requestBody: {
         dateRanges: [
@@ -77,6 +76,7 @@ export async function getTrafficOverview(
           { name: "bounceRate" },
         ],
       },
+      auth,
     });
 
     return response.data;
