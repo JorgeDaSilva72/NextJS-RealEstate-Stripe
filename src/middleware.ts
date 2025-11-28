@@ -310,8 +310,9 @@ const nextIntlMiddleware = createMiddleware({
 export default async function middleware(request: any) {
   const pathname = request.nextUrl.pathname;
 
-  // Exclude oauth2callback from locale routing (works at /oauth2callback or /[locale]/oauth2callback)
-  if (pathname === "/oauth2callback" || pathname.startsWith("/oauth2callback")) {
+  // Exclude oauth2callback from locale routing (works at /oauth2callback)
+  // This route must be accessible without locale prefix for Google OAuth redirect
+  if (pathname === "/oauth2callback" || pathname === "/oauth2callback/") {
     // Allow the route to be accessed without locale prefix
     return NextResponse.next();
   }
