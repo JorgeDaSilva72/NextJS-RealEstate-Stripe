@@ -67,39 +67,49 @@ export async function storeTokens(
   refreshToken: string | null | undefined,
   expiryDate: Date
 ) {
-  // Simple encryption - in production, use a proper encryption library
-  // For now, we'll store them directly (consider using crypto for encryption)
-  const tokenData = {
-    userId,
-    accessToken,
-    refreshToken: refreshToken || "",
-    expiryDate,
-  };
+  try {
+    // Simple encryption - in production, use a proper encryption library
+    // For now, we'll store them directly (consider using crypto for encryption)
+    const tokenData = {
+      userId,
+      accessToken,
+      refreshToken: refreshToken || "",
+      expiryDate,
+    };
 
-  await prisma.googleAnalyticsToken.upsert({
-    where: { userId },
-    update: tokenData,
-    create: tokenData,
-  });
+    await prisma.googleAnalyticsToken.upsert({
+      where: { userId },
+      update: tokenData,
+      create: tokenData,
+    });
+  } catch (error) {
+    console.error("Error storing tokens:", error);
+    throw new Error("Failed to store Google Analytics tokens");
+  }
 }
 
 /**
  * Get stored tokens for a user
  */
 export async function getStoredTokens(userId: string) {
-  const tokenRecord = await prisma.googleAnalyticsToken.findUnique({
-    where: { userId },
-  });
+  try {
+    const tokenRecord = await prisma.googleAnalyticsToken.findUnique({
+      where: { userId },
+    });
 
-  if (!tokenRecord) {
+    if (!tokenRecord) {
+      return null;
+    }
+
+    return {
+      accessToken: tokenRecord.accessToken,
+      refreshToken: tokenRecord.refreshToken,
+      expiryDate: tokenRecord.expiryDate,
+    };
+  } catch (error) {
+    console.error("Error getting stored tokens:", error);
     return null;
   }
-
-  return {
-    accessToken: tokenRecord.accessToken,
-    refreshToken: tokenRecord.refreshToken,
-    expiryDate: tokenRecord.expiryDate,
-  };
 }
 
 /**
@@ -115,67 +125,77 @@ export function isTokenExpired(expiryDate: Date): boolean {
 export async function refreshAccessToken(
   userId: string
 ): Promise<{ accessToken: string; expiryDate: Date } | null> {
-  const tokenRecord = await prisma.googleAnalyticsToken.findUnique({
-    where: { userId },
-  });
-
-  if (!tokenRecord || !tokenRecord.refreshToken) {
-    return null;
-  }
-
-  oauth2Client.setCredentials({
-    refresh_token: tokenRecord.refreshToken,
-  });
-
   try {
-    const { credentials } = await oauth2Client.refreshAccessToken();
-    
-    if (credentials.access_token && credentials.expiry_date) {
-      const expiryDate = new Date(credentials.expiry_date);
+    const tokenRecord = await prisma.googleAnalyticsToken.findUnique({
+      where: { userId },
+    });
+
+    if (!tokenRecord || !tokenRecord.refreshToken) {
+      return null;
+    }
+
+    oauth2Client.setCredentials({
+      refresh_token: tokenRecord.refreshToken,
+    });
+
+    try {
+      const { credentials } = await oauth2Client.refreshAccessToken();
       
-      await prisma.googleAnalyticsToken.update({
-        where: { userId },
-        data: {
+      if (credentials.access_token && credentials.expiry_date) {
+        const expiryDate = new Date(credentials.expiry_date);
+        
+        await prisma.googleAnalyticsToken.update({
+          where: { userId },
+          data: {
+            accessToken: credentials.access_token,
+            expiryDate,
+          },
+        });
+
+        return {
           accessToken: credentials.access_token,
           expiryDate,
-        },
-      });
-
-      return {
-        accessToken: credentials.access_token,
-        expiryDate,
-      };
+        };
+      }
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      return null;
     }
+
+    return null;
   } catch (error) {
-    console.error("Error refreshing token:", error);
+    console.error("Error in refreshAccessToken:", error);
     return null;
   }
-
-  return null;
 }
 
 /**
  * Get valid access token (refresh if needed)
  */
 export async function getValidAccessToken(userId: string): Promise<string | null> {
-  const tokens = await getStoredTokens(userId);
+  try {
+    const tokens = await getStoredTokens(userId);
 
-  if (!tokens) {
-    return null;
-  }
-
-  // Check if token is expired or will expire in the next 5 minutes
-  const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000);
-  if (tokens.expiryDate <= fiveMinutesFromNow) {
-    // Token is expired or about to expire, refresh it
-    const refreshed = await refreshAccessToken(userId);
-    if (refreshed) {
-      return refreshed.accessToken;
+    if (!tokens) {
+      return null;
     }
+
+    // Check if token is expired or will expire in the next 5 minutes
+    const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000);
+    if (tokens.expiryDate <= fiveMinutesFromNow) {
+      // Token is expired or about to expire, refresh it
+      const refreshed = await refreshAccessToken(userId);
+      if (refreshed) {
+        return refreshed.accessToken;
+      }
+      return null;
+    }
+
+    return tokens.accessToken;
+  } catch (error) {
+    console.error("Error getting valid access token:", error);
     return null;
   }
-
-  return tokens.accessToken;
 }
 
 /**

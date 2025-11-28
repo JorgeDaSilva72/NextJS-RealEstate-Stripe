@@ -80,8 +80,15 @@ export async function generateMetadata({
 }: {
   params: { locale: string };
 }): Promise<Metadata> {
+  let locale = "fr";
   try {
-    const locale = params?.locale || "fr";
+    locale = params?.locale || "fr";
+  } catch (error) {
+    console.error("Error extracting locale in generateMetadata:", error);
+    locale = "fr";
+  }
+
+  try {
     return {
       title: locale === "fr" ? "AFRIQUE AVENIR IMMO" : "AFRIQUE AVENIR IMMO",
       description:
@@ -112,25 +119,32 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { locale: string };
 }>) {
+  // Extract locale from params (handle both sync and async params)
+  let locale = "fr";
   try {
-    // Extract locale from params (handle both sync and async params)
-    const locale = params?.locale || "fr";
+    locale = params?.locale || "fr";
+  } catch (error) {
+    console.error("Error extracting locale from params:", error);
+    locale = "fr";
+  }
 
-    // Vérifie si la locale est supportée
-    if (!locale || !routing.locales.includes(locale as any)) {
-      notFound();
-    }
+  // Vérifie si la locale est supportée
+  if (!locale || !routing.locales.includes(locale as any)) {
+    notFound();
+  }
 
-    // Providing all messages to the client
-    // side is the easiest way to get started
-    let messages;
-    try {
-      messages = await getMessages();
-    } catch (error) {
-      console.error("Error loading messages:", error);
-      // Fallback to empty messages object to prevent render failure
-      messages = {};
-    }
+  // Providing all messages to the client
+  // side is the easiest way to get started
+  let messages = {};
+  try {
+    messages = await getMessages();
+  } catch (error) {
+    console.error("Error loading messages:", error);
+    // Fallback to empty messages object to prevent render failure
+    messages = {};
+  }
+
+  try {
 
     return (
       <html lang={locale} className="h-full">
@@ -164,12 +178,14 @@ export default async function RootLayout({
         </body>
       </html>
     );
-  } catch (error) {
-    // Log the error for debugging
-    console.error("Critical error in RootLayout:", error);
+  } catch (error: any) {
+    // Log the error for debugging with more details
+    console.error("Critical error in RootLayout render:", error);
+    console.error("Error stack:", error?.stack);
+    console.error("Error message:", error?.message);
+    console.error("Error name:", error?.name);
     
     // Return a minimal fallback layout to prevent complete failure
-    const locale = params?.locale || "fr";
     return (
       <html lang={locale} className="h-full">
         <body className={`${inter.className} h-full flex flex-col`}>
