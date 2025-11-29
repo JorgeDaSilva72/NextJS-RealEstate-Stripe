@@ -123,13 +123,19 @@ export default async function RootLayout({
   let locale = "fr";
   try {
     locale = params?.locale || "fr";
-  } catch (error) {
-    console.error("Error extracting locale from params:", error);
+    console.log("[RootLayout] Rendering layout for locale:", locale);
+  } catch (error: any) {
+    console.error("[RootLayout] Error extracting locale from params:", error);
+    console.error("[RootLayout] Error details:", {
+      message: error.message,
+      stack: error.stack,
+    });
     locale = "fr";
   }
 
   // Vérifie si la locale est supportée
   if (!locale || !routing.locales.includes(locale as any)) {
+    console.warn("[RootLayout] Invalid locale, calling notFound():", locale);
     notFound();
   }
 
@@ -137,14 +143,57 @@ export default async function RootLayout({
   // side is the easiest way to get started
   let messages = {};
   try {
+    console.log("[RootLayout] Loading messages...");
     messages = await getMessages();
-  } catch (error) {
-    console.error("Error loading messages:", error);
+    console.log("[RootLayout] Messages loaded successfully");
+  } catch (error: any) {
+    console.error("[RootLayout] Error loading messages:", error);
+    console.error("[RootLayout] Error details:", {
+      message: error.message,
+      name: error.name,
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
     // Fallback to empty messages object to prevent render failure
     messages = {};
   }
 
   try {
+    console.log("[RootLayout] Rendering layout JSX for locale:", locale);
+    
+    // Wrap children rendering in try/catch to catch any Server Component errors
+    let safeChildren: React.ReactNode;
+    try {
+      console.log("[RootLayout] Rendering children...");
+      safeChildren = children;
+    } catch (childrenError: any) {
+      console.error("[RootLayout] Error rendering children:", childrenError);
+      console.error("[RootLayout] Children error details:", {
+        message: childrenError.message,
+        stack: childrenError.stack,
+        name: childrenError.name,
+      });
+      // Render error UI instead of crashing
+      safeChildren = (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">
+              Error Loading Page
+            </h1>
+            <p className="text-gray-600 mb-4">
+              {process.env.NODE_ENV === "development" 
+                ? childrenError.message 
+                : "An error occurred while loading this page."}
+            </p>
+            <a
+              href="/"
+              className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Go to Home
+            </a>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <html lang={locale} className="h-full">
@@ -164,7 +213,7 @@ export default async function RootLayout({
                   </Appbar>
 
                   {/* Contenu principal */}
-                  <main className="flex-grow">{children}</main>
+                  <main className="flex-grow">{safeChildren}</main>
 
                   {/* FooterWrapper conditionne l'affichage du Footer */}
                   <FooterWrapper />
@@ -180,10 +229,21 @@ export default async function RootLayout({
     );
   } catch (error: any) {
     // Log the error for debugging with more details
-    console.error("Critical error in RootLayout render:", error);
-    console.error("Error stack:", error?.stack);
-    console.error("Error message:", error?.message);
-    console.error("Error name:", error?.name);
+    console.error("[RootLayout] CRITICAL ERROR in RootLayout render:", error);
+    console.error("[RootLayout] Error type:", typeof error);
+    console.error("[RootLayout] Error constructor:", error?.constructor?.name);
+    console.error("[RootLayout] Error message:", error?.message);
+    console.error("[RootLayout] Error name:", error?.name);
+    console.error("[RootLayout] Error stack:", error?.stack);
+    console.error("[RootLayout] Error cause:", error?.cause);
+    console.error("[RootLayout] Full error object:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
+    
+    // Log environment check
+    console.error("[RootLayout] Environment check:", {
+      NODE_ENV: process.env.NODE_ENV,
+      hasNextIntl: typeof getMessages !== "undefined",
+      locale: locale,
+    });
     
     // Return a minimal fallback layout to prevent complete failure
     return (
@@ -197,6 +257,13 @@ export default async function RootLayout({
               <p className="text-gray-600 mb-4">
                 An error occurred while loading the page. Please try refreshing.
               </p>
+              {process.env.NODE_ENV === "development" && error?.message && (
+                <div className="mb-4 p-3 bg-red-50 rounded text-left max-w-md mx-auto">
+                  <p className="text-xs text-red-800 font-mono break-all">
+                    {error.message}
+                  </p>
+                </div>
+              )}
               <a
                 href="/"
                 className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"

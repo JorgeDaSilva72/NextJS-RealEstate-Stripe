@@ -1,18 +1,42 @@
 "use client";
 
+// Force this page to be client-only and never pre-rendered
+import dynamic from "next/dynamic";
 import { useEffect, useState, Suspense } from "react";
 import { Card, CardBody, CardHeader, Button, Spinner } from "@nextui-org/react";
 import { ChartBarIcon, UsersIcon, EyeIcon, ClockIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useSearchParams } from "next/navigation";
-import AnalyticsDashboard from "./_components/AnalyticsDashboard";
+
+// Dynamically import AnalyticsDashboard to ensure it's client-only
+const AnalyticsDashboard = dynamic(
+  () => import("./_components/AnalyticsDashboard"),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Spinner size="lg" />
+      </div>
+    )
+  }
+);
 
 function AnalyticsDashboardContent() {
   const [connected, setConnected] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
   const searchParams = useSearchParams();
 
+  // Ensure this only runs on client
   useEffect(() => {
+    setMounted(true);
+    console.log("[AnalyticsDashboard] Component mounted on client");
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return; // Don't run on server
+    
+    console.log("[AnalyticsDashboard] Checking connection...");
     checkConnection();
     
     // Check for success/error messages from OAuth callback
@@ -33,7 +57,7 @@ function AnalyticsDashboardContent() {
       setErrorMessage(decodedError);
       setLoading(false);
     }
-  }, [searchParams]);
+  }, [searchParams, mounted]);
 
   const checkConnection = async () => {
     try {
@@ -89,6 +113,15 @@ function AnalyticsDashboardContent() {
   const handleConnect = () => {
     window.location.href = "/api/analytics/auth";
   };
+
+  // Don't render anything on server
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
 
   if (loading) {
     return (
