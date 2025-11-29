@@ -139,6 +139,13 @@ export async function storeTokens(
   expiryDate: Date
 ) {
   try {
+    console.log("[storeTokens] Starting token storage for user:", userId);
+    console.log("[storeTokens] Token details:", {
+      hasAccessToken: !!accessToken,
+      hasRefreshToken: !!refreshToken,
+      expiryDate: expiryDate.toISOString(),
+    });
+
     // Simple encryption - in production, use a proper encryption library
     // For now, we'll store them directly (consider using crypto for encryption)
     const tokenData = {
@@ -148,14 +155,41 @@ export async function storeTokens(
       expiryDate,
     };
 
-    await prisma.googleAnalyticsToken.upsert({
+    console.log("[storeTokens] Attempting database upsert...");
+    const result = await prisma.googleAnalyticsToken.upsert({
       where: { userId },
       update: tokenData,
       create: tokenData,
     });
-  } catch (error) {
-    console.error("Error storing tokens:", error);
-    throw new Error("Failed to store Google Analytics tokens");
+
+    console.log("[storeTokens] Token stored successfully:", {
+      userId: result.userId,
+      hasAccessToken: !!result.accessToken,
+      hasRefreshToken: !!result.refreshToken,
+      expiryDate: result.expiryDate.toISOString(),
+    });
+
+    // Verify the token was actually stored
+    const verification = await prisma.googleAnalyticsToken.findUnique({
+      where: { userId },
+    });
+
+    if (!verification) {
+      console.error("[storeTokens] CRITICAL: Token not found after storage!");
+      throw new Error("Token storage verification failed - token not found in database");
+    }
+
+    console.log("[storeTokens] Verification successful - token confirmed in database");
+    return result;
+  } catch (error: any) {
+    console.error("[storeTokens] Error storing tokens:", error);
+    console.error("[storeTokens] Error details:", {
+      message: error.message,
+      code: error.code,
+      meta: error.meta,
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
+    throw new Error(`Failed to store Google Analytics tokens: ${error.message || "Unknown error"}`);
   }
 }
 
@@ -164,21 +198,37 @@ export async function storeTokens(
  */
 export async function getStoredTokens(userId: string) {
   try {
+    console.log("[getStoredTokens] Looking up tokens for user:", userId);
+    
     const tokenRecord = await prisma.googleAnalyticsToken.findUnique({
       where: { userId },
     });
 
     if (!tokenRecord) {
+      console.log("[getStoredTokens] No tokens found for user:", userId);
       return null;
     }
+
+    console.log("[getStoredTokens] Tokens found:", {
+      userId: tokenRecord.userId,
+      hasAccessToken: !!tokenRecord.accessToken,
+      hasRefreshToken: !!tokenRecord.refreshToken,
+      expiryDate: tokenRecord.expiryDate.toISOString(),
+    });
 
     return {
       accessToken: tokenRecord.accessToken,
       refreshToken: tokenRecord.refreshToken,
       expiryDate: tokenRecord.expiryDate,
     };
-  } catch (error) {
-    console.error("Error getting stored tokens:", error);
+  } catch (error: any) {
+    console.error("[getStoredTokens] Error getting stored tokens:", error);
+    console.error("[getStoredTokens] Error details:", {
+      message: error.message,
+      code: error.code,
+      meta: error.meta,
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
     return null;
   }
 }

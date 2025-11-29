@@ -133,14 +133,42 @@ export async function GET(req: NextRequest) {
 
     // Store tokens in database
     try {
-      await storeTokens(
+      console.log("[OAuth Callback] Storing tokens for user:", user.id);
+      const storedResult = await storeTokens(
         user.id,
         tokens.access_token,
         tokens.refresh_token || null,
         expiryDate
       );
+      console.log("[OAuth Callback] Tokens stored successfully:", {
+        userId: storedResult.userId,
+        hasAccessToken: !!storedResult.accessToken,
+      });
+
+      // Verify tokens were stored by reading them back
+      console.log("[OAuth Callback] Verifying token storage...");
+      const verification = await prisma.googleAnalyticsToken.findUnique({
+        where: { userId: user.id },
+      });
+
+      if (!verification) {
+        console.error("[OAuth Callback] CRITICAL: Token verification failed - tokens not found after storage!");
+        return NextResponse.redirect(
+          `${origin}/${defaultLocale}/analytics/dashboard?error=${encodeURIComponent(
+            "Token storage verification failed"
+          )}`
+        );
+      }
+
+      console.log("[OAuth Callback] Token verification successful - redirecting to dashboard");
     } catch (error: any) {
       console.error("[OAuth Callback] Failed to store tokens:", error);
+      console.error("[OAuth Callback] Storage error details:", {
+        message: error.message,
+        code: error.code,
+        meta: error.meta,
+        stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+      });
       return NextResponse.redirect(
         `${origin}/${defaultLocale}/analytics/dashboard?error=${encodeURIComponent(
           `Failed to store tokens: ${error.message || "Database error"}`

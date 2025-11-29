@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { getStoredTokens, getValidAccessToken } from "@/lib/google-analytics/oauth";
 import { getRealtimeReport } from "@/lib/google-analytics/ga4-client";
+import prisma from "@/lib/prisma";
 import fs from "fs";
 import path from "path";
 
@@ -71,9 +72,26 @@ export async function GET(req: NextRequest) {
     // Check stored tokens
     let tokens;
     try {
-      console.log("[DEBUG-ANALYTICS] Checking stored tokens...");
+      console.log("[DEBUG-ANALYTICS] Checking stored tokens for user:", user.id);
+      
+      // First, check directly in database
+      let dbCheck;
+      try {
+        dbCheck = await prisma.googleAnalyticsToken.findUnique({
+          where: { userId: user.id },
+        });
+        console.log("[DEBUG-ANALYTICS] Direct DB check:", {
+          found: !!dbCheck,
+          hasAccessToken: !!dbCheck?.accessToken,
+          hasRefreshToken: !!dbCheck?.refreshToken,
+        });
+      } catch (dbError: any) {
+        console.error("[DEBUG-ANALYTICS] Database check failed:", dbError);
+        logError("Database check failed", dbError);
+      }
+      
       tokens = await getStoredTokens(user.id);
-      console.log("[DEBUG-ANALYTICS] Tokens found:", !!tokens);
+      console.log("[DEBUG-ANALYTICS] Tokens found via getStoredTokens:", !!tokens);
     } catch (error: any) {
       logError("Error getting stored tokens", error);
       return NextResponse.json({
@@ -82,15 +100,37 @@ export async function GET(req: NextRequest) {
         error: error.message || String(error),
         stack: error.stack,
         envCheck,
+        userId: user.id,
       }, { status: 500 });
     }
 
     if (!tokens) {
+      // Check if there are ANY tokens in the database
+      let allTokens: any[] = [];
+      try {
+        allTokens = await prisma.googleAnalyticsToken.findMany({
+          take: 5,
+          select: {
+            userId: true,
+            accessToken: true, // Just check if it exists
+          },
+        });
+        console.log("[DEBUG-ANALYTICS] Sample tokens in DB:", allTokens.length);
+      } catch (e) {
+        console.error("[DEBUG-ANALYTICS] Error checking all tokens:", e);
+        // Ignore
+      }
+
       return NextResponse.json({
         ok: false,
         step: "no_tokens",
         message: "No tokens found. User needs to connect Google Analytics.",
+        userId: user.id,
         envCheck,
+        dbCheck: {
+          hasTokensTable: true, // If we got here, table exists
+          sampleCount: allTokens.length,
+        },
       }, { status: 200 });
     }
 
