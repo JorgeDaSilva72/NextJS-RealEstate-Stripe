@@ -192,16 +192,64 @@ function AnalyticsDashboardContent() {
 }
 
 export default function AnalyticsDashboardPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <Spinner size="lg" />
-        </div>
+  // Log that the page component is rendering
+  if (typeof window === "undefined") {
+    console.log("[AnalyticsDashboardPage] Server-side render detected");
+  } else {
+    console.log("[AnalyticsDashboardPage] Client-side render");
+  }
+
+  try {
+    return (
+      <Suspense
+        fallback={
+          <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <Spinner size="lg" />
+          </div>
+        }
+      >
+        <AnalyticsDashboardContent />
+      </Suspense>
+    );
+  } catch (error: any) {
+    // This catch will only work for synchronous errors
+    console.error("[AnalyticsDashboardPage] Error in page component:", error);
+    console.error("[AnalyticsDashboardPage] Error details:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+    });
+
+    // Try to log to file (server-side only)
+    if (typeof window === "undefined") {
+      try {
+        const fs = require("fs");
+        const path = require("path");
+        const logFile = path.join(process.cwd(), "dashboard-error.log");
+        const logMessage = `[${new Date().toISOString()}] DASHBOARD-PAGE-ERROR:\n${error.stack || String(error)}\n\n`;
+        fs.appendFileSync(logFile, logMessage);
+      } catch (e) {
+        // Ignore file write errors
       }
-    >
-      <AnalyticsDashboardContent />
-    </Suspense>
-  );
+    }
+
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <div className="text-center max-w-md">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">
+            Dashboard Error
+          </h1>
+          <p className="text-gray-600 mb-4">
+            An error occurred while loading the dashboard.
+          </p>
+          {process.env.NODE_ENV === "development" && error?.message && (
+            <pre className="text-xs text-red-800 bg-red-50 p-3 rounded text-left overflow-auto">
+              {error.message}
+            </pre>
+          )}
+        </div>
+      </div>
+    );
+  }
 }
 

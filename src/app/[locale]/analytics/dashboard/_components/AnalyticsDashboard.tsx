@@ -46,7 +46,10 @@ export default function AnalyticsDashboard() {
     setLoading(true);
     setError(null);
 
+    console.log("[AnalyticsDashboard] fetchAllData called");
+
     try {
+      console.log("[AnalyticsDashboard] Starting API calls...");
       const [overviewRes, topPagesRes, behaviorRes, sourcesRes, realtimeRes] =
         await Promise.all([
           fetch(
@@ -88,7 +91,17 @@ export default function AnalyticsDashboard() {
       });
       setLastRefresh(new Date());
     } catch (err: any) {
-      console.error("Error fetching analytics:", err);
+      console.error("[AnalyticsDashboard] Error fetching analytics:", err);
+      console.error("[AnalyticsDashboard] Error details:", {
+        message: err.message,
+        stack: err.stack,
+        name: err.name,
+        response: err.response,
+      });
+      
+      // Note: File logging only works server-side
+      // Client-side errors are logged to console only
+      
       setError(err.message || "Failed to fetch analytics data");
     } finally {
       setLoading(false);
