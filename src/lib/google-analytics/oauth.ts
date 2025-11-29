@@ -116,7 +116,16 @@ export async function getStoredTokens(userId: string) {
  * Check if token is expired
  */
 export function isTokenExpired(expiryDate: Date): boolean {
-  return new Date() >= expiryDate;
+  try {
+    if (!expiryDate) {
+      return true; // If no expiry date, consider it expired
+    }
+    const expiry = expiryDate instanceof Date ? expiryDate : new Date(expiryDate);
+    return new Date() >= expiry;
+  } catch (error) {
+    console.error("Error checking token expiry:", error);
+    return true; // On error, assume expired for safety
+  }
 }
 
 /**

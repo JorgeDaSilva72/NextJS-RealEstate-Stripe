@@ -32,7 +32,15 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    const expired = isTokenExpired(tokens.expiryDate);
+    // Safely check if token is expired
+    let expired = false;
+    try {
+      expired = isTokenExpired(tokens.expiryDate);
+    } catch (error) {
+      console.error("Error checking token expiry:", error);
+      // If we can't check expiry, assume it's expired for safety
+      expired = true;
+    }
 
     return NextResponse.json({
       connected: true,
@@ -40,15 +48,17 @@ export async function GET(req: NextRequest) {
       expired,
       expiryDate: tokens.expiryDate,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error checking analytics status:", error);
+    // Return 200 with error info instead of 500 to prevent client crashes
     return NextResponse.json(
       { 
         connected: false,
         authenticated: false,
-        error: "Failed to check analytics status" 
+        error: error?.message || "Failed to check analytics status",
+        message: "Unable to verify Google Analytics connection"
       },
-      { status: 500 }
+      { status: 200 }
     );
   }
 }

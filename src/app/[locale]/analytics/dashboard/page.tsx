@@ -32,13 +32,36 @@ function AnalyticsDashboardContent() {
 
   const checkConnection = async () => {
     try {
-      const response = await fetch("/api/analytics/status");
+      const response = await fetch("/api/analytics/status", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // Don't throw on error status codes
+        cache: "no-store",
+      });
       
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      // Always try to parse JSON, even if status is not ok
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        console.error("Error parsing response:", parseError);
+        setConnected(false);
+        setLoading(false);
+        return;
       }
       
-      const data = await response.json();
+      // Handle different response scenarios
+      if (!response.ok) {
+        // If API returned error but with JSON, use that
+        if (data.error || data.message) {
+          console.error("API error:", data.error || data.message);
+        }
+        setConnected(false);
+        setLoading(false);
+        return;
+      }
       
       // If user is not authenticated, redirect to login
       if (data.authenticated === false) {
@@ -47,6 +70,7 @@ function AnalyticsDashboardContent() {
         return;
       }
       
+      // Set connection status
       setConnected(data.connected ?? false);
     } catch (error) {
       console.error("Error checking connection:", error);
