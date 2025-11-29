@@ -2,13 +2,14 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { Card, CardBody, CardHeader, Button, Spinner } from "@nextui-org/react";
-import { ChartBarIcon, UsersIcon, EyeIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { ChartBarIcon, UsersIcon, EyeIcon, ClockIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useSearchParams } from "next/navigation";
 import AnalyticsDashboard from "./_components/AnalyticsDashboard";
 
 function AnalyticsDashboardContent() {
   const [connected, setConnected] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -20,13 +21,17 @@ function AnalyticsDashboardContent() {
     
     if (success === "true") {
       // Refresh connection status after successful OAuth
+      setErrorMessage(null);
       setTimeout(() => {
         checkConnection();
       }, 1000);
     }
     
     if (error) {
-      console.error("OAuth error:", error);
+      const decodedError = decodeURIComponent(error);
+      console.error("OAuth error:", decodedError);
+      setErrorMessage(decodedError);
+      setLoading(false);
     }
   }, [searchParams]);
 
@@ -107,6 +112,28 @@ function AnalyticsDashboardContent() {
               </p>
             </CardHeader>
             <CardBody className="flex flex-col items-center justify-center py-12 gap-6">
+              {errorMessage && (
+                <div className="w-full mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <ExclamationTriangleIcon className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <h3 className="text-sm font-semibold text-red-800 mb-1">
+                        Connection Error
+                      </h3>
+                      <p className="text-sm text-red-700 break-words">
+                        {errorMessage}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setErrorMessage(null)}
+                      className="text-red-600 hover:text-red-800"
+                      aria-label="Dismiss error"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
+              )}
               <div className="text-center">
                 <ChartBarIcon className="w-24 h-24 mx-auto text-gray-400 mb-4" />
                 <p className="text-gray-600 mb-6">

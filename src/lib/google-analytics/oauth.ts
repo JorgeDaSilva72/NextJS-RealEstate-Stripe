@@ -1,24 +1,41 @@
 import { google } from "googleapis";
 import { prisma } from "../prisma";
+import { getRedirectUri, validateGoogleAnalyticsEnv } from "./env-validation";
+
+// Validate environment variables on module load
+const envError = validateGoogleAnalyticsEnv();
+if (envError && process.env.NODE_ENV === "production") {
+  console.error("Google Analytics Environment Error:", envError);
+}
 
 // Google OAuth2 configuration
 // Use environment variable or auto-detect based on NODE_ENV
-const getRedirectUri = () => {
-  if (process.env.GOOGLE_REDIRECT_URI) {
-    return process.env.GOOGLE_REDIRECT_URI;
-  }
-  // Auto-detect production vs development
-  if (process.env.NODE_ENV === "production" && process.env.NEXT_PUBLIC_BASE_URL) {
-    return `${process.env.NEXT_PUBLIC_BASE_URL}/oauth2callback`;
-  }
-  return "http://localhost:3000/oauth2callback";
-};
+const redirectUri = getRedirectUri();
 
-export const oauth2Client = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  getRedirectUri()
-);
+// Initialize OAuth2 client with validation
+function createOAuth2Client() {
+  try {
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    const redirectUri = getRedirectUri();
+    
+    if (!clientId || !clientSecret) {
+      throw new Error("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set");
+    }
+    
+    return new google.auth.OAuth2(
+      clientId,
+      clientSecret,
+      redirectUri
+    );
+  } catch (error) {
+    console.error("Failed to initialize OAuth2 client:", error);
+    // Create a dummy client to prevent crashes, but it won't work
+    return new google.auth.OAuth2("", "", getRedirectUri());
+  }
+}
+
+export const oauth2Client = createOAuth2Client();
 
 // Scopes required for Google Analytics Data API
 export const SCOPES = [
@@ -29,33 +46,87 @@ export const SCOPES = [
  * Generate the OAuth2 authorization URL
  */
 export function getAuthUrl(): string {
-  const redirectUri = getRedirectUri();
-  
-  // Create a new OAuth2 client with the correct redirect URI
-  const client = new google.auth.OAuth2(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET,
-    redirectUri
-  );
-  
-  // Log for debugging
-  if (process.env.NODE_ENV === "development") {
-    console.log("Using redirect URI:", redirectUri);
+  try {
+    const envError = validateGoogleAnalyticsEnv();
+    if (envError) {
+      throw new Error(envError);
+    }
+
+    const redirectUri = getRedirectUri();
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    
+    if (!clientId || !clientSecret) {
+      throw new Error("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set");
+    }
+    
+    // Create a new OAuth2 client with the correct redirect URI
+    const client = new google.auth.OAuth2(
+      clientId,
+      clientSecret,
+      redirectUri
+    );
+    
+    // Log for debugging (always log in production for troubleshooting)
+    console.log("[Google OAuth] Using redirect URI:", redirectUri);
+    console.log("[Google OAuth] Client ID configured:", !!clientId);
+    
+    return client.generateAuthUrl({
+      access_type: "offline",
+      scope: SCOPES,
+      prompt: "consent", // Force consent to get refresh token
+    });
+  } catch (error: any) {
+    console.error("[Google OAuth] Error generating auth URL:", error);
+    throw new Error(`Failed to generate OAuth URL: ${error.message}`);
   }
-  
-  return client.generateAuthUrl({
-    access_type: "offline",
-    scope: SCOPES,
-    prompt: "consent", // Force consent to get refresh token
-  });
 }
 
 /**
  * Exchange authorization code for tokens
  */
 export async function getTokensFromCode(code: string) {
-  const { tokens } = await oauth2Client.getToken(code);
-  return tokens;
+  try {
+    if (!code || code.trim() === "") {
+      throw new Error("Authorization code is required");
+    }
+
+    const envError = validateGoogleAnalyticsEnv();
+    if (envError) {
+      throw new Error(envError);
+    }
+
+    // Create a fresh client with validated credentials
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    const redirectUri = getRedirectUri();
+    
+    if (!clientId || !clientSecret) {
+      throw new Error("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set");
+    }
+
+    const client = new google.auth.OAuth2(clientId, clientSecret, redirectUri);
+
+    console.log("[Google OAuth] Exchanging code for tokens...");
+    console.log("[Google OAuth] Redirect URI:", redirectUri);
+    
+    const { tokens } = await client.getToken(code);
+    
+    if (!tokens || !tokens.access_token) {
+      throw new Error("Failed to obtain access token from Google");
+    }
+    
+    console.log("[Google OAuth] Successfully obtained tokens");
+    return tokens;
+  } catch (error: any) {
+    console.error("[Google OAuth] Error exchanging code for tokens:", error);
+    console.error("[Google OAuth] Error details:", {
+      message: error.message,
+      code: error.code,
+      response: error.response?.data || error.response,
+    });
+    throw new Error(`Failed to exchange authorization code: ${error.message || "Unknown error"}`);
+  }
 }
 
 /**
@@ -143,12 +214,22 @@ export async function refreshAccessToken(
       return null;
     }
 
-    oauth2Client.setCredentials({
+    // Create a fresh client for token refresh
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    const redirectUri = getRedirectUri();
+    
+    if (!clientId || !clientSecret) {
+      throw new Error("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set");
+    }
+
+    const client = new google.auth.OAuth2(clientId, clientSecret, redirectUri);
+    client.setCredentials({
       refresh_token: tokenRecord.refreshToken,
     });
 
     try {
-      const { credentials } = await oauth2Client.refreshAccessToken();
+      const { credentials } = await client.refreshAccessToken();
       
       if (credentials.access_token && credentials.expiry_date) {
         const expiryDate = new Date(credentials.expiry_date);
@@ -211,21 +292,46 @@ export async function getValidAccessToken(userId: string): Promise<string | null
  * Set credentials for OAuth2 client
  */
 export async function setOAuth2Credentials(userId: string) {
-  const accessToken = await getValidAccessToken(userId);
-  
-  if (!accessToken) {
-    throw new Error("No valid access token available");
+  try {
+    if (!userId || userId.trim() === "") {
+      throw new Error("User ID is required");
+    }
+
+    const accessToken = await getValidAccessToken(userId);
+    
+    if (!accessToken) {
+      throw new Error("No valid access token available. Please reconnect your Google Analytics account.");
+    }
+
+    let tokenRecord;
+    try {
+      tokenRecord = await prisma.googleAnalyticsToken.findUnique({
+        where: { userId },
+      });
+    } catch (error: any) {
+      console.error("[OAuth] Error fetching token record:", error);
+      throw new Error("Failed to retrieve token record from database");
+    }
+
+    // Create a fresh client with validated credentials
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    const redirectUri = getRedirectUri();
+    
+    if (!clientId || !clientSecret) {
+      throw new Error("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set");
+    }
+
+    const client = new google.auth.OAuth2(clientId, clientSecret, redirectUri);
+    client.setCredentials({
+      access_token: accessToken,
+      refresh_token: tokenRecord?.refreshToken || undefined,
+    });
+
+    return client;
+  } catch (error: any) {
+    console.error("[OAuth] Error setting OAuth2 credentials:", error);
+    throw new Error(`Failed to set OAuth2 credentials: ${error.message || "Unknown error"}`);
   }
-
-  const tokenRecord = await prisma.googleAnalyticsToken.findUnique({
-    where: { userId },
-  });
-
-  oauth2Client.setCredentials({
-    access_token: accessToken,
-    refresh_token: tokenRecord?.refreshToken || undefined,
-  });
-
-  return oauth2Client;
 }
 

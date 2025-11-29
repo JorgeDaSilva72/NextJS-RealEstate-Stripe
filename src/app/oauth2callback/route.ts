@@ -18,101 +18,145 @@ function generateAvatarUrl(userId: string): string {
  * This route is at root level to avoid locale routing issues
  */
 export async function GET(req: NextRequest) {
+  const defaultLocale = "fr";
+  let origin: string;
+  
   try {
+    origin = new URL(req.url).origin;
+  } catch (error) {
+    console.error("[OAuth Callback] Failed to parse request URL:", error);
+    return NextResponse.json(
+      { error: "Invalid request URL" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    console.log("[OAuth Callback] Processing OAuth callback (root route)...");
+    
     // Check if user is authenticated
-    const session = await getKindeServerSession();
-    const { getUser } = session;
-    const user = await getUser();
+    let user;
+    try {
+      const session = await getKindeServerSession();
+      const { getUser } = session;
+      user = await getUser();
+    } catch (error: any) {
+      console.error("[OAuth Callback] Authentication error:", error);
+      return NextResponse.redirect(
+        `${origin}/${defaultLocale}/analytics/dashboard?error=${encodeURIComponent("Authentication failed")}`
+      );
+    }
 
     if (!user || !user.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
+      console.warn("[OAuth Callback] User not authenticated");
+      return NextResponse.redirect(
+        `${origin}/${defaultLocale}/analytics/dashboard?error=${encodeURIComponent("User not authenticated")}`
       );
     }
 
     // Ensure user exists in database before storing tokens
-    const dbUser = await prisma.user.findUnique({
-      where: { id: user.id },
-    });
-
-    if (!dbUser) {
-      // Create user if they don't exist
-      // Note: updatedAt should be handled by Prisma @updatedAt, but we set it explicitly
-      // to avoid null constraint violations if the database requires it
-      const now = new Date();
-      await prisma.user.create({
-        data: {
-          id: user.id,
-          firstName: user.given_name ?? "",
-          lastName: user.family_name ?? "",
-          email: user.email ?? "",
-          avatarUrl: generateAvatarUrl(user.id),
-          updatedAt: now,
-        },
+    try {
+      let dbUser = await prisma.user.findUnique({
+        where: { id: user.id },
       });
-      console.log("User created during OAuth callback:", user.id);
+
+      if (!dbUser) {
+        const now = new Date();
+        await prisma.user.create({
+          data: {
+            id: user.id,
+            firstName: user.given_name ?? "",
+            lastName: user.family_name ?? "",
+            email: user.email ?? "",
+            avatarUrl: generateAvatarUrl(user.id),
+            updatedAt: now,
+          },
+        });
+        console.log("[OAuth Callback] User created during OAuth callback:", user.id);
+      }
+    } catch (error: any) {
+      console.error("[OAuth Callback] Database error:", error);
+      // Continue anyway, user might already exist
     }
 
     // Get authorization code from query params
     const searchParams = req.nextUrl.searchParams;
     const code = searchParams.get("code");
     const error = searchParams.get("error");
+    const errorDescription = searchParams.get("error_description");
 
-    // Get default locale from routing config
-    const defaultLocale = "fr"; // Default locale from routing.ts
-    
     if (error) {
+      const errorMsg = errorDescription || error;
+      console.error("[OAuth Callback] OAuth error from Google:", errorMsg);
       return NextResponse.redirect(
-        new URL(
-          `/${defaultLocale}/analytics/dashboard?error=${encodeURIComponent(error)}`,
-          req.url
-        )
+        `${origin}/${defaultLocale}/analytics/dashboard?error=${encodeURIComponent(errorMsg)}`
       );
     }
 
     if (!code) {
+      console.error("[OAuth Callback] No authorization code provided");
       return NextResponse.redirect(
-        new URL(`/${defaultLocale}/analytics/dashboard?error=no_code`, req.url)
+        `${origin}/${defaultLocale}/analytics/dashboard?error=${encodeURIComponent("No authorization code received")}`
       );
     }
 
     // Exchange code for tokens
-    const tokens = await getTokensFromCode(code);
-
-    if (!tokens.access_token) {
+    let tokens;
+    try {
+      tokens = await getTokensFromCode(code);
+    } catch (error: any) {
+      console.error("[OAuth Callback] Token exchange failed:", error);
       return NextResponse.redirect(
-        new URL(`/${defaultLocale}/analytics/dashboard?error=no_token`, req.url)
+        `${origin}/${defaultLocale}/analytics/dashboard?error=${encodeURIComponent(
+          `Token exchange failed: ${error.message || "Unknown error"}`
+        )}`
+      );
+    }
+
+    if (!tokens || !tokens.access_token) {
+      console.error("[OAuth Callback] No access token in response");
+      return NextResponse.redirect(
+        `${origin}/${defaultLocale}/analytics/dashboard?error=${encodeURIComponent("Failed to obtain access token")}`
       );
     }
 
     // Calculate expiry date
-    const expiryDate = tokens.expiry_date
-      ? new Date(tokens.expiry_date)
-      : new Date(Date.now() + 3600 * 1000); // Default to 1 hour if not provided
+    let expiryDate: Date;
+    try {
+      expiryDate = tokens.expiry_date
+        ? new Date(tokens.expiry_date)
+        : new Date(Date.now() + 3600 * 1000);
+    } catch (error) {
+      console.error("[OAuth Callback] Error parsing expiry date:", error);
+      expiryDate = new Date(Date.now() + 3600 * 1000);
+    }
 
     // Store tokens in database
-    await storeTokens(
-      user.id,
-      tokens.access_token,
-      tokens.refresh_token || null,
-      expiryDate
-    );
+    try {
+      await storeTokens(
+        user.id,
+        tokens.access_token,
+        tokens.refresh_token || null,
+        expiryDate
+      );
+    } catch (error: any) {
+      console.error("[OAuth Callback] Failed to store tokens:", error);
+      return NextResponse.redirect(
+        `${origin}/${defaultLocale}/analytics/dashboard?error=${encodeURIComponent(
+          `Failed to store tokens: ${error.message || "Database error"}`
+        )}`
+      );
+    }
 
-    // Redirect to dashboard with default locale
-    // Use req.url to get the correct origin (works in both dev and production)
-    const origin = new URL(req.url).origin;
     return NextResponse.redirect(
       `${origin}/${defaultLocale}/analytics/dashboard?success=true`
     );
-  } catch (error) {
-    console.error("Error in OAuth callback:", error);
-    const defaultLocale = "fr";
-    const origin = new URL(req.url).origin;
+  } catch (error: any) {
+    console.error("[OAuth Callback] Unexpected error:", error);
+    console.error("[OAuth Callback] Error stack:", error.stack);
+    const errorMessage = error.message || "An unexpected error occurred during OAuth callback";
     return NextResponse.redirect(
-      `${origin}/${defaultLocale}/analytics/dashboard?error=${encodeURIComponent(
-        (error as Error).message
-      )}`
+      `${origin}/${defaultLocale}/analytics/dashboard?error=${encodeURIComponent(errorMessage)}`
     );
   }
 }
