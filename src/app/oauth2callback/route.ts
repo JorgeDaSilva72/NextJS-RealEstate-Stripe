@@ -133,42 +133,73 @@ export async function GET(req: NextRequest) {
 
     // Store tokens in database
     try {
-      console.log("[OAuth Callback] Storing tokens for user:", user.id);
+      console.log("[OAuth Callback] ====== STORING TOKENS ======");
+      console.log("[OAuth Callback] User ID:", user.id);
+      console.log("[OAuth Callback] Has access token:", !!tokens.access_token);
+      console.log("[OAuth Callback] Has refresh token:", !!tokens.refresh_token);
+      console.log("[OAuth Callback] Expiry date:", expiryDate.toISOString());
+      
       const storedResult = await storeTokens(
         user.id,
         tokens.access_token,
         tokens.refresh_token || null,
         expiryDate
       );
-      console.log("[OAuth Callback] Tokens stored successfully:", {
+      
+      console.log("[OAuth Callback] ====== TOKENS STORED ======");
+      console.log("[OAuth Callback] Stored result:", {
         userId: storedResult.userId,
         hasAccessToken: !!storedResult.accessToken,
+        hasRefreshToken: !!storedResult.refreshToken,
+        expiryDate: storedResult.expiryDate.toISOString(),
       });
 
       // Verify tokens were stored by reading them back
-      console.log("[OAuth Callback] Verifying token storage...");
+      console.log("[OAuth Callback] ====== VERIFYING STORAGE ======");
       const verification = await prisma.googleAnalyticsToken.findUnique({
         where: { userId: user.id },
       });
 
       if (!verification) {
+        console.error("[OAuth Callback] ====== VERIFICATION FAILED ======");
         console.error("[OAuth Callback] CRITICAL: Token verification failed - tokens not found after storage!");
+        console.error("[OAuth Callback] User ID used:", user.id);
+        console.error("[OAuth Callback] Stored result userId:", storedResult.userId);
+        
+        // Try to find any tokens for this user with different query
+        try {
+          const allUserTokens = await prisma.googleAnalyticsToken.findMany({
+            where: {
+              userId: {
+                contains: user.id.substring(0, 10), // Partial match
+              },
+            },
+          });
+          console.error("[OAuth Callback] Found similar user IDs:", allUserTokens.map(t => t.userId));
+        } catch (e) {
+          // Ignore
+        }
+        
         return NextResponse.redirect(
           `${origin}/${defaultLocale}/analytics/dashboard?error=${encodeURIComponent(
-            "Token storage verification failed"
+            "Token storage verification failed - please check server logs"
           )}`
         );
       }
 
-      console.log("[OAuth Callback] Token verification successful - redirecting to dashboard");
+      console.log("[OAuth Callback] ====== VERIFICATION SUCCESS ======");
+      console.log("[OAuth Callback] Verified token exists in database");
+      console.log("[OAuth Callback] Redirecting to dashboard...");
     } catch (error: any) {
+      console.error("[OAuth Callback] ====== STORAGE ERROR ======");
       console.error("[OAuth Callback] Failed to store tokens:", error);
-      console.error("[OAuth Callback] Storage error details:", {
-        message: error.message,
-        code: error.code,
-        meta: error.meta,
-        stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
-      });
+      console.error("[OAuth Callback] Error type:", error.constructor?.name);
+      console.error("[OAuth Callback] Error message:", error.message);
+      console.error("[OAuth Callback] Error code:", error.code);
+      console.error("[OAuth Callback] Error meta:", error.meta);
+      console.error("[OAuth Callback] Error stack:", error.stack);
+      console.error("[OAuth Callback] User ID:", user.id);
+      
       return NextResponse.redirect(
         `${origin}/${defaultLocale}/analytics/dashboard?error=${encodeURIComponent(
           `Failed to store tokens: ${error.message || "Database error"}`
