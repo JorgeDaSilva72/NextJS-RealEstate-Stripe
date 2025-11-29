@@ -317,10 +317,12 @@ import PropertyContainer from "../components/PropertyContainer";
 import PropertyCard from "../components/PropertyCard";
 import NoPropertiesFound from "./_components/noPropertiesFound";
 import { Prisma } from "@prisma/client";
+import { getLanguageIdByCode } from "@/lib/utils";
 
 const PAGE_SIZE = 12;
 
 interface Props {
+  params: { locale: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
@@ -333,7 +335,7 @@ type SortOrder =
   | "surface-asc"
   | "surface-desc";
 
-export default async function Home({ searchParams }: Props) {
+export default async function Home({ params, searchParams }: Props) {
   // 1. Extraction et Conversion des Paramètres de Recherche
   const pagenum = searchParams.pagenum ?? 1;
   const query = searchParams.query ?? "";
@@ -376,6 +378,19 @@ export default async function Home({ searchParams }: Props) {
   const maxBathrooms = searchParams.maxBathrooms
     ? Number(searchParams.maxBathrooms)
     : undefined;
+
+  // 1. DÉTERMINER LA LOCALE
+  // Utilisez params.locale, et non searchParams.locale
+  const locale = params.locale || "fr";
+
+  // 2. Déterminer l'ID de la langue (doit être fait avant la requête)
+  const languageId = await getLanguageIdByCode(locale);
+
+  // Si l'ID de la langue n'est pas trouvé, on ne peut pas faire la jointure de traduction.
+  if (!languageId) {
+    console.error(`Language ID for locale ${locale} not found.`);
+    // Vous pouvez choisir de continuer avec un affichage par défaut ou de retourner une erreur.
+  }
 
   // Gestion du tri (inchangée car elle utilise les champs du modèle Property)
   const sortOrder = (
@@ -522,6 +537,17 @@ export default async function Home({ searchParams }: Props) {
               countryId: true,
               // Pour obtenir le nom traduit de la ville, il faudrait joindre CityTranslation.
               // Ici on prend l'ID, la traduction se fera côté client ou dans un autre select.
+
+              // 🚨 JOINTURE POUR LA TRADUCTION DE LA VILLE
+              translations: {
+                select: {
+                  name: true, // Le nom traduit
+                },
+                where: {
+                  languageId: languageId, // Filtrer par la langue actuelle
+                },
+                take: 1, // Prendre une seule traduction
+              },
             },
           },
         },

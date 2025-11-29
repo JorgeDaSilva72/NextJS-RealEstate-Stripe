@@ -614,12 +614,10 @@ interface Property {
     city: {
       id: number;
       countryId: number;
-      // NOTE: Le nom traduit de la ville n'est pas directement disponible ici.
-      // Il faudrait soit joindre CityTranslation, soit faire une requête pour obtenir le nom.
-      // Pour l'instant, nous affichons l'ID de la ville ou 'Non disponible'.
-      // SOLUTION : Si vous voulez le nom traduit, il faut le récupérer via une requête jointe dans app/page.tsx.
-      // Pour l'exemple, supposons que nous passons le nom de la ville pour l'instant.
-      // Si la ville n'est pas passée, on affiche un placeholder.
+      // 🚨 NOUVELLE STRUCTURE POUR LES TRADUCTIONS
+      translations: {
+        name: string; // Le nom traduit
+      }[];
     } | null;
   } | null;
   feature?: {
@@ -730,9 +728,14 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
   // Pour afficher le nom, vous devez soit :
   // 1. Modifier la requête dans app/page.tsx pour joindre CityTranslation (recommandé).
   // 2. Ou faire une requête supplémentaire/utiliser un contexte global pour les noms des villes.
-  const displayCity = property.location?.city
-    ? `City ID: ${property.location.city.id}` // Afficher l'ID
-    : t("notAvailable"); // Ou un placeholder
+  // const displayCity = property.location?.city
+  //   ? `City ID: ${property.location.city.id}` // Afficher l'ID
+  //   : t("notAvailable"); // Ou un placeholder
+
+  // 🚨 RÉCUPÉRATION DU NOM TRADUIT
+  const translatedCityName = property.location?.city?.translations?.[0]?.name;
+
+  const displayCity = translatedCityName || t("notAvailable");
 
   return (
     <Link href={`/property/${property.id}`} className="hover:no-underline">
