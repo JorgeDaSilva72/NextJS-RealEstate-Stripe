@@ -54,11 +54,11 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Generate OAuth2 URL
+    // Generate OAuth2 URL with userId in state parameter
     let authUrl: string;
     try {
-      console.log("[OAuth Auth] Generating OAuth URL...");
-      authUrl = getAuthUrl();
+      console.log("[OAuth Auth] Generating OAuth URL for user:", user.id);
+      authUrl = getAuthUrl(user.id); // Pass userId to include in state
       console.log("[OAuth Auth] OAuth URL generated successfully");
     } catch (error: any) {
       console.error("[OAuth Auth] Failed to generate OAuth URL:", error);

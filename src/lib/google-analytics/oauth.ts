@@ -39,13 +39,17 @@ export const oauth2Client = createOAuth2Client();
 
 // Scopes required for Google Analytics Data API
 export const SCOPES = [
+  "openid",
+  "email",
+  "profile",
   "https://www.googleapis.com/auth/analytics.readonly",
 ];
 
 /**
  * Generate the OAuth2 authorization URL
+ * @param userId - The user ID to include in the state parameter
  */
-export function getAuthUrl(): string {
+export function getAuthUrl(userId?: string): string {
   try {
     const envError = validateGoogleAnalyticsEnv();
     if (envError) {
@@ -60,6 +64,10 @@ export function getAuthUrl(): string {
       throw new Error("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set");
     }
     
+    if (!userId) {
+      throw new Error("User ID is required to generate OAuth URL");
+    }
+    
     // Create a new OAuth2 client with the correct redirect URI
     const client = new google.auth.OAuth2(
       clientId,
@@ -70,11 +78,13 @@ export function getAuthUrl(): string {
     // Log for debugging (always log in production for troubleshooting)
     console.log("[Google OAuth] Using redirect URI:", redirectUri);
     console.log("[Google OAuth] Client ID configured:", !!clientId);
+    console.log("[Google OAuth] User ID for state:", userId);
     
     return client.generateAuthUrl({
       access_type: "offline",
-      scope: SCOPES,
       prompt: "consent", // Force consent to get refresh token
+      scope: SCOPES,
+      state: userId, // IMPORTANT: Pass userId in state parameter
     });
   } catch (error: any) {
     console.error("[Google OAuth] Error generating auth URL:", error);

@@ -192,7 +192,6 @@ export async function GET(req: NextRequest) {
       hasAccessToken: !!accessToken,
       analyticsDataReceived: !!analyticsData,
     });
-
   } catch (error: any) {
     logError("Unexpected error in debug-analytics", error);
     return NextResponse.json({
@@ -202,6 +201,47 @@ export async function GET(req: NextRequest) {
       stack: error.stack,
       errorName: error.name,
       errorCode: error.code,
+    }, { status: 500 });
+  }
+}
+
+/**
+ * Get all tokens count (for debugging)
+ * POST /api/debug-analytics
+ */
+export async function POST(req: NextRequest) {
+  try {
+    const tokens = await prisma.googleAnalyticsToken.findMany({
+      select: {
+        userId: true,
+        accessToken: true,
+        refreshToken: true,
+        expiryDate: true,
+      },
+    });
+
+    return NextResponse.json({
+      ok: true,
+      count: tokens.length,
+      tokens: tokens.map(t => ({
+        userId: t.userId,
+        hasAccessToken: !!t.accessToken,
+        hasRefreshToken: !!t.refreshToken,
+        expiryDate: t.expiryDate.toISOString(),
+      })),
+      env: {
+        GOOGLE_CLIENT_ID: !!process.env.GOOGLE_CLIENT_ID,
+        GOOGLE_CLIENT_SECRET: !!process.env.GOOGLE_CLIENT_SECRET,
+        GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI,
+        GOOGLE_ANALYTICS_PROPERTY_ID: process.env.GOOGLE_ANALYTICS_PROPERTY_ID,
+        NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+      },
+    });
+  } catch (error: any) {
+    console.error("[DEBUG-ANALYTICS] Error getting all tokens:", error);
+    return NextResponse.json({
+      ok: false,
+      error: error.message || String(error),
     }, { status: 500 });
   }
 }

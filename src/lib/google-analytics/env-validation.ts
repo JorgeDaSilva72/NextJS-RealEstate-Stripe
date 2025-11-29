@@ -23,7 +23,7 @@ export function validateGoogleAnalyticsEnv(): string | null {
   // Check if redirect URI is properly configured
   const redirectUri = process.env.GOOGLE_REDIRECT_URI || 
     (process.env.NODE_ENV === "production" && process.env.NEXT_PUBLIC_BASE_URL
-      ? `${process.env.NEXT_PUBLIC_BASE_URL}/oauth2callback`
+      ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/callback/google`
       : null);
 
   if (!redirectUri) {
@@ -42,9 +42,9 @@ export function getRedirectUri(): string {
   }
   
   if (process.env.NODE_ENV === "production" && process.env.NEXT_PUBLIC_BASE_URL) {
-    return `${process.env.NEXT_PUBLIC_BASE_URL}/oauth2callback`;
+    return `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/callback/google`;
   }
   
-  return "http://localhost:3000/oauth2callback";
+  return "http://localhost:3000/api/auth/callback/google";
 }
 
