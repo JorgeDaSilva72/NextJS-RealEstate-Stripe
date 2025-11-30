@@ -16,12 +16,12 @@ Add the following environment variables to your `.env.local` file:
 # Google OAuth2 Credentials
 GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=your-client-secret
-GOOGLE_REDIRECT_URI=http://localhost:3000/api/analytics/oauth2callback
+GOOGLE_REDIRECT_URI=http://localhost:3000/api/auth/callback/google
 
 # Google Analytics Property ID (format: 123456789)
 GOOGLE_ANALYTICS_PROPERTY_ID=your-property-id-here
 
-# Base URL (for production)
+# Base URL (REQUIRED in production)
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ```
 
@@ -56,8 +56,8 @@ npx prisma generate
 1. Go to "APIs & Services" > "Credentials"
 2. Create OAuth 2.0 Client ID (if not already created)
 3. Set authorized redirect URIs:
-   - `http://localhost:3000/api/analytics/oauth2callback` (for development)
-   - `https://yourdomain.com/api/analytics/oauth2callback` (for production)
+   - `http://localhost:3000/api/auth/callback/google` (for development)
+   - `https://yourdomain.com/api/auth/callback/google` (for production)
 
 ### 4. Get Your GA4 Property ID
 

@@ -12,15 +12,19 @@ function generateAvatarUrl(userId: string): string {
 }
 
 /**
- * OAuth2 callback handler
+ * OAuth2 callback handler (DEPRECATED)
  * GET /[locale]/oauth2callback
- * This matches the redirect URI: http://localhost:3000/oauth2callback
- * But handles locale routing: /fr/oauth2callback, /en/oauth2callback, etc.
+ * 
+ * ⚠️ DEPRECATED: This route is maintained for backward compatibility only.
+ * Please update Google Cloud Console to use the canonical callback route:
+ * /api/auth/callback/google
  */
 export async function GET(
   req: NextRequest,
   { params }: { params: { locale: string } }
 ) {
+  console.warn("[DEPRECATED] /[locale]/oauth2callback route used. Please update to /api/auth/callback/google");
+
   try {
     // Check if user is authenticated
     const session = await getKindeServerSession();
@@ -61,7 +65,7 @@ export async function GET(
     const error = searchParams.get("error");
 
     const locale = params.locale || "fr";
-    
+
     if (error) {
       return NextResponse.redirect(
         new URL(

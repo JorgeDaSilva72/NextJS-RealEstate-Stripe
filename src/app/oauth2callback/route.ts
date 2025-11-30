@@ -12,12 +12,18 @@ function generateAvatarUrl(userId: string): string {
 }
 
 /**
- * OAuth2 callback handler
+ * OAuth2 callback handler (DEPRECATED)
  * GET /oauth2callback
- * This matches the redirect URI: http://localhost:3000/oauth2callback
+ * 
+ * ⚠️ DEPRECATED: This route is maintained for backward compatibility only.
+ * Please update Google Cloud Console to use the canonical callback route:
+ * /api/auth/callback/google
+ * 
  * This route is at root level to avoid locale routing issues
  */
 export async function GET(req: NextRequest) {
+  console.warn("[DEPRECATED] /oauth2callback route used. Please update to /api/auth/callback/google");
+
   try {
     // Check if user is authenticated
     const session = await getKindeServerSession();
@@ -61,7 +67,7 @@ export async function GET(req: NextRequest) {
 
     // Get default locale from routing config
     const defaultLocale = "fr"; // Default locale from routing.ts
-    
+
     if (error) {
       return NextResponse.redirect(
         new URL(
@@ -78,12 +84,12 @@ export async function GET(req: NextRequest) {
     }
 
     // Get redirect URI for token exchange - use oauth2callback for backward compatibility
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ||
       (process.env.NODE_ENV === "production" ? "https://afriqueavenirimmobilier.com" : "http://localhost:3000");
     const redirectUri = process.env.GOOGLE_REDIRECT_URI || `${baseUrl}/oauth2callback`;
-    
+
     console.log("[OAuth2Callback] Using redirect URI:", redirectUri);
-    
+
     // Exchange code for tokens
     const tokens = await getTokensFromCode(code, redirectUri);
 

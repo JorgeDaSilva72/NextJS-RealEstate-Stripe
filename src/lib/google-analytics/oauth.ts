@@ -1,5 +1,6 @@
 import { google } from "googleapis";
 import { prisma } from "../prisma";
+import { getRedirectUri as getRedirectUriFromEnv } from "./env-validation";
 
 // Scopes required for Google Analytics Data API
 export const SCOPES = [
@@ -8,20 +9,10 @@ export const SCOPES = [
 
 /**
  * Get the OAuth redirect URI based on environment
+ * Uses centralized validation from env-validation.ts
  */
 function getRedirectUri(): string {
-  // Use explicit env var if set
-  if (process.env.GOOGLE_REDIRECT_URI) {
-    return process.env.GOOGLE_REDIRECT_URI;
-  }
-  
-  // Otherwise, construct from base URL
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
-    (process.env.NODE_ENV === "production" 
-      ? "https://afriqueavenirimmobilier.com"
-      : "http://localhost:3000");
-  
-  return `${baseUrl}/api/auth/callback/google`;
+  return getRedirectUriFromEnv();
 }
 
 /**
@@ -43,24 +34,24 @@ function createOAuth2Client(redirectUri?: string) {
 export function getAuthUrl(userId?: string): string {
   const redirectUri = getRedirectUri();
   const oauth2Client = createOAuth2Client(redirectUri);
-  
+
   // Log for debugging
   console.log("[OAuth] Using redirect URI:", redirectUri);
   if (userId) {
     console.log("[OAuth] User ID:", userId);
   }
-  
+
   const authUrlOptions: any = {
     access_type: "offline",
     scope: SCOPES,
     prompt: "consent", // Force consent to get refresh token
   };
-  
+
   // Include userId in state parameter for security
   if (userId) {
     authUrlOptions.state = userId;
   }
-  
+
   return oauth2Client.generateAuthUrl(authUrlOptions);
 }
 
@@ -145,10 +136,10 @@ export async function refreshAccessToken(
 
   try {
     const { credentials } = await oauth2Client.refreshAccessToken();
-    
+
     if (credentials.access_token && credentials.expiry_date) {
       const expiryDate = new Date(credentials.expiry_date);
-      
+
       await prisma.googleAnalyticsToken.update({
         where: { userId },
         data: {
@@ -201,7 +192,7 @@ export async function getValidAccessToken(userId: string): Promise<string | null
 export async function setOAuth2Credentials(userId: string): Promise<ReturnType<typeof createOAuth2Client> | null> {
   try {
     const accessToken = await getValidAccessToken(userId);
-    
+
     if (!accessToken) {
       console.warn(`[setOAuth2Credentials] No valid access token for user: ${userId}`);
       return null;
