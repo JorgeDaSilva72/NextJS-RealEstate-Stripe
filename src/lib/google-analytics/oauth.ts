@@ -198,7 +198,7 @@ export async function getValidAccessToken(userId: string): Promise<string | null
  * Set credentials for OAuth2 client
  * Returns null if no valid token is available (instead of throwing)
  */
-export async function setOAuth2Credentials(userId: string): Promise<google.auth.OAuth2Client | null> {
+export async function setOAuth2Credentials(userId: string): Promise<ReturnType<typeof createOAuth2Client> | null> {
   try {
     const accessToken = await getValidAccessToken(userId);
     
