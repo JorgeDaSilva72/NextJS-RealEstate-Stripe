@@ -77,23 +77,42 @@ export default function AnalyticsDashboard() {
           realtimeRes.json(),
         ]);
 
-      if (overview.error) throw new Error(overview.error);
-      if (topPages.error) throw new Error(topPages.error);
-      if (behavior.error) throw new Error(behavior.error);
-      if (sources.error) throw new Error(sources.error);
-      if (realtime.error) throw new Error(realtime.error);
+      // Check for errors or authentication issues
+      if (overview.error || overview.requiresReconnect) {
+        throw new Error(overview.error || "Authentication required");
+      }
+      if (topPages.error || topPages.requiresReconnect) {
+        throw new Error(topPages.error || "Authentication required");
+      }
+      if (behavior.error || behavior.requiresReconnect) {
+        throw new Error(behavior.error || "Authentication required");
+      }
+      if (sources.error || sources.requiresReconnect) {
+        throw new Error(sources.error || "Authentication required");
+      }
+      if (realtime.error || realtime.requiresReconnect) {
+        throw new Error(realtime.error || "Authentication required");
+      }
 
+      // Handle null data gracefully (empty state)
       setData({
-        overview: overview.data,
-        topPages: topPages.data,
-        behavior: behavior.data,
-        sources: sources.data,
-        realtime: realtime.data,
+        overview: overview.data || null,
+        topPages: topPages.data || null,
+        behavior: behavior.data || null,
+        sources: sources.data || null,
+        realtime: realtime.data || null,
       });
       setLastRefresh(new Date());
     } catch (err: any) {
       console.error("Error fetching analytics:", err);
-      setError(err.message || "Failed to fetch analytics data");
+      const errorMessage = err.message || "Failed to fetch analytics data";
+      
+      // If it's an authentication error, set a specific error state
+      if (errorMessage.includes("Authentication required") || errorMessage.includes("reconnect")) {
+        setError("Please reconnect your Google Analytics account to view data.");
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
@@ -144,6 +163,8 @@ export default function AnalyticsDashboard() {
   }
 
   if (error) {
+    const isAuthError = error.includes("reconnect") || error.includes("Authentication required");
+    
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
         <div className="max-w-7xl mx-auto">
@@ -153,17 +174,32 @@ export default function AnalyticsDashboard() {
                 <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <ChartBarIcon className="w-8 h-8 text-red-600" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Error Loading Data</h3>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">
+                  {isAuthError ? "Authentication Required" : "Error Loading Data"}
+                </h3>
                 <p className="text-red-600 mb-6">{error}</p>
-                <Button 
-                  onClick={handleRefresh} 
-                  color="primary"
-                  size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
-                >
-                  <ArrowPathIcon className="w-5 h-5 mr-2" />
-                  Retry
-                </Button>
+                <div className="flex gap-4 justify-center">
+                  {isAuthError ? (
+                    <Button 
+                      onClick={() => window.location.href = "/api/analytics/auth"} 
+                      color="primary"
+                      size="lg"
+                      className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
+                    >
+                      Reconnect Google Analytics
+                    </Button>
+                  ) : (
+                    <Button 
+                      onClick={handleRefresh} 
+                      color="primary"
+                      size="lg"
+                      className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
+                    >
+                      <ArrowPathIcon className="w-5 h-5 mr-2" />
+                      Retry
+                    </Button>
+                  )}
+                </div>
               </div>
             </CardBody>
           </Card>

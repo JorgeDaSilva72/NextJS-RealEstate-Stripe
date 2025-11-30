@@ -9,16 +9,21 @@ const PROPERTY_ID = process.env.GOOGLE_ANALYTICS_PROPERTY_ID || "";
 
 /**
  * Initialize GA4 client with user credentials
+ * Returns null if credentials are not available
  */
-async function getGA4Client(userId: string) {
+async function getGA4Client(userId: string): Promise<{ analyticsData: any; propertyId: string } | null> {
   if (!PROPERTY_ID) {
-    throw new Error(
-      "GOOGLE_ANALYTICS_PROPERTY_ID is not set. Please add it to your .env.local file. " +
-      "You can find your Property ID in Google Analytics: Admin > Property Settings"
-    );
+    console.error("[getGA4Client] GOOGLE_ANALYTICS_PROPERTY_ID is not set");
+    return null;
   }
   
   const auth = await setOAuth2Credentials(userId);
+  
+  if (!auth) {
+    console.warn(`[getGA4Client] No valid credentials for user: ${userId}`);
+    return null;
+  }
+  
   // Create a new client instance with auth
   const client = google.analyticsdata({
     version: "v1beta",
@@ -34,7 +39,13 @@ async function getGA4Client(userId: string) {
  */
 export async function getRealtimeReport(userId: string) {
   try {
-    const { analyticsData, propertyId } = await getGA4Client(userId);
+    const client = await getGA4Client(userId);
+    
+    if (!client) {
+      return null; // Return null instead of throwing
+    }
+    
+    const { analyticsData, propertyId } = client;
 
     const response = await analyticsData.properties.runRealtimeReport({
       property: `properties/${String(propertyId)}`,
@@ -45,9 +56,10 @@ export async function getRealtimeReport(userId: string) {
     });
 
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching realtime report:", error);
-    throw error;
+    // Return null instead of throwing to prevent SSR crashes
+    return null;
   }
 }
 
@@ -60,7 +72,13 @@ export async function getTrafficOverview(
   endDate: string
 ) {
   try {
-    const { analyticsData, propertyId } = await getGA4Client(userId);
+    const client = await getGA4Client(userId);
+    
+    if (!client) {
+      return null; // Return null instead of throwing
+    }
+    
+    const { analyticsData, propertyId } = client;
 
     const response = await analyticsData.properties.runReport({
       property: `properties/${String(propertyId)}`,
@@ -83,9 +101,10 @@ export async function getTrafficOverview(
     });
 
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching traffic overview:", error);
-    throw error;
+    // Return null instead of throwing to prevent SSR crashes
+    return null;
   }
 }
 
@@ -99,7 +118,13 @@ export async function getTopPages(
   limit: number = 10
 ) {
   try {
-    const { analyticsData, propertyId } = await getGA4Client(userId);
+    const client = await getGA4Client(userId);
+    
+    if (!client) {
+      return null; // Return null instead of throwing
+    }
+    
+    const { analyticsData, propertyId } = client;
 
     // Build request body without limit first
     const requestBody: {
@@ -145,9 +170,10 @@ export async function getTopPages(
     });
 
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching top pages:", error);
-    throw error;
+    // Return null instead of throwing to prevent SSR crashes
+    return null;
   }
 }
 
@@ -160,7 +186,13 @@ export async function getUserBehavior(
   endDate: string
 ) {
   try {
-    const { analyticsData, propertyId } = await getGA4Client(userId);
+    const client = await getGA4Client(userId);
+    
+    if (!client) {
+      return null; // Return null instead of throwing
+    }
+    
+    const { analyticsData, propertyId } = client;
 
     const response = await analyticsData.properties.runReport({
       property: `properties/${String(propertyId)}`,
@@ -186,9 +218,10 @@ export async function getUserBehavior(
     });
 
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching user behavior:", error);
-    throw error;
+    // Return null instead of throwing to prevent SSR crashes
+    return null;
   }
 }
 
@@ -201,7 +234,13 @@ export async function getTrafficSources(
   endDate: string
 ) {
   try {
-    const { analyticsData, propertyId } = await getGA4Client(userId);
+    const client = await getGA4Client(userId);
+    
+    if (!client) {
+      return null; // Return null instead of throwing
+    }
+    
+    const { analyticsData, propertyId } = client;
 
     const response = await analyticsData.properties.runReport({
       property: `properties/${String(propertyId)}`,
@@ -230,9 +269,10 @@ export async function getTrafficSources(
     });
 
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching traffic sources:", error);
-    throw error;
+    // Return null instead of throwing to prevent SSR crashes
+    return null;
   }
 }
 

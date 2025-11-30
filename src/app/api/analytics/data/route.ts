@@ -62,6 +62,18 @@ export async function GET(req: NextRequest) {
         );
     }
 
+    // If data is null, it means authentication failed or no token available
+    if (data === null) {
+      return NextResponse.json(
+        { 
+          error: "Authentication required. Please reconnect your Google Analytics account.",
+          requiresReconnect: true,
+          data: null
+        },
+        { status: 401 }
+      );
+    }
+
     return NextResponse.json({ data, success: true });
   } catch (error: any) {
     console.error("Error fetching analytics data:", error);

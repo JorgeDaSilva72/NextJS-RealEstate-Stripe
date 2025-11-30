@@ -196,24 +196,36 @@ export async function getValidAccessToken(userId: string): Promise<string | null
 
 /**
  * Set credentials for OAuth2 client
+ * Returns null if no valid token is available (instead of throwing)
  */
-export async function setOAuth2Credentials(userId: string) {
-  const accessToken = await getValidAccessToken(userId);
-  
-  if (!accessToken) {
-    throw new Error("No valid access token available");
+export async function setOAuth2Credentials(userId: string): Promise<google.auth.OAuth2Client | null> {
+  try {
+    const accessToken = await getValidAccessToken(userId);
+    
+    if (!accessToken) {
+      console.warn(`[setOAuth2Credentials] No valid access token for user: ${userId}`);
+      return null;
+    }
+
+    const tokenRecord = await prisma.googleAnalyticsToken.findUnique({
+      where: { userId },
+    });
+
+    if (!tokenRecord) {
+      console.warn(`[setOAuth2Credentials] No token record found for user: ${userId}`);
+      return null;
+    }
+
+    const oauth2Client = createOAuth2Client();
+    oauth2Client.setCredentials({
+      access_token: accessToken,
+      refresh_token: tokenRecord.refreshToken || undefined,
+    });
+
+    return oauth2Client;
+  } catch (error) {
+    console.error(`[setOAuth2Credentials] Error setting credentials for user ${userId}:`, error);
+    return null;
   }
-
-  const tokenRecord = await prisma.googleAnalyticsToken.findUnique({
-    where: { userId },
-  });
-
-  const oauth2Client = createOAuth2Client();
-  oauth2Client.setCredentials({
-    access_token: accessToken,
-    refresh_token: tokenRecord?.refreshToken || undefined,
-  });
-
-  return oauth2Client;
 }
 
