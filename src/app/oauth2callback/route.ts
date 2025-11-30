@@ -106,8 +106,7 @@ export async function GET(req: NextRequest) {
       expiryDate
     );
 
-    // Redirect to dashboard with default locale
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    // Redirect to dashboard with default locale (reuse baseUrl from above)
     return NextResponse.redirect(
       new URL(`/${defaultLocale}/analytics/dashboard?success=true`, baseUrl)
     );
