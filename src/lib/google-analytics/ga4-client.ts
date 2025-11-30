@@ -110,7 +110,7 @@ export async function getTopPages(
         metric: { metricName: string };
         desc: boolean;
       }>;
-      limit?: number;
+      limit?: string;
     } = {
       dateRanges: [
         {
@@ -134,9 +134,9 @@ export async function getTopPages(
       ],
     };
 
-    // Add limit if provided
+    // Add limit if provided (API expects string)
     if (limit > 0) {
-      requestBody.limit = limit;
+      requestBody.limit = String(limit);
     }
 
     const response = await analyticsData.properties.runReport({
