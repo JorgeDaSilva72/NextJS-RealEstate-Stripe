@@ -9,7 +9,7 @@ export function validateGoogleAnalyticsEnv(): string | null {
   };
 
   const missing: string[] = [];
-  
+
   for (const [key, value] of Object.entries(requiredVars)) {
     if (!value || value.trim() === "") {
       missing.push(key);
@@ -27,7 +27,7 @@ export function validateGoogleAnalyticsEnv(): string | null {
 
   // Check if redirect URI is properly configured
   const redirectUri = getRedirectUri();
-  
+
   if (!redirectUri) {
     return "Failed to determine OAuth redirect URI. Please set GOOGLE_REDIRECT_URI or NEXT_PUBLIC_BASE_URL.";
   }
@@ -37,23 +37,27 @@ export function validateGoogleAnalyticsEnv(): string | null {
 
 /**
  * Get the redirect URI for OAuth
- * In production, this MUST use NEXT_PUBLIC_BASE_URL
+ * In production, this requires NEXT_PUBLIC_BASE_URL
+ * Returns null if unable to determine redirect URI
  */
-export function getRedirectUri(): string {
+export function getRedirectUri(): string | null {
   // Explicit redirect URI takes precedence
   if (process.env.GOOGLE_REDIRECT_URI) {
     return process.env.GOOGLE_REDIRECT_URI;
   }
-  
+
   // In production, require NEXT_PUBLIC_BASE_URL
   if (process.env.NODE_ENV === "production") {
     if (!process.env.NEXT_PUBLIC_BASE_URL) {
       console.error("[env-validation] CRITICAL: NEXT_PUBLIC_BASE_URL is not set in production!");
-      throw new Error("NEXT_PUBLIC_BASE_URL must be set in production environment");
+      console.error("[env-validation] OAuth flow will fail. Please set NEXT_PUBLIC_BASE_URL in your hosting platform.");
+      // Return null instead of throwing to prevent SSR crashes
+      // The calling code will handle the null case
+      return null;
     }
     return `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/callback/google`;
   }
-  
+
   // Development fallback
   return "http://localhost:3000/api/auth/callback/google";
 }

@@ -12,7 +12,13 @@ export const SCOPES = [
  * Uses centralized validation from env-validation.ts
  */
 function getRedirectUri(): string {
-  return getRedirectUriFromEnv();
+  const uri = getRedirectUriFromEnv();
+  if (!uri) {
+    console.error("[oauth] Failed to get redirect URI - environment not configured properly");
+    // Return empty string to prevent crashes, calling code should handle this
+    return "";
+  }
+  return uri;
 }
 
 /**
