@@ -24,7 +24,9 @@ async function getGA4Client(userId: string) {
     version: "v1beta",
     auth: auth,
   });
-  return { analyticsData: client, propertyId: PROPERTY_ID };
+  // Ensure propertyId is a string
+  const propertyId = String(PROPERTY_ID);
+  return { analyticsData: client, propertyId };
 }
 
 /**
@@ -35,7 +37,7 @@ export async function getRealtimeReport(userId: string) {
     const { analyticsData, propertyId } = await getGA4Client(userId);
 
     const response = await analyticsData.properties.runRealtimeReport({
-      property: `properties/${propertyId}`,
+      property: `properties/${String(propertyId)}`,
       requestBody: {
         dimensions: [{ name: "country" }],
         metrics: [{ name: "activeUsers" }],
@@ -61,7 +63,7 @@ export async function getTrafficOverview(
     const { analyticsData, propertyId } = await getGA4Client(userId);
 
     const response = await analyticsData.properties.runReport({
-      property: `properties/${propertyId}`,
+      property: `properties/${String(propertyId)}`,
       requestBody: {
         dateRanges: [
           {
@@ -100,7 +102,7 @@ export async function getTopPages(
     const { analyticsData, propertyId } = await getGA4Client(userId);
 
     const response = await analyticsData.properties.runReport({
-      property: `properties/${propertyId}`,
+      property: `properties/${String(propertyId)}`,
       requestBody: {
         dateRanges: [
           {
@@ -145,7 +147,7 @@ export async function getUserBehavior(
     const { analyticsData, propertyId } = await getGA4Client(userId);
 
     const response = await analyticsData.properties.runReport({
-      property: `properties/${propertyId}`,
+      property: `properties/${String(propertyId)}`,
       requestBody: {
         dateRanges: [
           {
@@ -186,7 +188,7 @@ export async function getTrafficSources(
     const { analyticsData, propertyId } = await getGA4Client(userId);
 
     const response = await analyticsData.properties.runReport({
-      property: `properties/${propertyId}`,
+      property: `properties/${String(propertyId)}`,
       requestBody: {
         dateRanges: [
           {
