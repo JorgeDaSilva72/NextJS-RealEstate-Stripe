@@ -1,8 +1,6 @@
 import { google } from "googleapis";
 import { setOAuth2Credentials } from "./oauth";
 
-const analyticsData = google.analyticsdata("v1beta");
-
 /**
  * Get GA4 property ID from environment or use default
  * You should set this in your .env file
@@ -21,7 +19,12 @@ async function getGA4Client(userId: string) {
   }
   
   const auth = await setOAuth2Credentials(userId);
-  return { analyticsData, auth, propertyId: PROPERTY_ID };
+  // Create a new client instance with auth
+  const client = google.analyticsdata({
+    version: "v1beta",
+    auth: auth,
+  });
+  return { analyticsData: client, propertyId: PROPERTY_ID };
 }
 
 /**
@@ -29,10 +32,9 @@ async function getGA4Client(userId: string) {
  */
 export async function getRealtimeReport(userId: string) {
   try {
-    const { analyticsData, auth, propertyId } = await getGA4Client(userId);
+    const { analyticsData, propertyId } = await getGA4Client(userId);
 
     const response = await analyticsData.properties.runRealtimeReport({
-      auth,
       property: `properties/${propertyId}`,
       requestBody: {
         dimensions: [{ name: "country" }],
@@ -56,10 +58,9 @@ export async function getTrafficOverview(
   endDate: string
 ) {
   try {
-    const { analyticsData, auth, propertyId } = await getGA4Client(userId);
+    const { analyticsData, propertyId } = await getGA4Client(userId);
 
     const response = await analyticsData.properties.runReport({
-      auth,
       property: `properties/${propertyId}`,
       requestBody: {
         dateRanges: [
@@ -96,10 +97,9 @@ export async function getTopPages(
   limit: number = 10
 ) {
   try {
-    const { analyticsData, auth, propertyId } = await getGA4Client(userId);
+    const { analyticsData, propertyId } = await getGA4Client(userId);
 
     const response = await analyticsData.properties.runReport({
-      auth,
       property: `properties/${propertyId}`,
       requestBody: {
         dateRanges: [
@@ -142,10 +142,9 @@ export async function getUserBehavior(
   endDate: string
 ) {
   try {
-    const { analyticsData, auth, propertyId } = await getGA4Client(userId);
+    const { analyticsData, propertyId } = await getGA4Client(userId);
 
     const response = await analyticsData.properties.runReport({
-      auth,
       property: `properties/${propertyId}`,
       requestBody: {
         dateRanges: [
@@ -184,10 +183,9 @@ export async function getTrafficSources(
   endDate: string
 ) {
   try {
-    const { analyticsData, auth, propertyId } = await getGA4Client(userId);
+    const { analyticsData, propertyId } = await getGA4Client(userId);
 
     const response = await analyticsData.properties.runReport({
-      auth,
       property: `properties/${propertyId}`,
       requestBody: {
         dateRanges: [
