@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardBody, CardHeader, Button, Spinner } from "@nextui-org/react";
-import { ChartBarIcon, UsersIcon, EyeIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { ChartBarIcon } from "@heroicons/react/24/outline";
 import { useSearchParams } from "next/navigation";
 import AnalyticsDashboard from "./_components/AnalyticsDashboard";
 

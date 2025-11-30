@@ -1,40 +1,74 @@
 import { google } from "googleapis";
 import { prisma } from "../prisma";
 
-// Google OAuth2 configuration
-export const oauth2Client = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/oauth2callback"
-);
-
 // Scopes required for Google Analytics Data API
 export const SCOPES = [
   "https://www.googleapis.com/auth/analytics.readonly",
 ];
 
 /**
- * Generate the OAuth2 authorization URL
+ * Get the OAuth redirect URI based on environment
  */
-export function getAuthUrl(): string {
-  const redirectUri = process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/oauth2callback";
-  
-  // Log for debugging (remove in production)
-  if (process.env.NODE_ENV === "development") {
-    console.log("Using redirect URI:", redirectUri);
+function getRedirectUri(): string {
+  // Use explicit env var if set
+  if (process.env.GOOGLE_REDIRECT_URI) {
+    return process.env.GOOGLE_REDIRECT_URI;
   }
   
-  return oauth2Client.generateAuthUrl({
+  // Otherwise, construct from base URL
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+    (process.env.NODE_ENV === "production" 
+      ? "https://afriqueavenirimmobilier.com"
+      : "http://localhost:3000");
+  
+  return `${baseUrl}/api/auth/callback/google`;
+}
+
+/**
+ * Create OAuth2 client with dynamic redirect URI
+ */
+function createOAuth2Client(redirectUri?: string) {
+  const uri = redirectUri || getRedirectUri();
+  return new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    uri
+  );
+}
+
+/**
+ * Generate the OAuth2 authorization URL
+ * @param userId - User ID to include in state parameter for security
+ */
+export function getAuthUrl(userId?: string): string {
+  const redirectUri = getRedirectUri();
+  const oauth2Client = createOAuth2Client(redirectUri);
+  
+  // Log for debugging
+  console.log("[OAuth] Using redirect URI:", redirectUri);
+  if (userId) {
+    console.log("[OAuth] User ID:", userId);
+  }
+  
+  const authUrlOptions: any = {
     access_type: "offline",
     scope: SCOPES,
     prompt: "consent", // Force consent to get refresh token
-  });
+  };
+  
+  // Include userId in state parameter for security
+  if (userId) {
+    authUrlOptions.state = userId;
+  }
+  
+  return oauth2Client.generateAuthUrl(authUrlOptions);
 }
 
 /**
  * Exchange authorization code for tokens
  */
-export async function getTokensFromCode(code: string) {
+export async function getTokensFromCode(code: string, redirectUri?: string) {
+  const oauth2Client = createOAuth2Client(redirectUri);
   const { tokens } = await oauth2Client.getToken(code);
   return tokens;
 }
@@ -104,6 +138,7 @@ export async function refreshAccessToken(
     return null;
   }
 
+  const oauth2Client = createOAuth2Client();
   oauth2Client.setCredentials({
     refresh_token: tokenRecord.refreshToken,
   });
@@ -173,6 +208,7 @@ export async function setOAuth2Credentials(userId: string) {
     where: { userId },
   });
 
+  const oauth2Client = createOAuth2Client();
   oauth2Client.setCredentials({
     access_token: accessToken,
     refresh_token: tokenRecord?.refreshToken || undefined,

@@ -77,8 +77,15 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    // Get redirect URI for token exchange - use oauth2callback for backward compatibility
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+      (process.env.NODE_ENV === "production" ? "https://afriqueavenirimmobilier.com" : "http://localhost:3000");
+    const redirectUri = process.env.GOOGLE_REDIRECT_URI || `${baseUrl}/oauth2callback`;
+    
+    console.log("[OAuth2Callback] Using redirect URI:", redirectUri);
+    
     // Exchange code for tokens
-    const tokens = await getTokensFromCode(code);
+    const tokens = await getTokensFromCode(code, redirectUri);
 
     if (!tokens.access_token) {
       return NextResponse.redirect(

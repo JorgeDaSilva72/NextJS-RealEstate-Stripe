@@ -40,13 +40,32 @@ export async function GET(req: NextRequest) {
       expired,
       expiryDate: tokens.expiryDate,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error checking analytics status:", error);
+    
+    // In production, don't expose internal error details
+    const isProduction = process.env.NODE_ENV === "production";
+    const errorMessage = error?.message || "Unknown error";
+    
+    // Check if it's a database error (table doesn't exist)
+    if (errorMessage.includes("does not exist") || errorMessage.includes("P2021")) {
+      console.error("[Analytics Status] Database table missing - this should be fixed by running migrations");
+      return NextResponse.json({
+        connected: false,
+        authenticated: true,
+        error: isProduction 
+          ? "Database configuration error" 
+          : "GoogleAnalyticsToken table does not exist. Please run database migrations.",
+      });
+    }
+    
     return NextResponse.json(
       { 
         connected: false,
         authenticated: false,
-        error: "Failed to check analytics status" 
+        error: isProduction 
+          ? "Failed to check analytics status" 
+          : errorMessage
       },
       { status: 500 }
     );

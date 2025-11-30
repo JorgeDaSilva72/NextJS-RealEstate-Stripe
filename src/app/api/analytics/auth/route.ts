@@ -23,8 +23,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
 
-    // Generate OAuth2 URL
-    const authUrl = getAuthUrl();
+    // Generate OAuth2 URL with userId in state for security
+    const authUrl = getAuthUrl(user.id);
 
     // Store state in session/cookie for security (optional but recommended)
     // For now, we'll redirect directly

@@ -49,12 +49,15 @@ export async function GET(req: NextRequest) {
     // Initialize OAuth2 client
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    
+    // Get dynamic redirect URI
     const redirectUri = process.env.GOOGLE_REDIRECT_URI || 
-      `${process.env.NEXT_PUBLIC_BASE_URL || "https://afriqueavenirimmobilier.com"}/api/auth/callback/google`;
+      `${process.env.NEXT_PUBLIC_BASE_URL || (process.env.NODE_ENV === "production" ? "https://afriqueavenirimmobilier.com" : "http://localhost:3000")}/api/auth/callback/google`;
 
     if (!clientId || !clientSecret) {
       console.error("[Google OAuth Callback] Missing OAuth credentials");
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://afriqueavenirimmobilier.com";
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+        (process.env.NODE_ENV === "production" ? "https://afriqueavenirimmobilier.com" : "http://localhost:3000");
       return NextResponse.redirect(
         `${baseUrl}/en/analytics/dashboard?error=${encodeURIComponent("OAuth configuration error")}`
       );
