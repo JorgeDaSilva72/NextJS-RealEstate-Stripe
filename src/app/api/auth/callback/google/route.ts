@@ -23,11 +23,7 @@ export async function GET(req: NextRequest) {
     if (error) {
       const errorMsg = errorDescription || error;
       console.error("[Google OAuth Callback] OAuth error from Google:", errorMsg);
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-      if (!baseUrl) {
-        console.error("[Google OAuth Callback] CRITICAL: NEXT_PUBLIC_BASE_URL not set!");
-        return NextResponse.json({ error: "Configuration error" }, { status: 500 });
-      }
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://afriqueavenirimmobilier.com";
       return NextResponse.redirect(
         `${baseUrl}/en/analytics/dashboard?error=${encodeURIComponent(errorMsg)}`
       );
@@ -35,10 +31,7 @@ export async function GET(req: NextRequest) {
 
     if (!code) {
       console.error("[Google OAuth Callback] No authorization code provided");
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-      if (!baseUrl) {
-        return NextResponse.json({ error: "Configuration error" }, { status: 500 });
-      }
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://afriqueavenirimmobilier.com";
       return NextResponse.redirect(
         `${baseUrl}/en/analytics/dashboard?error=${encodeURIComponent("No authorization code received")}`
       );
@@ -46,10 +39,7 @@ export async function GET(req: NextRequest) {
 
     if (!userId) {
       console.error("[Google OAuth Callback] No userId in state parameter");
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-      if (!baseUrl) {
-        return NextResponse.json({ error: "Configuration error" }, { status: 500 });
-      }
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://afriqueavenirimmobilier.com";
       return NextResponse.redirect(
         `${baseUrl}/en/analytics/dashboard?error=${encodeURIComponent("Missing user ID")}`
       );
@@ -66,10 +56,7 @@ export async function GET(req: NextRequest) {
 
     if (!clientId || !clientSecret) {
       console.error("[Google OAuth Callback] Missing OAuth credentials");
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-      if (!baseUrl) {
-        return NextResponse.json({ error: "Configuration error" }, { status: 500 });
-      }
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://afriqueavenirimmobilier.com";
       return NextResponse.redirect(
         `${baseUrl}/en/analytics/dashboard?error=${encodeURIComponent("OAuth configuration error")}`
       );
@@ -89,10 +76,7 @@ export async function GET(req: NextRequest) {
 
     if (!tokens.access_token) {
       console.error("[Google OAuth Callback] No access token received");
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-      if (!baseUrl) {
-        return NextResponse.json({ error: "Configuration error" }, { status: 500 });
-      }
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://afriqueavenirimmobilier.com";
       return NextResponse.redirect(
         `${baseUrl}/en/analytics/dashboard?error=${encodeURIComponent("Failed to obtain access token")}`
       );
@@ -100,10 +84,7 @@ export async function GET(req: NextRequest) {
 
     if (!tokens.refresh_token) {
       console.error("[Google OAuth Callback] No refresh token received");
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-      if (!baseUrl) {
-        return NextResponse.json({ error: "Configuration error" }, { status: 500 });
-      }
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://afriqueavenirimmobilier.com";
       return NextResponse.redirect(
         `${baseUrl}/en/analytics/dashboard?error=${encodeURIComponent(
           "No refresh token received. Please remove Test Users in Google Console → OAuth consent screen and try again."
@@ -152,10 +133,7 @@ export async function GET(req: NextRequest) {
 
       if (!verification) {
         console.error("[Google OAuth Callback] CRITICAL: Token verification failed!");
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-        if (!baseUrl) {
-          return NextResponse.json({ error: "Configuration error" }, { status: 500 });
-        }
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://afriqueavenirimmobilier.com";
         return NextResponse.redirect(
           `${baseUrl}/en/analytics/dashboard?error=${encodeURIComponent("Token storage verification failed")}`
         );
@@ -169,10 +147,7 @@ export async function GET(req: NextRequest) {
         code: error.code,
         meta: error.meta,
       });
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-      if (!baseUrl) {
-        return NextResponse.json({ error: "Configuration error" }, { status: 500 });
-      }
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://afriqueavenirimmobilier.com";
       return NextResponse.redirect(
         `${baseUrl}/en/analytics/dashboard?error=${encodeURIComponent(
           `Failed to store tokens: ${error.message || "Database error"}`
@@ -181,20 +156,14 @@ export async function GET(req: NextRequest) {
     }
 
     // Redirect to dashboard with success
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-    if (!baseUrl) {
-      return NextResponse.json({ error: "Configuration error" }, { status: 500 });
-    }
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://afriqueavenirimmobilier.com";
     return NextResponse.redirect(
       `${baseUrl}/en/analytics/dashboard?connected=1&success=true`
     );
   } catch (error: any) {
     console.error("[Google OAuth Callback] Unexpected error:", error);
     console.error("[Google OAuth Callback] Error stack:", error.stack);
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-    if (!baseUrl) {
-      return NextResponse.json({ error: "Configuration error - NEXT_PUBLIC_BASE_URL not set" }, { status: 500 });
-    }
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://afriqueavenirimmobilier.com";
     return NextResponse.redirect(
       `${baseUrl}/en/analytics/dashboard?error=${encodeURIComponent(
         error.message || "An unexpected error occurred"

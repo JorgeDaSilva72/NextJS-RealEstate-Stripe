@@ -74,14 +74,7 @@ export async function GET(req: NextRequest) {
     );
 
     // Redirect to dashboard with default locale
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-    if (!baseUrl) {
-      console.error("[OAuth2 Callback] CRITICAL: NEXT_PUBLIC_BASE_URL not set!");
-      return NextResponse.json(
-        { error: "Server configuration error" },
-        { status: 500 }
-      );
-    }
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://afriqueavenirimmobilier.com";
     return NextResponse.redirect(
       new URL(`/${defaultLocale}/analytics/dashboard?success=true`, baseUrl)
     );
