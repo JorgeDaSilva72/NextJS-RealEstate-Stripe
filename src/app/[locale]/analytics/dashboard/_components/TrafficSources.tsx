@@ -25,10 +25,18 @@ interface TrafficSourcesProps {
   data: any;
 }
 
+interface Source {
+  source: string;
+  medium: string;
+  sessions: number;
+  users: number;
+  pageViews: number;
+}
+
 export default function TrafficSources({ data }: TrafficSourcesProps) {
   const rows = data?.rows || [];
 
-  const sources = rows.map((row: any) => {
+  const sources: Source[] = rows.map((row: any) => {
     const dimensions = row.dimensionValues || [];
     const metrics = row.metricValues || [];
     return {
@@ -40,8 +48,8 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
     };
   });
 
-  const totalSessions = sources.reduce((sum, s) => sum + s.sessions, 0);
-  const maxSessions = Math.max(...sources.map(s => s.sessions), 1);
+  const totalSessions = sources.reduce((sum: number, s: Source) => sum + s.sessions, 0);
+  const maxSessions = Math.max(...sources.map((s: Source) => s.sessions), 1);
 
   const getSourceIcon = (source: string, medium: string) => {
     const sourceLower = source.toLowerCase();
@@ -204,7 +212,7 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
                   <TableColumn align="center">SHARE</TableColumn>
                 </TableHeader>
                 <TableBody>
-                  {sources.map((source: any, index: number) => {
+                  {sources.map((source: Source, index: number) => {
                     const percentage = (source.sessions / totalSessions) * 100;
                     const barPercentage = (source.sessions / maxSessions) * 100;
                     const Icon = getSourceIcon(source.source, source.medium);
@@ -321,7 +329,7 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
               <div className="text-center">
                 <p className="text-xs text-gray-500 mb-1">Total Users</p>
                 <p className="text-2xl font-bold text-gray-800">
-                  {sources.reduce((sum, s) => sum + s.users, 0).toLocaleString()}
+                  {sources.reduce((sum: number, s: Source) => sum + s.users, 0).toLocaleString()}
                 </p>
               </div>
             </CardBody>
@@ -331,7 +339,7 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
               <div className="text-center">
                 <p className="text-xs text-gray-500 mb-1">Total Page Views</p>
                 <p className="text-2xl font-bold text-gray-800">
-                  {sources.reduce((sum, s) => sum + s.pageViews, 0).toLocaleString()}
+                  {sources.reduce((sum: number, s: Source) => sum + s.pageViews, 0).toLocaleString()}
                 </p>
               </div>
             </CardBody>
