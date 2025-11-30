@@ -101,31 +101,47 @@ export async function getTopPages(
   try {
     const { analyticsData, propertyId } = await getGA4Client(userId);
 
+    // Build request body without limit first
+    const requestBody: {
+      dateRanges: Array<{ startDate: string; endDate: string }>;
+      dimensions: Array<{ name: string }>;
+      metrics: Array<{ name: string }>;
+      orderBys: Array<{
+        metric: { metricName: string };
+        desc: boolean;
+      }>;
+      limit?: number;
+    } = {
+      dateRanges: [
+        {
+          startDate,
+          endDate,
+        },
+      ],
+      dimensions: [{ name: "pagePath" }, { name: "pageTitle" }],
+      metrics: [
+        { name: "screenPageViews" },
+        { name: "activeUsers" },
+        { name: "averageSessionDuration" },
+      ],
+      orderBys: [
+        {
+          metric: {
+            metricName: "screenPageViews",
+          },
+          desc: true,
+        },
+      ],
+    };
+
+    // Add limit if provided
+    if (limit > 0) {
+      requestBody.limit = limit;
+    }
+
     const response = await analyticsData.properties.runReport({
       property: `properties/${String(propertyId)}`,
-      requestBody: {
-        dateRanges: [
-          {
-            startDate,
-            endDate,
-          },
-        ],
-        dimensions: [{ name: "pagePath" }, { name: "pageTitle" }],
-        metrics: [
-          { name: "screenPageViews" },
-          { name: "activeUsers" },
-          { name: "averageSessionDuration" },
-        ],
-        orderBys: [
-          {
-            metric: {
-              metricName: "screenPageViews",
-            },
-            desc: true,
-          },
-        ],
-        limit,
-      },
+      requestBody,
     });
 
     return response.data;
