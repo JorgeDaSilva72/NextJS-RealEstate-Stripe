@@ -1,42 +1,17 @@
 "use client";
 
-// Force this page to be client-only and never pre-rendered
-import dynamic from "next/dynamic";
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardBody, CardHeader, Button, Spinner } from "@nextui-org/react";
-import { ChartBarIcon, UsersIcon, EyeIcon, ClockIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { ChartBarIcon, UsersIcon, EyeIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { useSearchParams } from "next/navigation";
+import AnalyticsDashboard from "./_components/AnalyticsDashboard";
 
-// Dynamically import AnalyticsDashboard to ensure it's client-only
-const AnalyticsDashboard = dynamic(
-  () => import("./_components/AnalyticsDashboard"),
-  { 
-    ssr: false,
-    loading: () => (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Spinner size="lg" />
-      </div>
-    )
-  }
-);
-
-function AnalyticsDashboardContent() {
+export default function AnalyticsDashboardPage() {
   const [connected, setConnected] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
   const searchParams = useSearchParams();
 
-  // Ensure this only runs on client
   useEffect(() => {
-    setMounted(true);
-    console.log("[AnalyticsDashboard] Component mounted on client");
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return; // Don't run on server
-    
-    console.log("[AnalyticsDashboard] Checking connection...");
     checkConnection();
     
     // Check for success/error messages from OAuth callback
@@ -45,52 +20,20 @@ function AnalyticsDashboardContent() {
     
     if (success === "true") {
       // Refresh connection status after successful OAuth
-      setErrorMessage(null);
       setTimeout(() => {
         checkConnection();
       }, 1000);
     }
     
     if (error) {
-      const decodedError = decodeURIComponent(error);
-      console.error("OAuth error:", decodedError);
-      setErrorMessage(decodedError);
-      setLoading(false);
+      console.error("OAuth error:", error);
     }
-  }, [searchParams, mounted]);
+  }, [searchParams]);
 
   const checkConnection = async () => {
     try {
-      const response = await fetch("/api/analytics/status", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // Don't throw on error status codes
-        cache: "no-store",
-      });
-      
-      // Always try to parse JSON, even if status is not ok
-      let data;
-      try {
-        data = await response.json();
-      } catch (parseError) {
-        console.error("Error parsing response:", parseError);
-        setConnected(false);
-        setLoading(false);
-        return;
-      }
-      
-      // Handle different response scenarios
-      if (!response.ok) {
-        // If API returned error but with JSON, use that
-        if (data.error || data.message) {
-          console.error("API error:", data.error || data.message);
-        }
-        setConnected(false);
-        setLoading(false);
-        return;
-      }
+      const response = await fetch("/api/analytics/status");
+      const data = await response.json();
       
       // If user is not authenticated, redirect to login
       if (data.authenticated === false) {
@@ -99,11 +42,9 @@ function AnalyticsDashboardContent() {
         return;
       }
       
-      // Set connection status
-      setConnected(data.connected ?? false);
+      setConnected(data.connected);
     } catch (error) {
       console.error("Error checking connection:", error);
-      // Don't redirect on error, just show the connect screen
       setConnected(false);
     } finally {
       setLoading(false);
@@ -113,15 +54,6 @@ function AnalyticsDashboardContent() {
   const handleConnect = () => {
     window.location.href = "/api/analytics/auth";
   };
-
-  // Don't render anything on server
-  if (!mounted) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
 
   if (loading) {
     return (
@@ -145,28 +77,6 @@ function AnalyticsDashboardContent() {
               </p>
             </CardHeader>
             <CardBody className="flex flex-col items-center justify-center py-12 gap-6">
-              {errorMessage && (
-                <div className="w-full mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <div className="flex items-start gap-3">
-                    <ExclamationTriangleIcon className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
-                    <div className="flex-1">
-                      <h3 className="text-sm font-semibold text-red-800 mb-1">
-                        Connection Error
-                      </h3>
-                      <p className="text-sm text-red-700 break-words">
-                        {errorMessage}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => setErrorMessage(null)}
-                      className="text-red-600 hover:text-red-800"
-                      aria-label="Dismiss error"
-                    >
-                      ×
-                    </button>
-                  </div>
-                </div>
-              )}
               <div className="text-center">
                 <ChartBarIcon className="w-24 h-24 mx-auto text-gray-400 mb-4" />
                 <p className="text-gray-600 mb-6">
@@ -189,67 +99,5 @@ function AnalyticsDashboardContent() {
   }
 
   return <AnalyticsDashboard />;
-}
-
-export default function AnalyticsDashboardPage() {
-  // Log that the page component is rendering
-  if (typeof window === "undefined") {
-    console.log("[AnalyticsDashboardPage] Server-side render detected");
-  } else {
-    console.log("[AnalyticsDashboardPage] Client-side render");
-  }
-
-  try {
-    return (
-      <Suspense
-        fallback={
-          <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-            <Spinner size="lg" />
-          </div>
-        }
-      >
-        <AnalyticsDashboardContent />
-      </Suspense>
-    );
-  } catch (error: any) {
-    // This catch will only work for synchronous errors
-    console.error("[AnalyticsDashboardPage] Error in page component:", error);
-    console.error("[AnalyticsDashboardPage] Error details:", {
-      message: error.message,
-      stack: error.stack,
-      name: error.name,
-    });
-
-    // Try to log to file (server-side only)
-    if (typeof window === "undefined") {
-      try {
-        const fs = require("fs");
-        const path = require("path");
-        const logFile = path.join(process.cwd(), "dashboard-error.log");
-        const logMessage = `[${new Date().toISOString()}] DASHBOARD-PAGE-ERROR:\n${error.stack || String(error)}\n\n`;
-        fs.appendFileSync(logFile, logMessage);
-      } catch (e) {
-        // Ignore file write errors
-      }
-    }
-
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-        <div className="text-center max-w-md">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">
-            Dashboard Error
-          </h1>
-          <p className="text-gray-600 mb-4">
-            An error occurred while loading the dashboard.
-          </p>
-          {process.env.NODE_ENV === "development" && error?.message && (
-            <pre className="text-xs text-red-800 bg-red-50 p-3 rounded text-left overflow-auto">
-              {error.message}
-            </pre>
-          )}
-        </div>
-      </div>
-    );
-  }
 }
 

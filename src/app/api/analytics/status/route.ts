@@ -8,26 +8,13 @@ import { getStoredTokens, isTokenExpired } from "@/lib/google-analytics/oauth";
  */
 export async function GET(req: NextRequest) {
   try {
-    console.log("[Analytics Status] Checking connection status...");
-    
     // Check if user is authenticated
-    let user;
-    try {
-      const session = await getKindeServerSession();
-      const { getUser } = session;
-      user = await getUser();
-    } catch (error: any) {
-      console.error("[Analytics Status] Authentication check failed:", error);
-      return NextResponse.json({
-        connected: false,
-        authenticated: false,
-        message: "Authentication check failed",
-        error: process.env.NODE_ENV === "development" ? error.message : undefined,
-      });
-    }
+    const session = await getKindeServerSession();
+    const { getUser } = session;
+    const user = await getUser();
 
     if (!user || !user.id) {
-      console.log("[Analytics Status] User not authenticated");
+      // Return not connected instead of error for better UX
       return NextResponse.json({
         connected: false,
         authenticated: false,
@@ -35,23 +22,9 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    console.log("[Analytics Status] User authenticated, checking tokens...");
-    
-    let tokens;
-    try {
-      tokens = await getStoredTokens(user.id);
-    } catch (error: any) {
-      console.error("[Analytics Status] Error getting stored tokens:", error);
-      return NextResponse.json({
-        connected: false,
-        authenticated: true,
-        message: "Error checking connection status",
-        error: process.env.NODE_ENV === "development" ? error.message : undefined,
-      });
-    }
+    const tokens = await getStoredTokens(user.id);
 
     if (!tokens) {
-      console.log("[Analytics Status] No tokens found for user");
       return NextResponse.json({
         connected: false,
         authenticated: true,
@@ -59,15 +32,7 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // Safely check if token is expired
-    let expired = false;
-    try {
-      expired = isTokenExpired(tokens.expiryDate);
-      console.log("[Analytics Status] Token expired:", expired);
-    } catch (error: any) {
-      console.error("[Analytics Status] Error checking token expiry:", error);
-      expired = true;
-    }
+    const expired = isTokenExpired(tokens.expiryDate);
 
     return NextResponse.json({
       connected: true,
@@ -75,24 +40,15 @@ export async function GET(req: NextRequest) {
       expired,
       expiryDate: tokens.expiryDate,
     });
-  } catch (error: any) {
-    console.error("[Analytics Status] Unexpected error:", error);
-    console.error("[Analytics Status] Error details:", {
-      message: error.message,
-      name: error.name,
-      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
-    });
-    
-    // Return 200 with error info instead of 500 to prevent client crashes
+  } catch (error) {
+    console.error("Error checking analytics status:", error);
     return NextResponse.json(
       { 
         connected: false,
         authenticated: false,
-        error: error?.message || "Failed to check analytics status",
-        message: "Unable to verify Google Analytics connection",
-        details: process.env.NODE_ENV === "development" ? error.stack : undefined,
+        error: "Failed to check analytics status" 
       },
-      { status: 200 }
+      { status: 500 }
     );
   }
 }

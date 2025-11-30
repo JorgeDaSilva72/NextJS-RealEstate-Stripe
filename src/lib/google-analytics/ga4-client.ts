@@ -59,6 +59,7 @@ export async function getTrafficOverview(
     const { analyticsData, auth, propertyId } = await getGA4Client(userId);
 
     const response = await analyticsData.properties.runReport({
+      auth,
       property: `properties/${propertyId}`,
       requestBody: {
         dateRanges: [
@@ -76,7 +77,6 @@ export async function getTrafficOverview(
           { name: "bounceRate" },
         ],
       },
-      auth,
     });
 
     return response.data;
@@ -99,6 +99,7 @@ export async function getTopPages(
     const { analyticsData, auth, propertyId } = await getGA4Client(userId);
 
     const response = await analyticsData.properties.runReport({
+      auth,
       property: `properties/${propertyId}`,
       requestBody: {
         dateRanges: [
@@ -121,9 +122,8 @@ export async function getTopPages(
             desc: true,
           },
         ],
-        limit: String(limit),
+        limit,
       },
-      auth,
     });
 
     return response.data;
@@ -145,6 +145,7 @@ export async function getUserBehavior(
     const { analyticsData, auth, propertyId } = await getGA4Client(userId);
 
     const response = await analyticsData.properties.runReport({
+      auth,
       property: `properties/${propertyId}`,
       requestBody: {
         dateRanges: [
@@ -165,7 +166,6 @@ export async function getUserBehavior(
           { name: "averageSessionDuration" },
         ],
       },
-      auth,
     });
 
     return response.data;
@@ -187,6 +187,7 @@ export async function getTrafficSources(
     const { analyticsData, auth, propertyId } = await getGA4Client(userId);
 
     const response = await analyticsData.properties.runReport({
+      auth,
       property: `properties/${propertyId}`,
       requestBody: {
         dateRanges: [
@@ -210,7 +211,6 @@ export async function getTrafficSources(
           },
         ],
       },
-      auth,
     });
 
     return response.data;

@@ -67,18 +67,9 @@ export default function TrafficOverview({
     };
   });
 
-  interface DailyData {
-    date: string;
-    users: number;
-    sessions: number;
-    pageViews: number;
-    avgDuration: number;
-    bounceRate: number;
-  }
-
-  const maxUsers = Math.max(...dailyData.map((d: DailyData) => d.users), 1);
-  const maxSessions = Math.max(...dailyData.map((d: DailyData) => d.sessions), 1);
-  const maxPageViews = Math.max(...dailyData.map((d: DailyData) => d.pageViews), 1);
+  const maxUsers = Math.max(...dailyData.map(d => d.users), 1);
+  const maxSessions = Math.max(...dailyData.map(d => d.sessions), 1);
+  const maxPageViews = Math.max(...dailyData.map(d => d.pageViews), 1);
 
   const stats = [
     {
@@ -261,7 +252,7 @@ export default function TrafficOverview({
             <div className="space-y-4">
               {/* Chart Visualization */}
               <div className="h-64 flex items-end justify-between gap-1">
-                {dailyData.slice(-14).map((day: DailyData, index: number) => (
+                {dailyData.slice(-14).map((day, index) => (
                   <div key={index} className="flex-1 flex flex-col items-center gap-1 group">
                     <div className="w-full flex flex-col items-center gap-0.5 relative">
                       {/* Tooltip on hover */}
@@ -301,19 +292,19 @@ export default function TrafficOverview({
                 <div className="text-center">
                   <p className="text-xs text-gray-500 mb-1">Peak Users</p>
                   <p className="text-lg font-bold text-gray-800">
-                    {Math.max(...dailyData.map((d: DailyData) => d.users), 0).toLocaleString()}
+                    {Math.max(...dailyData.map(d => d.users), 0).toLocaleString()}
                   </p>
                 </div>
                 <div className="text-center">
                   <p className="text-xs text-gray-500 mb-1">Peak Sessions</p>
                   <p className="text-lg font-bold text-gray-800">
-                    {Math.max(...dailyData.map((d: DailyData) => d.sessions), 0).toLocaleString()}
+                    {Math.max(...dailyData.map(d => d.sessions), 0).toLocaleString()}
                   </p>
                 </div>
                 <div className="text-center">
                   <p className="text-xs text-gray-500 mb-1">Peak Page Views</p>
                   <p className="text-lg font-bold text-gray-800">
-                    {Math.max(...dailyData.map((d: DailyData) => d.pageViews), 0).toLocaleString()}
+                    {Math.max(...dailyData.map(d => d.pageViews), 0).toLocaleString()}
                   </p>
                 </div>
               </div>

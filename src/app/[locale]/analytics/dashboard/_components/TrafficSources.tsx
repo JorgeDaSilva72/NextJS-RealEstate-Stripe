@@ -21,74 +21,27 @@ import {
   ChartBarIcon,
 } from "@heroicons/react/24/outline";
 
-interface TrafficSource {
-  source: string;
-  medium: string;
-  sessions: number;
-  users: number;
-  pageViews: number;
-}
-
-interface MediumStats {
-  sessions: number;
-  users: number;
-  pageViews: number;
-  count: number;
-}
-
-interface MediumBreakdown {
-  medium: string;
-  sessions: number;
-  users: number;
-  pageViews: number;
-  percentage: number;
-}
-
-interface AnalyticsRow {
-  dimensionValues?: Array<{ value?: string }>;
-  metricValues?: Array<{ value?: string }>;
-}
-
-interface AnalyticsData {
-  rows?: AnalyticsRow[];
-}
-
 interface TrafficSourcesProps {
-  data: AnalyticsData | null | undefined;
+  data: any;
 }
 
 export default function TrafficSources({ data }: TrafficSourcesProps) {
-  // Handle null/undefined data gracefully
-  if (!data || !data.rows || !Array.isArray(data.rows)) {
-    return (
-      <div className="space-y-6">
-        <Card className="border border-gray-200 shadow-lg">
-          <CardBody className="p-12 text-center">
-            <ChartBarIcon className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-500 text-lg">No traffic source data available</p>
-            <p className="text-gray-400 text-sm mt-2">Traffic sources will appear here</p>
-          </CardBody>
-        </Card>
-      </div>
-    );
-  }
+  const rows = data?.rows || [];
 
-  const rows = data.rows;
-
-  const sources: TrafficSource[] = rows.map((row: AnalyticsRow): TrafficSource => {
+  const sources = rows.map((row: any) => {
     const dimensions = row.dimensionValues || [];
     const metrics = row.metricValues || [];
     return {
       source: dimensions[0]?.value || "(direct)",
       medium: dimensions[1]?.value || "(none)",
-      sessions: parseInt(metrics[0]?.value || "0", 10),
-      users: parseInt(metrics[1]?.value || "0", 10),
-      pageViews: parseInt(metrics[2]?.value || "0", 10),
+      sessions: parseInt(metrics[0]?.value || "0"),
+      users: parseInt(metrics[1]?.value || "0"),
+      pageViews: parseInt(metrics[2]?.value || "0"),
     };
   });
 
-  const totalSessions = sources.reduce((sum: number, s: TrafficSource) => sum + s.sessions, 0);
-  const maxSessions = Math.max(...sources.map((s: TrafficSource) => s.sessions), 1);
+  const totalSessions = sources.reduce((sum, s) => sum + s.sessions, 0);
+  const maxSessions = Math.max(...sources.map(s => s.sessions), 1);
 
   const getSourceIcon = (source: string, medium: string) => {
     const sourceLower = source.toLowerCase();
@@ -133,8 +86,8 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
   };
 
   // Group by medium for summary
-  const mediumStats: Record<string, MediumStats> = {};
-  sources.forEach((source: TrafficSource) => {
+  const mediumStats: Record<string, any> = {};
+  sources.forEach((source) => {
     const medium = source.medium || "(none)";
     if (!mediumStats[medium]) {
       mediumStats[medium] = {
@@ -150,15 +103,15 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
     mediumStats[medium].count += 1;
   });
 
-  const mediumBreakdown: MediumBreakdown[] = Object.entries(mediumStats)
-    .map(([medium, stats]: [string, MediumStats]): MediumBreakdown => ({
+  const mediumBreakdown = Object.entries(mediumStats)
+    .map(([medium, stats]) => ({
       medium: medium === "(none)" ? "Other" : medium,
       sessions: stats.sessions,
       users: stats.users,
       pageViews: stats.pageViews,
-      percentage: totalSessions > 0 ? (stats.sessions / totalSessions) * 100 : 0,
+      percentage: (stats.sessions / totalSessions) * 100,
     }))
-    .sort((a: MediumBreakdown, b: MediumBreakdown) => b.sessions - a.sessions);
+    .sort((a, b) => b.sessions - a.sessions);
 
   return (
     <div className="space-y-6">
@@ -251,9 +204,9 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
                   <TableColumn align="center">SHARE</TableColumn>
                 </TableHeader>
                 <TableBody>
-                  {sources.map((source: TrafficSource, index: number) => {
-                    const percentage = totalSessions > 0 ? (source.sessions / totalSessions) * 100 : 0;
-                    const barPercentage = maxSessions > 0 ? (source.sessions / maxSessions) * 100 : 0;
+                  {sources.map((source: any, index: number) => {
+                    const percentage = (source.sessions / totalSessions) * 100;
+                    const barPercentage = (source.sessions / maxSessions) * 100;
                     const Icon = getSourceIcon(source.source, source.medium);
                     const gradient = getSourceColor(source.source, source.medium);
                     const label = getSourceLabel(source.source, source.medium);
@@ -309,7 +262,7 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
                               {source.users.toLocaleString()}
                             </p>
                             <p className="text-xs text-gray-500">
-                              {source.users > 0 
+                              {source.sessions > 0 
                                 ? (source.sessions / source.users).toFixed(1) 
                                 : '0'} sessions/user
                             </p>
@@ -368,7 +321,7 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
               <div className="text-center">
                 <p className="text-xs text-gray-500 mb-1">Total Users</p>
                 <p className="text-2xl font-bold text-gray-800">
-                  {sources.reduce((sum: number, s: TrafficSource) => sum + s.users, 0).toLocaleString()}
+                  {sources.reduce((sum, s) => sum + s.users, 0).toLocaleString()}
                 </p>
               </div>
             </CardBody>
@@ -378,7 +331,7 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
               <div className="text-center">
                 <p className="text-xs text-gray-500 mb-1">Total Page Views</p>
                 <p className="text-2xl font-bold text-gray-800">
-                  {sources.reduce((sum: number, s: TrafficSource) => sum + s.pageViews, 0).toLocaleString()}
+                  {sources.reduce((sum, s) => sum + s.pageViews, 0).toLocaleString()}
                 </p>
               </div>
             </CardBody>

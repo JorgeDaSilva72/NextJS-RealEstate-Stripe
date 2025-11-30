@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardBody,
@@ -42,14 +42,15 @@ export default function AnalyticsDashboard() {
   const [dateRange, setDateRange] = useState({ start: "30daysAgo", end: "today" });
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
 
-  const fetchAllData = useCallback(async () => {
+  useEffect(() => {
+    fetchAllData();
+  }, [dateRange]);
+
+  const fetchAllData = async () => {
     setLoading(true);
     setError(null);
 
-    console.log("[AnalyticsDashboard] fetchAllData called");
-
     try {
-      console.log("[AnalyticsDashboard] Starting API calls...");
       const [overviewRes, topPagesRes, behaviorRes, sourcesRes, realtimeRes] =
         await Promise.all([
           fetch(
@@ -91,26 +92,12 @@ export default function AnalyticsDashboard() {
       });
       setLastRefresh(new Date());
     } catch (err: any) {
-      console.error("[AnalyticsDashboard] Error fetching analytics:", err);
-      console.error("[AnalyticsDashboard] Error details:", {
-        message: err.message,
-        stack: err.stack,
-        name: err.name,
-        response: err.response,
-      });
-      
-      // Note: File logging only works server-side
-      // Client-side errors are logged to console only
-      
+      console.error("Error fetching analytics:", err);
       setError(err.message || "Failed to fetch analytics data");
     } finally {
       setLoading(false);
     }
-  }, [dateRange]);
-
-  useEffect(() => {
-    fetchAllData();
-  }, [fetchAllData]);
+  };
 
   const handleRefresh = () => {
     fetchAllData();
