@@ -25,6 +25,12 @@ export async function GET(req: NextRequest) {
 
     // Generate OAuth2 URL with userId in state for security
     const authUrl = getAuthUrl(user.id);
+    
+    // Log the redirect URI being used for debugging
+    const { getRedirectUri } = await import("@/lib/google-analytics/env-validation");
+    const redirectUri = getRedirectUri();
+    console.log("[Analytics Auth] Redirect URI being used:", redirectUri);
+    console.log("[Analytics Auth] Full OAuth URL:", authUrl.substring(0, 200) + "...");
 
     // Store state in session/cookie for security (optional but recommended)
     // For now, we'll redirect directly
