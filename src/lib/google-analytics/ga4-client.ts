@@ -12,13 +12,7 @@ const PROPERTY_ID = "514683326";
  */
 async function getGA4Client(userId: string): Promise<{ analyticsData: any; propertyId: string; error?: any } | null> {
   console.log(`[getGA4Client] Getting GA4 client for user: ${userId}`);
-  
-  if (!PROPERTY_ID) {
-    console.error("[getGA4Client] GOOGLE_ANALYTICS_PROPERTY_ID is not set");
-    return null;
-  }
-  
-  console.log(`[getGA4Client] Property ID: ${PROPERTY_ID}`);
+  console.log(`[getGA4Client] Property ID: ${PROPERTY_ID} (hardcoded)`);
   
   const auth = await setOAuth2Credentials(userId);
   
