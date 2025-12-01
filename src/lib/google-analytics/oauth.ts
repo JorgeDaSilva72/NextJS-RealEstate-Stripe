@@ -228,6 +228,13 @@ export async function setOAuth2Credentials(userId: string): Promise<ReturnType<t
     }
 
     console.log(`[setOAuth2Credentials] Access token obtained, length: ${accessToken.length}`);
+    console.log(`[setOAuth2Credentials] Access token preview: ${accessToken.substring(0, 20)}...`);
+
+    // Validate token format (OAuth tokens are typically base64-like strings)
+    if (!accessToken || accessToken.trim().length === 0) {
+      console.error(`[setOAuth2Credentials] Access token is empty or invalid for user: ${userId}`);
+      return null;
+    }
 
     const tokenRecord = await prisma.googleAnalyticsToken.findUnique({
       where: { userId },
@@ -237,13 +244,41 @@ export async function setOAuth2Credentials(userId: string): Promise<ReturnType<t
       console.warn(`[setOAuth2Credentials] No token record found for user: ${userId}`);
       return null;
     }
+    
+    // Validate stored token matches what we retrieved
+    if (tokenRecord.accessToken !== accessToken) {
+      console.warn(`[setOAuth2Credentials] Token mismatch - stored token differs from retrieved token`);
+      console.warn(`[setOAuth2Credentials] Stored token length: ${tokenRecord.accessToken.length}`);
+      console.warn(`[setOAuth2Credentials] Retrieved token length: ${accessToken.length}`);
+    }
 
     console.log(`[setOAuth2Credentials] Token record found, refresh token present: ${!!tokenRecord.refreshToken}`);
 
     const oauth2Client = createOAuth2Client();
-    oauth2Client.setCredentials({
+    
+    // Set credentials with all necessary fields
+    const credentials: any = {
       access_token: accessToken,
-      refresh_token: tokenRecord.refreshToken || undefined,
+    };
+    
+    if (tokenRecord.refreshToken) {
+      credentials.refresh_token = tokenRecord.refreshToken;
+    }
+    
+    // Set expiry if available
+    if (tokenRecord.expiryDate) {
+      credentials.expiry_date = tokenRecord.expiryDate.getTime();
+    }
+    
+    oauth2Client.setCredentials(credentials);
+    
+    // Verify credentials were set
+    const clientCredentials = oauth2Client.credentials;
+    console.log(`[setOAuth2Credentials] Client credentials after setting:`, {
+      hasAccessToken: !!clientCredentials.access_token,
+      accessTokenLength: clientCredentials.access_token?.length || 0,
+      hasRefreshToken: !!clientCredentials.refresh_token,
+      expiryDate: clientCredentials.expiry_date ? new Date(clientCredentials.expiry_date).toISOString() : null,
     });
 
     console.log(`[setOAuth2Credentials] OAuth2 client configured successfully`);

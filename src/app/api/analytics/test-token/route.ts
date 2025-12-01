@@ -45,9 +45,24 @@ export async function GET(req: NextRequest) {
     }
 
     console.log(`[Test Token] OAuth2 client created`);
+    
+    // Verify credentials are set on the client
+    const clientCredentials = oauth2Client.credentials;
+    console.log(`[Test Token] Client credentials:`, {
+      hasAccessToken: !!clientCredentials.access_token,
+      accessTokenLength: clientCredentials.access_token?.length || 0,
+      accessTokenPreview: clientCredentials.access_token?.substring(0, 20) + "...",
+      hasRefreshToken: !!clientCredentials.refresh_token,
+      expiryDate: clientCredentials.expiry_date ? new Date(clientCredentials.expiry_date).toISOString() : null,
+    });
 
     // Try to get user info from Google to verify token works
     try {
+      // First, try to get a fresh access token from the client
+      // This ensures the client is properly authenticated
+      await oauth2Client.getAccessToken();
+      console.log(`[Test Token] Successfully obtained access token from client`);
+      
       const oauth2 = google.oauth2({
         version: "v2",
         auth: oauth2Client,
