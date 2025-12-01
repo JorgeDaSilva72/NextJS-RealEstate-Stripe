@@ -11,7 +11,7 @@ const PROPERTY_ID = process.env.GOOGLE_ANALYTICS_PROPERTY_ID || "";
  * Initialize GA4 client with user credentials
  * Returns null if credentials are not available
  */
-async function getGA4Client(userId: string): Promise<{ analyticsData: any; propertyId: string } | null> {
+async function getGA4Client(userId: string): Promise<{ analyticsData: any; propertyId: string; error?: any } | null> {
   console.log(`[getGA4Client] Getting GA4 client for user: ${userId}`);
   
   if (!PROPERTY_ID) {
@@ -38,6 +38,10 @@ async function getGA4Client(userId: string): Promise<{ analyticsData: any; prope
       return null;
     }
     console.log(`[getGA4Client] Access token obtained, length: ${tokenResponse.token.length}`);
+    
+    // Verify token has the right scopes by checking credentials
+    const credentials = auth.credentials;
+    console.log(`[getGA4Client] Token scopes:`, credentials.scope || 'not specified');
   } catch (tokenError: any) {
     console.error(`[getGA4Client] Error getting access token:`, tokenError?.message);
     return null;
@@ -97,14 +101,15 @@ export async function getTrafficOverview(
   userId: string,
   startDate: string,
   endDate: string
-) {
+): Promise<any> {
   try {
     console.log(`[getTrafficOverview] Starting for user: ${userId}, dates: ${startDate} to ${endDate}`);
     const client = await getGA4Client(userId);
     
     if (!client) {
       console.error(`[getTrafficOverview] No GA4 client available for user: ${userId}`);
-      return null; // Return null instead of throwing
+      // Return error object instead of null for better debugging
+      return { error: "No GA4 client available", code: "NO_CLIENT" };
     }
     
     const { analyticsData, propertyId } = client;
@@ -133,11 +138,16 @@ export async function getTrafficOverview(
     console.log(`[getTrafficOverview] Successfully fetched traffic overview data`);
     return response.data;
   } catch (error: any) {
+    const errorDetails = {
+      message: error?.message,
+      code: error?.code,
+      status: error?.response?.status,
+      statusText: error?.response?.statusText,
+      data: error?.response?.data,
+    };
+    
     console.error(`[getTrafficOverview] Error fetching traffic overview for user ${userId}:`, error);
-    console.error(`[getTrafficOverview] Error message:`, error?.message);
-    console.error(`[getTrafficOverview] Error code:`, error?.code);
-    console.error(`[getTrafficOverview] Error status:`, error?.response?.status);
-    console.error(`[getTrafficOverview] Error response:`, JSON.stringify(error?.response?.data, null, 2));
+    console.error(`[getTrafficOverview] Error details:`, JSON.stringify(errorDetails, null, 2));
     
     // Check for specific error types
     if (error?.response?.status === 403) {
@@ -148,8 +158,8 @@ export async function getTrafficOverview(
       console.error(`[getTrafficOverview] 404 Not Found - Property ID may be incorrect: ${PROPERTY_ID}`);
     }
     
-    // Return null instead of throwing to prevent SSR crashes
-    return null;
+    // Return error object instead of null for better debugging
+    return { error: "GA4 API call failed", ...errorDetails };
   }
 }
 

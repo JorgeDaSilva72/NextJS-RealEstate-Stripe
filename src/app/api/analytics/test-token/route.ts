@@ -130,7 +130,20 @@ export async function GET(req: NextRequest) {
         const { getTrafficOverview } = await import("@/lib/google-analytics/ga4-client");
         const ga4Data = await getTrafficOverview(user.id, "7daysAgo", "today");
         
-        if (ga4Data) {
+        // Check if response has error property
+        if (ga4Data && ga4Data.error) {
+          ga4TestResult = {
+            success: false,
+            hasData: false,
+            message: "GA4 API call failed",
+            error: ga4Data.error,
+            code: ga4Data.code,
+            status: ga4Data.status,
+            statusText: ga4Data.statusText,
+            errorData: ga4Data.data,
+          };
+          console.warn(`[Test Token] GA4 API returned error:`, ga4Data.error);
+        } else if (ga4Data && ga4Data.rows !== undefined) {
           ga4TestResult = {
             success: true,
             hasData: true,
@@ -142,15 +155,17 @@ export async function GET(req: NextRequest) {
           ga4TestResult = {
             success: false,
             hasData: false,
-            message: "GA4 API returned null - check server logs for detailed error",
+            message: "GA4 API returned unexpected response",
+            response: ga4Data,
           };
-          console.warn(`[Test Token] GA4 API returned null - this usually means authentication failed`);
+          console.warn(`[Test Token] GA4 API returned unexpected response:`, ga4Data);
         }
       } catch (ga4Err: any) {
         ga4Error = {
           message: ga4Err?.message,
           code: ga4Err?.code,
           status: ga4Err?.response?.status,
+          statusText: ga4Err?.response?.statusText,
           response: ga4Err?.response?.data,
         };
         console.error(`[Test Token] GA4 API call failed:`, ga4Err?.message);
