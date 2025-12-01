@@ -98,7 +98,7 @@ export async function GET(req: NextRequest) {
     // Google returns expiry_date in seconds (timestamp), convert to Date
     let expiryDate: Date;
     if (tokens.expiry_date) {
-      const expiryValue = tokens.expiry_date;
+      const expiryValue: unknown = tokens.expiry_date;
       // Check if it's already a Date object
       if (expiryValue instanceof Date) {
         expiryDate = expiryValue;
