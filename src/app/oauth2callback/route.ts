@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
 
     // Get default locale from routing config
     const defaultLocale = "fr"; // Default locale from routing.ts
-
+    
     if (error) {
       return NextResponse.redirect(
         new URL(
