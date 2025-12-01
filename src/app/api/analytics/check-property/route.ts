@@ -21,28 +21,29 @@ export async function GET(req: NextRequest) {
       }, { status: 401 });
     }
 
-    const propertyId = process.env.GOOGLE_ANALYTICS_PROPERTY_ID;
+    // Property ID is hardcoded in the code
+    const propertyId = "514683326";
+    const envPropertyId = process.env.GOOGLE_ANALYTICS_PROPERTY_ID;
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const hasClientSecret = !!process.env.GOOGLE_CLIENT_SECRET;
     const redirectUri = process.env.GOOGLE_REDIRECT_URI;
 
     return NextResponse.json({
       success: true,
-      propertyId: propertyId || null,
-      propertyIdSet: !!propertyId,
-      propertyIdLength: propertyId?.length || 0,
+      propertyId: propertyId,
+      propertyIdSet: true,
+      propertyIdLength: propertyId.length,
+      propertyIdSource: "hardcoded",
+      envPropertyId: envPropertyId || null,
+      note: "Property ID is hardcoded to 514683326 (not reading from environment)",
       clientIdSet: !!clientId,
       clientIdPreview: clientId ? `${clientId.substring(0, 20)}...` : null,
       clientSecretSet: hasClientSecret,
       redirectUri: redirectUri || null,
       redirectUriSet: !!redirectUri,
       environment: process.env.NODE_ENV,
-      message: propertyId 
-        ? `Property ID is set: ${propertyId}`
-        : "Property ID is NOT set in environment variables",
-      suggestion: !propertyId 
-        ? "Please set GOOGLE_ANALYTICS_PROPERTY_ID in your environment variables"
-        : "Property ID is configured. If you're getting 403 errors, make sure the Google account has access to this property in Google Analytics.",
+      message: `Property ID is hardcoded: ${propertyId}`,
+      suggestion: "If you're getting 403 errors, make sure the Google account has access to this property (514683326) in Google Analytics.",
     });
   } catch (error: any) {
     console.error("Error checking property configuration:", error);

@@ -2,10 +2,9 @@ import { google } from "googleapis";
 import { setOAuth2Credentials } from "./oauth";
 
 /**
- * Get GA4 property ID from environment or use default
- * You should set this in your .env file
+ * GA4 property ID - hardcoded for production
  */
-const PROPERTY_ID = process.env.GOOGLE_ANALYTICS_PROPERTY_ID || "";
+const PROPERTY_ID = "514683326";
 
 /**
  * Initialize GA4 client with user credentials
