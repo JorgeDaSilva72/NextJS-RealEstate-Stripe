@@ -197,7 +197,7 @@ export default async function RootLayout({
 
     return (
       <html lang={locale} className="h-full">
-        <head>
+        <body className={`${inter.className} h-full flex flex-col`}>
           {/* Google tag (gtag.js) */}
           <Script
             src="https://www.googletagmanager.com/gtag/js?id=G-9WN9KJ29GR"
@@ -211,8 +211,6 @@ export default async function RootLayout({
               gtag('config', 'G-9WN9KJ29GR');
             `}
           </Script>
-        </head>
-        <body className={`${inter.className} h-full flex flex-col`}>
           {/* Script Google Maps */}
           {/* <Script
             src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
