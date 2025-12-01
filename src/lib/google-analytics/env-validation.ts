@@ -44,9 +44,9 @@ export function getRedirectUri(): string {
   // In production, use NEXT_PUBLIC_BASE_URL if set, otherwise fallback to production URL
   if (process.env.NODE_ENV === "production") {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://afriqueavenirimmobilier.com";
-    return `${baseUrl}/api/auth/callback/google`;
+    return `${baseUrl}/oauth2callback`;
   }
 
   // Development fallback
-  return "http://localhost:3000/api/auth/callback/google";
+  return "http://localhost:3000/oauth2callback";
 }

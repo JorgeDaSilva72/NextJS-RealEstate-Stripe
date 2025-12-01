@@ -12,18 +12,12 @@ function generateAvatarUrl(userId: string): string {
 }
 
 /**
- * OAuth2 callback handler (DEPRECATED)
+ * OAuth2 callback handler
  * GET /oauth2callback
- * 
- * ⚠️ DEPRECATED: This route is maintained for backward compatibility only.
- * Please update Google Cloud Console to use the canonical callback route:
- * /api/auth/callback/google
  * 
  * This route is at root level to avoid locale routing issues
  */
 export async function GET(req: NextRequest) {
-  console.warn("[DEPRECATED] /oauth2callback route used. Please update to /api/auth/callback/google");
-
   try {
     // Check if user is authenticated
     const session = await getKindeServerSession();
