@@ -73,6 +73,11 @@ export async function storeTokens(
   refreshToken: string | null | undefined,
   expiryDate: Date
 ) {
+  console.log(`[storeTokens] Storing tokens for user: ${userId}`);
+  console.log(`[storeTokens] Access token length: ${accessToken.length}`);
+  console.log(`[storeTokens] Refresh token present: ${!!refreshToken}`);
+  console.log(`[storeTokens] Expiry date: ${expiryDate.toISOString()}`);
+  
   // Simple encryption - in production, use a proper encryption library
   // For now, we'll store them directly (consider using crypto for encryption)
   const tokenData = {
@@ -82,11 +87,18 @@ export async function storeTokens(
     expiryDate,
   };
 
-  await prisma.googleAnalyticsToken.upsert({
-    where: { userId },
-    update: tokenData,
-    create: tokenData,
-  });
+  try {
+    const result = await prisma.googleAnalyticsToken.upsert({
+      where: { userId },
+      update: tokenData,
+      create: tokenData,
+    });
+    console.log(`[storeTokens] Tokens stored successfully for user: ${userId}`);
+    return result;
+  } catch (error) {
+    console.error(`[storeTokens] Error storing tokens for user ${userId}:`, error);
+    throw error;
+  }
 }
 
 /**
@@ -165,24 +177,39 @@ export async function refreshAccessToken(
  * Get valid access token (refresh if needed)
  */
 export async function getValidAccessToken(userId: string): Promise<string | null> {
-  const tokens = await getStoredTokens(userId);
+  try {
+    const tokens = await getStoredTokens(userId);
 
-  if (!tokens) {
-    return null;
-  }
-
-  // Check if token is expired or will expire in the next 5 minutes
-  const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000);
-  if (tokens.expiryDate <= fiveMinutesFromNow) {
-    // Token is expired or about to expire, refresh it
-    const refreshed = await refreshAccessToken(userId);
-    if (refreshed) {
-      return refreshed.accessToken;
+    if (!tokens) {
+      console.warn(`[getValidAccessToken] No stored tokens for user: ${userId}`);
+      return null;
     }
+
+    console.log(`[getValidAccessToken] Found tokens for user: ${userId}`);
+    console.log(`[getValidAccessToken] Token expiry: ${tokens.expiryDate.toISOString()}`);
+    console.log(`[getValidAccessToken] Current time: ${new Date().toISOString()}`);
+
+    // Check if token is expired or will expire in the next 5 minutes
+    const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000);
+    if (tokens.expiryDate <= fiveMinutesFromNow) {
+      console.log(`[getValidAccessToken] Token expired or expiring soon, attempting refresh...`);
+      // Token is expired or about to expire, refresh it
+      const refreshed = await refreshAccessToken(userId);
+      if (refreshed) {
+        console.log(`[getValidAccessToken] Token refreshed successfully`);
+        return refreshed.accessToken;
+      }
+      console.warn(`[getValidAccessToken] Token refresh failed, but returning existing token anyway`);
+      // Even if refresh fails, try using the existing token (it might still work)
+      return tokens.accessToken;
+    }
+
+    console.log(`[getValidAccessToken] Token is still valid, returning it`);
+    return tokens.accessToken;
+  } catch (error) {
+    console.error(`[getValidAccessToken] Error getting valid access token for user ${userId}:`, error);
     return null;
   }
-
-  return tokens.accessToken;
 }
 
 /**
@@ -191,12 +218,16 @@ export async function getValidAccessToken(userId: string): Promise<string | null
  */
 export async function setOAuth2Credentials(userId: string): Promise<ReturnType<typeof createOAuth2Client> | null> {
   try {
+    console.log(`[setOAuth2Credentials] Setting credentials for user: ${userId}`);
+    
     const accessToken = await getValidAccessToken(userId);
 
     if (!accessToken) {
       console.warn(`[setOAuth2Credentials] No valid access token for user: ${userId}`);
       return null;
     }
+
+    console.log(`[setOAuth2Credentials] Access token obtained, length: ${accessToken.length}`);
 
     const tokenRecord = await prisma.googleAnalyticsToken.findUnique({
       where: { userId },
@@ -207,12 +238,15 @@ export async function setOAuth2Credentials(userId: string): Promise<ReturnType<t
       return null;
     }
 
+    console.log(`[setOAuth2Credentials] Token record found, refresh token present: ${!!tokenRecord.refreshToken}`);
+
     const oauth2Client = createOAuth2Client();
     oauth2Client.setCredentials({
       access_token: accessToken,
       refresh_token: tokenRecord.refreshToken || undefined,
     });
 
+    console.log(`[setOAuth2Credentials] OAuth2 client configured successfully`);
     return oauth2Client;
   } catch (error) {
     console.error(`[setOAuth2Credentials] Error setting credentials for user ${userId}:`, error);

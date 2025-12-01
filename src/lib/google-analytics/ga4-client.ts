@@ -12,10 +12,14 @@ const PROPERTY_ID = process.env.GOOGLE_ANALYTICS_PROPERTY_ID || "";
  * Returns null if credentials are not available
  */
 async function getGA4Client(userId: string): Promise<{ analyticsData: any; propertyId: string } | null> {
+  console.log(`[getGA4Client] Getting GA4 client for user: ${userId}`);
+  
   if (!PROPERTY_ID) {
     console.error("[getGA4Client] GOOGLE_ANALYTICS_PROPERTY_ID is not set");
     return null;
   }
+  
+  console.log(`[getGA4Client] Property ID: ${PROPERTY_ID}`);
   
   const auth = await setOAuth2Credentials(userId);
   
@@ -24,6 +28,8 @@ async function getGA4Client(userId: string): Promise<{ analyticsData: any; prope
     return null;
   }
   
+  console.log(`[getGA4Client] OAuth2 credentials obtained, creating analytics client`);
+  
   // Create a new client instance with auth
   const client = google.analyticsdata({
     version: "v1beta",
@@ -31,6 +37,7 @@ async function getGA4Client(userId: string): Promise<{ analyticsData: any; prope
   });
   // Ensure propertyId is a string
   const propertyId = String(PROPERTY_ID);
+  console.log(`[getGA4Client] GA4 client created successfully`);
   return { analyticsData: client, propertyId };
 }
 
