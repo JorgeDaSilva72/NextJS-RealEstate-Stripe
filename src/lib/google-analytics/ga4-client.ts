@@ -136,7 +136,18 @@ export async function getTrafficOverview(
     console.error(`[getTrafficOverview] Error fetching traffic overview for user ${userId}:`, error);
     console.error(`[getTrafficOverview] Error message:`, error?.message);
     console.error(`[getTrafficOverview] Error code:`, error?.code);
-    console.error(`[getTrafficOverview] Error response:`, error?.response?.data);
+    console.error(`[getTrafficOverview] Error status:`, error?.response?.status);
+    console.error(`[getTrafficOverview] Error response:`, JSON.stringify(error?.response?.data, null, 2));
+    
+    // Check for specific error types
+    if (error?.response?.status === 403) {
+      console.error(`[getTrafficOverview] 403 Forbidden - User may not have access to GA4 property or missing scopes`);
+    } else if (error?.response?.status === 401) {
+      console.error(`[getTrafficOverview] 401 Unauthorized - Token may be invalid or expired`);
+    } else if (error?.response?.status === 404) {
+      console.error(`[getTrafficOverview] 404 Not Found - Property ID may be incorrect: ${propertyId}`);
+    }
+    
     // Return null instead of throwing to prevent SSR crashes
     return null;
   }

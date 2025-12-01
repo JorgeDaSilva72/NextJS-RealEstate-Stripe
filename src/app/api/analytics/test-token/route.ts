@@ -125,6 +125,9 @@ export async function GET(req: NextRequest) {
       
       try {
         console.log(`[Test Token] Testing GA4 API call...`);
+        
+        // Import GA4 client functions
+        const { getTrafficOverview } = await import("@/lib/google-analytics/ga4-client");
         const ga4Data = await getTrafficOverview(user.id, "7daysAgo", "today");
         
         if (ga4Data) {
@@ -132,23 +135,26 @@ export async function GET(req: NextRequest) {
             success: true,
             hasData: true,
             rowCount: ga4Data.rows?.length || 0,
+            hasMetrics: !!ga4Data.metricHeaders,
           };
           console.log(`[Test Token] GA4 API call successful, rows: ${ga4Data.rows?.length || 0}`);
         } else {
           ga4TestResult = {
             success: false,
             hasData: false,
-            message: "GA4 API returned null (likely authentication issue)",
+            message: "GA4 API returned null - check server logs for detailed error",
           };
-          console.warn(`[Test Token] GA4 API returned null`);
+          console.warn(`[Test Token] GA4 API returned null - this usually means authentication failed`);
         }
       } catch (ga4Err: any) {
         ga4Error = {
           message: ga4Err?.message,
           code: ga4Err?.code,
+          status: ga4Err?.response?.status,
           response: ga4Err?.response?.data,
         };
         console.error(`[Test Token] GA4 API call failed:`, ga4Err?.message);
+        console.error(`[Test Token] GA4 Error details:`, JSON.stringify(ga4Error, null, 2));
       }
 
       return NextResponse.json({
@@ -164,6 +170,9 @@ export async function GET(req: NextRequest) {
         message: ga4TestResult?.success 
           ? "Token is valid and working with both OAuth2 and GA4 APIs"
           : "Token works with OAuth2 API but GA4 API test failed",
+        suggestion: !ga4TestResult?.success 
+          ? "The token may not have the required GA4 scopes. Please clear tokens and reauthorize: /api/analytics/clear"
+          : undefined,
       });
     } catch (googleError: any) {
       console.error(`[Test Token] Error calling Google API:`, googleError);
