@@ -34,6 +34,8 @@ export function validateGoogleAnalyticsEnv(): string | null {
 /**
  * Get the redirect URI for OAuth
  * Uses environment variable if set, otherwise falls back to hardcoded production URL
+ * 
+ * IMPORTANT: This must match the route in Google Cloud Console's Authorized redirect URIs
  */
 export function getRedirectUri(): string {
   // Explicit redirect URI takes precedence
@@ -42,11 +44,12 @@ export function getRedirectUri(): string {
   }
 
   // In production, use NEXT_PUBLIC_BASE_URL if set, otherwise fallback to production URL
+  // The canonical callback route is /api/auth/callback/google
   if (process.env.NODE_ENV === "production") {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://afriqueavenirimmobilier.com";
-    return `${baseUrl}/oauth2callback`;
+    return `${baseUrl}/api/auth/callback/google`;
   }
 
-  // Development fallback
-  return "http://localhost:3000/oauth2callback";
+  // Development fallback - use the canonical callback route
+  return "http://localhost:3000/api/auth/callback/google";
 }
