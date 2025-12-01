@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { getValidAccessToken, setOAuth2Credentials } from "@/lib/google-analytics/oauth";
 import { google } from "googleapis";
+import { getTrafficOverview } from "@/lib/google-analytics/ga4-client";
 
 /**
  * Test endpoint to verify token works with Google API
@@ -114,9 +115,41 @@ export async function GET(req: NextRequest) {
         auth: oauth2Client,
       });
 
-      // Make the API call
+      // Test 1: Get user info from Google OAuth2 API
       const userInfo = await oauth2.userinfo.get();
       console.log(`[Test Token] Successfully retrieved user info from Google`);
+
+      // Test 2: Try a minimal GA4 API call
+      let ga4TestResult: any = null;
+      let ga4Error: any = null;
+      
+      try {
+        console.log(`[Test Token] Testing GA4 API call...`);
+        const ga4Data = await getTrafficOverview(user.id, "7daysAgo", "today");
+        
+        if (ga4Data) {
+          ga4TestResult = {
+            success: true,
+            hasData: true,
+            rowCount: ga4Data.rows?.length || 0,
+          };
+          console.log(`[Test Token] GA4 API call successful, rows: ${ga4Data.rows?.length || 0}`);
+        } else {
+          ga4TestResult = {
+            success: false,
+            hasData: false,
+            message: "GA4 API returned null (likely authentication issue)",
+          };
+          console.warn(`[Test Token] GA4 API returned null`);
+        }
+      } catch (ga4Err: any) {
+        ga4Error = {
+          message: ga4Err?.message,
+          code: ga4Err?.code,
+          response: ga4Err?.response?.data,
+        };
+        console.error(`[Test Token] GA4 API call failed:`, ga4Err?.message);
+      }
 
       return NextResponse.json({
         success: true,
@@ -126,7 +159,11 @@ export async function GET(req: NextRequest) {
           email: userInfo.data.email,
           name: userInfo.data.name,
         },
-        message: "Token is valid and working",
+        ga4Test: ga4TestResult,
+        ga4Error: ga4Error || undefined,
+        message: ga4TestResult?.success 
+          ? "Token is valid and working with both OAuth2 and GA4 APIs"
+          : "Token works with OAuth2 API but GA4 API test failed",
       });
     } catch (googleError: any) {
       console.error(`[Test Token] Error calling Google API:`, googleError);

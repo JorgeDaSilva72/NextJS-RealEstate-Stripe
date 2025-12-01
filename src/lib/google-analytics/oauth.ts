@@ -2,9 +2,13 @@ import { google } from "googleapis";
 import { prisma } from "../prisma";
 import { getRedirectUri as getRedirectUriFromEnv } from "./env-validation";
 
-// Scopes required for Google Analytics Data API
+// Scopes required for Google Analytics Data API and user info
 export const SCOPES = [
   "https://www.googleapis.com/auth/analytics.readonly",
+  "https://www.googleapis.com/auth/analytics",
+  "https://www.googleapis.com/auth/userinfo.email",
+  "https://www.googleapis.com/auth/userinfo.profile",
+  "openid",
 ];
 
 /**
@@ -57,10 +61,20 @@ export function getAuthUrl(userId?: string): string {
 
 /**
  * Exchange authorization code for tokens
+ * IMPORTANT: Must use the same redirect_uri that was used in generateAuthUrl
  */
 export async function getTokensFromCode(code: string, redirectUri?: string) {
-  const oauth2Client = createOAuth2Client(redirectUri);
+  const uri = redirectUri || getRedirectUri();
+  console.log(`[getTokensFromCode] Using redirect URI: ${uri}`);
+  
+  const oauth2Client = createOAuth2Client(uri);
   const { tokens } = await oauth2Client.getToken(code);
+  
+  console.log(`[getTokensFromCode] Token exchange successful`);
+  console.log(`[getTokensFromCode] Has access_token: ${!!tokens.access_token}`);
+  console.log(`[getTokensFromCode] Has refresh_token: ${!!tokens.refresh_token}`);
+  console.log(`[getTokensFromCode] Expiry date: ${tokens.expiry_date ? new Date(tokens.expiry_date).toISOString() : 'not provided'}`);
+  
   return tokens;
 }
 

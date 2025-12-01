@@ -95,9 +95,25 @@ export async function GET(req: NextRequest) {
     }
 
     // Calculate expiry date
-    const expiryDate = tokens.expiry_date
-      ? new Date(tokens.expiry_date)
-      : new Date(Date.now() + 3600 * 1000); // Default to 1 hour if not provided
+    // Google returns expiry_date in seconds (timestamp), convert to Date
+    // If expiry_date is already a Date object, use it directly; otherwise convert from seconds
+    let expiryDate: Date;
+    if (tokens.expiry_date) {
+      if (tokens.expiry_date instanceof Date) {
+        expiryDate = tokens.expiry_date;
+      } else if (typeof tokens.expiry_date === 'number') {
+        // If it's a number, check if it's in seconds (< year 2000) or milliseconds
+        expiryDate = tokens.expiry_date < 10000000000 
+          ? new Date(tokens.expiry_date * 1000) // seconds to milliseconds
+          : new Date(tokens.expiry_date); // already milliseconds
+      } else {
+        expiryDate = new Date(Date.now() + 3600 * 1000); // fallback
+      }
+    } else {
+      expiryDate = new Date(Date.now() + 3600 * 1000); // Default to 1 hour if not provided
+    }
+    
+    console.log("[OAuth2Callback] Token expiry date:", expiryDate.toISOString());
 
     // Store tokens in database
     await storeTokens(

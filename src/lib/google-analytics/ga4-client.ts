@@ -30,6 +30,19 @@ async function getGA4Client(userId: string): Promise<{ analyticsData: any; prope
   
   console.log(`[getGA4Client] OAuth2 credentials obtained, creating analytics client`);
   
+  // Ensure we have a valid access token before creating the client
+  try {
+    const tokenResponse = await auth.getAccessToken();
+    if (!tokenResponse.token) {
+      console.error(`[getGA4Client] Failed to get access token for user: ${userId}`);
+      return null;
+    }
+    console.log(`[getGA4Client] Access token obtained, length: ${tokenResponse.token.length}`);
+  } catch (tokenError: any) {
+    console.error(`[getGA4Client] Error getting access token:`, tokenError?.message);
+    return null;
+  }
+  
   // Create a new client instance with auth
   const client = google.analyticsdata({
     version: "v1beta",

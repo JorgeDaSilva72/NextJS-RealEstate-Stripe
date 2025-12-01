@@ -44,12 +44,12 @@ export function getRedirectUri(): string {
   }
 
   // In production, use NEXT_PUBLIC_BASE_URL if set, otherwise fallback to production URL
-  // The canonical callback route is /api/auth/callback/google
+  // The canonical callback route is /oauth2callback (must match Google Cloud Console)
   if (process.env.NODE_ENV === "production") {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://afriqueavenirimmobilier.com";
-    return `${baseUrl}/api/auth/callback/google`;
+    return `${baseUrl}/oauth2callback`;
   }
 
-  // Development fallback - use the canonical callback route
-  return "http://localhost:3000/api/auth/callback/google";
+  // Development fallback
+  return "http://localhost:3000/oauth2callback";
 }
