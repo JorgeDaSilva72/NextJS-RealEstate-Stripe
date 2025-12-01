@@ -197,6 +197,21 @@ export default async function RootLayout({
 
     return (
       <html lang={locale} className="h-full">
+        <head>
+          {/* Google tag (gtag.js) */}
+          <Script
+            src="https://www.googletagmanager.com/gtag/js?id=G-9WN9KJ29GR"
+            strategy="afterInteractive"
+          />
+          <Script id="google-analytics" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-9WN9KJ29GR');
+            `}
+          </Script>
+        </head>
         <body className={`${inter.className} h-full flex flex-col`}>
           {/* Script Google Maps */}
           {/* <Script
