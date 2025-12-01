@@ -96,18 +96,21 @@ export async function GET(req: NextRequest) {
 
     // Calculate expiry date
     // Google returns expiry_date in seconds (timestamp), convert to Date
-    // If expiry_date is already a Date object, use it directly; otherwise convert from seconds
     let expiryDate: Date;
     if (tokens.expiry_date) {
-      if (tokens.expiry_date instanceof Date) {
-        expiryDate = tokens.expiry_date;
-      } else if (typeof tokens.expiry_date === 'number') {
+      const expiryValue = tokens.expiry_date;
+      // Check if it's already a Date object
+      if (expiryValue instanceof Date) {
+        expiryDate = expiryValue;
+      } else if (typeof expiryValue === 'number') {
         // If it's a number, check if it's in seconds (< year 2000) or milliseconds
-        expiryDate = tokens.expiry_date < 10000000000 
-          ? new Date(tokens.expiry_date * 1000) // seconds to milliseconds
-          : new Date(tokens.expiry_date); // already milliseconds
+        // Timestamps in seconds are typically < 10000000000 (year 2001)
+        expiryDate = expiryValue < 10000000000 
+          ? new Date(expiryValue * 1000) // seconds to milliseconds
+          : new Date(expiryValue); // already milliseconds
       } else {
-        expiryDate = new Date(Date.now() + 3600 * 1000); // fallback
+        // Fallback if it's an unexpected type
+        expiryDate = new Date(Date.now() + 3600 * 1000); // 1 hour from now
       }
     } else {
       expiryDate = new Date(Date.now() + 3600 * 1000); // Default to 1 hour if not provided
