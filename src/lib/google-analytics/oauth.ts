@@ -133,13 +133,18 @@ export function isTokenExpired(expiryDate: Date): boolean {
 export async function refreshAccessToken(
   userId: string
 ): Promise<{ accessToken: string; expiryDate: Date } | null> {
+  console.log(`[refreshAccessToken] Attempting to refresh token for user: ${userId}`);
+  
   const tokenRecord = await prisma.googleAnalyticsToken.findUnique({
     where: { userId },
   });
 
   if (!tokenRecord || !tokenRecord.refreshToken) {
+    console.warn(`[refreshAccessToken] No token record or refresh token for user: ${userId}`);
     return null;
   }
+
+  console.log(`[refreshAccessToken] Refresh token found, length: ${tokenRecord.refreshToken.length}`);
 
   const oauth2Client = createOAuth2Client();
   oauth2Client.setCredentials({
@@ -147,7 +152,9 @@ export async function refreshAccessToken(
   });
 
   try {
+    console.log(`[refreshAccessToken] Calling refreshAccessToken()...`);
     const { credentials } = await oauth2Client.refreshAccessToken();
+    console.log(`[refreshAccessToken] Token refresh successful`);
 
     if (credentials.access_token && credentials.expiry_date) {
       const expiryDate = new Date(credentials.expiry_date);
@@ -160,17 +167,22 @@ export async function refreshAccessToken(
         },
       });
 
+      console.log(`[refreshAccessToken] Token updated in database, new expiry: ${expiryDate.toISOString()}`);
       return {
         accessToken: credentials.access_token,
         expiryDate,
       };
+    } else {
+      console.warn(`[refreshAccessToken] Token refresh returned no access_token or expiry_date`);
+      return null;
     }
-  } catch (error) {
-    console.error("Error refreshing token:", error);
+  } catch (error: any) {
+    console.error(`[refreshAccessToken] Error refreshing token for user ${userId}:`, error);
+    console.error(`[refreshAccessToken] Error message:`, error?.message);
+    console.error(`[refreshAccessToken] Error code:`, error?.code);
+    console.error(`[refreshAccessToken] Error response:`, error?.response?.data);
     return null;
   }
-
-  return null;
 }
 
 /**
@@ -265,12 +277,42 @@ export async function setOAuth2Credentials(userId: string): Promise<ReturnType<t
       credentials.refresh_token = tokenRecord.refreshToken;
     }
     
-    // Set expiry if available
+    // Set expiry if available (convert Date to timestamp)
     if (tokenRecord.expiryDate) {
       credentials.expiry_date = tokenRecord.expiryDate.getTime();
     }
     
     oauth2Client.setCredentials(credentials);
+    
+    // Try to get a fresh access token - this will automatically refresh if needed
+    try {
+      const tokenResponse = await oauth2Client.getAccessToken();
+      if (tokenResponse.token && tokenResponse.token !== accessToken) {
+        // Token was refreshed, update in database
+        console.log(`[setOAuth2Credentials] Token was automatically refreshed`);
+        const newExpiry = tokenResponse.res?.data?.expiry_date 
+          ? new Date(tokenResponse.res.data.expiry_date * 1000)
+          : new Date(Date.now() + 3600 * 1000); // Default to 1 hour
+        
+        await prisma.googleAnalyticsToken.update({
+          where: { userId },
+          data: {
+            accessToken: tokenResponse.token,
+            expiryDate: newExpiry,
+          },
+        });
+        
+        // Update credentials with new token
+        oauth2Client.setCredentials({
+          ...credentials,
+          access_token: tokenResponse.token,
+          expiry_date: newExpiry.getTime(),
+        });
+      }
+    } catch (tokenError: any) {
+      console.warn(`[setOAuth2Credentials] Error getting/refreshing access token:`, tokenError?.message);
+      // Continue anyway - the token might still work
+    }
     
     // Verify credentials were set
     const clientCredentials = oauth2Client.credentials;

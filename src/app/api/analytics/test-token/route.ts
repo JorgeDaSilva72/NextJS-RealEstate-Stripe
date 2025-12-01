@@ -60,8 +60,35 @@ export async function GET(req: NextRequest) {
     try {
       // First, try to get a fresh access token from the client
       // This ensures the client is properly authenticated
-      await oauth2Client.getAccessToken();
-      console.log(`[Test Token] Successfully obtained access token from client`);
+      let freshToken: string | null | undefined;
+      try {
+        const tokenResponse = await oauth2Client.getAccessToken();
+        freshToken = tokenResponse.token || undefined;
+        console.log(`[Test Token] Successfully obtained access token from client`);
+      } catch (tokenError: any) {
+        console.error(`[Test Token] Error getting access token:`, tokenError);
+        return NextResponse.json({
+          error: "Failed to get access token from OAuth2 client",
+          hasToken: true,
+          hasOAuthClient: true,
+          tokenError: {
+            message: tokenError?.message,
+            code: tokenError?.code,
+            response: tokenError?.response?.data,
+          },
+          suggestion: "Token may be expired or invalid. Try reconnecting your Google Analytics account.",
+        }, { status: 401 });
+      }
+      
+      // Verify we have a token
+      if (!freshToken && !clientCredentials.access_token) {
+        return NextResponse.json({
+          error: "No access token available after getAccessToken() call",
+          hasToken: true,
+          hasOAuthClient: true,
+          suggestion: "Token may be expired. Try reconnecting your Google Analytics account.",
+        }, { status: 401 });
+      }
       
       const oauth2 = google.oauth2({
         version: "v2",
@@ -83,14 +110,29 @@ export async function GET(req: NextRequest) {
       });
     } catch (googleError: any) {
       console.error(`[Test Token] Error calling Google API:`, googleError);
+      
+      // Check if it's a token expiration issue
+      const isTokenError = googleError?.code === 401 || 
+                          googleError?.message?.includes("authentication") ||
+                          googleError?.message?.includes("credential");
+      
       return NextResponse.json({
         error: "Token exists but Google API call failed",
         hasToken: true,
         hasOAuthClient: true,
+        isTokenError,
         googleError: {
           message: googleError?.message,
           code: googleError?.code,
           response: googleError?.response?.data,
+        },
+        suggestion: isTokenError 
+          ? "Your Google Analytics token appears to be expired or invalid. Please disconnect and reconnect your Google Analytics account."
+          : "There was an error communicating with Google's API. Please try again later.",
+        debug: {
+          clientHasAccessToken: !!clientCredentials.access_token,
+          clientAccessTokenLength: clientCredentials.access_token?.length || 0,
+          clientHasRefreshToken: !!clientCredentials.refresh_token,
         },
       }, { status: 500 });
     }
