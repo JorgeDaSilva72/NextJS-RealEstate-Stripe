@@ -145,7 +145,7 @@ export async function getTrafficOverview(
     } else if (error?.response?.status === 401) {
       console.error(`[getTrafficOverview] 401 Unauthorized - Token may be invalid or expired`);
     } else if (error?.response?.status === 404) {
-      console.error(`[getTrafficOverview] 404 Not Found - Property ID may be incorrect: ${propertyId}`);
+      console.error(`[getTrafficOverview] 404 Not Found - Property ID may be incorrect: ${PROPERTY_ID}`);
     }
     
     // Return null instead of throwing to prevent SSR crashes
