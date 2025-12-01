@@ -128,8 +128,16 @@ export async function getTrafficOverview(
       },
     });
 
+    const responseData = response.data;
     console.log(`[getTrafficOverview] Successfully fetched traffic overview data`);
-    return response.data;
+    console.log(`[getTrafficOverview] Response rowCount: ${responseData?.rowCount || 0}, rows length: ${responseData?.rows?.length || 0}`);
+    
+    // Log first row for debugging if available
+    if (responseData?.rows && responseData.rows.length > 0) {
+      console.log(`[getTrafficOverview] Sample row:`, JSON.stringify(responseData.rows[0], null, 2));
+    }
+    
+    return responseData;
   } catch (error: any) {
     const errorDetails = {
       message: error?.message,

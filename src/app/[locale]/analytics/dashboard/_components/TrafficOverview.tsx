@@ -26,18 +26,27 @@ export default function TrafficOverview({
   data,
   dateRange,
 }: TrafficOverviewProps) {
-  // Parse GA4 response
-  const rows = data?.rows || [];
+  // Parse GA4 response - handle both direct data and nested data structure
+  const responseData = data?.data || data;
+  const rows = responseData?.rows || [];
   
-  // Calculate totals
+  // Calculate totals - handle both aggregated and daily data
   const totals = rows.reduce(
     (acc: any, row: any) => {
       const metrics = row.metricValues || [];
-      acc.activeUsers += parseInt(metrics[0]?.value || "0");
-      acc.sessions += parseInt(metrics[1]?.value || "0");
-      acc.pageViews += parseInt(metrics[2]?.value || "0");
-      acc.avgDuration += parseFloat(metrics[3]?.value || "0");
-      acc.bounceRate += parseFloat(metrics[4]?.value || "0");
+      // Handle different metric orders and ensure we parse correctly
+      const activeUsers = parseFloat(metrics[0]?.value || "0") || 0;
+      const sessions = parseFloat(metrics[1]?.value || "0") || 0;
+      const pageViews = parseFloat(metrics[2]?.value || "0") || 0;
+      const avgDuration = parseFloat(metrics[3]?.value || "0") || 0;
+      const bounceRate = parseFloat(metrics[4]?.value || "0") || 0;
+      
+      acc.activeUsers += activeUsers;
+      acc.sessions += sessions;
+      acc.pageViews += pageViews;
+      acc.avgDuration += avgDuration;
+      acc.bounceRate += bounceRate;
+      acc.count += 1;
       return acc;
     },
     {
@@ -46,13 +55,18 @@ export default function TrafficOverview({
       pageViews: 0,
       avgDuration: 0,
       bounceRate: 0,
+      count: 0,
     }
   );
 
-  const avgDuration = totals.avgDuration / rows.length || 0;
-  const bounceRate = totals.bounceRate / rows.length || 0;
+  // Calculate averages properly
+  const avgDuration = totals.count > 0 ? totals.avgDuration / totals.count : 0;
+  const bounceRate = totals.count > 0 ? totals.bounceRate / totals.count : 0;
   const avgSessionDuration = avgDuration;
   const pagesPerSession = totals.sessions > 0 ? (totals.pageViews / totals.sessions).toFixed(2) : "0";
+  
+  // Also check for rowCount - if we have data but no rows, it might be aggregated differently
+  const rowCount = responseData?.rowCount || rows.length;
 
   // Format duration
   const formatDuration = (seconds: number) => {
@@ -62,54 +76,64 @@ export default function TrafficOverview({
     return `${mins}m ${secs}s`;
   };
 
-  // Daily data for chart
+  // Daily data for chart - handle date formatting
   const dailyData: DailyData[] = rows.map((row: any) => {
     const dimensions = row.dimensionValues || [];
     const metrics = row.metricValues || [];
+    let dateValue = dimensions[0]?.value || "";
+    
+    // Format date if it's in YYYYMMDD format
+    if (dateValue && dateValue.length === 8 && /^\d+$/.test(dateValue)) {
+      const year = dateValue.substring(0, 4);
+      const month = dateValue.substring(4, 6);
+      const day = dateValue.substring(6, 8);
+      dateValue = `${year}-${month}-${day}`;
+    }
+    
     return {
-      date: dimensions[0]?.value || "",
-      users: parseInt(metrics[0]?.value || "0"),
-      sessions: parseInt(metrics[1]?.value || "0"),
-      pageViews: parseInt(metrics[2]?.value || "0"),
+      date: dateValue,
+      users: parseFloat(metrics[0]?.value || "0") || 0,
+      sessions: parseFloat(metrics[1]?.value || "0") || 0,
+      pageViews: parseFloat(metrics[2]?.value || "0") || 0,
     };
   });
 
-  const maxUsers = Math.max(...dailyData.map((d: DailyData) => d.users), 1);
-  const maxSessions = Math.max(...dailyData.map((d: DailyData) => d.sessions), 1);
-  const maxPageViews = Math.max(...dailyData.map((d: DailyData) => d.pageViews), 1);
+  const maxUsers = Math.max(...dailyData.map((d: DailyData) => d.users), totals.activeUsers || 1);
+  const maxSessions = Math.max(...dailyData.map((d: DailyData) => d.sessions), totals.sessions || 1);
+  const maxPageViews = Math.max(...dailyData.map((d: DailyData) => d.pageViews), totals.pageViews || 1);
 
   const stats = [
     {
       label: "Active Users",
-      value: totals.activeUsers.toLocaleString(),
+      value: totals.activeUsers > 0 ? totals.activeUsers.toLocaleString() : "0",
       icon: UsersIcon,
       gradient: "from-blue-500 to-cyan-500",
       bgGradient: "from-blue-50 to-cyan-50",
       borderColor: "border-blue-200",
-      description: "Unique visitors",
-      trend: "+12%",
+      description: "Unique Visitors",
+      trend: rowCount > 0 ? "+0%" : "N/A",
       trendUp: true,
     },
     {
       label: "Sessions",
-      value: totals.sessions.toLocaleString(),
+      value: totals.sessions > 0 ? totals.sessions.toLocaleString() : "0",
       icon: ChartBarIcon,
       gradient: "from-green-500 to-emerald-500",
       bgGradient: "from-green-50 to-emerald-50",
       borderColor: "border-green-200",
       description: "Total sessions",
-      trend: "+8%",
+      trend: rowCount > 0 ? "+0%" : "N/A",
       trendUp: true,
     },
     {
       label: "Page Views",
-      value: totals.pageViews.toLocaleString(),
+      value: totals.pageViews > 0 ? totals.pageViews.toLocaleString() : "0",
       icon: EyeIcon,
       gradient: "from-purple-500 to-pink-500",
       bgGradient: "from-purple-50 to-pink-50",
       borderColor: "border-purple-200",
       description: "Total page views",
-      trend: "+15%",
+      trend: rowCount > 0 ? "+0%" : "N/A",
       trendUp: true,
     },
     {
@@ -251,9 +275,13 @@ export default function TrafficOverview({
           </div>
         </CardHeader>
         <CardBody className="p-6">
-          {dailyData.length === 0 ? (
+          {dailyData.length === 0 && totals.activeUsers === 0 && totals.sessions === 0 ? (
             <div className="h-64 flex items-center justify-center text-gray-400">
-              <p>No data available for the selected period</p>
+              <div className="text-center">
+                <ChartBarIcon className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                <p className="text-lg font-medium">No data available for the selected period</p>
+                <p className="text-sm text-gray-400 mt-2">Try selecting a different date range</p>
+              </div>
             </div>
           ) : (
             <div className="space-y-4">

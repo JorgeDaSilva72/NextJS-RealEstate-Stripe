@@ -28,19 +28,21 @@ interface Page {
 }
 
 export default function TopPages({ data }: TopPagesProps) {
-  const rows = data?.rows || [];
+  // Handle both direct data and nested data structure
+  const responseData = data?.data || data;
+  const rows = responseData?.rows || [];
 
   const pages: Page[] = rows.map((row: any) => {
     const dimensions = row.dimensionValues || [];
     const metrics = row.metricValues || [];
     return {
       path: dimensions[0]?.value || "N/A",
-      title: dimensions[1]?.value || "N/A",
-      views: parseInt(metrics[0]?.value || "0"),
-      users: parseInt(metrics[1]?.value || "0"),
-      avgDuration: parseFloat(metrics[2]?.value || "0"),
+      title: dimensions[1]?.value || dimensions[0]?.value || "Untitled Page",
+      views: parseFloat(metrics[0]?.value || "0") || 0,
+      users: parseFloat(metrics[1]?.value || "0") || 0,
+      avgDuration: parseFloat(metrics[2]?.value || "0") || 0,
     };
-  });
+  }).filter((page: Page) => page.views > 0 || page.users > 0); // Filter out pages with no data
 
   const totalViews = pages.reduce((sum: number, page: Page) => sum + page.views, 0);
   const maxViews = Math.max(...pages.map(p => p.views), 1);

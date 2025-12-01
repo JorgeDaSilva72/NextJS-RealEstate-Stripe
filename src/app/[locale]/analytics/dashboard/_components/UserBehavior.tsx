@@ -27,7 +27,9 @@ interface UserBehaviorProps {
 }
 
 export default function UserBehavior({ data }: UserBehaviorProps) {
-  const rows = data?.rows || [];
+  // Handle both direct data and nested data structure
+  const responseData = data?.data || data;
+  const rows = responseData?.rows || [];
 
   // Group by device category
   const deviceData: Record<string, any> = {};
@@ -51,10 +53,10 @@ export default function UserBehavior({ data }: UserBehaviorProps) {
         count: 0,
       };
     }
-    deviceData[device].users += parseInt(metrics[0]?.value || "0");
-    deviceData[device].sessions += parseInt(metrics[1]?.value || "0");
-    deviceData[device].pageViews += parseInt(metrics[2]?.value || "0");
-    deviceData[device].avgDuration += parseFloat(metrics[3]?.value || "0");
+    deviceData[device].users += parseFloat(metrics[0]?.value || "0") || 0;
+    deviceData[device].sessions += parseFloat(metrics[1]?.value || "0") || 0;
+    deviceData[device].pageViews += parseFloat(metrics[2]?.value || "0") || 0;
+    deviceData[device].avgDuration += parseFloat(metrics[3]?.value || "0") || 0;
     deviceData[device].count += 1;
 
     // Country aggregation
@@ -67,10 +69,10 @@ export default function UserBehavior({ data }: UserBehaviorProps) {
         count: 0,
       };
     }
-    countryData[country].users += parseInt(metrics[0]?.value || "0");
-    countryData[country].sessions += parseInt(metrics[1]?.value || "0");
-    countryData[country].pageViews += parseInt(metrics[2]?.value || "0");
-    countryData[country].avgDuration += parseFloat(metrics[3]?.value || "0");
+    countryData[country].users += parseFloat(metrics[0]?.value || "0") || 0;
+    countryData[country].sessions += parseFloat(metrics[1]?.value || "0") || 0;
+    countryData[country].pageViews += parseFloat(metrics[2]?.value || "0") || 0;
+    countryData[country].avgDuration += parseFloat(metrics[3]?.value || "0") || 0;
     countryData[country].count += 1;
   });
 

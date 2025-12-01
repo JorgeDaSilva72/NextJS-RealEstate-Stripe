@@ -89,7 +89,27 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    return NextResponse.json({ data, success: true });
+    // Check if data has an error property (from getTrafficOverview error handling)
+    if (data?.error) {
+      console.warn(`[Analytics Data API] Data contains error for user ${user.id}, type: ${type}`, data.error);
+      return NextResponse.json(
+        { 
+          error: data.error || "Failed to fetch analytics data",
+          requiresReconnect: data.code === "NO_CLIENT",
+          data: null,
+          debug: process.env.NODE_ENV === "development" ? data : undefined,
+        },
+        { status: data.code === "NO_CLIENT" ? 401 : 500 }
+      );
+    }
+
+    // GA4 API returns data with rows property directly
+    // If rows is undefined, it means empty data, so return empty structure
+    const responseData = data?.rows !== undefined ? data : { rows: [], rowCount: 0 };
+    
+    console.log(`[Analytics Data API] Successfully returning data for user ${user.id}, type: ${type}, rows: ${responseData.rows?.length || 0}, rowCount: ${responseData.rowCount || 0}`);
+    
+    return NextResponse.json({ data: responseData, success: true });
   } catch (error: any) {
     console.error("Error fetching analytics data:", error);
     

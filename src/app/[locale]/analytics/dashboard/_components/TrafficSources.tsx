@@ -34,7 +34,9 @@ interface Source {
 }
 
 export default function TrafficSources({ data }: TrafficSourcesProps) {
-  const rows = data?.rows || [];
+  // Handle both direct data and nested data structure
+  const responseData = data?.data || data;
+  const rows = responseData?.rows || [];
 
   const sources: Source[] = rows.map((row: any) => {
     const dimensions = row.dimensionValues || [];
@@ -42,11 +44,11 @@ export default function TrafficSources({ data }: TrafficSourcesProps) {
     return {
       source: dimensions[0]?.value || "(direct)",
       medium: dimensions[1]?.value || "(none)",
-      sessions: parseInt(metrics[0]?.value || "0"),
-      users: parseInt(metrics[1]?.value || "0"),
-      pageViews: parseInt(metrics[2]?.value || "0"),
+      sessions: parseFloat(metrics[0]?.value || "0") || 0,
+      users: parseFloat(metrics[1]?.value || "0") || 0,
+      pageViews: parseFloat(metrics[2]?.value || "0") || 0,
     };
-  });
+  }).filter((source: Source) => source.sessions > 0 || source.users > 0); // Filter out sources with no data
 
   const totalSessions = sources.reduce((sum: number, s: Source) => sum + s.sessions, 0);
   const maxSessions = Math.max(...sources.map((s: Source) => s.sessions), 1);

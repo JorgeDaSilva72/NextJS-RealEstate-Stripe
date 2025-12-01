@@ -90,13 +90,13 @@ export default function AnalyticsDashboard() {
         throw new Error(realtime.error || "Authentication required");
       }
 
-      // Handle null data gracefully (empty state)
+      // Handle data - pass through even if empty so components can show appropriate messages
       setData({
-        overview: overview.data || null,
-        topPages: topPages.data || null,
-        behavior: behavior.data || null,
-        sources: sources.data || null,
-        realtime: realtime.data || null,
+        overview: overview.data !== undefined ? overview.data : null,
+        topPages: topPages.data !== undefined ? topPages.data : null,
+        behavior: behavior.data !== undefined ? behavior.data : null,
+        sources: sources.data !== undefined ? sources.data : null,
+        realtime: realtime.data !== undefined ? realtime.data : null,
       });
       setLastRefresh(new Date());
     } catch (err: any) {
@@ -308,9 +308,7 @@ export default function AnalyticsDashboard() {
               }
             >
               <div className="p-6">
-                {data.overview && (
-                  <TrafficOverview data={data.overview} dateRange={dateRange} />
-                )}
+                <TrafficOverview data={data.overview || { rows: [], rowCount: 0 }} dateRange={dateRange} />
               </div>
             </Tab>
             <Tab 
@@ -323,7 +321,7 @@ export default function AnalyticsDashboard() {
               }
             >
               <div className="p-6">
-                {data.topPages && <TopPages data={data.topPages} />}
+                <TopPages data={data.topPages || { rows: [], rowCount: 0 }} />
               </div>
             </Tab>
             <Tab 
@@ -336,7 +334,7 @@ export default function AnalyticsDashboard() {
               }
             >
               <div className="p-6">
-                {data.behavior && <UserBehavior data={data.behavior} />}
+                <UserBehavior data={data.behavior || { rows: [], rowCount: 0 }} />
               </div>
             </Tab>
             <Tab 
@@ -349,7 +347,7 @@ export default function AnalyticsDashboard() {
               }
             >
               <div className="p-6">
-                {data.sources && <TrafficSources data={data.sources} />}
+                <TrafficSources data={data.sources || { rows: [], rowCount: 0 }} />
               </div>
             </Tab>
           </Tabs>
