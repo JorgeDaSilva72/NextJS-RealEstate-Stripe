@@ -46,13 +46,16 @@ async function getGA4Client(userId: string): Promise<{ analyticsData: any; prope
  */
 export async function getRealtimeReport(userId: string) {
   try {
+    console.log(`[getRealtimeReport] Starting for user: ${userId}`);
     const client = await getGA4Client(userId);
     
     if (!client) {
+      console.error(`[getRealtimeReport] No GA4 client available for user: ${userId}`);
       return null; // Return null instead of throwing
     }
     
     const { analyticsData, propertyId } = client;
+    console.log(`[getRealtimeReport] Making API call to property: ${propertyId}`);
 
     const response = await analyticsData.properties.runRealtimeReport({
       property: `properties/${String(propertyId)}`,
@@ -62,9 +65,13 @@ export async function getRealtimeReport(userId: string) {
       },
     });
 
+    console.log(`[getRealtimeReport] Successfully fetched realtime data`);
     return response.data;
   } catch (error: any) {
-    console.error("Error fetching realtime report:", error);
+    console.error(`[getRealtimeReport] Error fetching realtime report for user ${userId}:`, error);
+    console.error(`[getRealtimeReport] Error message:`, error?.message);
+    console.error(`[getRealtimeReport] Error code:`, error?.code);
+    console.error(`[getRealtimeReport] Error response:`, error?.response?.data);
     // Return null instead of throwing to prevent SSR crashes
     return null;
   }
@@ -79,13 +86,16 @@ export async function getTrafficOverview(
   endDate: string
 ) {
   try {
+    console.log(`[getTrafficOverview] Starting for user: ${userId}, dates: ${startDate} to ${endDate}`);
     const client = await getGA4Client(userId);
     
     if (!client) {
+      console.error(`[getTrafficOverview] No GA4 client available for user: ${userId}`);
       return null; // Return null instead of throwing
     }
     
     const { analyticsData, propertyId } = client;
+    console.log(`[getTrafficOverview] Making API call to property: ${propertyId}`);
 
     const response = await analyticsData.properties.runReport({
       property: `properties/${String(propertyId)}`,
@@ -107,9 +117,13 @@ export async function getTrafficOverview(
       },
     });
 
+    console.log(`[getTrafficOverview] Successfully fetched traffic overview data`);
     return response.data;
   } catch (error: any) {
-    console.error("Error fetching traffic overview:", error);
+    console.error(`[getTrafficOverview] Error fetching traffic overview for user ${userId}:`, error);
+    console.error(`[getTrafficOverview] Error message:`, error?.message);
+    console.error(`[getTrafficOverview] Error code:`, error?.code);
+    console.error(`[getTrafficOverview] Error response:`, error?.response?.data);
     // Return null instead of throwing to prevent SSR crashes
     return null;
   }

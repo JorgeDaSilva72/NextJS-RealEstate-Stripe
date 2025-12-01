@@ -31,44 +31,59 @@ export async function GET(req: NextRequest) {
     const startDate = searchParams.get("startDate") || "30daysAgo";
     const endDate = searchParams.get("endDate") || "today";
 
+    console.log(`[Analytics Data API] Request for user ${user.id}, type: ${type}`);
+
     let data;
+    let errorDetails: any = null;
 
-    switch (type) {
-      case "realtime":
-        data = await getRealtimeReport(user.id);
-        break;
+    try {
+      switch (type) {
+        case "realtime":
+          data = await getRealtimeReport(user.id);
+          break;
 
-      case "overview":
-        data = await getTrafficOverview(user.id, startDate, endDate);
-        break;
+        case "overview":
+          data = await getTrafficOverview(user.id, startDate, endDate);
+          break;
 
-      case "topPages":
-        const limit = parseInt(searchParams.get("limit") || "10");
-        data = await getTopPages(user.id, startDate, endDate, limit);
-        break;
+        case "topPages":
+          const limit = parseInt(searchParams.get("limit") || "10");
+          data = await getTopPages(user.id, startDate, endDate, limit);
+          break;
 
-      case "behavior":
-        data = await getUserBehavior(user.id, startDate, endDate);
-        break;
+        case "behavior":
+          data = await getUserBehavior(user.id, startDate, endDate);
+          break;
 
-      case "sources":
-        data = await getTrafficSources(user.id, startDate, endDate);
-        break;
+        case "sources":
+          data = await getTrafficSources(user.id, startDate, endDate);
+          break;
 
-      default:
-        return NextResponse.json(
-          { error: "Invalid type parameter" },
-          { status: 400 }
-        );
+        default:
+          return NextResponse.json(
+            { error: "Invalid type parameter" },
+            { status: 400 }
+          );
+      }
+    } catch (apiError: any) {
+      console.error(`[Analytics Data API] Error in API call for user ${user.id}:`, apiError);
+      errorDetails = {
+        message: apiError?.message,
+        code: apiError?.code,
+        response: apiError?.response?.data,
+      };
     }
 
     // If data is null, it means authentication failed or no token available
     if (data === null) {
+      console.warn(`[Analytics Data API] Data is null for user ${user.id}, type: ${type}`);
+      console.warn(`[Analytics Data API] Error details:`, errorDetails);
       return NextResponse.json(
         { 
           error: "Authentication required. Please reconnect your Google Analytics account.",
           requiresReconnect: true,
-          data: null
+          data: null,
+          debug: process.env.NODE_ENV === "development" ? errorDetails : undefined,
         },
         { status: 401 }
       );
