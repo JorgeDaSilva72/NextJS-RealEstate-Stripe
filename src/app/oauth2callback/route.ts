@@ -4,6 +4,7 @@ import {
   getTokensFromCode,
   storeTokens,
 } from "@/lib/google-analytics/oauth";
+import { getRedirectUri } from "@/lib/google-analytics/env-validation";
 import prisma from "@/lib/prisma";
 
 // Generate avatar URL
@@ -54,6 +55,11 @@ export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams;
     const code = searchParams.get("code");
     const error = searchParams.get("error");
+    const state = searchParams.get("state"); // userId passed in state parameter (if used)
+    
+    // Log for debugging
+    console.log("[OAuth2Callback] Received code:", !!code);
+    console.log("[OAuth2Callback] State parameter:", state || "none");
 
     // Get default locale from routing config
     const defaultLocale = "fr"; // Default locale from routing.ts
@@ -73,12 +79,11 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Get redirect URI for token exchange - use oauth2callback for backward compatibility
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ||
-      (process.env.NODE_ENV === "production" ? "https://afriqueavenirimmobilier.com" : "http://localhost:3000");
-    const redirectUri = process.env.GOOGLE_REDIRECT_URI || `${baseUrl}/oauth2callback`;
+    // Get redirect URI for token exchange - use centralized function to ensure consistency
+    const redirectUri = getRedirectUri();
 
     console.log("[OAuth2Callback] Using redirect URI:", redirectUri);
+    console.log("[OAuth2Callback] User ID:", user.id);
 
     // Exchange code for tokens
     const tokens = await getTokensFromCode(code, redirectUri);
@@ -102,7 +107,9 @@ export async function GET(req: NextRequest) {
       expiryDate
     );
 
-    // Redirect to dashboard with default locale (reuse baseUrl from above)
+    // Redirect to dashboard with default locale
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ||
+      (process.env.NODE_ENV === "production" ? "https://afriqueavenirimmobilier.com" : "http://localhost:3000");
     return NextResponse.redirect(
       new URL(`/${defaultLocale}/analytics/dashboard?success=true`, baseUrl)
     );
