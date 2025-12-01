@@ -277,9 +277,9 @@ export async function setOAuth2Credentials(userId: string): Promise<ReturnType<t
       credentials.refresh_token = tokenRecord.refreshToken;
     }
     
-    // Set expiry if available (convert Date to timestamp)
+    // Set expiry if available (convert Date to seconds, not milliseconds)
     if (tokenRecord.expiryDate) {
-      credentials.expiry_date = tokenRecord.expiryDate.getTime();
+      credentials.expiry_date = Math.floor(tokenRecord.expiryDate.getTime() / 1000);
     }
     
     oauth2Client.setCredentials(credentials);
@@ -302,11 +302,11 @@ export async function setOAuth2Credentials(userId: string): Promise<ReturnType<t
           },
         });
         
-        // Update credentials with new token
+        // Update credentials with new token (expiry in seconds)
         oauth2Client.setCredentials({
           ...credentials,
           access_token: tokenResponse.token,
-          expiry_date: newExpiry.getTime(),
+          expiry_date: Math.floor(newExpiry.getTime() / 1000),
         });
       }
     } catch (tokenError: any) {

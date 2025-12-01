@@ -65,6 +65,19 @@ export async function GET(req: NextRequest) {
         const tokenResponse = await oauth2Client.getAccessToken();
         freshToken = tokenResponse.token || undefined;
         console.log(`[Test Token] Successfully obtained access token from client`);
+        
+        // If we got a fresh token, update the client credentials
+        if (freshToken) {
+          const updatedCredentials: any = {
+            ...clientCredentials,
+            access_token: freshToken,
+          };
+          // Ensure expiry_date is in seconds if present
+          if (updatedCredentials.expiry_date) {
+            updatedCredentials.expiry_date = Math.floor(updatedCredentials.expiry_date / 1000);
+          }
+          oauth2Client.setCredentials(updatedCredentials);
+        }
       } catch (tokenError: any) {
         console.error(`[Test Token] Error getting access token:`, tokenError);
         return NextResponse.json({
@@ -81,20 +94,27 @@ export async function GET(req: NextRequest) {
       }
       
       // Verify we have a token
-      if (!freshToken && !clientCredentials.access_token) {
+      const finalCredentials = oauth2Client.credentials;
+      if (!finalCredentials.access_token) {
         return NextResponse.json({
           error: "No access token available after getAccessToken() call",
           hasToken: true,
           hasOAuthClient: true,
+          finalCredentials: {
+            hasAccessToken: !!finalCredentials.access_token,
+            hasRefreshToken: !!finalCredentials.refresh_token,
+          },
           suggestion: "Token may be expired. Try reconnecting your Google Analytics account.",
         }, { status: 401 });
       }
       
+      // Create OAuth2 API client with the authenticated OAuth2 client
       const oauth2 = google.oauth2({
         version: "v2",
         auth: oauth2Client,
       });
 
+      // Make the API call
       const userInfo = await oauth2.userinfo.get();
       console.log(`[Test Token] Successfully retrieved user info from Google`);
 
