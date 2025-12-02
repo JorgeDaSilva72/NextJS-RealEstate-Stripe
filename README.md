@@ -15,7 +15,7 @@ Then open [http://localhost:3000](http://localhost:3000).
 Add the Fixer credentials to `.env.local` (or `.env` for local testing):
 
 ```
-FIXER_API_KEY=f4c28cb8cfcf8f103b10b591886a807e
+FIXER_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxx
 # Optional overrides
 FIXER_CACHE_TTL_MS=300000
 # FIXER_BASE_URL=https://data.fixer.io/api
