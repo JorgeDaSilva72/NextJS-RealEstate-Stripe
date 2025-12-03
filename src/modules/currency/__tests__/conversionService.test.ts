@@ -40,10 +40,8 @@ beforeEach(() => {
 
 describe("convertAmount - conversions monétaires", () => {
     it("convertit correctement un montant via Fixer", async () => {
-        console.log("Étape 1 - Demande de conversion EUR -> USD pour 100 unités");
         const result = await convertAmount({ amount: 100, base: "EUR", target: "USD" });
 
-        console.log("Étape 2 - Vérification du taux et du montant converti");
         expect(result.convertedAmount).toBeCloseTo(107, 6);
         expect(result.rate).toBeCloseTo(1.07, 6);
         expect(result.provider).toBe("fixer");
@@ -51,23 +49,19 @@ describe("convertAmount - conversions monétaires", () => {
     });
 
     it("retourne immédiatement quand la devise source = cible", async () => {
-        console.log("Étape 1 - Conversion EUR -> EUR attendue sans appel API");
         const result = await convertAmount({ amount: 42, base: "EUR", target: "EUR" });
 
-        console.log("Étape 2 - Validation du taux fixe et de l'absence d'appel Fixer");
         expect(result.rate).toBe(1);
         expect(result.convertedAmount).toBe(42);
         expect(mockedFetchLatestRates).not.toHaveBeenCalled();
     });
 
     it("échoue lorsque la devise cible est absente des taux", async () => {
-        console.log("Étape 1 - Simulation d'une réponse Fixer sans taux MAD");
         mockedFetchLatestRates.mockResolvedValueOnce({
             ...mockRatesPayload,
             rates: { USD: 1.07 },
         });
 
-        console.log("Étape 2 - On s'attend à une CurrencyConversionError");
         await expect(convertAmount({ amount: 10, base: "EUR", target: "MAD" })).rejects.toBeInstanceOf(
             CurrencyConversionError
         );
@@ -76,9 +70,7 @@ describe("convertAmount - conversions monétaires", () => {
 
 describe("getLatestRates - récupération des taux", () => {
     it("met en cache les taux entre deux appels", async () => {
-        console.log("Étape 1 - Premier appel pour remplir le cache");
         const first = await getLatestRates();
-        console.log("Étape 2 - Second appel qui doit exploiter le cache");
         const second = await getLatestRates();
 
         expect(first.cached).toBe(false);
@@ -87,9 +79,7 @@ describe("getLatestRates - récupération des taux", () => {
     });
 
     it("supprime le cache quand fresh=true", async () => {
-        console.log("Étape 1 - Appel initial pour créer le cache");
         await getLatestRates();
-        console.log("Étape 2 - Appel avec fresh=true qui force un nouveau fetch");
         await getLatestRates({ fresh: true });
 
         expect(mockedFetchLatestRates).toHaveBeenCalledTimes(2);

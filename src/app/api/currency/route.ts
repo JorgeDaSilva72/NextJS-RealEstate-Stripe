@@ -48,6 +48,10 @@ export async function GET(request: Request) {
         const result = await convertAmount(parsed.data);
         return NextResponse.json(result);
     } catch (error) {
+        // Log server-side error for debugging (do not expose details to client)
+        // eslint-disable-next-line no-console
+        console.error(error);
+
         if (error instanceof CurrencyConversionError || error instanceof FixerClientError) {
             return NextResponse.json(
                 { message: error.message },

@@ -19,6 +19,7 @@ FIXER_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxx
 # Optional overrides
 FIXER_CACHE_TTL_MS=300000
 # FIXER_BASE_URL=https://data.fixer.io/api
+CONVERSION_DECIMAL_PLACES=4
 ```
 
 ### Server usage

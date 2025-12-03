@@ -25,10 +25,8 @@ afterEach(() => {
 
 describe("fetchLatestRates - client Fixer", () => {
     it("échoue quand FIXER_API_KEY est absent", async () => {
-        console.log("Étape 1 - Suppression de FIXER_API_KEY pour simuler une mauvaise config");
         delete process.env.FIXER_API_KEY;
 
-        console.log("Étape 2 - On s'attend à une erreur explicite");
         await expect(fetchLatestRates()).rejects.toThrow(/Missing FIXER_API_KEY/);
     });
 
@@ -48,7 +46,6 @@ describe("fetchLatestRates - client Fixer", () => {
         });
         global.fetch = fetchMock as unknown as typeof fetch;
 
-        console.log("Étape 2 - Appel de fetchLatestRates et validation des champs renvoyés");
         const payload = await fetchLatestRates();
 
         expect(payload).toEqual({
@@ -64,23 +61,19 @@ describe("fetchLatestRates - client Fixer", () => {
     });
 
     it("lève FixerClientError quand le statut HTTP n'est pas OK", async () => {
-        console.log("Étape 1 - Réponse HTTP 500 simulée");
         const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 500 });
         global.fetch = fetchMock as unknown as typeof fetch;
 
-        console.log("Étape 2 - Vérification de l'exception levée");
         await expect(fetchLatestRates()).rejects.toBeInstanceOf(FixerClientError);
     });
 
     it("lève FixerClientError quand Fixer renvoie success=false", async () => {
-        console.log("Étape 1 - Réponse Fixer success=false avec message 'Invalid base'");
         const fetchMock = vi.fn().mockResolvedValue({
             ok: true,
             json: async () => ({ success: false, error: { info: "Invalid base" } }),
         });
         global.fetch = fetchMock as unknown as typeof fetch;
 
-        console.log("Étape 2 - On vérifie que l'erreur spécialisée est levée");
         await expect(fetchLatestRates()).rejects.toBeInstanceOf(FixerClientError);
     });
 });

@@ -12,6 +12,7 @@ import type {
 const DEFAULT_BASE = process.env.FIXER_DEFAULT_BASE?.toUpperCase() ?? "EUR";
 const DEFAULT_TARGET = process.env.FIXER_DEFAULT_TARGET?.toUpperCase() ?? "USD";
 const CACHE_KEY = "fixer-latest";
+const CONVERSION_DECIMAL_PLACES = Number(process.env.CONVERSION_DECIMAL_PLACES ?? 4);
 
 export class CurrencyConversionError extends Error {
     constructor(message: string) {
@@ -87,7 +88,8 @@ export async function convertAmount(
             rate: 1,
             convertedAmount: amount,
             provider: "fixer",
-            timestamp: Date.now(),
+            // Use UNIX timestamp in seconds to match Fixer API format
+            timestamp: Math.floor(Date.now() / 1000),
             date: new Date().toISOString().slice(0, 10),
         };
     }
@@ -95,7 +97,7 @@ export async function convertAmount(
     try {
         const rates = await loadLatestRates({ fresh: params.fresh });
         const rate = computeCrossRate(base, target, rates);
-        const convertedAmount = Number((amount * rate).toFixed(4));
+        const convertedAmount = Number((amount * rate).toFixed(CONVERSION_DECIMAL_PLACES));
 
         return {
             amount,

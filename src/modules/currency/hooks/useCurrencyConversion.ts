@@ -32,10 +32,7 @@ export function useCurrencyConversion({
 }: HookArgs) {
     const [state, setState] = useState<HookState>({ isLoading: autoRun });
 
-    const requestUrl = useMemo(
-        () => buildQuery({ amount, base, target, autoRun }),
-        [amount, base, target, autoRun]
-    );
+    const requestUrl = useMemo(() => buildQuery({ amount, base, target, autoRun }), [amount, base, target]);
 
     const execute = useCallback(async () => {
         setState({ isLoading: true });
