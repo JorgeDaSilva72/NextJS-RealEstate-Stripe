@@ -28,7 +28,6 @@
     "acheter": "شراء",
     "louer": "إيجار",
     "services": "الخدمات",
-
     "service-visite3D": {
       "title": "جولة افتراضية",
       "description": "جولة افتراضية غامرة"
@@ -37,7 +36,6 @@
       "title": "الأسعار والاشتراكات",
       "description": "اكتشف عروضنا"
     },
-
     "buy-apartment": {
       "title": "شراء شقة",
       "description": "اشترِ العقار الذي يناسبك"
@@ -245,7 +243,6 @@
       }
     }
   },
-
   "Property": {
     "pageTitle": "إعلان",
     "backToListings": "العودة إلى الإعلانات",
@@ -429,7 +426,6 @@
       }
     }
   },
-
   "FurnishedRentPage": {
     "benefits": {
       "immediateSettlement": {
@@ -554,7 +550,6 @@
       "description": "رؤية أكبر في سوق العقارات من خلال تواصل محسن عبر YouTube ووسائل التواصل الاجتماعي."
     }
   },
-
   "BronzePack": {
     "header": {
       "title": "باقة الراحة"
@@ -622,7 +617,6 @@
     "meetingRequestError": "خطأ أثناء إرسال الطلب",
     "meetingRequestErrorTryAgain": "حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى."
   },
-
   "Visit3DPack": {
     "packVisit3D": "باقة الجولة الافتراضية",
     "scheduleAppointment": "حجز موعد",
@@ -652,7 +646,6 @@
       }
     }
   },
-
   "PurchasePlan": {
     "payWith": "الدفع بواسطة:",
     "paypal": "باي بال",
@@ -714,9 +707,11 @@
     "propertyAdded": "تمت إضافة الإعلان!",
     "photoLimitExceeded": "لقد تجاوزت الحد الأقصى {limit} من الصور.",
     "videoLimitExceeded": "لقد تجاوزت الحد الأقصى {limit} من الفيديوهات.",
-    "unlimited": "غير محدود"
+    "unlimited": "غير محدود",
+    "translating": "جاري الترجمة إلى لغات أخرى...",
+    "processing": "جاري المعالجة...",
+    "saving": "جاري الحفظ..."
   },
-
   "PropertyForm": {
     "Basic": {
       "title": "عنوان الإعلان",
@@ -904,7 +899,6 @@
     "cancel": "إلغاء",
     "delete": "حذف"
   },
-
   "VirtualTourPage": {
     "hero": {
       "title": "اختبر مستقبل العقارات",
