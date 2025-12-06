@@ -291,7 +291,11 @@ const Basic = (props: Props) => {
     trigger,
     getValues,
     setValue,
+    watch,
   } = useFormContext<AddPropertyInputType>();
+
+  const typeId = watch("typeId");
+  const statusId = watch("statusId");
 
   const handleNext = async () => {
     if (await trigger(["name", "description", "typeId", "statusId", "price"]))
@@ -328,7 +332,7 @@ const Basic = (props: Props) => {
         isInvalid={!!errors.typeId}
         label={t("propertyType")}
         placeholder="Veuillez sélectionner un type"
-        selectedKeys={getValues().typeId ? [getValues().typeId.toString()] : []}
+        selectedKeys={typeId ? [typeId.toString()] : []}
         onSelectionChange={(keys) => {
           const value = Array.from(keys)[0];
           setValue("typeId", value ? parseInt(value.toString()) : 0);
@@ -345,7 +349,7 @@ const Basic = (props: Props) => {
         isInvalid={!!errors.statusId}
         label={t("transactionType")}
         placeholder="Veuillez sélectionner un statut"
-        selectedKeys={getValues().statusId ? [getValues().statusId.toString()] : []}
+        selectedKeys={statusId ? [statusId.toString()] : []}
         onSelectionChange={(keys) => {
           const value = Array.from(keys)[0];
           setValue("statusId", value ? parseInt(value.toString()) : 0);
