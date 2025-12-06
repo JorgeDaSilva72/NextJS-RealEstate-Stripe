@@ -28,7 +28,6 @@
     "acheter": "Acheter",
     "louer": "Louer",
     "services": "Services",
-
     "service-visite3D": {
       "title": "Visite Virtuelle",
       "description": "Visite virtuelle immersive"
@@ -66,7 +65,6 @@
       "description": "Location exclusive AFRIQUE AVENIR"
     }
   },
-
   "LanguageSwitcher": {
     "selectLanguage": "Changer la langue",
     "languages": {
@@ -113,7 +111,6 @@
       "answer": "Sur chaque annonce, vous trouverez un bouton 'Contacter' qui vous permettra d'envoyer un message direct au vendeur. Vous pouvez également sauvegarder les annonces qui vous intéressent dans vos favoris pour les retrouver facilement."
     }
   },
-
   "FeedbackModal": {
     "title": "Feedback",
     "form": {
@@ -198,7 +195,6 @@
       }
     }
   },
-
   "ContactModal": {
     "title": "Nous contacter",
     "form": {
@@ -378,7 +374,6 @@
       "viewProperties": "Voir les locations →"
     }
   },
-
   "SeasonalRentPage": {
     "heroTitle": "Locations Saisonnières au Maroc",
     "heroSubtitle": "Des séjours inoubliables dans les plus belles destinations du royaume",
@@ -431,7 +426,6 @@
       }
     }
   },
-
   "FurnishedRentPage": {
     "benefits": {
       "immediateSettlement": {
@@ -489,7 +483,6 @@
     },
     "retry": "Réessayer"
   },
-
   "ExclusiveRentals": {
     "common": {
       "exclusiveRental": "Location exclusive",
@@ -624,7 +617,6 @@
     "meetingRequestError": "Erreur lors de l'envoi de la demande",
     "meetingRequestErrorTryAgain": "Une erreur est survenue lors de l'envoi de la demande. Veuillez réessayer."
   },
-
   "Visit3DPack": {
     "packVisit3D": "Pack Visite Virtuelle",
     "scheduleAppointment": "Prendre rendez-vous",
@@ -654,7 +646,6 @@
       }
     }
   },
-
   "PurchasePlan": {
     "payWith": "Payer avec:",
     "paypal": "PayPal",
@@ -714,6 +705,8 @@
     },
     "propertyEdited": "Annonce modifiée !",
     "propertyAdded": "Annonce ajoutée !",
+    "error": "Une erreur est survenue",
+    "validationError": "Veuillez corriger les erreurs dans le formulaire",
     "photoLimitExceeded": "Vous avez dépassé la limite de {limit} photos.",
     "videoLimitExceeded": "Vous avez dépassé la limite de {limit} vidéo.",
     "unlimited": "Illimité"
@@ -816,7 +809,6 @@
     "clearFilters": "Effacer les filtres",
     "closeModal": "Fermer la fenêtre de filtres"
   },
-
   "filters": {
     "allPropertyTypes": "Tout Type de bien",
     "allOperations": "Toute opération",
@@ -906,7 +898,6 @@
     "cancel": "Annuler",
     "delete": "Supprimer"
   },
-
   "VirtualTourPage": {
     "hero": {
       "title": "Découvrez l'avenir de l'immobilier",
