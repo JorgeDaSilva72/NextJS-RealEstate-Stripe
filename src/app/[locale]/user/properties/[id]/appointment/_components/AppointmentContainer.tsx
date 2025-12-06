@@ -12,6 +12,7 @@ import emailjs from "@emailjs/browser";
 import { isUserDiamant } from "@/lib/actions/user";
 import { useRouter } from "next/router";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
+import { useLocale } from "next-intl";
 
 interface AppointmentContainerProps {
   id: number;
@@ -31,7 +32,20 @@ const AppointmentContainer = ({ id }: AppointmentContainerProps) => {
   >([]);
   const pathname = usePathname();
   const classNameInfo = "flex gap-7";
+
   const router = useRouter();
+  const locale = useLocale();
+
+  const getLocalizedText = (field: any, locale: string): string => {
+    if (!field) return "";
+    if (typeof field === "string") return field;
+    if (typeof field === "object") {
+      return (
+        field[locale] || field.fr || field.en || Object.values(field)[0] || ""
+      );
+    }
+    return String(field);
+  };
   const { user } = useKindeAuth();
 
   useEffect(() => {
@@ -58,19 +72,28 @@ const AppointmentContainer = ({ id }: AppointmentContainerProps) => {
         process.env.NEXT_PUBLIC_SERVICE_ID!, // Remplacez par votre service ID
         process.env.NEXT_PUBLIC_TEMPLATE_ID!, // Remplacez par votre template ID
         {
-          to_name: appointment.user.lastName,
+          to_name: getLocalizedText(
+            (appointment.user as any).lastname,
+            locale
+          ),
           to_email: appointment.user.email,
           from_name:
-            appointment.property.user.firstName +
+            getLocalizedText(
+              (appointment.property.user as any).firstname,
+              locale
+            ) +
             " " +
-            appointment.property.user.lastName,
+            getLocalizedText(
+              (appointment.property.user as any).lastname,
+              locale
+            ),
           appointment_date: new Date(appointment.start)
             .toISOString()
             .slice(0, 10),
           appointment_time: new Date(appointment.start)
             .toTimeString()
             .slice(0, 6),
-          appointment_title: appointment.property.name,
+          appointment_title: getLocalizedText(appointment.property.name, locale),
           appointment_country: appointment.property.location?.state,
           appointment_location:
             appointment.property.location?.city +
@@ -110,7 +133,9 @@ const AppointmentContainer = ({ id }: AppointmentContainerProps) => {
               >
                 <div className={classNameInfo}>
                   <span>Titre :</span>
-                  <span>{appointment.property.name}</span>
+                  <span>
+                    {getLocalizedText(appointment.property.name, locale)}
+                  </span>
                 </div>
                 <div className={classNameInfo}>
                   <span>Date de la visite :</span>

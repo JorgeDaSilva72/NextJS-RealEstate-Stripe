@@ -42,8 +42,8 @@ export async function GET(req: NextRequest) {
       await prisma.user.create({
         data: {
           id: user.id,
-          firstName: user.given_name ?? "",
-          lastName: user.family_name ?? "",
+          firstname: user.given_name ?? "",
+          lastname: user.family_name ?? "",
           email: user.email ?? "",
           avatarUrl: generateAvatarUrl(user.id),
         },
@@ -56,14 +56,14 @@ export async function GET(req: NextRequest) {
     const code = searchParams.get("code");
     const error = searchParams.get("error");
     const state = searchParams.get("state"); // userId passed in state parameter (if used)
-    
+
     // Log for debugging
     console.log("[OAuth2Callback] Received code:", !!code);
     console.log("[OAuth2Callback] State parameter:", state || "none");
 
     // Get default locale from routing config
     const defaultLocale = "fr"; // Default locale from routing.ts
-    
+
     if (error) {
       return NextResponse.redirect(
         new URL(
@@ -105,7 +105,7 @@ export async function GET(req: NextRequest) {
       } else if (typeof expiryValue === 'number') {
         // If it's a number, check if it's in seconds (< year 2000) or milliseconds
         // Timestamps in seconds are typically < 10000000000 (year 2001)
-        expiryDate = expiryValue < 10000000000 
+        expiryDate = expiryValue < 10000000000
           ? new Date(expiryValue * 1000) // seconds to milliseconds
           : new Date(expiryValue); // already milliseconds
       } else {
@@ -115,7 +115,7 @@ export async function GET(req: NextRequest) {
     } else {
       expiryDate = new Date(Date.now() + 3600 * 1000); // Default to 1 hour if not provided
     }
-    
+
     console.log("[OAuth2Callback] Token expiry date:", expiryDate.toISOString());
 
     // Store tokens in database

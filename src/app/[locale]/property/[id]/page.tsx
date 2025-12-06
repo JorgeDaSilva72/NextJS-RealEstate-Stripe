@@ -366,20 +366,37 @@ interface ShareButtonsProps {
 const PropertyPage = async ({ params }: Props) => {
   const t = await getTranslations("Property");
 
-  const property = await prisma.property.findUnique({
-    where: {
-      id: +params.id,
-    },
-    include: {
-      status: true,
-      type: true,
-      feature: true,
-      location: true,
-      contact: true,
-      images: true,
-      videos: true,
-    },
-  });
+  // Using raw SQL to bypass "cached plan must not change result type" error
+  // This occurs because the column type changed from String to JSON without a DB restart
+  const properties = await prisma.$queryRaw`
+    SELECT * FROM "Property" WHERE id = ${+params.id} LIMIT 1
+  `;
+  const propertyRaw = Array.isArray(properties) ? properties[0] : null;
+
+  if (!propertyRaw) return notFound();
+
+  // Fetch relations separately since we can't use include with raw query easily
+  const [status, type, feature, location, contact, images, videos] = await Promise.all([
+    prisma.propertyStatus.findUnique({ where: { id: propertyRaw.statusId } }),
+    prisma.propertyType.findUnique({ where: { id: propertyRaw.typeId } }),
+    prisma.propertyFeature.findUnique({ where: { propertyId: propertyRaw.id } }),
+    prisma.propertyLocation.findUnique({ where: { propertyId: propertyRaw.id } }),
+    prisma.contact.findUnique({ where: { propertyId: propertyRaw.id } }),
+    prisma.propertyImage.findMany({ where: { propertyId: propertyRaw.id } }),
+    prisma.propertyVideo.findMany({ where: { propertyId: propertyRaw.id } }),
+  ]);
+
+  // Reconstruct the property object to match the expected structure
+  const property = {
+    ...propertyRaw,
+    status,
+    type,
+    feature,
+    location,
+    contact,
+    images,
+    videos,
+  };
   const userFound = await isUserDiamant(+params.id);
 
   if (!property) return notFound();
@@ -390,6 +407,17 @@ const PropertyPage = async ({ params }: Props) => {
       return `https://www.youtube.com/embed/${urlObj.searchParams.get("v")}`;
     }
     return url;
+  };
+
+  // Helper function to extract text from multilingual JSON
+  const getLocalizedText = (field: any, locale: string = 'fr'): string => {
+    if (!field) return '';
+    if (typeof field === 'string') return field;
+    if (typeof field === 'object') {
+      // Try requested locale first, then fallback to fr, en, ar, pt
+      return field[locale] || field.fr || field.en || field.ar || field.pt || '';
+    }
+    return String(field);
   };
 
   const currentUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/${params.locale}/property/${params.id}`;
@@ -405,17 +433,16 @@ const PropertyPage = async ({ params }: Props) => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-10">
           {property.images.length > 0 && (
             <div className="col-span-1 lg:col-span-2 rounded-2xl overflow-hidden shadow-lg">
-              <ImageThumbnails images={property.images.map((img) => img.url)} />
+              <ImageThumbnails images={property.images.map((img: any) => img.url)} />
             </div>
           )}
           <div
-            className={`col-span-1 ${
-              property.images.length === 0 ? "lg:col-span-3" : ""
-            } space-y-6`}
+            className={`col-span-1 ${property.images.length === 0 ? "lg:col-span-3" : ""
+              } space-y-6`}
           >
             <Card className="p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
               <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-4">
-                {property.name}
+                {getLocalizedText(property.name, params.locale)}
               </h2>
 
               <div className="flex gap-2 text-sm text-gray-600">
@@ -452,8 +479,8 @@ const PropertyPage = async ({ params }: Props) => {
               <div className="mt-4">
                 <ShareButtons
                   url={currentUrl}
-                  title={t("shareTitle", { propertyName: property.name })}
-                  description={property.description}
+                  title={t("shareTitle", { propertyName: getLocalizedText(property.name, params.locale) })}
+                  description={getLocalizedText(property.description, params.locale)}
                 />
               </div>
             </Card>
@@ -461,7 +488,7 @@ const PropertyPage = async ({ params }: Props) => {
             <Card className="p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
               <Title title={t("description")} />
               <div className="mt-4">
-                <DescriptionCard description={property.description} />
+                <DescriptionCard description={getLocalizedText(property.description, params.locale)} />
               </div>
             </Card>
 
@@ -537,7 +564,7 @@ const PropertyPage = async ({ params }: Props) => {
                 <Attribute
                   icon="ℹ️"
                   label={t("information")}
-                  value={property.location?.landmark}
+                  value={getLocalizedText(property.location?.landmark, params.locale)}
                 />
               </div>
             </Card>
@@ -567,7 +594,7 @@ const PropertyPage = async ({ params }: Props) => {
               <Card className="p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
                 <Title title={t("videos")} />
                 <div className="grid grid-cols-1 gap-4 mt-4">
-                  {property.videos.map((video) => (
+                  {property.videos.map((video: any) => (
                     <div
                       key={video.id}
                       className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"

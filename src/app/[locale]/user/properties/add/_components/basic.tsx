@@ -290,7 +290,12 @@ const Basic = (props: Props) => {
     formState: { errors },
     trigger,
     getValues,
+    setValue,
+    watch,
   } = useFormContext<AddPropertyInputType>();
+
+  const typeId = watch("typeId");
+  const statusId = watch("statusId");
 
   const handleNext = async () => {
     if (await trigger(["name", "description", "typeId", "statusId", "price"]))
@@ -323,35 +328,35 @@ const Basic = (props: Props) => {
         defaultValue={getValues().description}
       />
       <Select
-        {...register("typeId", { setValueAs: (v: any) => v.toString() })}
         errorMessage={errors.typeId?.message}
         isInvalid={!!errors.typeId}
         label={t("propertyType")}
-        selectionMode="single"
-        name="typeId"
-        defaultSelectedKeys={[
-          getValues().typeId ? getValues().typeId.toString() : "0",
-        ]}
+        placeholder="Veuillez sélectionner un type"
+        selectedKeys={typeId ? [typeId.toString()] : []}
+        onSelectionChange={(keys) => {
+          const value = Array.from(keys)[0];
+          setValue("typeId", value ? value.toString() : "" as any);
+        }}
       >
         {props.types.map((item) => (
-          <SelectItem key={item.id} value={item.id}>
+          <SelectItem key={item.id} value={item.id.toString()}>
             {item.value}
           </SelectItem>
         ))}
       </Select>
       <Select
-        {...register("statusId", { setValueAs: (v: any) => v.toString() })}
         errorMessage={errors.statusId?.message}
         isInvalid={!!errors.statusId}
         label={t("transactionType")}
-        selectionMode="single"
-        name="statusId"
-        defaultSelectedKeys={[
-          getValues().statusId ? getValues().statusId.toString() : "0",
-        ]}
+        placeholder="Veuillez sélectionner un statut"
+        selectedKeys={statusId ? [statusId.toString()] : []}
+        onSelectionChange={(keys) => {
+          const value = Array.from(keys)[0];
+          setValue("statusId", value ? value.toString() : "" as any);
+        }}
       >
         {props.statuses.map((item) => (
-          <SelectItem key={item.id} value={item.id}>
+          <SelectItem key={item.id} value={item.id.toString()}>
             {item.value}
           </SelectItem>
         ))}

@@ -130,6 +130,7 @@ import { getUserById } from "@/lib/actions/user";
 import { PropertyType, PropertyStatus } from "@prisma/client";
 import AddPropertyClient from "./_components/AddPropertyClient";
 import { getTranslations } from "next-intl/server";
+import { redirect } from "next/navigation";
 
 const AddPropertyPage = async () => {
   const t = await getTranslations("AddPropertyPage");
@@ -141,30 +142,47 @@ const AddPropertyPage = async () => {
     const { getUser } = await getKindeServerSession();
     const user = await getUser();
 
-    const dbUser = await getUserById(user ? user.id : "");
-    if (!dbUser || !dbUser.id) {
-      throw new Error(t("authError"));
+    // If no user from Kinde, redirect to login
+    if (!user || !user.id) {
+      redirect("/api/auth/login");
     }
 
+    // Try to get user from database
+    let dbUser = await getUserById(user.id);
+
+    // If user doesn't exist in database, create them
+    if (!dbUser) {
+      dbUser = await prisma.user.create({
+        data: {
+          id: user.id,
+          firstname: user.given_name ?? "",
+          lastname: user.family_name ?? "",
+          email: user.email || "",
+          avatarUrl: user.picture || null,
+        },
+      });
+    }
+
+    // Now we're sure the user exists, continue with subscription logic
     const userSubscription = await prisma.subscriptions.findFirst({
-      where: { userId: dbUser?.id },
+      where: { userId: dbUser.id },
       include: { plan: true },
       orderBy: { createdAt: "desc" },
     });
 
     planDetails = userSubscription?.plan
       ? {
-          namePlan: userSubscription.plan.namePlan,
-          premiumAds: userSubscription.plan.premiumAds,
-          photosPerAd: userSubscription.plan.photosPerAd,
-          shortVideosPerAd: userSubscription.plan.shortVideosPerAd,
-          youtubeVideoDuration: userSubscription.plan.youtubeVideoDuration,
-        }
+        namePlan: userSubscription.plan.namePlan,
+        premiumAds: userSubscription.plan.premiumAds,
+        photosPerAd: userSubscription.plan.photosPerAd,
+        shortVideosPerAd: userSubscription.plan.shortVideosPerAd,
+        youtubeVideoDuration: userSubscription.plan.youtubeVideoDuration,
+      }
       : null;
 
     const totalPropertiesCount = await prisma.property.count({
       where: {
-        userId: user?.id,
+        userId: user.id,
       },
     });
 
@@ -194,7 +212,9 @@ const AddPropertyPage = async () => {
       });
     }
   } catch (error) {
-    console.log((error as Error).message);
+    console.error("Error in AddPropertyPage:", error);
+    // If there's any error, redirect to login
+    redirect("/api/auth/login");
   }
 
   const [propertyTypes, propertyStatuses]: [PropertyType[], PropertyStatus[]] =

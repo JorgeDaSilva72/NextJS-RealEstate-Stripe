@@ -275,7 +275,7 @@ import prisma from "../prisma";
 import { Property } from "@prisma/client";
 
 export async function saveProperty(
-  propertyData: AddPropertyInputType,
+  propertyData: any, // Changed to any to accept multilingual structure
   imagesUrls: string[],
   videoUrls: string[], // Ajouter les vidéos
   userId: string
@@ -298,6 +298,18 @@ export async function saveProperty(
     throw new Error("Les champs obligatoires sont manquants.");
   }
 
+  // Handle multilingual name and description
+  // If name is already an object, use it as is, otherwise convert string to object
+  const multilingualName = typeof propertyData.name === 'object'
+    ? propertyData.name
+    : { fr: propertyData.name, en: propertyData.name };
+
+  const multilingualDescription = propertyData.description
+    ? (typeof propertyData.description === 'object'
+      ? propertyData.description
+      : { fr: propertyData.description, en: propertyData.description })
+    : null;
+
   // todo contrôler la limite des annonce en fonction des plans d'abonnement
   // todo 1 solution : modifier schéma Zod maxImagesAllowed: z.number().optional()
 
@@ -311,8 +323,8 @@ export async function saveProperty(
     const result = await prisma.$transaction(async (tx) => {
       const property = await tx.property.create({
         data: {
-          name: propertyData.name,
-          description: propertyData.description,
+          name: multilingualName,
+          description: multilingualDescription,
           price: propertyData.price,
           statusId: propertyData.statusId,
           typeId: propertyData.typeId,
@@ -347,7 +359,7 @@ export async function saveProperty(
 
 export async function editProperty(
   propertyId: number,
-  propertyData: AddPropertyInputType,
+  propertyData: any, // Changed to any to accept multilingual structure
   newImagesUrls: string[],
   deletedImageIDs: number[],
   newVideosUrls: string[],
@@ -360,14 +372,25 @@ export async function editProperty(
     throw new Error("L'identifiant de la propriété est requis.");
   }
 
+  // Handle multilingual name and description
+  const multilingualName = typeof propertyData.name === 'object'
+    ? propertyData.name
+    : { fr: propertyData.name, en: propertyData.name };
+
+  const multilingualDescription = propertyData.description
+    ? (typeof propertyData.description === 'object'
+      ? propertyData.description
+      : { fr: propertyData.description, en: propertyData.description })
+    : null;
+
   try {
     // Définir les données à mettre à jour
     const dataToUpdate = {
-      name: propertyData.name,
+      name: multilingualName,
       price: propertyData.price,
       statusId: propertyData.statusId,
       typeId: propertyData.typeId,
-      description: propertyData.description,
+      description: multilingualDescription,
       contact: {
         update: propertyData.contact,
       },

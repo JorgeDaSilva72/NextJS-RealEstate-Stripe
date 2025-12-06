@@ -29,8 +29,8 @@ datasource db {
 
 model User {
   id            String          @id
-  firstName     String
-  lastName      String
+  firstname        Json
+  lastname        Json
   email         String
   avatarUrl     String?
   createdAt     DateTime        @default(now())
@@ -47,8 +47,8 @@ model User {
 
 model Property {
   id          Int               @id @default(autoincrement())
-  name        String
-  description String
+  name        Json
+  description Json
   price       Int
   userId      String
   user        User              @relation(fields: [userId], references: [id])
@@ -103,7 +103,7 @@ model PropertyLocation {
   state         String
   zip           String
   region        String
-  landmark      String
+  landmark      Json
   propertyId    Int      @unique
   property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
@@ -138,7 +138,7 @@ model PropertyVideo {
 
 model Contact {
   id         Int      @id @default(autoincrement())
-  name       String
+  name        Json
   phone      String
   email      String
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
