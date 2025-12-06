@@ -165,10 +165,22 @@ import UploadAvatar from "./_components/UploadAvatar";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import PageTitle from "../../components/pageTitle";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 
 const ProfilePage = async () => {
   const t = await getTranslations("ProfilePage");
+  const locale = await getLocale();
+
+  const getLocalizedText = (field: any, locale: string): string => {
+    if (!field) return "";
+    if (typeof field === "string") return field;
+    if (typeof field === "object") {
+      return (
+        field[locale] || field.fr || field.en || Object.values(field)[0] || ""
+      );
+    }
+    return String(field);
+  };
 
   try {
     // Obtenez la session et l'utilisateur
@@ -215,7 +227,10 @@ const ProfilePage = async () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Attribute
               title={t("name")}
-              value={`${dbUser?.firstName} ${dbUser?.lastName}`}
+              value={`${getLocalizedText(
+                (dbUser as any)?.firstname,
+                locale
+              )} ${getLocalizedText((dbUser as any)?.lastname, locale)}`}
             />
             <Attribute title={t("email")} value={dbUser?.email} />
             <Attribute
