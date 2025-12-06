@@ -433,7 +433,7 @@ const PropertyPage = async ({ params }: Props) => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-10">
           {property.images.length > 0 && (
             <div className="col-span-1 lg:col-span-2 rounded-2xl overflow-hidden shadow-lg">
-              <ImageThumbnails images={property.images.map((img) => img.url)} />
+              <ImageThumbnails images={property.images.map((img: any) => img.url)} />
             </div>
           )}
           <div
