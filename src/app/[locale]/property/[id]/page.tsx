@@ -366,7 +366,8 @@ interface ShareButtonsProps {
 const PropertyPage = async ({ params }: Props) => {
   const t = await getTranslations("Property");
 
-  const property = await prisma.property.findUnique({
+  // Using findFirst instead of findUnique to attempt to bypass cached query plan issues
+  const property = await prisma.property.findFirst({
     where: {
       id: +params.id,
     },
