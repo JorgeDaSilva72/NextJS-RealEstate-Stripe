@@ -329,9 +329,10 @@ const Basic = (props: Props) => {
         label={t("propertyType")}
         selectionMode="single"
         name="typeId"
-        defaultSelectedKeys={[
-          getValues().typeId ? getValues().typeId.toString() : "0",
-        ]}
+        placeholder={t("selectPropertyType") || "Veuillez sélectionner un type"}
+        defaultSelectedKeys={
+          getValues().typeId ? [getValues().typeId.toString()] : []
+        }
       >
         {props.types.map((item) => (
           <SelectItem key={item.id} value={item.id}>
@@ -346,9 +347,10 @@ const Basic = (props: Props) => {
         label={t("transactionType")}
         selectionMode="single"
         name="statusId"
-        defaultSelectedKeys={[
-          getValues().statusId ? getValues().statusId.toString() : "0",
-        ]}
+        placeholder={t("selectTransactionType") || "Veuillez sélectionner un statut"}
+        defaultSelectedKeys={
+          getValues().statusId ? [getValues().statusId.toString()] : []
+        }
       >
         {props.statuses.map((item) => (
           <SelectItem key={item.id} value={item.id}>
