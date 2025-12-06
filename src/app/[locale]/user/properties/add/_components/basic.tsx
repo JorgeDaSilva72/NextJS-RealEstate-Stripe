@@ -329,7 +329,7 @@ const Basic = (props: Props) => {
         label={t("propertyType")}
         selectionMode="single"
         name="typeId"
-        placeholder={t("selectPropertyType") || "Veuillez sélectionner un type"}
+        placeholder="Veuillez sélectionner un type"
         defaultSelectedKeys={
           getValues().typeId ? [getValues().typeId.toString()] : []
         }
@@ -347,7 +347,7 @@ const Basic = (props: Props) => {
         label={t("transactionType")}
         selectionMode="single"
         name="statusId"
-        placeholder={t("selectTransactionType") || "Veuillez sélectionner un statut"}
+        placeholder="Veuillez sélectionner un statut"
         defaultSelectedKeys={
           getValues().statusId ? [getValues().statusId.toString()] : []
         }
