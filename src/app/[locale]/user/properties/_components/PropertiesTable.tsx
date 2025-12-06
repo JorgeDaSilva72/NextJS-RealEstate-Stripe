@@ -160,6 +160,16 @@ const PropertiesTable = ({ properties, totalPages, currentPage }: any) => {
   const router = useRouter();
   const t = useTranslations("PropertiesTable");
 
+  // Helper function to extract text from multilingual JSON
+  const getLocalizedText = (field: any, locale: string = 'fr'): string => {
+    if (!field) return '';
+    if (typeof field === 'string') return field;
+    if (typeof field === 'object') {
+      return field[locale] || field.fr || field.en || '';
+    }
+    return String(field);
+  };
+
   useEffect(() => {
     (async () => {
       if (user?.id) {
@@ -182,7 +192,7 @@ const PropertiesTable = ({ properties, totalPages, currentPage }: any) => {
         <TableBody>
           {properties.map((item: any, index: number) => (
             <TableRow key={index}>
-              <TableCell>{item.name}</TableCell>
+              <TableCell>{getLocalizedText(item.name)}</TableCell>
               <TableCell>{item.price}</TableCell>
               <TableCell>{item.type.value}</TableCell>
               <TableCell>{item.status.value}</TableCell>
