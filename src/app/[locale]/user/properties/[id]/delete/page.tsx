@@ -65,7 +65,7 @@ import prisma from "@/lib/prisma";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { Button } from "@nextui-org/react";
 import { Link } from "@/i18n/routing";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { notFound, redirect } from "next/navigation";
 
 interface Props {
@@ -75,6 +75,18 @@ interface Props {
 export default async function DeletePropertyPage({ params }: Props) {
   // 🔹 On attend que getTranslations() se résolve avant d'afficher le JSX
   const t = await getTranslations("DeletePropertyPage");
+  const locale = await getLocale();
+
+  const getLocalizedText = (field: any, locale: string): string => {
+    if (!field) return "";
+    if (typeof field === "string") return field;
+    if (typeof field === "object") {
+      return (
+        field[locale] || field.fr || field.en || Object.values(field)[0] || ""
+      );
+    }
+    return String(field);
+  };
 
   const { getUser } = getKindeServerSession();
   const property = await prisma.property.findUnique({
@@ -104,7 +116,9 @@ export default async function DeletePropertyPage({ params }: Props) {
       <p>{t("confirmDelete")}</p>
       <p>
         <span className="text-slate-400">{t("title")}: </span>
-        <span className="text-slate-700">{property.name}</span>
+        <span className="text-slate-700">
+          {getLocalizedText(property.name, locale)}
+        </span>
       </p>
       <div className="flex justify-center gap-3">
         <Link href="/user/properties">
