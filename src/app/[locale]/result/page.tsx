@@ -112,12 +112,12 @@ export default async function Home({ searchParams }: Props) {
       type: true,
     },
     where: {
-      ...(!!query && {
-        name: {
-          contains: String(query),
-          mode: "insensitive", // Rendre la recherche insensible à la casse
-        },
-      }),
+      // ...(!!query && {
+      //   name: {
+      //     contains: String(query),
+      //     mode: "insensitive", // Rendre la recherche insensible à la casse
+      //   },
+      // }),
       ...(!!queryStatus && {
         status: {
           is: {
@@ -192,11 +192,11 @@ export default async function Home({ searchParams }: Props) {
 
   const totalPropertiesPromise = prisma.property.count({
     where: {
-      ...(!!query && {
-        name: {
-          contains: String(query),
-        },
-      }),
+      // ...(!!query && {
+      //   name: {
+      //     contains: String(query),
+      //   },
+      // }),
       ...(!!queryStatus && {
         status: {
           is: {
