@@ -711,7 +711,10 @@
     "videoLimitExceeded": "Vous avez dépassé la limite de {limit} vidéo.",
     "unlimited": "Illimité",
     "processing": "Traitement en cours...",
-    "translatingAndSaving": "Traduction et sauvegarde de votre annonce..."
+    "translatingAndSaving": "Traduction et sauvegarde de votre annonce...",
+    "translating": "Traduction multilingue (EN, AR, PT)...",
+    "uploadingImages": "Téléchargement des images...",
+    "saving": "Enregistrement final..."
   },
   "PropertyForm": {
     "Basic": {

@@ -1181,7 +1181,7 @@ const Appbar = ({ children }: Props) => {
         </NavbarBrand>
       </NavbarContent>
 
-      <NavbarContent className="hidden lg:flex gap-6" justify="center">
+      <NavbarContent className="hidden lg:flex gap-8 ml-16" justify="center">
         {navigationItems.map((item) => (
           <Dropdown key={item.label}>
             <NavbarItem>

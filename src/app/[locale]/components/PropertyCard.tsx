@@ -313,12 +313,12 @@ import {
 import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
 import { formatPrice } from "@/lib/formatPrice";
 import { useFavorites } from "../context/FavoriteContext";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/routing";
 
 interface Property {
   id: number;
-  name: string;
+  name: any; // Changed from string to any to match Json type from Prisma
   price: number;
   type?: {
     value: string;
@@ -346,6 +346,18 @@ interface Props {
 
 const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
   const t = useTranslations("PropertyCard");
+
+  const locale = useLocale();
+
+  // Helper function to extract text from multilingual JSON
+  const getLocalizedText = (field: any, locale: string): string => {
+    if (!field) return '';
+    if (typeof field === 'string') return field;
+    if (typeof field === 'object') {
+      return field[locale] || field.fr || field.en || field.ar || field.pt || '';
+    }
+    return String(field);
+  };
 
   const [isImageLoading, setIsImageLoading] = React.useState(true);
   const [isHovered, setIsHovered] = React.useState(false);
@@ -449,11 +461,10 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
                   property.images[currentImageIndex]?.url ??
                   "/imageNotFound.jpg"
                 }
-                className={`w-full h-full object-cover transition-transform duration-300 ${
-                  isHovered ? "scale-110" : "scale-100"
-                }`}
+                className={`w-full h-full object-cover transition-transform duration-300 ${isHovered ? "scale-110" : "scale-100"
+                  }`}
                 alt={t("imageAlt", {
-                  propertyName: property.name,
+                  propertyName: getLocalizedText(property.name, locale),
                   imageNumber: currentImageIndex + 1,
                 })}
                 onLoad={handleImageLoad}
@@ -509,11 +520,10 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
             aria-label={t("toggleFavorite")}
           >
             <Heart
-              className={`w-5 h-5 transition-colors ${
-                isPropertyFavorite
-                  ? "fill-red-500 text-red-500"
-                  : "text-gray-600"
-              }`}
+              className={`w-5 h-5 transition-colors ${isPropertyFavorite
+                ? "fill-red-500 text-red-500"
+                : "text-gray-600"
+                }`}
             />
           </button>
 
@@ -536,7 +546,7 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
 
         <div className="p-2 flex flex-col">
           <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
-            {property.name}
+            {getLocalizedText(property.name, locale)}
           </h3>
 
           <div className="flex flex-wrap items-center gap-4 mb-2 text-gray-600">
