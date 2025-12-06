@@ -335,7 +335,7 @@ const Basic = (props: Props) => {
         selectedKeys={typeId ? [typeId.toString()] : []}
         onSelectionChange={(keys) => {
           const value = Array.from(keys)[0];
-          setValue("typeId", value ? parseInt(value.toString()) : 0);
+          setValue("typeId", value ? value.toString() : "" as any);
         }}
       >
         {props.types.map((item) => (
@@ -352,7 +352,7 @@ const Basic = (props: Props) => {
         selectedKeys={statusId ? [statusId.toString()] : []}
         onSelectionChange={(keys) => {
           const value = Array.from(keys)[0];
-          setValue("statusId", value ? parseInt(value.toString()) : 0);
+          setValue("statusId", value ? value.toString() : "" as any);
         }}
       >
         {props.statuses.map((item) => (
