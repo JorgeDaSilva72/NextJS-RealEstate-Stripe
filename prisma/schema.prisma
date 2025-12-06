@@ -103,7 +103,7 @@ model PropertyLocation {
   state         String
   zip           String
   region        String
-  landmark      String
+  landmark      Json
   propertyId    Int      @unique
   property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }

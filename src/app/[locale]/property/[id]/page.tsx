@@ -547,7 +547,7 @@ const PropertyPage = async ({ params }: Props) => {
                 <Attribute
                   icon="ℹ️"
                   label={t("information")}
-                  value={property.location?.landmark}
+                  value={getLocalizedText(property.location?.landmark, params.locale)}
                 />
               </div>
             </Card>

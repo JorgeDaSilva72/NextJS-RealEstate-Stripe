@@ -623,18 +623,26 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
     try {
       setIsTranslating(true);
 
-      // Translate name and description from French to English, Arabic, and Portuguese
+      // Translate name, description, and landmark from French to English, Arabic, and Portuguese
       const nameFR = data.name || "";
       const descriptionFR = data.description || "";
+      const landmarkFR = data.location.landmark || "";
 
       // Translate to all target languages in parallel
-      const [nameEN, nameAR, namePT, descriptionEN, descriptionAR, descriptionPT] = await Promise.all([
+      const [
+        nameEN, nameAR, namePT,
+        descriptionEN, descriptionAR, descriptionPT,
+        landmarkEN, landmarkAR, landmarkPT
+      ] = await Promise.all([
         translateField(nameFR, "en"),
         translateField(nameFR, "ar"),
         translateField(nameFR, "pt"),
         translateField(descriptionFR, "en"),
         translateField(descriptionFR, "ar"),
         translateField(descriptionFR, "pt"),
+        translateField(landmarkFR, "en"),
+        translateField(landmarkFR, "ar"),
+        translateField(landmarkFR, "pt"),
       ]);
 
       // Prepare multilingual data with 4 languages
@@ -642,6 +650,10 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
         ...data,
         name: { fr: nameFR, en: nameEN, ar: nameAR, pt: namePT },
         description: { fr: descriptionFR, en: descriptionEN, ar: descriptionAR, pt: descriptionPT },
+        location: {
+          ...data.location,
+          landmark: { fr: landmarkFR, en: landmarkEN, ar: landmarkAR, pt: landmarkPT }
+        }
       };
 
       setIsTranslating(false);
