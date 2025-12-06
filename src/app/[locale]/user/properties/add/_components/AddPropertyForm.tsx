@@ -623,20 +623,25 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
     try {
       setIsTranslating(true);
 
-      // Translate name and description from French to English
+      // Translate name and description from French to English, Arabic, and Portuguese
       const nameFR = data.name || "";
       const descriptionFR = data.description || "";
 
-      const [nameEN, descriptionEN] = await Promise.all([
+      // Translate to all target languages in parallel
+      const [nameEN, nameAR, namePT, descriptionEN, descriptionAR, descriptionPT] = await Promise.all([
         translateField(nameFR, "en"),
+        translateField(nameFR, "ar"),
+        translateField(nameFR, "pt"),
         translateField(descriptionFR, "en"),
+        translateField(descriptionFR, "ar"),
+        translateField(descriptionFR, "pt"),
       ]);
 
-      // Prepare multilingual data
+      // Prepare multilingual data with 4 languages
       const multilingualData = {
         ...data,
-        name: { fr: nameFR, en: nameEN },
-        description: { fr: descriptionFR, en: descriptionEN },
+        name: { fr: nameFR, en: nameEN, ar: nameAR, pt: namePT },
+        description: { fr: descriptionFR, en: descriptionEN, ar: descriptionAR, pt: descriptionPT },
       };
 
       setIsTranslating(false);

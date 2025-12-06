@@ -165,7 +165,8 @@ const PropertiesTable = ({ properties, totalPages, currentPage }: any) => {
     if (!field) return '';
     if (typeof field === 'string') return field;
     if (typeof field === 'object') {
-      return field[locale] || field.fr || field.en || '';
+      // Try requested locale first, then fallback to fr, en, ar, pt
+      return field[locale] || field.fr || field.en || field.ar || field.pt || '';
     }
     return String(field);
   };
