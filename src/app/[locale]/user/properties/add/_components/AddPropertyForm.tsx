@@ -543,6 +543,7 @@ import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import fileToBase64 from "@/lib/fileToBase64";
+import { translateField } from "@/lib/translation-helper";
 
 interface Props {
   types: PropertyType[];
@@ -614,11 +615,32 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
   const [savedVideosUrl, setSavedVideosUrl] = useState<PropertyVideo[]>(
     props.property?.videos ?? []
   );
+  const [isTranslating, setIsTranslating] = useState(false);
 
   const { user } = useKindeBrowserClient();
 
   const onSubmit: SubmitHandler<AddPropertyInputType> = async (data) => {
     try {
+      setIsTranslating(true);
+
+      // Translate name and description from French to English
+      const nameFR = data.name || "";
+      const descriptionFR = data.description || "";
+
+      const [nameEN, descriptionEN] = await Promise.all([
+        translateField(nameFR, "en"),
+        translateField(descriptionFR, "en"),
+      ]);
+
+      // Prepare multilingual data
+      const multilingualData = {
+        ...data,
+        name: { fr: nameFR, en: nameEN },
+        description: { fr: descriptionFR, en: descriptionEN },
+      };
+
+      setIsTranslating(false);
+
       const imageUrls = await Promise.all(
         images.map(async (img) => {
           const base64 = await fileToBase64(img);
@@ -650,7 +672,7 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
 
         await editProperty(
           props.property?.id,
-          data,
+          multilingualData as any,
           imageUrls,
           deletedImageIDs,
           videos,
@@ -659,12 +681,14 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
 
         toast.success(t("propertyEdited"));
       } else {
-        await saveProperty(data, imageUrls, videos, user?.id!);
+        await saveProperty(multilingualData as any, imageUrls, videos, user?.id!);
         toast.success(t("propertyAdded"));
       }
     } catch (error) {
       console.error({ error });
+      toast.error(t("error") || "An error occurred");
     } finally {
+      setIsTranslating(false);
       router.push("/user/properties");
       router.refresh();
     }
