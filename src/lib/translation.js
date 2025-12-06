@@ -1,9 +1,11 @@
 import { TranslationServiceClient } from "@google-cloud/translate";
 
 const client = new TranslationServiceClient({
-    // Do NOT use credentials (no private key or client email)
-    // Use Application Default Credentials or service account impersonation
     projectId: process.env.GOOGLE_PROJECT_ID,
+    credentials: {
+        client_email: process.env.GOOGLE_CLIENT_EMAIL,
+        private_key: (process.env.GOOGLE_PRIVATE_KEY || "").replace(/\\n/g, "\n"),
+    },
 });
 
 /**
