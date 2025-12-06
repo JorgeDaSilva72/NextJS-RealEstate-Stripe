@@ -544,6 +544,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import fileToBase64 from "@/lib/fileToBase64";
 import { translateField } from "@/lib/translation-helper";
+import { Progress } from "@nextui-org/react";
 
 interface Props {
   types: PropertyType[];
@@ -793,6 +794,27 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
           />
         </form>
       </FormProvider>
+
+      {/* Loading Progress Bar Overlay */}
+      {isTranslating && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex flex-col items-center justify-center p-4">
+          <div className="bg-white p-6 rounded-xl shadow-2xl max-w-md w-full flex flex-col items-center gap-4">
+            <h3 className="text-xl font-bold text-gray-800">
+              {t("processing")}
+            </h3>
+            <p className="text-gray-600 text-center text-sm">
+              {t("translatingAndSaving")}
+            </p>
+            <Progress
+              size="lg"
+              isIndeterminate
+              aria-label="Loading..."
+              className="w-full"
+              color="primary"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

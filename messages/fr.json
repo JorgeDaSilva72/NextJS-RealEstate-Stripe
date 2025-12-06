@@ -709,7 +709,9 @@
     "validationError": "Veuillez corriger les erreurs dans le formulaire",
     "photoLimitExceeded": "Vous avez dépassé la limite de {limit} photos.",
     "videoLimitExceeded": "Vous avez dépassé la limite de {limit} vidéo.",
-    "unlimited": "Illimité"
+    "unlimited": "Illimité",
+    "processing": "Traitement en cours...",
+    "translatingAndSaving": "Traduction et sauvegarde de votre annonce..."
   },
   "PropertyForm": {
     "Basic": {
