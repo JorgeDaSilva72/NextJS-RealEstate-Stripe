@@ -31,7 +31,6 @@ export async function translateText(text, targetLanguage) {
         return response.translations[0]?.translatedText || text;
     } catch (error) {
         console.error("Translation error:", error);
-        // Return original text if translation fails
-        return text;
+        throw error; // Re-throw to let the API route handle it and return 500
     }
 }
