@@ -290,6 +290,7 @@ const Basic = (props: Props) => {
     formState: { errors },
     trigger,
     getValues,
+    setValue,
   } = useFormContext<AddPropertyInputType>();
 
   const handleNext = async () => {
@@ -323,37 +324,35 @@ const Basic = (props: Props) => {
         defaultValue={getValues().description}
       />
       <Select
-        {...register("typeId", { setValueAs: (v: any) => v.toString() })}
         errorMessage={errors.typeId?.message}
         isInvalid={!!errors.typeId}
         label={t("propertyType")}
-        selectionMode="single"
-        name="typeId"
         placeholder="Veuillez sélectionner un type"
-        defaultSelectedKeys={
-          getValues().typeId ? [getValues().typeId.toString()] : []
-        }
+        selectedKeys={getValues().typeId ? [getValues().typeId.toString()] : []}
+        onSelectionChange={(keys) => {
+          const value = Array.from(keys)[0];
+          setValue("typeId", value ? parseInt(value.toString()) : 0);
+        }}
       >
         {props.types.map((item) => (
-          <SelectItem key={item.id} value={item.id}>
+          <SelectItem key={item.id} value={item.id.toString()}>
             {item.value}
           </SelectItem>
         ))}
       </Select>
       <Select
-        {...register("statusId", { setValueAs: (v: any) => v.toString() })}
         errorMessage={errors.statusId?.message}
         isInvalid={!!errors.statusId}
         label={t("transactionType")}
-        selectionMode="single"
-        name="statusId"
         placeholder="Veuillez sélectionner un statut"
-        defaultSelectedKeys={
-          getValues().statusId ? [getValues().statusId.toString()] : []
-        }
+        selectedKeys={getValues().statusId ? [getValues().statusId.toString()] : []}
+        onSelectionChange={(keys) => {
+          const value = Array.from(keys)[0];
+          setValue("statusId", value ? parseInt(value.toString()) : 0);
+        }}
       >
         {props.statuses.map((item) => (
-          <SelectItem key={item.id} value={item.id}>
+          <SelectItem key={item.id} value={item.id.toString()}>
             {item.value}
           </SelectItem>
         ))}
