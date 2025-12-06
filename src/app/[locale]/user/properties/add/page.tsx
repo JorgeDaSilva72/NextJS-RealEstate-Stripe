@@ -155,6 +155,8 @@ const AddPropertyPage = async () => {
       dbUser = await prisma.user.create({
         data: {
           id: user.id,
+          firstname: user.given_name ?? "",
+          lastname: user.family_name ?? "",
           email: user.email || "",
           avatarUrl: user.picture || null,
         },

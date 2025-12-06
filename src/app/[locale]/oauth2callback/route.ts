@@ -42,8 +42,8 @@ export async function GET(
       await prisma.user.create({
         data: {
           id: user.id,
-          firstName: user.given_name ?? "",
-          lastName: user.family_name ?? "",
+          firstname: user.given_name ?? "",
+          lastname: user.family_name ?? "",
           email: user.email ?? "",
           avatarUrl: generateAvatarUrl(user.id),
         },
