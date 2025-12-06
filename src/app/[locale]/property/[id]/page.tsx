@@ -380,7 +380,7 @@ const PropertyPage = async ({ params }: Props) => {
     prisma.propertyStatus.findUnique({ where: { id: propertyRaw.statusId } }),
     prisma.propertyType.findUnique({ where: { id: propertyRaw.typeId } }),
     prisma.propertyFeature.findUnique({ where: { propertyId: propertyRaw.id } }),
-    prisma.location.findUnique({ where: { propertyId: propertyRaw.id } }),
+    prisma.propertyLocation.findUnique({ where: { propertyId: propertyRaw.id } }),
     prisma.contact.findUnique({ where: { propertyId: propertyRaw.id } }),
     prisma.propertyImage.findMany({ where: { propertyId: propertyRaw.id } }),
     prisma.propertyVideo.findMany({ where: { propertyId: propertyRaw.id } }),
