@@ -366,21 +366,37 @@ interface ShareButtonsProps {
 const PropertyPage = async ({ params }: Props) => {
   const t = await getTranslations("Property");
 
-  // Using findFirst instead of findUnique to attempt to bypass cached query plan issues
-  const property = await prisma.property.findFirst({
-    where: {
-      id: +params.id,
-    },
-    include: {
-      status: true,
-      type: true,
-      feature: true,
-      location: true,
-      contact: true,
-      images: true,
-      videos: true,
-    },
-  });
+  // Using raw SQL to bypass "cached plan must not change result type" error
+  // This occurs because the column type changed from String to JSON without a DB restart
+  const properties = await prisma.$queryRaw`
+    SELECT * FROM "Property" WHERE id = ${+params.id} LIMIT 1
+  `;
+  const propertyRaw = Array.isArray(properties) ? properties[0] : null;
+
+  if (!propertyRaw) return notFound();
+
+  // Fetch relations separately since we can't use include with raw query easily
+  const [status, type, feature, location, contact, images, videos] = await Promise.all([
+    prisma.propertyStatus.findUnique({ where: { id: propertyRaw.statusId } }),
+    prisma.propertyType.findUnique({ where: { id: propertyRaw.typeId } }),
+    prisma.propertyFeature.findUnique({ where: { propertyId: propertyRaw.id } }),
+    prisma.location.findUnique({ where: { propertyId: propertyRaw.id } }),
+    prisma.contact.findUnique({ where: { propertyId: propertyRaw.id } }),
+    prisma.propertyImage.findMany({ where: { propertyId: propertyRaw.id } }),
+    prisma.propertyVideo.findMany({ where: { propertyId: propertyRaw.id } }),
+  ]);
+
+  // Reconstruct the property object to match the expected structure
+  const property = {
+    ...propertyRaw,
+    status,
+    type,
+    feature,
+    location,
+    contact,
+    images,
+    videos,
+  };
   const userFound = await isUserDiamant(+params.id);
 
   if (!property) return notFound();
