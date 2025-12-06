@@ -594,7 +594,7 @@ const PropertyPage = async ({ params }: Props) => {
               <Card className="p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
                 <Title title={t("videos")} />
                 <div className="grid grid-cols-1 gap-4 mt-4">
-                  {property.videos.map((video) => (
+                  {property.videos.map((video: any) => (
                     <div
                       key={video.id}
                       className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
