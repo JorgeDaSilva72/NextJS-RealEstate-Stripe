@@ -7,7 +7,7 @@ import Location from "./Location";
 import Features from "./Features";
 import Picture from "./Picture";
 import Contact from "./Contact";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 import {
   Prisma,
@@ -62,6 +62,18 @@ export type AddPropertyInputType = z.infer<
 const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
   const t = useTranslations("AddPropertyForm");
   const router = useRouter();
+  const locale = useLocale();
+
+  const getLocalizedText = (field: any, locale: string): string => {
+    if (!field) return "";
+    if (typeof field === "string") return field;
+    if (typeof field === "object") {
+      return (
+        field[locale] || field.fr || field.en || Object.values(field)[0] || ""
+      );
+    }
+    return String(field);
+  };
 
   const steps = [
     { label: t("steps.basic") },
@@ -74,10 +86,20 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
   const methods = useForm<AddPropertyInputType>({
     resolver: zodResolver(getAddPropertyFormSchema(t)),
     defaultValues: {
-      contact: props.property?.contact ?? undefined,
-      location: props.property?.location ?? undefined,
-      description: props.property?.description ?? undefined,
-      name: props.property?.name ?? undefined,
+      contact: props.property?.contact
+        ? {
+          ...props.property.contact,
+          name: getLocalizedText(props.property.contact.name, locale),
+        }
+        : undefined,
+      location: props.property?.location
+        ? {
+          ...props.property.location,
+          landmark: getLocalizedText(props.property.location.landmark, locale),
+        }
+        : undefined,
+      description: getLocalizedText(props.property?.description, locale),
+      name: getLocalizedText(props.property?.name, locale),
       price: props.property?.price ?? undefined,
       statusId: props.property?.statusId ?? undefined,
       typeId: props.property?.typeId ?? undefined,
