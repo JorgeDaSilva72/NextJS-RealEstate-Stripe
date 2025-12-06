@@ -521,13 +521,27 @@ export default async function Home({ params, searchParams }: Props) {
       // country: { select: { code: true } }, // Vous pouvez inclure le code du pays pour l'affichage
 
       images: {
+        orderBy: [
+          // 1. Priorité à l'image principale (true en premier) // Image principale en premier (true > false)
+          { isMain: "desc" },
+          // 2. Ensuite, trier par ordre d'affichage
+          { displayOrder: "asc" },
+          // 3. Enfin, trier par date de création (au cas où)
+          { createdAt: "asc" },
+        ],
         select: {
           url: true,
+          // Inclure isMain si vous en avez besoin dans le composant
+          isMain: true,
         },
-        where: {
-          isMain: true, // Sélectionner uniquement l'image principale pour la card
-        },
-        take: 1, // Ne prendre qu'une seule image
+
+        // select: {
+        //   url: true,
+        // },
+        // where: {
+        //   isMain: true, // Sélectionner uniquement l'image principale pour la card
+        // },
+        // take: 1, // Ne prendre qu'une seule image
       },
       location: {
         select: {
