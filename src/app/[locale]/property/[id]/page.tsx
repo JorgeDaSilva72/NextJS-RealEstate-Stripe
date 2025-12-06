@@ -392,6 +392,16 @@ const PropertyPage = async ({ params }: Props) => {
     return url;
   };
 
+  // Helper function to extract text from multilingual JSON
+  const getLocalizedText = (field: any, locale: string = 'fr'): string => {
+    if (!field) return '';
+    if (typeof field === 'string') return field;
+    if (typeof field === 'object') {
+      return field[locale] || field.fr || field.en || '';
+    }
+    return String(field);
+  };
+
   const currentUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/${params.locale}/property/${params.id}`;
 
   return (
@@ -409,13 +419,12 @@ const PropertyPage = async ({ params }: Props) => {
             </div>
           )}
           <div
-            className={`col-span-1 ${
-              property.images.length === 0 ? "lg:col-span-3" : ""
-            } space-y-6`}
+            className={`col-span-1 ${property.images.length === 0 ? "lg:col-span-3" : ""
+              } space-y-6`}
           >
             <Card className="p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
               <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-4">
-                {property.name}
+                {getLocalizedText(property.name, params.locale)}
               </h2>
 
               <div className="flex gap-2 text-sm text-gray-600">
@@ -452,8 +461,8 @@ const PropertyPage = async ({ params }: Props) => {
               <div className="mt-4">
                 <ShareButtons
                   url={currentUrl}
-                  title={t("shareTitle", { propertyName: property.name })}
-                  description={property.description}
+                  title={t("shareTitle", { propertyName: getLocalizedText(property.name, params.locale) })}
+                  description={getLocalizedText(property.description, params.locale)}
                 />
               </div>
             </Card>
@@ -461,7 +470,7 @@ const PropertyPage = async ({ params }: Props) => {
             <Card className="p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
               <Title title={t("description")} />
               <div className="mt-4">
-                <DescriptionCard description={property.description} />
+                <DescriptionCard description={getLocalizedText(property.description, params.locale)} />
               </div>
             </Card>
 
