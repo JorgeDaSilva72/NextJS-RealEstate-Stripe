@@ -360,7 +360,7 @@ import { useSearchParams } from "next/navigation";
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 
-import { AFRICAN_FRANCOPHONE_COUNTRIES } from "../../../data/countries";
+// import { AFRICAN_FRANCOPHONE_COUNTRIES } from "../../../data/countries";
 import useFetchValues from "./useFetchValues";
 import { FilterValueTypes } from "./useFilterChange";
 import { transformCountries } from "@/lib/utils";
@@ -452,9 +452,12 @@ const useFilterDatas = () => {
     Number(searchParams.get("maxBathrooms")) || 10,
   ]);
 
-  const AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED = transformCountries(
-    AFRICAN_FRANCOPHONE_COUNTRIES
-  );
+  // NOUVEAU: État pour les données des pays
+  const [countries, setCountries] = useState<TranslatedItem[]>([]);
+
+  // const AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED = transformCountries(
+  //   AFRICAN_FRANCOPHONE_COUNTRIES
+  // );
 
   // Options avec traductions
 
@@ -485,14 +488,26 @@ const useFilterDatas = () => {
     [cities, t]
   ); // Dépend de 'cities' et 't'
 
-  const AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED_WITH_NONE_OPTION =
-    React.useMemo(
-      () => [
-        { id: "none", value: t("allCountries") },
-        ...transformCountries(AFRICAN_FRANCOPHONE_COUNTRIES),
-      ],
-      [t]
-    ); // Dépend uniquement de 't'
+  // const AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED_WITH_NONE_OPTION =
+  //   React.useMemo(
+  //     () => [
+  //       { id: "none", value: t("allCountries") },
+  //       ...transformCountries(AFRICAN_FRANCOPHONE_COUNTRIES),
+  //     ],
+  //     [t]
+  //   ); // Dépend uniquement de 't'
+
+  // NOUVEAU: Options des pays basées sur la BDD
+  const countriesWithNoneOption = useMemo(
+    () => [
+      { id: "none", value: t("allCountries") },
+      ...countries.map((item) => ({
+        id: item.id.toString(),
+        value: item.value,
+      })),
+    ],
+    [countries, t]
+  );
 
   const [filterDatas, setFilterDatas] = useState<SelectFilterTypes>([]);
 
@@ -515,6 +530,12 @@ const useFilterDatas = () => {
       setCities,
       `/api/searchCities?lang=${locale}&countryId=${selectedCountry}`,
       t("fetchErrorCities")
+    );
+    // NOUVEAU: Fetch des pays traduits
+    fetchValue(
+      setCountries,
+      `/api/searchCountries?lang=${locale}`,
+      t("fetchErrorCountries")
     );
   }, [locale, selectedCountry, fetchValue, t]); // Re-fetch quand la langue ou le pays change. Les setters (setStatuses, setTypes, setCities) n'ont pas besoin d'être inclus car ils sont stables.
 
@@ -541,7 +562,9 @@ const useFilterDatas = () => {
         ariaLabel: t("country"),
         placeholder: t("chooseCountry"),
         name: "country",
-        items: AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED_WITH_NONE_OPTION,
+        // items: AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED_WITH_NONE_OPTION,
+        // Utilisation du nouveau tableau dynamique
+        items: countriesWithNoneOption,
         value: selectedCountry,
         setValue: setSelectedCountry,
       },
@@ -628,11 +651,11 @@ const useFilterDatas = () => {
     statuses,
     types,
     cities, // NOUVEAU: dépend des données des villes
-    AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED_WITH_NONE_OPTION, // <-- AJOUT
     citiesWithNoneOption, // <-- AJOUT
     statusWithNoneOption, // <-- AJOUT
     t, // <-- AJOUT
     typesWithNoneOption, // <-- AJOUT
+    countriesWithNoneOption, // <-- AJOUT
   ]);
 
   return filterDatas;
