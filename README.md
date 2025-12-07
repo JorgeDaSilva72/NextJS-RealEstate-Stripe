@@ -1,19 +1,40 @@
-## 🏠 Projet : [Nom de Votre Site d'Annonces Immobilières]
+## 🏠 Projet : https://afriqueavenirimmobilier.com/
 
 Ce projet est un site d'annonces immobilières pour tout le continent africain. Il est construit sur un stack moderne comprenant **Next.js**, **React**, **TypeScript**, et utilise **NeonDB (PostgreSQL)** géré via **Prisma**.
 
 ### 🛠️ Technologies Clés
 
-| Catégorie            | Technologie                                | Rôle                                                       |
-| :------------------- | :----------------------------------------- | :--------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| **Frontend**         | Next.js 14 (App Router), React, TypeScript | Framework pour l'interface utilisateur et le routing.      |
-| **Styling**          | [Tailwind CSS / nextUI /acertinity UI ]    | Gestion du style et du design.                             |
-| **Base de Données**  | NeonDB (PostgreSQL)                        | Base de données relationnelle flexible et _serverless_.    | supabase pour stocker notre avatar et photos des biens immobiliers (jutilise 2 buckets) |
-| **ORM**              | Prisma                                     | Couche de gestion de la base de données et des migrations. |
-| **Authentification** | Kinde Auth                                 | Gestion des utilisateurs et de l'authentification.         |
-| **Paiements**        | Stripe & PayPal                            | Plateformes de traitement des paiements.                   |
+**Frontend** : Framework pour l'interface utilisateur et le routing.
 
----
+- Next.js 14 (App Router)
+- TypeScript
+
+**Styling**: Gestion du style et du design.
+
+- Tailwind CSS
+- librairie nextUI pour les composants
+- librairie acertinity UI pour les composants animés
+
+**Base de Données** : Base de données relationnelle flexible et serverless
+
+- NeonDB (PostgreSQL)
+- Supabase pour stocker avatar et photos des biens immobiliers (jutilise 2 buckets)
+
+**ORM** : Couche de gestion de la base de données et des migrations
+
+- Prisma
+
+**Authentification** : Gestion des utilisateurs et de l'authentification
+
+- Kinde Auth
+
+**Paiements** : Plateformes de traitement des paiements.
+
+- Stripe & PayPal
+
+**Backend** :
+
+- Next.js 14
 
 ## 🚀 Démarrage Rapide (Quick Start)
 
@@ -31,10 +52,11 @@ Assurez-vous d'avoir installé les outils suivants :
 
 ```bash
 # Clonez le projet
-git clone [URL_DE_VOTRE_DEPOT]
+git clone https://github.com/JorgeDaSilva72/NextJS-RealEstate-Stripe.git
 
 # Naviguez vers le dossier du projet
-cd [NOM_DU_DOSSIER]
+cd nextjs-realstate-stripe
+
 3. Installation des Dépendances
 Utilisez votre gestionnaire de paquets préféré :
 
@@ -45,7 +67,9 @@ npm install
 
 # OU avec pnpm
 pnpm install
+
 4. Configuration de l'Environnement
+
 Le projet utilise des variables d'environnement listées dans le fichier .env.example.
 
 Créez une copie locale :
@@ -53,11 +77,13 @@ Créez une copie locale :
 Bash
 
 cp .env.example .env.local
+
 Remplissez les variables : Ouvrez le fichier .env.local et remplacez les [PLACEHOLDERS] par les clés de développement fournies par le chef de projet/manager.
 
 ⚠️ IMPORTANT : Le fichier .env.local est ignoré par Git (.gitignore) et ne doit jamais contenir de clés de production.
 
 5. Base de Données (NeonDB & Prisma)
+
 Vous devez configurer votre base de données locale (ou de développement) et exécuter les migrations.
 
 Configurez les variables DATABASE_URL et DATABASE_URL_UNPOOLED dans votre .env.local avec les informations d'accès que nous vous avons fournies.
@@ -72,14 +98,18 @@ Peuplez la base de données avec des données de test (Seeding) :
 Bash
 
 npx prisma db seed
+
 6. Lancer l'Application
 Vous pouvez maintenant lancer le serveur de développement Next.js :
 
 Bash
 
 npm run dev
+
 # L'application sera accessible sur http://localhost:3000
+
 📁 Structure du Projet
+
 Les répertoires clés du projet sont :
 
 app/[locale] : Contient toutes les pages, les layouts et les Route Handlers de l'App Router de Next.js.
@@ -95,6 +125,7 @@ lib/ : Fonctions utilitaires côté client (ex: formatage de prix, validation).
 server/ : Fonctions et logiques côté serveur (ex: interactions avec la base de données, logique d'authentification).
 
 🧑‍💻 Conventions de Développement
+
 Pour maintenir un code base cohérent, veuillez respecter les conventions suivantes :
 
 Git et Branches
@@ -123,8 +154,10 @@ Jamais de requêtes SQL brutes à moins d'une justification exceptionnelle et d'
 📝 Contact
 Pour toute question ou blocage, veuillez contacter :
 
-Chef de Projet/Tech Lead : [Jorge DA SILVA]
+Chef de Projet/Tech Lead : Jorge DA SILVA
 
-Canal de Communication : [
-    Slack Channel:  / Discord:  / Email : jorge.dasilva200172@gmail.com]
+Canal de Communication :
+    Slack Channel:  à définir
+    Discord:  à définir
+    Email : jorge.dasilva200172@gmail.com]
 ```
