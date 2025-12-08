@@ -813,6 +813,8 @@ const Search = () => {
   const [searchQuery, setSearchQuery] = useState(
     searchParams.get("query") ?? ""
   );
+
+  const keyCache = searchParams.get("key_cache") || "initial";
   // Ancien état cityValue supprimé, car la ville est maintenant gérée par SearchSelect via selectFilters.
 
   const handleInputChange = (query: string) => {
@@ -881,48 +883,48 @@ const Search = () => {
     }
   }, [searchParams, searchQuery]); // cityValue retiré des dépendances
 
-  useEffect(() => {
-    if (
-      !openModal &&
-      selectFilters &&
-      selectFilters.length > 0 &&
-      searchParams &&
-      once
-    ) {
-      selectFilters.forEach((item) => {
-        // La logique spécifique à 'city' en tant que champ texte a été retirée
+  // useEffect(() => {
+  //   if (
+  //     !openModal &&
+  //     selectFilters &&
+  //     selectFilters.length > 0 &&
+  //     searchParams &&
+  //     once
+  //   ) {
+  //     selectFilters.forEach((item) => {
+  //       // La logique spécifique à 'city' en tant que champ texte a été retirée
 
-        if (item.rangeName && item.setRange) {
-          const minRange = searchParams.get(item.rangeName[0]);
-          const maxRange = searchParams.get(item.rangeName[1]);
-          if (minRange && maxRange) {
-            item.setRange([Number(minRange), Number(maxRange)]);
-          }
-        } else if (
-          item.name &&
-          item.setValue &&
-          item.type !== "slider" &&
-          item.items
-        ) {
-          const searchString = searchParams.get(item.name);
-          let matchItem = item.items.find(
-            (value) => value.value === searchString
-          );
-          if (item.name === "sortOrder") {
-            // Logique spécifique pour 'sortOrder'
-            matchItem = item.items.find((value) => value.id === searchString);
-          }
-          if (matchItem) {
-            // Ici, on synchronise tous les SearchSelect (y compris la ville) avec les searchParams
-            item.setValue(matchItem?.id.toString());
-          } else {
-            item.setValue("");
-          }
-        }
-      });
-      setOnce(false);
-    }
-  }, [searchParams, selectFilters, openModal, once]);
+  //       if (item.rangeName && item.setRange) {
+  //         const minRange = searchParams.get(item.rangeName[0]);
+  //         const maxRange = searchParams.get(item.rangeName[1]);
+  //         if (minRange && maxRange) {
+  //           item.setRange([Number(minRange), Number(maxRange)]);
+  //         }
+  //       } else if (
+  //         item.name &&
+  //         item.setValue &&
+  //         item.type !== "slider" &&
+  //         item.items
+  //       ) {
+  //         const searchString = searchParams.get(item.name);
+  //         let matchItem = item.items.find(
+  //           (value) => value.value === searchString
+  //         );
+  //         if (item.name === "sortOrder") {
+  //           // Logique spécifique pour 'sortOrder'
+  //           matchItem = item.items.find((value) => value.id === searchString);
+  //         }
+  //         if (matchItem) {
+  //           // Ici, on synchronise tous les SearchSelect (y compris la ville) avec les searchParams
+  //           item.setValue(matchItem?.id.toString());
+  //         } else {
+  //           item.setValue("");
+  //         }
+  //       }
+  //     });
+  //     setOnce(false);
+  //   }
+  // }, [searchParams, selectFilters, openModal, once]);
 
   return (
     <>
@@ -948,9 +950,16 @@ const Search = () => {
             </button>
 
             <div className="px-6 mt-8 overflow-y-auto overflow-x-hidden max-h-[calc(90vh-200px)] scrollbar-hide">
-              <div className="flex flex-col gap-4 justify-center items-center">
+              <div
+                //  NOUVELLE CLÉ : Utiliser l'état d'ouverture du modal pour forcer le re-rendu
+                // La clé doit changer à la fois si le modal s'ouvre/ferme ET si l'URL change.
+                key={openModal.toString() + keyCache}
+                className="flex flex-col gap-4 justify-center items-center"
+              >
                 {selectFilters.map((item, index) => (
-                  <Fragment key={index}>
+                  // <Fragment key={index}>
+                  <Fragment key={item.name}>
+                    {/* Utiliser le nom comme clé stable */}
                     {item.type === "slider" ? (
                       <SearchSlider
                         ariaLabel={item.ariaLabel}
@@ -966,6 +975,9 @@ const Search = () => {
                     ) : (
                       // Ceci gère désormais TOUS les filtres de sélection, y compris la ville
                       <SearchSelect
+                        // key={item.name} // <--- Utilisez le nom du filtre (e.g., 'city', 'queryStatus') comme clé
+                        // La clé est le nom du filtre + la clé de cache
+                        key={`${item.name}-${keyCache}`} // <-- CLÉ DYNAMIQUE ET UNIQUE
                         ariaLabel={item.ariaLabel}
                         placeholder={item.placeholder || ""}
                         value={item.value || ""}
