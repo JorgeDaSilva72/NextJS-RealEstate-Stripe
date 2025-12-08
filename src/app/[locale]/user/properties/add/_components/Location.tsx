@@ -2316,98 +2316,351 @@
 // ----------------------------------------------------------
 // next-intl with claude
 
+// import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
+// import {
+//   Button,
+//   Card,
+//   Input,
+//   Select,
+//   SelectItem,
+//   Textarea,
+//   cn,
+// } from "@nextui-org/react";
+// import React, {
+//   useEffect,
+//   useState,
+//   useRef,
+//   useMemo,
+//   RefObject,
+//   ChangeEvent,
+// } from "react";
+// import { useFormContext } from "react-hook-form";
+// import { AddPropertyInputType } from "./AddPropertyForm";
+// import { useLoadScript } from "@react-google-maps/api";
+// import { AFRICAN_FRANCOPHONE_COUNTRIES } from "@/data/countries";
+// import { useTranslations } from "next-intl";
+
+// interface Props {
+//   next: () => void;
+//   prev: () => void;
+//   className?: string;
+// }
+
+// interface LocationField {
+//   name: keyof AddPropertyInputType["location"];
+//   translationKey: string;
+//   span?: number;
+//   isTextArea?: boolean;
+//   readonly?: boolean;
+// }
+
+// interface InputProps {
+//   ref: RefObject<HTMLInputElement>;
+//   label: string;
+//   placeholder: string;
+//   value: string;
+//   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+//   className: string;
+//   errorMessage?: string;
+//   isInvalid?: boolean;
+//   isLoading?: boolean;
+// }
+
+// const LocationInput: React.FC<{
+//   field: LocationField;
+//   value: string;
+//   error?: string;
+// }> = ({ field, value, error }) => {
+//   const t = useTranslations("PropertyForm.Location");
+//   const {
+//     register,
+//     formState: { errors },
+//   } = useFormContext<AddPropertyInputType>();
+
+//   const Component = field.isTextArea ? Textarea : Input;
+
+//   if (field.name === "landmark") {
+//     return (
+//       <Component
+//         {...register("location.landmark")}
+//         label={t(field.translationKey)}
+//         className={cn(
+//           field.span === 2 ? "col-span-1 md:col-span-2" : "",
+//           field.isTextArea ? "min-h-[100px]" : ""
+//         )}
+//         errorMessage={error}
+//         isInvalid={!!error}
+//       />
+//     );
+//   }
+
+//   return (
+//     <Component
+//       value={value || ""}
+//       label={t(field.translationKey)}
+//       isReadOnly={true}
+//       className={cn(
+//         field.span === 2 ? "col-span-1 md:col-span-2" : "",
+//         field.isTextArea ? "min-h-[100px]" : ""
+//       )}
+//       errorMessage={error}
+//       isInvalid={!!error}
+//     />
+//   );
+// };
+
+// const Location = (props: Props) => {
+//   const t = useTranslations("PropertyForm.Location");
+//   const {
+//     register,
+//     formState: { errors },
+//     trigger,
+//     setValue,
+//     watch,
+//   } = useFormContext<AddPropertyInputType>();
+
+//   const searchInputRef = useRef<HTMLInputElement>(null);
+//   const [searchValue, setSearchValue] = useState("");
+//   const [selectedCountry, setSelectedCountry] = useState<string>("");
+//   const [isSearching, setIsSearching] = useState(false);
+//   const [searchError, setSearchError] = useState<string | null>(null);
+
+//   // Configuration des champs de localisation
+//   const locationFields: LocationField[] = useMemo(
+//     () => [
+//       { name: "streetAddress", translationKey: "address" },
+//       { name: "zip", translationKey: "zipCode" },
+//       { name: "city", translationKey: "city" },
+//       { name: "state", translationKey: "country" },
+//       { name: "region", translationKey: "region", span: 2 },
+//       {
+//         name: "landmark",
+//         translationKey: "additionalInfo",
+//         span: 2,
+//         isTextArea: true,
+//       },
+//     ],
+//     []
+//   );
+
+//   const locationValues = watch("location");
+
+//   const { isLoaded, loadError } = useLoadScript({
+//     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+//     libraries: ["places"] as any,
+//   });
+
+//   const updateFormValues = async (place: google.maps.places.PlaceResult) => {
+//     setIsSearching(true);
+//     try {
+//       const addressMapping: Record<string, string> = {};
+
+//       if (place.address_components) {
+//         place.address_components.forEach((component) => {
+//           const value = component.long_name;
+//           if (component.types.includes("street_number")) {
+//             addressMapping.streetNumber = value;
+//           } else if (component.types.includes("route")) {
+//             addressMapping.route = value;
+//           } else if (component.types.includes("locality")) {
+//             addressMapping.city = value;
+//           } else if (component.types.includes("administrative_area_level_1")) {
+//             addressMapping.region = value;
+//           } else if (component.types.includes("country")) {
+//             addressMapping.state = value;
+//           } else if (component.types.includes("postal_code")) {
+//             addressMapping.zip = value;
+//           }
+//         });
+//       }
+
+//       const updates = {
+//         "location.streetAddress": `${addressMapping.streetNumber || ""} ${
+//           addressMapping.route || ""
+//         }`.trim(),
+//         "location.city": addressMapping.city || "",
+//         "location.state": addressMapping.state || "",
+//         "location.region": addressMapping.region || "",
+//         "location.zip": addressMapping.zip || "",
+//       };
+
+//       Object.entries(updates).forEach(([key, value]) => {
+//         setValue(key as any, value, {
+//           shouldValidate: true,
+//           shouldDirty: true,
+//         });
+//       });
+
+//       setSearchValue(place.formatted_address || "");
+//       setSearchError(null);
+//     } catch (error) {
+//       setSearchError(t("addressUpdateError"));
+//       console.error("Erreur lors de la mise à jour des valeurs:", error);
+//     } finally {
+//       setIsSearching(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     if (!isLoaded || !searchInputRef.current) return;
+
+//     const autocomplete = new google.maps.places.Autocomplete(
+//       searchInputRef.current,
+//       {
+//         componentRestrictions: {
+//           country: [selectedCountry.toLowerCase()],
+//         },
+//         fields: ["address_components", "formatted_address", "geometry"],
+//       }
+//     );
+
+//     const placeChangedListener = autocomplete.addListener(
+//       "place_changed",
+//       () => {
+//         const place = autocomplete.getPlace();
+
+//         if (!place.geometry) {
+//           setSearchError(t("noAddressDetails"));
+//           return;
+//         }
+
+//         updateFormValues(place);
+//       }
+//     );
+
+//     return () => {
+//       google.maps.event.removeListener(placeChangedListener);
+//     };
+//   }, [isLoaded, selectedCountry, t]);
+
+//   const handleNext = async () => {
+//     type LocationPath = `location.${keyof AddPropertyInputType["location"]}`;
+
+//     const fieldsToValidate: LocationPath[] = [
+//       "location.city",
+//       "location.state",
+//     ];
+
+//     if (await trigger(fieldsToValidate)) {
+//       props.next();
+//     }
+//   };
+
+//   if (loadError) {
+//     return (
+//       <Card className={cn("p-6", props.className)}>
+//         <div className="text-center text-red-500">{t("googleMapsError")}</div>
+//       </Card>
+//     );
+//   }
+
+//   return (
+//     <Card
+//       className={cn(
+//         "p-4 grid grid-cols-1 md:grid-cols-2 gap-4",
+//         props.className
+//       )}
+//     >
+//       <div className="col-span-1 md:col-span-2 mb-4">
+//         <Select
+//           label={t("selectCountry")}
+//           placeholder={t("chooseCountry")}
+//           value={selectedCountry}
+//           onChange={(e) => {
+//             setSelectedCountry(e.target.value);
+//             setSearchValue("");
+//           }}
+//         >
+//           {AFRICAN_FRANCOPHONE_COUNTRIES.map((country) => (
+//             <SelectItem key={country.code} value={country.code}>
+//               {country.name}
+//             </SelectItem>
+//           ))}
+//         </Select>
+//       </div>
+
+//       <div className="col-span-1 md:col-span-2">
+//         <Input
+//           ref={searchInputRef}
+//           label={t("searchAddress")}
+//           placeholder={
+//             selectedCountry
+//               ? t("searchAddressPlaceholder")
+//               : t("selectCountryFirst")
+//           }
+//           value={searchValue}
+//           onChange={(e) => setSearchValue(e.target.value)}
+//           className="w-full"
+//           errorMessage={searchError}
+//           isInvalid={!!searchError}
+//           isDisabled={!selectedCountry}
+//         />
+//       </div>
+
+//       {locationFields.map((field) => (
+//         <LocationInput
+//           key={field.name}
+//           field={field}
+//           value={
+//             field.name === "landmark" ? "" : locationValues?.[field.name] || ""
+//           }
+//           error={errors.location?.[field.name]?.message}
+//         />
+//       ))}
+
+//       <div className="flex flex-col md:flex-row justify-center col-span-1 md:col-span-2 gap-4 mt-4">
+//         <Button
+//           onClick={props.prev}
+//           startContent={<ChevronLeftIcon className="w-6" />}
+//           color="primary"
+//           className="w-full md:w-36"
+//         >
+//           {t("previous")}
+//         </Button>
+//         <Button
+//           onClick={handleNext}
+//           endContent={<ChevronRightIcon className="w-6" />}
+//           color="primary"
+//           className="w-full md:w-36"
+//           isLoading={isSearching}
+//         >
+//           {t("next")}
+//         </Button>
+//       </div>
+//     </Card>
+//   );
+// };
+
+// export default Location;
+
+// 08/12/2025 pour s adapter au nouveau prisma feature/multlingual-countries
+
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
-import {
-  Button,
-  Card,
-  Input,
-  Select,
-  SelectItem,
-  Textarea,
-  cn,
-} from "@nextui-org/react";
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
-  RefObject,
-  ChangeEvent,
-} from "react";
+// import { Button, Card, Input, Select, SelectItem, cn } from "@nextui-org/react";
+import { Button, Card, Input, SelectItem, cn } from "@nextui-org/react";
+
+import React, { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 import { AddPropertyInputType } from "./AddPropertyForm";
-import { useLoadScript } from "@react-google-maps/api";
-import { AFRICAN_FRANCOPHONE_COUNTRIES } from "@/data/countries";
 import { useTranslations } from "next-intl";
+
+// Définition de la structure des options traduites (doit correspondre à AddPropertyClient)
+interface TranslatedClientItem {
+  id: number;
+  code: string;
+  name: string; // Nom traduit (Pays ou Ville)
+}
 
 interface Props {
   next: () => void;
   prev: () => void;
   className?: string;
+
+  // ⚠️ NOUVEAU : Récupération des listes de Pays/Villes traduits
+  countries: TranslatedClientItem[];
+  cities: TranslatedClientItem[];
+  // (Note: Ces props doivent être passées depuis AddPropertyForm)
 }
-
-interface LocationField {
-  name: keyof AddPropertyInputType["location"];
-  translationKey: string;
-  span?: number;
-  isTextArea?: boolean;
-  readonly?: boolean;
-}
-
-interface InputProps {
-  ref: RefObject<HTMLInputElement>;
-  label: string;
-  placeholder: string;
-  value: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  className: string;
-  errorMessage?: string;
-  isInvalid?: boolean;
-  isLoading?: boolean;
-}
-
-const LocationInput: React.FC<{
-  field: LocationField;
-  value: string;
-  error?: string;
-}> = ({ field, value, error }) => {
-  const t = useTranslations("PropertyForm.Location");
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext<AddPropertyInputType>();
-
-  const Component = field.isTextArea ? Textarea : Input;
-
-  if (field.name === "landmark") {
-    return (
-      <Component
-        {...register("location.landmark")}
-        label={t(field.translationKey)}
-        className={cn(
-          field.span === 2 ? "col-span-1 md:col-span-2" : "",
-          field.isTextArea ? "min-h-[100px]" : ""
-        )}
-        errorMessage={error}
-        isInvalid={!!error}
-      />
-    );
-  }
-
-  return (
-    <Component
-      value={value || ""}
-      label={t(field.translationKey)}
-      isReadOnly={true}
-      className={cn(
-        field.span === 2 ? "col-span-1 md:col-span-2" : "",
-        field.isTextArea ? "min-h-[100px]" : ""
-      )}
-      errorMessage={error}
-      isInvalid={!!error}
-    />
-  );
-};
 
 const Location = (props: Props) => {
   const t = useTranslations("PropertyForm.Location");
@@ -2415,144 +2668,32 @@ const Location = (props: Props) => {
     register,
     formState: { errors },
     trigger,
-    setValue,
+    getValues, // 🎯 Utiliser getValues
     watch,
   } = useFormContext<AddPropertyInputType>();
 
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const [searchValue, setSearchValue] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState<string>("");
-  const [isSearching, setIsSearching] = useState(false);
-  const [searchError, setSearchError] = useState<string | null>(null);
+  // Surveillance et valeurs initiales RHF
+  const watchedCityId = watch("location.cityId");
+  const initialCityId = getValues().location?.cityId;
 
-  // Configuration des champs de localisation
-  const locationFields: LocationField[] = useMemo(
-    () => [
-      { name: "streetAddress", translationKey: "address" },
-      { name: "zip", translationKey: "zipCode" },
-      { name: "city", translationKey: "city" },
-      { name: "state", translationKey: "country" },
-      { name: "region", translationKey: "region", span: 2 },
-      {
-        name: "landmark",
-        translationKey: "additionalInfo",
-        span: 2,
-        isTextArea: true,
-      },
-    ],
-    []
+  // 🎯 LOG DE DÉBOGAGE
+  console.log("--- DÉBOGAGE LOCATION.TSX (EDITION) ---");
+  console.log(
+    "1. ID de la ville RHF (attendue: string):",
+    initialCityId,
+    typeof initialCityId
   );
-
-  const locationValues = watch("location");
-
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-    libraries: ["places"] as any,
-  });
-
-  const updateFormValues = async (place: google.maps.places.PlaceResult) => {
-    setIsSearching(true);
-    try {
-      const addressMapping: Record<string, string> = {};
-
-      if (place.address_components) {
-        place.address_components.forEach((component) => {
-          const value = component.long_name;
-          if (component.types.includes("street_number")) {
-            addressMapping.streetNumber = value;
-          } else if (component.types.includes("route")) {
-            addressMapping.route = value;
-          } else if (component.types.includes("locality")) {
-            addressMapping.city = value;
-          } else if (component.types.includes("administrative_area_level_1")) {
-            addressMapping.region = value;
-          } else if (component.types.includes("country")) {
-            addressMapping.state = value;
-          } else if (component.types.includes("postal_code")) {
-            addressMapping.zip = value;
-          }
-        });
-      }
-
-      const updates = {
-        "location.streetAddress": `${addressMapping.streetNumber || ""} ${
-          addressMapping.route || ""
-        }`.trim(),
-        "location.city": addressMapping.city || "",
-        "location.state": addressMapping.state || "",
-        "location.region": addressMapping.region || "",
-        "location.zip": addressMapping.zip || "",
-      };
-
-      Object.entries(updates).forEach(([key, value]) => {
-        setValue(key as any, value, {
-          shouldValidate: true,
-          shouldDirty: true,
-        });
-      });
-
-      setSearchValue(place.formatted_address || "");
-      setSearchError(null);
-    } catch (error) {
-      setSearchError(t("addressUpdateError"));
-      console.error("Erreur lors de la mise à jour des valeurs:", error);
-    } finally {
-      setIsSearching(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!isLoaded || !searchInputRef.current) return;
-
-    const autocomplete = new google.maps.places.Autocomplete(
-      searchInputRef.current,
-      {
-        componentRestrictions: {
-          country: [selectedCountry.toLowerCase()],
-        },
-        fields: ["address_components", "formatted_address", "geometry"],
-      }
-    );
-
-    const placeChangedListener = autocomplete.addListener(
-      "place_changed",
-      () => {
-        const place = autocomplete.getPlace();
-
-        if (!place.geometry) {
-          setSearchError(t("noAddressDetails"));
-          return;
-        }
-
-        updateFormValues(place);
-      }
-    );
-
-    return () => {
-      google.maps.event.removeListener(placeChangedListener);
-    };
-  }, [isLoaded, selectedCountry, t]);
+  console.log("2. Liste des villes (ID/Nom):", props.cities);
+  console.log("-----------------------------------------");
 
   const handleNext = async () => {
-    type LocationPath = `location.${keyof AddPropertyInputType["location"]}`;
-
-    const fieldsToValidate: LocationPath[] = [
-      "location.city",
-      "location.state",
-    ];
-
-    if (await trigger(fieldsToValidate)) {
+    // 🎯 Seul cityId est obligatoire selon le schéma Zod corrigé
+    if (await trigger(["location.cityId", "location.streetAddress"])) {
       props.next();
     }
   };
 
-  if (loadError) {
-    return (
-      <Card className={cn("p-6", props.className)}>
-        <div className="text-center text-red-500">{t("googleMapsError")}</div>
-      </Card>
-    );
-  }
+  // Les autres champs (streetAddress, zip, landmark) sont gérés par RHF Register.
 
   return (
     <Card
@@ -2561,52 +2702,99 @@ const Location = (props: Props) => {
         props.className
       )}
     >
-      <div className="col-span-1 md:col-span-2 mb-4">
+      {/* 🛑 Ancienne logique Google Maps supprimée (trop complexe avec les IDs) 🛑 */}
+
+      {/* SÉLECTION DE LA VILLE (OBLIGATOIRE DANS ZOD) */}
+      {/* <div className="col-span-1 md:col-span-2">
         <Select
-          label={t("selectCountry")}
-          placeholder={t("chooseCountry")}
-          value={selectedCountry}
-          onChange={(e) => {
-            setSelectedCountry(e.target.value);
-            setSearchValue("");
-          }}
+          {...register("location.cityId", {
+            setValueAs: (v: any) => v.toString(),
+          })}
+          errorMessage={errors.location?.cityId?.message}
+          isInvalid={!!errors.location?.cityId}
+          label={t("city")}
+          placeholder={t("chooseCity")}
+          selectionMode="single"
+          name="location.cityId"
+          // defaultSelectedKeys={[currentCityId ? currentCityId.toString() : ""]}
+          selectedKeys={currentCityId ? [currentCityId] : []}
         >
-          {AFRICAN_FRANCOPHONE_COUNTRIES.map((country) => (
-            <SelectItem key={country.code} value={country.code}>
-              {country.name}
+          {props.cities.map((item) => (
+            <SelectItem key={item.id.toString()} value={item.id.toString()}>
+              {item.name}
             </SelectItem>
           ))}
         </Select>
+      </div> */}
+
+      {/* ✅ NOUVEAU : SÉLECTION DE LA VILLE (cityId) en Select HTML Natif */}
+      <div className="col-span-1 md:col-span-2 flex flex-col gap-2">
+        <label className="text-sm font-medium text-gray-700">{t("city")}</label>
+        <select
+          // 🎯 Utiliser register directement sur le select natif
+          {...register("location.cityId", {
+            setValueAs: (v) => v.toString(),
+          })}
+          className={cn(
+            "p-3 border rounded-lg bg-gray-50 appearance-none",
+            "focus:border-blue-500 focus:ring-blue-500",
+            { "border-red-500": !!errors.location?.cityId }
+          )}
+          name="location.cityId"
+          // Utiliser la valeur RHF pour l'initialisation (qui est la string ID)
+          defaultValue={watchedCityId || initialCityId || ""}
+        >
+          <option value="" disabled>
+            {t("chooseCity") || "Choisir une ville"}
+          </option>
+
+          {/* S'assurer que props.cities n'est pas undefined avant le map */}
+          {(props.cities || []).map((item) => (
+            <option key={item.id} value={item.id.toString()}>
+              {item.name}
+            </option>
+          ))}
+        </select>
+        {errors.location?.cityId && (
+          <p className="text-red-500 text-xs mt-1">
+            {errors.location.cityId.message}
+          </p>
+        )}
       </div>
 
+      {/* STREET ADDRESS (Obligatoire/Optionnel dans Zod) */}
       <div className="col-span-1 md:col-span-2">
         <Input
-          ref={searchInputRef}
-          label={t("searchAddress")}
-          placeholder={
-            selectedCountry
-              ? t("searchAddressPlaceholder")
-              : t("selectCountryFirst")
-          }
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-          className="w-full"
-          errorMessage={searchError}
-          isInvalid={!!searchError}
-          isDisabled={!selectedCountry}
+          {...register("location.streetAddress")}
+          label={t("address")}
+          placeholder={t("streetAddressPlaceholder")}
+          errorMessage={errors.location?.streetAddress?.message}
+          isInvalid={!!errors.location?.streetAddress}
         />
       </div>
 
-      {locationFields.map((field) => (
-        <LocationInput
-          key={field.name}
-          field={field}
-          value={
-            field.name === "landmark" ? "" : locationValues?.[field.name] || ""
-          }
-          error={errors.location?.[field.name]?.message}
+      {/* ZIP CODE (Optionnel) */}
+      <div className="col-span-1">
+        <Input
+          {...register("location.zip")}
+          label={t("zipCode")}
+          errorMessage={errors.location?.zip?.message}
+          isInvalid={!!errors.location?.zip}
         />
-      ))}
+      </div>
+
+      {/* LANDMARK / INFORMATIONS ADDITIONNELLES (Optionnel) */}
+      <div className="col-span-1">
+        <Input
+          {...register("location.landmark")}
+          label={t("additionalInfo")}
+          errorMessage={errors.location?.landmark?.message}
+          isInvalid={!!errors.location?.landmark}
+        />
+      </div>
+
+      {/* 🛑 REMARQUE : Les champs latitude/longitude sont gérés en interne si vous les utilisez pour une carte. 
+         Si non, ils n'ont pas besoin d'être dans le formulaire. */}
 
       <div className="flex flex-col md:flex-row justify-center col-span-1 md:col-span-2 gap-4 mt-4">
         <Button
@@ -2622,7 +2810,6 @@ const Location = (props: Props) => {
           endContent={<ChevronRightIcon className="w-6" />}
           color="primary"
           className="w-full md:w-36"
-          isLoading={isSearching}
         >
           {t("next")}
         </Button>
