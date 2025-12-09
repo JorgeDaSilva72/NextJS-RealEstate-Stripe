@@ -124,17 +124,123 @@
 
 // export default SearchSelect;
 
+// 09/12/2025
+
+// "use client";
+// import { Select, SelectItem } from "@nextui-org/react";
+// import React, { useEffect, useState } from "react";
+// import { ReadonlyURLSearchParams } from "next/navigation";
+// import { SelectNameType } from "@/data/filters"; // Assurez-vous que ce chemin est correct
+// import useFilterChange, {
+//   FilterValueTypes,
+//   SetArrayNumberAndStringType,
+// } from "../hooks/useFilterChange"; // Assurez-vous que ce chemin est correct
+
+// // L'interface pour les props (basée sur votre structure)
+// interface SearchSelectPropsType {
+//   value: string; // L'ID technique actuel (e.g., "1", "price-asc", ou "")
+//   setValue?: React.Dispatch<React.SetStateAction<string>>;
+//   searchParams: ReadonlyURLSearchParams;
+//   values: FilterValueTypes; // La liste des options
+//   name: SelectNameType;
+//   ariaLabel: string;
+//   placeholder: string;
+// }
+
+// const SearchSelect = ({
+//   ariaLabel,
+//   placeholder,
+//   value,
+//   setValue,
+//   values,
+//   searchParams,
+//   name,
+// }: SearchSelectPropsType) => {
+//   const handleFilterChange = useFilterChange();
+
+//   // 1. État local pour gérer la clé sélectionnée (Set<string> est ce que NextUI préfère)
+//   // Utilise la prop 'value' pour l'initialisation.
+//   const [selectedKeysSet, setSelectedKeysSet] = useState(
+//     new Set<string>(value ? [value] : [])
+//   );
+
+//   // 2. Synchronisation de l'état local avec la prop 'value' (qui vient du hook useFilterDatas/URL)
+//   // useEffect(() => {
+//   //   // Convertir le Set<string> actuel en string pour comparaison
+//   //   const currentLocalValue = Array.from(selectedKeysSet).join("");
+
+//   //   // Mettre à jour si la prop 'value' change et est différente de l'état local
+//   //   if (value !== currentLocalValue) {
+//   //     // S'assurer que le Set contient l'ID string de l'URL
+//   //     setSelectedKeysSet(new Set<string>(value ? [value] : []));
+//   //   }
+//   // }, [value, selectedKeysSet]);
+
+//   // 2. Synchronisation de l'état local avec la prop 'value' (qui vient du hook useFilterDatas/URL)
+//   useEffect(() => {
+//     // Simplement mettre à jour le Set local avec la 'value' globale.
+//     // La prop 'value' est la source de vérité finale (venant de l'URL).
+//     setSelectedKeysSet(new Set<string>(value ? [value] : []));
+
+//     // Dépendant uniquement de 'value' pour refléter la source de vérité externe (l'URL)
+//   }, [value]);
+
+//   // 3. Gestion du changement d'interface utilisateur
+//   const handleSelectionChange = (keys: Set<string>) => {
+//     // NextUI fournit un Set. Convertissons-le en string ID.
+//     const keysArray = Array.from(keys);
+//     // L'ID technique sélectionné ("1", "price-asc", ou "none")
+//     const selectedKey = keysArray.length > 0 ? keysArray[0].toString() : "none";
+
+//     // Mise à jour de l'état local pour un rendu UI immédiat
+//     setSelectedKeysSet(new Set([selectedKey]));
+
+//     // Appel du hook global pour mettre à jour l'URL et l'état global
+//     handleFilterChange(
+//       selectedKey,
+//       setValue as SetArrayNumberAndStringType,
+//       searchParams,
+//       name,
+//       values
+//     );
+//   };
+
+//   return (
+//     <Select
+//       aria-label={ariaLabel}
+//       placeholder={placeholder}
+//       variant="bordered"
+//       // ✅ Contrôlé par l'état local Set<string>
+//       selectedKeys={selectedKeysSet}
+//       className="flex-grow max-w-full p-2 shadow-lg bg-white text-gray-700 rounded"
+//       selectionMode="single"
+//       onSelectionChange={(keys) => handleSelectionChange(keys as Set<string>)}
+//     >
+//       {/* 4. Rendu des options : l'ID technique est utilisé comme clé et valeur */}
+//       {values.map((item) => (
+//         // Assurez-vous que key et value sont des STRING, même si item.id est un number.
+//         <SelectItem key={String(item.id)} value={String(item.id)}>
+//           {item.value} {/* Ceci est la traduction affichée */}
+//         </SelectItem>
+//       ))}
+//     </Select>
+//   );
+// };
+
+// export default SearchSelect;
+
+// 09/12/2025
+
 "use client";
 import { Select, SelectItem } from "@nextui-org/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ReadonlyURLSearchParams } from "next/navigation";
-import { SelectNameType } from "@/data/filters"; // Assurez-vous que ce chemin est correct
+import { SelectNameType } from "@/data/filters";
 import useFilterChange, {
   FilterValueTypes,
   SetArrayNumberAndStringType,
-} from "../hooks/useFilterChange"; // Assurez-vous que ce chemin est correct
+} from "../hooks/useFilterChange";
 
-// L'interface pour les props (basée sur votre structure)
 interface SearchSelectPropsType {
   value: string; // L'ID technique actuel (e.g., "1", "price-asc", ou "")
   setValue?: React.Dispatch<React.SetStateAction<string>>;
@@ -156,29 +262,17 @@ const SearchSelect = ({
 }: SearchSelectPropsType) => {
   const handleFilterChange = useFilterChange();
 
-  // 1. État local pour gérer la clé sélectionnée (Set<string> est ce que NextUI préfère)
-  // Utilise la prop 'value' pour l'initialisation.
+  // 1. État local pour gérer la clé sélectionnée (Initialisé avec la prop 'value')
+  // Ceci est réinitialisé lorsque la prop 'key' change
   const [selectedKeysSet, setSelectedKeysSet] = useState(
     new Set<string>(value ? [value] : [])
   );
 
-  // 2. Synchronisation de l'état local avec la prop 'value' (qui vient du hook useFilterDatas/URL)
-  useEffect(() => {
-    // Convertir le Set<string> actuel en string pour comparaison
-    const currentLocalValue = Array.from(selectedKeysSet).join("");
+  // NOTE: Le useEffect de synchronisation est SUPPRIMÉ. La prop 'key' gère la réinitialisation.
 
-    // Mettre à jour si la prop 'value' change et est différente de l'état local
-    if (value !== currentLocalValue) {
-      // S'assurer que le Set contient l'ID string de l'URL
-      setSelectedKeysSet(new Set<string>(value ? [value] : []));
-    }
-  }, [value, selectedKeysSet]);
-
-  // 3. Gestion du changement d'interface utilisateur
+  // 2. Gestion du changement d'interface utilisateur
   const handleSelectionChange = (keys: Set<string>) => {
-    // NextUI fournit un Set. Convertissons-le en string ID.
     const keysArray = Array.from(keys);
-    // L'ID technique sélectionné ("1", "price-asc", ou "none")
     const selectedKey = keysArray.length > 0 ? keysArray[0].toString() : "none";
 
     // Mise à jour de l'état local pour un rendu UI immédiat
@@ -199,17 +293,18 @@ const SearchSelect = ({
       aria-label={ariaLabel}
       placeholder={placeholder}
       variant="bordered"
-      // ✅ Contrôlé par l'état local Set<string>
+      // ✅ SOLUTION : Utiliser la prop 'key' pour forcer le re-montage si 'value' change
+      key={name + value}
+      // Contrôlé par l'état local Set<string>
       selectedKeys={selectedKeysSet}
       className="flex-grow max-w-full p-2 shadow-lg bg-white text-gray-700 rounded"
       selectionMode="single"
       onSelectionChange={(keys) => handleSelectionChange(keys as Set<string>)}
     >
-      {/* 4. Rendu des options : l'ID technique est utilisé comme clé et valeur */}
+      {/* 3. Rendu des options */}
       {values.map((item) => (
-        // Assurez-vous que key et value sont des STRING, même si item.id est un number.
         <SelectItem key={String(item.id)} value={String(item.id)}>
-          {item.value} {/* Ceci est la traduction affichée */}
+          {item.value}
         </SelectItem>
       ))}
     </Select>

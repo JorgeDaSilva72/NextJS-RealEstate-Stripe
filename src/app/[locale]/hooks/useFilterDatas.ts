@@ -354,19 +354,370 @@
 
 // 07/12 code modifié pour s adapter au nouveau prisma feature/multilingual-countries
 
+// "use client";
+
+// import { useSearchParams } from "next/navigation";
+// import React, { useState, useEffect, useMemo } from "react";
+// import { useTranslations } from "next-intl";
+
+// // import { AFRICAN_FRANCOPHONE_COUNTRIES } from "../../../data/countries";
+// import useFetchValues from "./useFetchValues";
+// import { FilterValueTypes } from "./useFilterChange";
+// // import { transformCountries } from "@/lib/utils";
+// import { useLocale } from "next-intl"; // AJOUT: Pour récupérer la langue active
+
+// // AJOUT: Interface pour les données qui viennent du backend avec traduction
+// interface TranslatedItem {
+//   id: number; // ID de la table principale (Type, Status, City)
+//   value: string; // La traduction (ex: "Maison", "À vendre")
+// }
+
+// export type SelectNameType =
+//   | "queryStatus"
+//   | "queryType"
+//   | "cityId" // CHANGEMENT: City devient cityId (ID numérique)
+//   | "sortOrder"
+//   | "price"
+//   | "area"
+//   | "room"
+//   | "bathroom"
+//   | "country";
+
+// export interface SelectFilterType {
+//   ariaLabel: string;
+//   placeholder?: string;
+//   name: SelectNameType;
+//   items?: FilterValueTypes | TranslatedItem[]; // Mise à jour du type items
+//   type?: "slider" | "text";
+//   rangeName?: string[];
+//   rangeValue?: number[];
+//   step?: number;
+//   formatOptions?: Intl.NumberFormatOptions;
+//   value?: string;
+//   setValue?: React.Dispatch<React.SetStateAction<string>>;
+//   range?: number[];
+//   setRange?: React.Dispatch<React.SetStateAction<number[]>>;
+// }
+
+// export type SelectFilterTypes = SelectFilterType[];
+
+// const useFilterDatas = () => {
+//   const t = useTranslations("filters");
+//   const searchParams = useSearchParams();
+//   const fetchValue = useFetchValues();
+//   const locale = useLocale(); // AJOUT: Récupérer la langue active
+
+//   // États pour les sélecteurs
+//   // const [selectedStatus, setSelectedStatus] = useState(
+//   //   searchParams.get("queryStatus") ?? ""
+//   // );
+//   const [selectedStatus, setSelectedStatus] = useState("");
+//   // CHANGEMENT: setStatuses stocke les items traduits (id: number, value: string)
+//   const [statuses, setStatuses] = useState<TranslatedItem[]>([]);
+//   // const [selectedType, setSelectedType] = useState(
+//   //   searchParams.get("queryType") ?? ""
+//   // );
+//   const [selectedType, setSelectedType] = useState("");
+//   // CHANGEMENT: setTypes stocke les items traduits
+//   const [types, setTypes] = useState<TranslatedItem[]>([]);
+
+//   // const [selectedCountry, setSelectedCountry] = useState(
+//   //   searchParams.get("country") ?? ""
+//   // );
+//   const [selectedCountry, setSelectedCountry] = useState("");
+//   // NOUVEAU: État pour la ville (ID de la ville)
+//   // const [selectedCityId, setSelectedCityId] = useState(
+//   //   searchParams.get("cityId") ?? "" // CHANGEMENT: On cherche 'cityId' dans l'URL
+//   // );
+//   const [selectedCityId, setSelectedCityId] = useState("");
+//   // NOUVEAU: État pour les données des villes (traduites)
+//   const [cities, setCities] = useState<TranslatedItem[]>([]);
+
+//   // const [sortOrder, setSortOrder] = useState(
+//   //   searchParams.get("sortOrder") ?? ""
+//   // );
+//   const [sortOrder, setSortOrder] = useState("");
+
+//   // États pour les sliders (Aucun changement nécessaire)
+//   const [priceRange, setPriceRange] = useState([
+//     Number(searchParams.get("minPrice")) || 0,
+//     Number(searchParams.get("maxPrice")) || 1000000,
+//   ]);
+//   const [areaRange, setAreaRange] = useState([
+//     Number(searchParams.get("minArea")) || 0,
+//     Number(searchParams.get("maxArea")) || 1000,
+//   ]);
+//   const [bedroomsRange, setBedroomsRange] = useState([
+//     Number(searchParams.get("minBedrooms")) || 0,
+//     Number(searchParams.get("maxBedrooms")) || 10,
+//   ]);
+//   const [bathroomsRange, setBathroomsRange] = useState([
+//     Number(searchParams.get("minBathrooms")) || 0,
+//     Number(searchParams.get("maxBathrooms")) || 10,
+//   ]);
+
+//   // NOUVEAU: État pour les données des pays
+//   const [countries, setCountries] = useState<TranslatedItem[]>([]);
+
+//   // const AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED = transformCountries(
+//   //   AFRICAN_FRANCOPHONE_COUNTRIES
+//   // );
+
+//   // Options avec traductions
+
+//   const typesWithNoneOption = React.useMemo(
+//     () => [
+//       { id: "none", value: t("allPropertyTypes") },
+//       ...types.map((item) => ({ id: item.id.toString(), value: item.value })),
+//     ],
+//     [types, t]
+//   ); // Dépend de 'types' et 't'
+
+//   const statusWithNoneOption = React.useMemo(
+//     () => [
+//       { id: "none", value: t("allOperations") },
+//       ...statuses.map((item) => ({
+//         id: item.id.toString(),
+//         value: item.value,
+//       })),
+//     ],
+//     [statuses, t]
+//   ); // Dépend de 'statuses' et 't'
+
+//   const citiesWithNoneOption = React.useMemo(
+//     () => [
+//       { id: "none", value: t("allCities") },
+//       ...cities.map((item) => ({ id: item.id.toString(), value: item.value })),
+//     ],
+//     [cities, t]
+//   ); // Dépend de 'cities' et 't'
+
+//   // const AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED_WITH_NONE_OPTION =
+//   //   React.useMemo(
+//   //     () => [
+//   //       { id: "none", value: t("allCountries") },
+//   //       ...transformCountries(AFRICAN_FRANCOPHONE_COUNTRIES),
+//   //     ],
+//   //     [t]
+//   //   ); // Dépend uniquement de 't'
+
+//   // NOUVEAU: Options des pays basées sur la BDD
+//   const countriesWithNoneOption = useMemo(
+//     () => [
+//       { id: "none", value: t("allCountries") },
+//       ...countries.map((item) => ({
+//         id: item.id.toString(),
+//         value: item.value,
+//       })),
+//     ],
+//     [countries, t]
+//   );
+
+//   const [filterDatas, setFilterDatas] = useState<SelectFilterTypes>([]);
+
+//   // Fetch initial data (et traductions)
+//   useEffect(() => {
+//     // Changement de l'API pour récupérer les traductions
+//     fetchValue(
+//       setStatuses,
+//       `/api/searchStatuses?lang=${locale}`,
+//       t("fetchErrorStatuses")
+//     );
+//     fetchValue(
+//       setTypes,
+//       `/api/searchTypes?lang=${locale}`,
+//       t("fetchErrorTypes")
+//     );
+
+//     // NOUVEAU: Fetch des villes traduites
+//     fetchValue(
+//       setCities,
+//       `/api/searchCities?lang=${locale}&countryId=${selectedCountry}`,
+//       t("fetchErrorCities")
+//     );
+//     // NOUVEAU: Fetch des pays traduits
+//     fetchValue(
+//       setCountries,
+//       `/api/searchCountries?lang=${locale}`,
+//       t("fetchErrorCountries")
+//     );
+//   }, [locale, selectedCountry, fetchValue, t]); // Re-fetch quand la langue ou le pays change. Les setters (setStatuses, setTypes, setCities) n'ont pas besoin d'être inclus car ils sont stables.
+
+//   // Update filter data when dependencies change
+//   useEffect(() => {
+//     // AJOUT DE LA CONDITION DE CHARGEMENT
+//     if (
+//       statuses.length === 0 ||
+//       types.length === 0 ||
+//       cities.length === 0 ||
+//       countries.length === 0
+//     ) {
+//       // Si les données de base ne sont pas encore chargées, sortez sans modifier filterDatas
+//       return;
+//     }
+//     const selectFilters: SelectFilterTypes = [
+//       {
+//         ariaLabel: t("operation"),
+//         placeholder: t("chooseOperation"),
+//         name: "queryStatus",
+//         items: statusWithNoneOption,
+//         value: selectedStatus,
+//         setValue: setSelectedStatus,
+//       },
+//       {
+//         ariaLabel: t("propertyType"),
+//         placeholder: t("choosePropertyType"),
+//         name: "queryType",
+//         items: typesWithNoneOption,
+//         value: selectedType,
+//         setValue: setSelectedType,
+//       },
+//       {
+//         ariaLabel: t("country"),
+//         placeholder: t("chooseCountry"),
+//         name: "country",
+//         // items: AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED_WITH_NONE_OPTION,
+//         // Utilisation du nouveau tableau dynamique
+//         items: countriesWithNoneOption,
+//         value: selectedCountry,
+//         setValue: setSelectedCountry,
+//       },
+//       // NOUVEAU: Filtre de la ville (SearchSelect)
+//       {
+//         ariaLabel: t("city"),
+//         placeholder: t("chooseCity"),
+//         name: "cityId", // CHANGEMENT: Nom de la variable dans l'URL
+//         items: citiesWithNoneOption,
+//         value: selectedCityId,
+//         setValue: setSelectedCityId,
+//       },
+//       // ... (Le reste des filtres est inchangé)
+//       {
+//         ariaLabel: t("sortBy"),
+//         placeholder: t("sortBy"),
+//         name: "sortOrder",
+//         items: [
+//           { id: "none", value: t("noSorting") },
+//           { id: "price-asc", value: t("priceAsc") },
+//           { id: "price-desc", value: t("priceDesc") },
+//           { id: "surface-asc", value: t("surfaceAsc") },
+//           { id: "surface-desc", value: t("surfaceDesc") },
+//           { id: "date-asc", value: t("oldest") },
+//           { id: "date-desc", value: t("newest") },
+//         ],
+//         value: sortOrder,
+//         setValue: setSortOrder,
+//       },
+//       // Sliders (inchangés)
+//       {
+//         ariaLabel: t("price"),
+//         name: "price",
+//         type: "slider",
+//         rangeName: ["minPrice", "maxPrice"],
+//         rangeValue: [0, 1000000],
+//         step: 10000,
+//         formatOptions: { style: "currency", currency: "EUR" },
+//         range: priceRange,
+//         setRange: setPriceRange,
+//       },
+//       {
+//         ariaLabel: t("area"),
+//         name: "area",
+//         type: "slider",
+//         rangeName: ["minArea", "maxArea"],
+//         rangeValue: [0, 1000],
+//         step: 10,
+//         range: areaRange,
+//         setRange: setAreaRange,
+//       },
+//       {
+//         ariaLabel: t("bedrooms"),
+//         name: "room",
+//         type: "slider",
+//         rangeName: ["minBedrooms", "maxBedrooms"],
+//         rangeValue: [0, 10],
+//         step: 1,
+//         range: bedroomsRange,
+//         setRange: setBedroomsRange,
+//       },
+//       {
+//         ariaLabel: t("bathrooms"),
+//         name: "bathroom",
+//         type: "slider",
+//         rangeName: ["minBathrooms", "maxBathrooms"],
+//         rangeValue: [0, 10],
+//         step: 1,
+//         range: bathroomsRange,
+//         setRange: setBathroomsRange,
+//       },
+//     ];
+//     // --- NOUVEAU: Logique de synchronisation des états LOCAUX ---
+
+//     const filtersToSync: {
+//       name: SelectNameType;
+//       setter: React.Dispatch<React.SetStateAction<string>>;
+//     }[] = [
+//       { name: "queryStatus", setter: setSelectedStatus },
+//       { name: "queryType", setter: setSelectedType },
+//       { name: "country", setter: setSelectedCountry },
+//       { name: "cityId", setter: setSelectedCityId },
+//       { name: "sortOrder", setter: setSortOrder },
+//     ];
+
+//     filtersToSync.forEach(({ name, setter }) => {
+//       const paramValue = searchParams.get(name);
+
+//       // Mettez à jour l'état du filtre (ex: selectedStatus)
+//       // SI l'URL a une valeur ET que l'état local est vide,
+//       // OU si l'URL est vide et que l'état local n'est pas vide (pour la réinitialisation).
+//       if (paramValue && paramValue !== "none") {
+//         setter(paramValue);
+//       } else if (!paramValue || paramValue === "none") {
+//         setter("");
+//       }
+//     });
+//     // --- FIN DE LA LOGIQUE DE SYNCHRONISATION ---
+//     setFilterDatas(selectFilters);
+//   }, [
+//     selectedCityId, // CHANGEMENT: dépend de cityId
+//     selectedCountry,
+//     selectedStatus,
+//     selectedType,
+//     sortOrder,
+//     priceRange,
+//     areaRange,
+//     bedroomsRange,
+//     bathroomsRange,
+//     statuses,
+//     types,
+//     cities, // NOUVEAU: dépend des données des villes
+//     citiesWithNoneOption, // <-- AJOUT
+//     statusWithNoneOption, // <-- AJOUT
+//     t, // <-- AJOUT
+//     typesWithNoneOption, // <-- AJOUT
+//     countriesWithNoneOption, // <-- AJOUT
+//     searchParams,
+//     countries.length,
+//   ]);
+
+//   return filterDatas;
+// };
+
+// export default useFilterDatas;
+
+// 09/12/2025
+
 "use client";
 
 import { useSearchParams } from "next/navigation";
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 
-// import { AFRICAN_FRANCOPHONE_COUNTRIES } from "../../../data/countries";
 import useFetchValues from "./useFetchValues";
 import { FilterValueTypes } from "./useFilterChange";
-// import { transformCountries } from "@/lib/utils";
-import { useLocale } from "next-intl"; // AJOUT: Pour récupérer la langue active
+import { useLocale } from "next-intl";
 
-// AJOUT: Interface pour les données qui viennent du backend avec traduction
+// Interface pour les données qui viennent du backend avec traduction
 interface TranslatedItem {
   id: number; // ID de la table principale (Type, Status, City)
   value: string; // La traduction (ex: "Maison", "À vendre")
@@ -375,7 +726,7 @@ interface TranslatedItem {
 export type SelectNameType =
   | "queryStatus"
   | "queryType"
-  | "cityId" // CHANGEMENT: City devient cityId (ID numérique)
+  | "cityId"
   | "sortOrder"
   | "price"
   | "area"
@@ -387,7 +738,7 @@ export interface SelectFilterType {
   ariaLabel: string;
   placeholder?: string;
   name: SelectNameType;
-  items?: FilterValueTypes | TranslatedItem[]; // Mise à jour du type items
+  items?: FilterValueTypes | TranslatedItem[];
   type?: "slider" | "text";
   rangeName?: string[];
   rangeValue?: number[];
@@ -405,40 +756,23 @@ const useFilterDatas = () => {
   const t = useTranslations("filters");
   const searchParams = useSearchParams();
   const fetchValue = useFetchValues();
-  const locale = useLocale(); // AJOUT: Récupérer la langue active
+  const locale = useLocale();
 
-  // États pour les sélecteurs
-  // const [selectedStatus, setSelectedStatus] = useState(
-  //   searchParams.get("queryStatus") ?? ""
-  // );
+  // --- 1. États pour les sélecteurs (Initialisation à vide) ---
   const [selectedStatus, setSelectedStatus] = useState("");
-  // CHANGEMENT: setStatuses stocke les items traduits (id: number, value: string)
   const [statuses, setStatuses] = useState<TranslatedItem[]>([]);
-  // const [selectedType, setSelectedType] = useState(
-  //   searchParams.get("queryType") ?? ""
-  // );
+
   const [selectedType, setSelectedType] = useState("");
-  // CHANGEMENT: setTypes stocke les items traduits
   const [types, setTypes] = useState<TranslatedItem[]>([]);
 
-  // const [selectedCountry, setSelectedCountry] = useState(
-  //   searchParams.get("country") ?? ""
-  // );
   const [selectedCountry, setSelectedCountry] = useState("");
-  // NOUVEAU: État pour la ville (ID de la ville)
-  // const [selectedCityId, setSelectedCityId] = useState(
-  //   searchParams.get("cityId") ?? "" // CHANGEMENT: On cherche 'cityId' dans l'URL
-  // );
   const [selectedCityId, setSelectedCityId] = useState("");
-  // NOUVEAU: État pour les données des villes (traduites)
   const [cities, setCities] = useState<TranslatedItem[]>([]);
+  const [countries, setCountries] = useState<TranslatedItem[]>([]);
 
-  // const [sortOrder, setSortOrder] = useState(
-  //   searchParams.get("sortOrder") ?? ""
-  // );
   const [sortOrder, setSortOrder] = useState("");
 
-  // États pour les sliders (Aucun changement nécessaire)
+  // --- 2. États pour les sliders (Peut lire searchParams directement) ---
   const [priceRange, setPriceRange] = useState([
     Number(searchParams.get("minPrice")) || 0,
     Number(searchParams.get("maxPrice")) || 1000000,
@@ -456,14 +790,9 @@ const useFilterDatas = () => {
     Number(searchParams.get("maxBathrooms")) || 10,
   ]);
 
-  // NOUVEAU: État pour les données des pays
-  const [countries, setCountries] = useState<TranslatedItem[]>([]);
+  const [filterDatas, setFilterDatas] = useState<SelectFilterTypes>([]);
 
-  // const AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED = transformCountries(
-  //   AFRICAN_FRANCOPHONE_COUNTRIES
-  // );
-
-  // Options avec traductions
+  // --- 3. Options avec traductions (useMemo) ---
 
   const typesWithNoneOption = React.useMemo(
     () => [
@@ -471,7 +800,7 @@ const useFilterDatas = () => {
       ...types.map((item) => ({ id: item.id.toString(), value: item.value })),
     ],
     [types, t]
-  ); // Dépend de 'types' et 't'
+  );
 
   const statusWithNoneOption = React.useMemo(
     () => [
@@ -482,7 +811,7 @@ const useFilterDatas = () => {
       })),
     ],
     [statuses, t]
-  ); // Dépend de 'statuses' et 't'
+  );
 
   const citiesWithNoneOption = React.useMemo(
     () => [
@@ -490,18 +819,8 @@ const useFilterDatas = () => {
       ...cities.map((item) => ({ id: item.id.toString(), value: item.value })),
     ],
     [cities, t]
-  ); // Dépend de 'cities' et 't'
+  );
 
-  // const AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED_WITH_NONE_OPTION =
-  //   React.useMemo(
-  //     () => [
-  //       { id: "none", value: t("allCountries") },
-  //       ...transformCountries(AFRICAN_FRANCOPHONE_COUNTRIES),
-  //     ],
-  //     [t]
-  //   ); // Dépend uniquement de 't'
-
-  // NOUVEAU: Options des pays basées sur la BDD
   const countriesWithNoneOption = useMemo(
     () => [
       { id: "none", value: t("allCountries") },
@@ -513,11 +832,9 @@ const useFilterDatas = () => {
     [countries, t]
   );
 
-  const [filterDatas, setFilterDatas] = useState<SelectFilterTypes>([]);
-
-  // Fetch initial data (et traductions)
+  // --- 4. useEffect : Fetch des données de filtre (Stauts, Type, City, Country) ---
   useEffect(() => {
-    // Changement de l'API pour récupérer les traductions
+    // Fetch des statuts et types (dépend de la locale)
     fetchValue(
       setStatuses,
       `/api/searchStatuses?lang=${locale}`,
@@ -529,32 +846,57 @@ const useFilterDatas = () => {
       t("fetchErrorTypes")
     );
 
-    // NOUVEAU: Fetch des villes traduites
-    fetchValue(
-      setCities,
-      `/api/searchCities?lang=${locale}&countryId=${selectedCountry}`,
-      t("fetchErrorCities")
-    );
-    // NOUVEAU: Fetch des pays traduits
+    // Fetch des pays (dépend de la locale)
     fetchValue(
       setCountries,
       `/api/searchCountries?lang=${locale}`,
       t("fetchErrorCountries")
     );
-  }, [locale, selectedCountry, fetchValue, t]); // Re-fetch quand la langue ou le pays change. Les setters (setStatuses, setTypes, setCities) n'ont pas besoin d'être inclus car ils sont stables.
 
-  // Update filter data when dependencies change
+    // Fetch des villes (dépend de la locale ET du pays sélectionné)
+    // S'exécute si le pays change (cas d'usage : on change le pays, on veut mettre à jour les villes)
+    fetchValue(
+      setCities,
+      `/api/searchCities?lang=${locale}&countryId=${selectedCountry}`,
+      t("fetchErrorCities")
+    );
+  }, [locale, selectedCountry, fetchValue, t]);
+
+  // --- 5. useEffect : Synchronisation des états locaux avec l'URL (searchParams) ---
+  // Doit être séparé du fetch et de la construction pour un rendu propre
   useEffect(() => {
-    // AJOUT DE LA CONDITION DE CHARGEMENT
-    if (
-      statuses.length === 0 ||
-      types.length === 0 ||
-      cities.length === 0 ||
-      countries.length === 0
-    ) {
-      // Si les données de base ne sont pas encore chargées, sortez sans modifier filterDatas
+    const filtersToSync: {
+      name: SelectNameType;
+      setter: React.Dispatch<React.SetStateAction<string>>;
+    }[] = [
+      { name: "queryStatus", setter: setSelectedStatus },
+      { name: "queryType", setter: setSelectedType },
+      { name: "country", setter: setSelectedCountry },
+      { name: "cityId", setter: setSelectedCityId },
+      { name: "sortOrder", setter: setSortOrder },
+    ];
+
+    // Exécuter la synchronisation
+    filtersToSync.forEach(({ name, setter }) => {
+      const paramValue = searchParams.get(name);
+
+      if (paramValue && paramValue !== "none") {
+        // Mettez à jour l'état avec l'ID STRING de l'URL.
+        setter(paramValue);
+      } else {
+        // Si le paramètre n'existe pas, ou si c'est "none", l'état doit être vide
+        setter("");
+      }
+    });
+  }, [searchParams]); // S'exécute à chaque changement d'URL
+
+  // --- 6. useEffect : Construction finale du tableau filterDatas ---
+  useEffect(() => {
+    // OPTIONNEL : Condition de chargement pour éviter le "flicker" si les données de base sont lentes
+    if (statuses.length === 0 || types.length === 0 || countries.length === 0) {
       return;
     }
+
     const selectFilters: SelectFilterTypes = [
       {
         ariaLabel: t("operation"),
@@ -576,22 +918,18 @@ const useFilterDatas = () => {
         ariaLabel: t("country"),
         placeholder: t("chooseCountry"),
         name: "country",
-        // items: AFRICAN_FRANCOPHONE_COUNTRIES_TRANSFORMED_WITH_NONE_OPTION,
-        // Utilisation du nouveau tableau dynamique
         items: countriesWithNoneOption,
         value: selectedCountry,
         setValue: setSelectedCountry,
       },
-      // NOUVEAU: Filtre de la ville (SearchSelect)
       {
         ariaLabel: t("city"),
         placeholder: t("chooseCity"),
-        name: "cityId", // CHANGEMENT: Nom de la variable dans l'URL
+        name: "cityId",
         items: citiesWithNoneOption,
         value: selectedCityId,
         setValue: setSelectedCityId,
       },
-      // ... (Le reste des filtres est inchangé)
       {
         ariaLabel: t("sortBy"),
         placeholder: t("sortBy"),
@@ -651,35 +989,9 @@ const useFilterDatas = () => {
         setRange: setBathroomsRange,
       },
     ];
-    // --- NOUVEAU: Logique de synchronisation des états LOCAUX ---
-
-    const filtersToSync: {
-      name: SelectNameType;
-      setter: React.Dispatch<React.SetStateAction<string>>;
-    }[] = [
-      { name: "queryStatus", setter: setSelectedStatus },
-      { name: "queryType", setter: setSelectedType },
-      { name: "country", setter: setSelectedCountry },
-      { name: "cityId", setter: setSelectedCityId },
-      { name: "sortOrder", setter: setSortOrder },
-    ];
-
-    filtersToSync.forEach(({ name, setter }) => {
-      const paramValue = searchParams.get(name);
-
-      // Mettez à jour l'état du filtre (ex: selectedStatus)
-      // SI l'URL a une valeur ET que l'état local est vide,
-      // OU si l'URL est vide et que l'état local n'est pas vide (pour la réinitialisation).
-      if (paramValue && paramValue !== "none") {
-        setter(paramValue);
-      } else if (!paramValue || paramValue === "none") {
-        setter("");
-      }
-    });
-    // --- FIN DE LA LOGIQUE DE SYNCHRONISATION ---
     setFilterDatas(selectFilters);
   }, [
-    selectedCityId, // CHANGEMENT: dépend de cityId
+    selectedCityId,
     selectedCountry,
     selectedStatus,
     selectedType,
@@ -690,13 +1002,13 @@ const useFilterDatas = () => {
     bathroomsRange,
     statuses,
     types,
-    cities, // NOUVEAU: dépend des données des villes
-    citiesWithNoneOption, // <-- AJOUT
-    statusWithNoneOption, // <-- AJOUT
-    t, // <-- AJOUT
-    typesWithNoneOption, // <-- AJOUT
-    countriesWithNoneOption, // <-- AJOUT
-    searchParams,
+    cities,
+    citiesWithNoneOption,
+    statusWithNoneOption,
+    t,
+    typesWithNoneOption,
+    countriesWithNoneOption,
+    // Note: searchParams n'est plus nécessaire ici car il est géré par l'useEffect de synchronisation
     countries.length,
   ]);
 
