@@ -37,3 +37,16 @@
 // };
 
 // export default layout;
+
+import React, { ReactNode } from "react";
+
+interface Layout {
+  children: ReactNode;
+  params: { id: string };
+}
+
+const layout = ({ children, params }: Layout) => {
+  return <>{children}</>;
+};
+
+export default layout;
