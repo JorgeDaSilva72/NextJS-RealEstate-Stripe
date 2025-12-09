@@ -242,3 +242,17 @@
 //   });
 //   return language?.id;
 // }
+
+import { NextResponse } from "next/server";
+
+// Cette fonction gère les requêtes HTTP GET vers l'endpoint /api/favorite-properties
+export async function GET() {
+  // Le code minimum requis pour que Vercel compile et déploie la route.
+  return NextResponse.json(
+    { message: "Hello, Vercel! API is running." },
+    { status: 200 }
+  );
+}
+
+// NOTE : Vous n'avez pas besoin d'inclure d'autres méthodes (POST, PUT, etc.)
+// si vous ne les utilisez pas, mais la définition de la fonction asynchrone est cruciale.
