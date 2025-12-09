@@ -219,7 +219,7 @@ const DiamondPack: React.FC<DiamondPackProps> = ({
   const {
     namePlan,
     price,
-    country,
+    countryId,
     startDate,
     endDate,
     duration,
@@ -243,7 +243,7 @@ const DiamondPack: React.FC<DiamondPackProps> = ({
         plan_name: namePlan,
         plan_price: price,
         plan_duration: duration,
-        country: country,
+        country: countryId,
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
@@ -284,7 +284,7 @@ const DiamondPack: React.FC<DiamondPackProps> = ({
             </h2>
             <p className="text-xs sm:text-sm text-gray-400 text-center mt-2">
               {t("specialOffer", {
-                country,
+                countryId,
                 startDate: isValidDate(startDate)
                   ? new Intl.DateTimeFormat("fr-FR", {
                       day: "2-digit",
