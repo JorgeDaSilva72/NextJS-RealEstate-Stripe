@@ -3,7 +3,7 @@ import { FilterValueTypes } from "../app/[locale]/hooks/useFilterChange";
 export type SelectNameType =
   | "queryStatus"
   | "queryType"
-  | "city"
+  | "cityId" //  Correction
   | "sortOrder"
   | "price"
   | "area"
@@ -44,7 +44,7 @@ export const selectFilters: SelectFilterTypes = [
   {
     ariaLabel: "Ville",
     placeholder: "Choisir une ville",
-    name: "city",
+    name: "cityId",
   },
   {
     ariaLabel: "Trier par",
