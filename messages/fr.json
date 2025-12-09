@@ -972,6 +972,10 @@
     "title": "Page en construction 🚧",
     "message": "Nous travaillons activement sur cette section pour vous offrir une meilleure expérience. Veuillez revenir bientôt !"
   },
+  "modalDeleteProperty": {
+    "propertyDeletedSuccessfully": "Annonce supprimée avec succès.",
+    "errorDeletingProperty": "Erreur lors de la suppression de l'annonce."
+  },
   "Common": {
     "for_sale": "À Vendre",
     "for_rent": "À Louer",

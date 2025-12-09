@@ -77,9 +77,11 @@ import {
 } from "@nextui-org/react";
 
 // import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import ModalDelete from "@/app/[locale]/components/ModalDelete";
 import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
+import { toast } from "react-toastify";
 // import ModalDelete from "@/app/components/ModalDelete";
 
 interface Props {
@@ -92,34 +94,43 @@ const ModalDeletePropertyPage = ({ params }: Props) => {
     setIsOpen(true);
   }, []);
 
+  const t = useTranslations("modalDeleteProperty");
+
   const handldeDelete = async () => {
     try {
-      const property = await getProperty(+params.id);
+      const property = await getProperty(params.id); // ✅ Passez la STRING directement
       if (property) {
         const deletedImageURLs = property.images
           .map((item) => item.url.split("/").at(-1))
           .filter((item) => item !== undefined);
         await removeImages(deletedImageURLs, "propertyImages");
       }
-      await deleteProperty(Number(params.id));
+      await deleteProperty(params.id); // ✅ Passez la STRING directement
+      toast.success(t("propertyDeletedSuccessfully"));
 
-      router.push("/user/properties");
-
+      router.push("/user/properties"); // Démonte le composant modal
       setIsOpen(false);
     } catch (e) {
-      throw e;
+      // Il est critique de naviguer hors de cette route même en cas d'erreur
+      console.error("Erreur de suppression:", e);
+      toast.error(t("errorDeletingProperty"));
+      // ✅ 3. S'assurer de naviguer même en cas d'erreur pour débloquer l'utilisateur
+      // setIsOpen(false); // Tente de fermer visuellement
+      router.push("/user/properties");
+      // Laissez le throw e pour le débogage si nécessaire, mais assurez-vous de naviguer
+      // throw e;
     }
   };
 
   const handleCancel = () => {
-    router.push("/user/properties");
+    router.push("/user/properties"); // Démonte le composant modal
     setIsOpen(false);
   };
   return (
     <ModalDelete
       handleCancel={handleCancel}
       handleDelete={handldeDelete}
-      isOpen={isOpen}
+      isOpen={isOpen} // Géré par l'état local
       slug="l'annonce"
     />
   );

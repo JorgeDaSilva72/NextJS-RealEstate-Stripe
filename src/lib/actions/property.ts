@@ -462,6 +462,7 @@ import { Property } from "@prisma/client";
 // 1. Assurez-vous d'importer la fonction getAddPropertyFormSchema
 import { getAddPropertyFormSchema } from "@/lib/zodSchema";
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 
 // 2. Définir AddPropertyInputType comme le type de sortie (output) du schéma Zod
 // L'Output de Zod contient les données TRANSFORMÉES (number pour cityId)
@@ -605,7 +606,8 @@ export async function deleteProperty(id: string) {
     const result = await prisma.property.delete({
       where: { id: idAsNumber }, // Utilisation de l'ID converti
     });
-
+    // ✅ Nouvelle ligne : invalider le cache de la page de la liste
+    revalidatePath("/user/properties");
     console.log("deleteProperty: succès", { result });
     return result;
   } catch (error) {
