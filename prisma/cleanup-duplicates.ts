@@ -112,7 +112,7 @@ async function cleanupDuplicates() {
 
     const typesWithoutCode = await prisma.propertyType.findMany({
       where: {
-        OR: [{ code: null }, { code: "" }],
+        OR: [{ code: undefined }, { code: "" }],
       },
       include: {
         translations: true,
@@ -210,7 +210,7 @@ async function cleanupDuplicates() {
 
     const statusesWithoutCode = await prisma.propertyStatus.findMany({
       where: {
-        OR: [{ code: null }, { code: "" }],
+        OR: [{ code: undefined }, { code: "" }],
       },
       include: {
         translations: true,
