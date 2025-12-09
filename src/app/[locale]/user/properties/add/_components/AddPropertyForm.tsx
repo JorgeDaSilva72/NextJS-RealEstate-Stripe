@@ -974,8 +974,12 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
           )
           .map((item) => item.id);
         //  Passez validatedData (qui contient les NOMBRES) à l'action d'édition
+        // AVANT (Cause l'erreur si props.property?.id est un number)
+        // await editProperty(props.property?.id, ...);
+
+        // APRÈS (Conversion explicite en string)
         await editProperty(
-          props.property?.id,
+          String(props.property?.id), // ✅ Conversion explicite de l'ID en STRING
           // data,
           validatedData, // Utiliser validatedData (où cityId, price, etc. sont des NOMBRES)
           imageUrls,
