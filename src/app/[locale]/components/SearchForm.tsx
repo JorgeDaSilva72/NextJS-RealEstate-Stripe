@@ -1346,3 +1346,23 @@
 // };
 
 // export default SearchForm;
+
+"use client"; // Le code est utilisé côté client, nécessaire pour les hooks d'interaction.
+
+import React from "react";
+
+// Définition de l'interface des props (si vous n'avez pas de props, vous pouvez l'omettre)
+interface SearchFormProps {
+  // Ajoutez des props si votre composant en a besoin
+  className?: string;
+}
+
+// Définition du composant
+const SearchForm: React.FC<SearchFormProps> = ({ className }) => {
+  return (
+    <div className={`p-4 border rounded ${className}`}>{/* Contenu  */}</div>
+  );
+};
+
+// EXPORTATION PAR DÉFAUT CRITIQUE : Ceci corrige l'erreur "is not a module"
+export default SearchForm;
