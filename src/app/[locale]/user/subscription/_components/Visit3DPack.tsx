@@ -308,7 +308,7 @@ const Visit3DPack: React.FC<Visit3DPackProps> = ({ data }) => {
   const t = useTranslations("Visit3DPack");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { namePlan, price, country, duration } = data;
+  const { namePlan, price, countryId, duration } = data;
 
   const handleMeetingRequest = async (formData: MeetingFormData) => {
     try {
@@ -316,7 +316,7 @@ const Visit3DPack: React.FC<Visit3DPackProps> = ({ data }) => {
         plan_name: namePlan,
         plan_price: price,
         plan_duration: duration,
-        country: country,
+        country: countryId,
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
