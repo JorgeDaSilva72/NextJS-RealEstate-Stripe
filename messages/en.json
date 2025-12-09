@@ -967,6 +967,10 @@
       "description": "Get started today and take your property listings to the next level."
     }
   },
+  "UnderConstruction": {
+    "title": "Page Under Construction 🚧",
+    "message": "We are actively working on this section to bring you a better experience. Please check back soon!"
+  },
   "Common": {
     "for_sale": "For Sale",
     "for_rent": "For Rent",

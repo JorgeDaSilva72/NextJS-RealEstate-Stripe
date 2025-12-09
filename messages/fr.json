@@ -968,6 +968,10 @@
       "description": "Commencez dès aujourd'hui et faites passer vos annonces au niveau supérieur."
     }
   },
+  "UnderConstruction": {
+    "title": "Page en construction 🚧",
+    "message": "Nous travaillons activement sur cette section pour vous offrir une meilleure expérience. Veuillez revenir bientôt !"
+  },
   "Common": {
     "for_sale": "À Vendre",
     "for_rent": "À Louer",
