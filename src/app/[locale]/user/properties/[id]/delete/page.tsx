@@ -101,7 +101,7 @@ export default async function DeletePropertyPage({ params }: Props) {
   const deleteAction = async () => {
     "use server";
     try {
-      await deleteProperty(+params.id);
+      await deleteProperty(params.id);
       redirect("/user/properties");
     } catch (e) {
       throw e;

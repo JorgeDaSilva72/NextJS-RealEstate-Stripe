@@ -1,3 +1,5 @@
+import prisma from "@/lib/prisma";
+
 // Fonction pour capitaliser la première lettre
 export const capitalizeFirstLetter = (string: string) => {
   if (!string) return "";
@@ -46,3 +48,13 @@ export const isValidDate = (
   // Vérifier si la date est valide
   return !isNaN(dateObj.getTime());
 };
+
+export async function getLanguageIdByCode(
+  code: string
+): Promise<number | undefined> {
+  const lang = await prisma.language.findUnique({
+    where: { code: code },
+    select: { id: true },
+  });
+  return lang?.id;
+}

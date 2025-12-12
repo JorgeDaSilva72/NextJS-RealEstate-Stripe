@@ -1,43 +1,47 @@
 // "use client";
 
-// import SearchForm from "@/app/components/SearchForm";
+// import SearchForm from "@/app/[locale]/components/SearchForm";
+// // import SearchForm from "@/app/components/SearchForm";
 // import React from "react";
 
-// const SearchFormWrapper = () => {
-//   return (
-//     <SearchForm
-//       defaultValues={{
-//         ville: "",
-//         categorie: "Appartement",
-//         budget: "",
-//         chambres: "",
-//       }}
-//       defaultActiveTab="Vente"
-//       backgroundColor="bg-black"
-//     />
-//   );
+// interface SearchFormWrapperProps {
+//   defaultValues: {
+//     ville: string;
+//     categorie: string;
+//     budget: string;
+//     chambres: string;
+//   };
+//   defaultActiveTab: string;
+//   backgroundColor: string;
+// }
+
+// const SearchFormWrapper: React.FC<SearchFormWrapperProps> = (props) => {
+//   return <SearchForm {...props} />;
 // };
 
 // export default SearchFormWrapper;
-"use client";
 
-import SearchForm from "@/app/[locale]/components/SearchForm";
-// import SearchForm from "@/app/components/SearchForm";
+// SearchForm.tsx
+
+// 09-12-2025 code du dessus mise en commentaire
+"use client"; // Le code est utilisé côté client, nécessaire pour les hooks d'interaction.
+
 import React from "react";
 
-interface SearchFormWrapperProps {
-  defaultValues: {
-    ville: string;
-    categorie: string;
-    budget: string;
-    chambres: string;
-  };
-  defaultActiveTab: string;
-  backgroundColor: string;
+// Définition de l'interface des props (si vous n'avez pas de props, vous pouvez l'omettre)
+interface SearchFormProps {
+  // Ajoutez des props si votre composant en a besoin
+  className?: string;
 }
 
-const SearchFormWrapper: React.FC<SearchFormWrapperProps> = (props) => {
-  return <SearchForm {...props} />;
+// Définition du composant
+const SearchForm: React.FC<SearchFormProps> = ({ className }) => {
+  return (
+    <div className={`p-4 border rounded ${className}`}>
+      {/* Contenu du formulaire */}
+    </div>
+  );
 };
 
-export default SearchFormWrapper;
+// EXPORTATION PAR DÉFAUT CRITIQUE : Ceci corrige l'erreur "is not a module"
+export default SearchForm;

@@ -89,11 +89,14 @@ export const saveSubscription = async ({
       success: true,
       message: "Abonnement enregistré avec succès",
     };
-  } catch (e: any) {
-    return {
-      success: false,
-      message: e.message,
-    };
+  } catch (e) {
+    // return {
+    //   success: false,
+    //   message: e.message,
+    // };
+    const error =
+      e instanceof Error ? e : new Error("Une erreur inconnue s'est produite");
+    return { success: false, message: error.message };
   }
 };
 
@@ -107,24 +110,24 @@ export const getUserSub = async (userId: string) => {
   return userSubscription;
 };
 
-export const numberOfSubInCity = async ({
-  planId,
-  city,
-}: {
-  planId: number;
-  city: string;
-}) => {
-  const nbrUserFreeInCity = await prisma.user.findMany({
-    where: {
-      AND: [
-        { Property: { some: { location: { city: city } } } },
-        { subscriptions: { some: { palnId: planId } } },
-      ],
-    },
-  });
+// export const numberOfSubInCity = async ({
+//   planId,
+//   city,
+// }: {
+//   planId: number;
+//   city: string;
+// }) => {
+//   const nbrUserFreeInCity = await prisma.user.findMany({
+//     where: {
+//       AND: [
+//         { Property: { some: { location: { city: city } } } },
+//         { subscriptions: { some: { planId: planId } } },
+//       ],
+//     },
+//   });
 
-  return nbrUserFreeInCity.length;
-};
+//   return nbrUserFreeInCity.length;
+// };
 
 export const saveFreeSubscription = async ({
   userId,
@@ -132,28 +135,38 @@ export const saveFreeSubscription = async ({
   paymentId,
   startDate,
   endDate,
-  // city,
-}: SubscriptionDataType) => {
+}: // city,
+SubscriptionDataType) => {
   try {
     if (!userId || !planId)
-      return { success: false, message: "Données corrompu" };
+      return { success: false, message: "Données corrompues" };
+    // Récupérer l'utilisateur et ses abonnements
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { subscriptions: { include: { plan: true } } },
+      // select: { subscriptions: { include: { plan: true } } },
+      select: { subscriptions: true }, // Pas besoin d'inclure le plan ici
     });
 
-    const isUserInPacks = user?.subscriptions.map((item) => {
-      if (item.palnId == planId) {
-        return true;
-      } else return false;
-    });
+    // Vérification de la présence du plan (corrigé avec .some())
+    // const isUserInPacks = user?.subscriptions.map((item) => {
+    //   if (item.planId == planId) {
+    //     return true;
+    //   } else return false;
+    // });
+    const isUserAlreadyInPlan = user?.subscriptions.some(
+      (item) => item.planId === planId // CORRECTION : palnId -> planId
+    );
 
-    if (isUserInPacks && isUserInPacks?.includes(true))
+    // if (isUserInPacks && isUserInPacks?.includes(true))
+    //   return {
+    //     success: false,
+    //     message: "Vous êtes déjà dans un abonnement payant",
+    //   };
+    if (isUserAlreadyInPlan)
       return {
         success: false,
-        message: "Vous êtes déjà dans un abonnement payant",
+        message: "Vous avez déjà cet abonnement.",
       };
-
     // if (isUserInPacks && isUserInPacks?.includes(false))
     //   return {
     //     success: false,
@@ -176,10 +189,13 @@ export const saveFreeSubscription = async ({
       planId,
     });
     return result;
-  } catch (error: any) {
-    return {
-      success: false,
-      message: error.message,
-    };
+  } catch (e) {
+    // return {
+    //   success: false,
+    //   message: error.message,
+    // };
+    const error =
+      e instanceof Error ? e : new Error("Une erreur inconnue s'est produite");
+    return { success: false, message: error.message };
   }
 };

@@ -96,77 +96,90 @@
 // export default BuyPage;
 
 // next-intl with deepseek
-import React from "react";
-import { getCityStatsData } from "./actions";
-import { CityGrid } from "./components/CityGrid";
-import SearchFormWrapper from "../../../components/ui/SearchFormWrapper";
-import HeroBanner from "@/components/ui/HeroBanner";
-import ContactSection from "@/components/ui/ContactSection";
-import BenefitsSection from "@/components/ui/BenefitsSection";
-import { BenefitProps } from "@/components/ui/BenefitsSection/BenefitCard";
-import SectionHeader from "@/components/ui/SectionHeader";
-import { getTranslations } from "next-intl/server";
 
-const BuyPage: React.FC = async () => {
-  const t = await getTranslations("BuyPage");
-  const citiesWithStats = await getCityStatsData();
+// 09-12-2025 on commente tout ce code car demande une adaptation et pas sûr de le garder
+// import React from "react";
+// import { getCityStatsData } from "./actions";
+// import { CityGrid } from "./components/CityGrid";
+// import SearchFormWrapper from "../../../components/ui/SearchFormWrapper";
+// import HeroBanner from "@/components/ui/HeroBanner";
+// import ContactSection from "@/components/ui/ContactSection";
+// import BenefitsSection from "@/components/ui/BenefitsSection";
+// import { BenefitProps } from "@/components/ui/BenefitsSection/BenefitCard";
+// import SectionHeader from "@/components/ui/SectionHeader";
+// import { getTranslations } from "next-intl/server";
 
-  // Récupérer les avantages traduits
-  const benefits: BenefitProps[] = t.raw("benefits").map((benefit: any) => ({
-    title: benefit.title,
-    description: benefit.description,
-  }));
+// const BuyPage: React.FC = async () => {
+//   const t = await getTranslations("BuyPage");
+//   const citiesWithStats = await getCityStatsData();
 
+//   // Récupérer les avantages traduits
+//   const benefits: BenefitProps[] = t.raw("benefits").map((benefit: any) => ({
+//     title: benefit.title,
+//     description: benefit.description,
+//   }));
+
+//   return (
+//     <div className="min-h-screen bg-gray-50">
+//       <HeroBanner
+//         imageSrc="/Maroc/maroc_to_buy.jpg"
+//         imageAlt="Luxury properties in Morocco"
+//         title={t("heroTitle")}
+//         subtitle={t("heroSubtitle")}
+//         imageQuality={95}
+//         height="h-[60vh]"
+//         overlayOpacity={20}
+//         blurIntensity={2}
+//         isPriority={true}
+//         titleClassName="text-4xl md:text-6xl font-bold text-center mb-4"
+//         subtitleClassName="text-xl md:text-2xl text-center max-w-3xl"
+//       >
+//         {/* <button className="mt-8">Call to Action</button> */}
+//       </HeroBanner>
+
+//       <main className="max-w-7xl mx-auto px-4 py-16 space-y-16">
+//         {/* Benefits Section */}
+//         <BenefitsSection title={t("benefitsTitle")} benefits={benefits} />
+
+//         {/* Cities Section */}
+//         <section aria-labelledby="cities-title">
+//           <SectionHeader id="cities-title" title={t("citiesTitle")} />
+//           <CityGrid cities={citiesWithStats} />
+//         </section>
+
+//         {/* Search Form Section */}
+//         <section className="w-full" aria-labelledby="search-title">
+//           <SectionHeader id="search-title" title={t("searchTitle")} />
+//           <div className="px-4">
+//             <SearchFormWrapper
+//               defaultValues={{
+//                 ville: "",
+//                 categorie: "Appartement",
+//                 budget: "",
+//                 chambres: "",
+//               }}
+//               defaultActiveTab="Vente"
+//               backgroundColor="bg-black"
+//             />
+//           </div>
+//         </section>
+
+//         {/* Contact Section */}
+//         <ContactSection />
+//       </main>
+//     </div>
+//   );
+// };
+
+// export default BuyPage;
+
+import UnderConstruction from "../components/Underonstruction";
+
+export default function MyWIPPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <HeroBanner
-        imageSrc="/Maroc/maroc_to_buy.jpg"
-        imageAlt="Luxury properties in Morocco"
-        title={t("heroTitle")}
-        subtitle={t("heroSubtitle")}
-        imageQuality={95}
-        height="h-[60vh]"
-        overlayOpacity={20}
-        blurIntensity={2}
-        isPriority={true}
-        titleClassName="text-4xl md:text-6xl font-bold text-center mb-4"
-        subtitleClassName="text-xl md:text-2xl text-center max-w-3xl"
-      >
-        {/* <button className="mt-8">Call to Action</button> */}
-      </HeroBanner>
-
-      <main className="max-w-7xl mx-auto px-4 py-16 space-y-16">
-        {/* Benefits Section */}
-        <BenefitsSection title={t("benefitsTitle")} benefits={benefits} />
-
-        {/* Cities Section */}
-        <section aria-labelledby="cities-title">
-          <SectionHeader id="cities-title" title={t("citiesTitle")} />
-          <CityGrid cities={citiesWithStats} />
-        </section>
-
-        {/* Search Form Section */}
-        <section className="w-full" aria-labelledby="search-title">
-          <SectionHeader id="search-title" title={t("searchTitle")} />
-          <div className="px-4">
-            <SearchFormWrapper
-              defaultValues={{
-                ville: "",
-                categorie: "Appartement",
-                budget: "",
-                chambres: "",
-              }}
-              defaultActiveTab="Vente"
-              backgroundColor="bg-black"
-            />
-          </div>
-        </section>
-
-        {/* Contact Section */}
-        <ContactSection />
-      </main>
+    <div className="min-h-screen pt-20">
+      {/* Le composant affichera le texte en français ou en anglais selon la locale active */}
+      <UnderConstruction className="mt-10" />
     </div>
   );
-};
-
-export default BuyPage;
+}

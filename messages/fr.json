@@ -964,5 +964,29 @@
       "title": "Prêt à transformer votre expérience immobilière ?",
       "description": "Commencez dès aujourd'hui et faites passer vos annonces au niveau supérieur."
     }
+  },
+  "UnderConstruction": {
+    "title": "Page en construction 🚧",
+    "message": "Nous travaillons activement sur cette section pour vous offrir une meilleure expérience. Veuillez revenir bientôt !"
+  },
+  "modalDeleteProperty": {
+    "propertyDeletedSuccessfully": "Annonce supprimée avec succès.",
+    "errorDeletingProperty": "Erreur lors de la suppression de l'annonce."
+  },
+  "Common": {
+    "for_sale": "À Vendre",
+    "for_rent": "À Louer",
+    "seasonal_rent": "Location Saisonnière",
+    "furnished_rent": "Location Meublée",
+    "house": "Maison",
+    "apartment": "Appartement",
+    "land": "Terrain",
+    "villa": "Villa",
+    "commercial": "Commercial",
+    "riad": "Riad",
+    "office": "Bureau",
+    "farm": "Ferme",
+    "warehouse": "Entrepôt",
+    "hotel": "Hôtel"
   }
 }
