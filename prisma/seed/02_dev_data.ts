@@ -512,12 +512,33 @@
 //     await prisma.$disconnect();
 //   });
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, SubscriptionStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Début du seeding..."); // ============================================ // 1. CRÉER DES UTILISATEURS // ============================================
+  console.log("🌱 Début du seeding des données de test...");
+
+  // 0. NETTOYAGE (Optionnel mais recommandé pour les données de test)
+  // Pour les données de test, il est souvent préférable de vider les tables dépendantes
+  // pour ne pas avoir d'erreurs d'ID dupliqués, surtout si les users sont recréés.
+
+  await prisma.subscriptions.deleteMany();
+  await prisma.propertyImage.deleteMany();
+  await prisma.propertyVideo.deleteMany();
+  await prisma.contact.deleteMany();
+  await prisma.propertyFeature.deleteMany();
+  await prisma.propertyLocation.deleteMany();
+  await prisma.appointment.deleteMany();
+  await prisma.property.deleteMany();
+  await prisma.googleAnalyticsToken.deleteMany(); // Nettoyage du token si présent
+  await prisma.user.deleteMany(); // Nettoyage des utilisateurs
+
+  console.log("🧹 Utilisateurs, annonces et abonnements précédents effacés.");
+
+  // ============================================
+  // 1. CRÉER DES UTILISATEURS
+  // ============================================
 
   const users = await Promise.all([
     prisma.user.upsert({
@@ -555,16 +576,22 @@ async function main() {
     }),
   ]);
 
-  console.log("✅ Utilisateurs créés"); // ============================================ // 2. RÉCUPÉRER LES DONNÉES DE RÉFÉRENCE (Y compris les plans) // ============================================ // Récupérer les langues
+  console.log("✅ Utilisateurs créés");
+
+  // ============================================
+  // 2. RÉCUPÉRER LES DONNÉES DE RÉFÉRENCE
+  // ============================================
 
   const languages = await prisma.language.findMany();
   const frenchLang = languages.find((l) => l.code === "fr");
+  const englishLang = languages.find((l) => l.code === "en");
 
-  if (!frenchLang) {
+  if (!frenchLang || !englishLang) {
     throw new Error(
-      "Langue française non trouvée. Assurez-vous que les langues sont déjà populées."
+      "Les langues 'fr' et 'en' doivent être populées par le seed principal."
     );
-  } // Récupérer les plans d'abonnement (AJOUT)
+  }
+  // Récupérer les plans d'abonnement (AJOUT)
 
   const subscriptionPlans = await prisma.subscriptionPlan.findMany();
 
@@ -572,7 +599,9 @@ async function main() {
     throw new Error(
       "Plans d'abonnement non trouvés. Assurez-vous qu'ils sont déjà populés."
     );
-  } // Assigner les plans pour faciliter la liaison
+  }
+
+  // ARécupération des plans (pour le reste du code, on utilise plans ci-dessous)
 
   const planDiamant = subscriptionPlans.find((p) => p.namePlan === "Diamant");
   const planOr = subscriptionPlans.find((p) => p.namePlan === "Or");
@@ -583,7 +612,9 @@ async function main() {
       "Plans 'Diamant', 'Or' ou 'Bronze' non trouvés. Vérifiez les noms."
     );
   }
-  console.log("✅ Plans d'abonnement récupérés"); // Récupérer les pays (supposons Sénégal, Côte d'Ivoire, Maroc)
+  console.log("✅ Plans d'abonnement récupérés");
+
+  // Récupérer les pays (supposons Sénégal, Côte d'Ivoire, Maroc)
 
   const senegal = await prisma.country.findUnique({ where: { code: "SN" } });
   const coteDivoire = await prisma.country.findUnique({
@@ -595,7 +626,9 @@ async function main() {
     throw new Error(
       "Pays non trouvés. Assurez-vous que les pays sont déjà populés."
     );
-  } // Récupérer les types de propriétés (Appartement, Villa, Maison)
+  }
+
+  // Récupérer les types de propriétés (Appartement, Villa, Maison)
 
   const propertyTypes = await prisma.propertyType.findMany({
     include: {
@@ -627,7 +660,9 @@ async function main() {
     throw new Error(
       "Types de propriétés non trouvés. Assurez-vous qu'ils sont déjà populés."
     );
-  } // Récupérer les statuts (À vendre, À louer)
+  }
+
+  // Récupérer les statuts (À vendre, À louer)
 
   const propertyStatuses = await prisma.propertyStatus.findMany({
     include: {
@@ -653,7 +688,9 @@ async function main() {
     throw new Error(
       "Statuts de propriétés non trouvés. Assurez-vous qu'ils sont déjà populés."
     );
-  } // Récupérer ou créer des villes
+  }
+
+  // Récupérer ou créer des villes
 
   const dakar = await prisma.city.findFirst({
     where: {
@@ -694,28 +731,36 @@ async function main() {
     );
   }
 
-  console.log("✅ Données de référence récupérées"); // ============================================ // 3. CRÉER LES 3 ANNONCES IMMOBILIÈRES // ============================================ // ... (Votre code pour la création des 3 annonces property1, property2, property3) // 🏠 ANNONCE 1 : Villa de luxe à Dakar
+  console.log("✅ Données de référence récupérées");
+
+  // ============================================
+  // 3. CRÉER LES 3 ANNONCES IMMOBILIÈRES
+  // ============================================
 
   const now = new Date();
   const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
   const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
+  // 🏠 ANNONCE 1 : Villa de luxe à Dakar
   const property1 = await prisma.property.create({
+    // CHANGEMENT CRITIQUE: NAME et DESCRIPTION en JSON
     data: {
-      name: "Villa moderne avec vue sur l'océan - Almadies",
-      description: `Magnifique villa contemporaine située dans le quartier prisé des Almadies à Dakar. Cette propriété d'exception offre une vue imprenable sur l'océan Atlantique.
-
-La villa dispose d'espaces de vie spacieux et lumineux, avec une cuisine équipée haut de gamme, un salon ouvert sur une terrasse panoramique, et 5 chambres en suite avec dressing.
-
-Le jardin paysager de 800m² comprend une piscine à débordement, un espace barbecue couvert et un jardin tropical. Sécurité 24h/24, garage pour 3 véhicules.
-
-Idéale pour une famille expatriée ou pour un investissement locatif haut de gamme.`,
-      price: 450000000, // 450 millions FCFA //   currency: senegal.currency,
+      name: {
+        fr: "Villa moderne avec vue sur l'océan - Almadies",
+        en: "Modern villa with ocean view - Almadies",
+      },
+      description: {
+        fr: `Magnifique villa contemporaine située dans le quartier prisé des Almadies à Dakar. Cette propriété d'exception offre une vue imprenable sur l'océan Atlantique. La villa dispose d'espaces de vie spacieux et lumineux, avec une cuisine équipée haut de gamme, un salon ouvert sur une terrasse panoramique, et 5 chambres en suite.`,
+        en: `Magnificent contemporary villa located in the sought-after Almadies district of Dakar. This exceptional property offers a breathtaking view of the Atlantic Ocean. The villa features spacious and bright living areas, with a high-end equipped kitchen and 5 en-suite bedrooms.`,
+      },
+      // CHANGEMENT CRITIQUE: PRICE en STRING
+      price: 450000000, // 450 millions FCFA //
+      currency: senegal.currency,
       userId: users[0].id,
       typeId: villaType.id,
       statusId: forSaleStatus.id,
       countryId: senegal.id,
-      // AJOUT CRUCIAL : Définir la date de publication ++
+      // AJOUT CRUCIAL : Définir la date de publication
       publishedAt: oneWeekAgo, // AJOUT FACULTATIF : pour garantir la visibilité selon votre schéma
       isActive: true,
       isFeatured: true,
@@ -727,7 +772,11 @@ Idéale pour une famille expatriée ou pour un investissement locatif haut de ga
           zip: "12500",
           latitude: 14.7167,
           longitude: -17.4677,
-          landmark: "Près de l'hôtel Radisson Blu",
+          // CHANGEMENT CRITIQUE: LANDMARK en JSON
+          landmark: {
+            fr: "Près de l'hôtel Radisson Blu",
+            en: "Near the Radisson Blu hotel",
+          },
         },
       },
       feature: {
@@ -739,6 +788,9 @@ Idéale pour une famille expatriée ou pour un investissement locatif haut de ga
           hasSwimmingPool: true,
           hasGardenYard: true,
           hasBalcony: true,
+          floor: 0,
+          totalFloors: 1,
+          yearBuilt: 2020,
         },
       },
       images: {
@@ -777,20 +829,20 @@ Idéale pour une famille expatriée ou pour un investissement locatif haut de ga
     },
   });
 
-  console.log("✅ Annonce 1 créée : Villa Dakar"); // 🏢 ANNONCE 2 : Appartement moderne à Abidjan
+  console.log("✅ Annonce 1 créée : Villa Dakar");
+
+  // 🏢 ANNONCE 2 : Appartement moderne à Abidjan
 
   const property2 = await prisma.property.create({
     data: {
-      name: "Appartement standing F4 - Cocody Riviera",
-      description: `Superbe appartement de standing de 120m² situé au cœur de Cocody Riviera, dans une résidence sécurisée récente.
-
-Cet appartement lumineux comprend un grand salon-salle à manger avec balcon, une cuisine américaine entièrement équipée, 3 chambres spacieuses dont une suite parentale avec dressing, et 2 salles de bain modernes.
-
-La résidence offre : ascenseur, parking privé, gardiennage 24h/24, générateur électrique, et espaces verts communs.
-
-Proche de toutes commodités : supermarchés, écoles internationales, centres commerciaux et accès rapide au Plateau.
-
-Disponible immédiatement pour location longue durée.`,
+      name: {
+        fr: "Appartement standing F4 - Cocody Riviera",
+        en: "Luxury F4 Apartment - Cocody Riviera",
+      },
+      description: {
+        fr: `Superbe appartement de standing de 120m² situé au cœur de Cocody Riviera, dans une résidence sécurisée récente. Cet appartement lumineux comprend un grand salon-salle à manger avec balcon, une cuisine américaine, 3 chambres, et 2 salles de bain modernes.`,
+        en: `Superb luxury apartment of 120m² located in the heart of Cocody Riviera, in a recent secured residence. This bright apartment includes a large living-dining room with a balcony, an open-plan kitchen, 3 spacious bedrooms, and 2 modern bathrooms.`,
+      },
       price: 600000, // 600 000 FCFA/mois
       userId: users[1].id,
       typeId: appartementType.id,
@@ -807,7 +859,10 @@ Disponible immédiatement pour location longue durée.`,
           zip: "01 BP 1234",
           latitude: 5.3599,
           longitude: -4.0083,
-          landmark: "Derrière la pharmacie Sainte Marie",
+          landmark: {
+            fr: "Derrière la pharmacie Sainte Marie",
+            en: "Behind Saint Marie pharmacy",
+          },
         },
       },
       feature: {
@@ -819,6 +874,9 @@ Disponible immédiatement pour location longue durée.`,
           hasSwimmingPool: false,
           hasGardenYard: false,
           hasBalcony: true,
+          floor: 3,
+          totalFloors: 5,
+          yearBuilt: 2018,
         },
       },
       images: {
@@ -847,20 +905,20 @@ Disponible immédiatement pour location longue durée.`,
     },
   });
 
-  console.log("✅ Annonce 2 créée : Appartement Abidjan"); // 🏡 ANNONCE 3 : Maison familiale à Rabat
+  console.log("✅ Annonce 2 créée : Appartement Abidjan");
+
+  // 🏡 ANNONCE 3 : Maison familiale à Rabat
 
   const property3 = await prisma.property.create({
     data: {
-      name: "Belle maison traditionnelle - Quartier Anfa",
-      description: `Charmante maison traditionnelle marocaine de 280m² sur un terrain de 400m², idéalement située dans le quartier résidentiel d'Anfa.
-
-Cette propriété familiale offre des volumes généreux avec un salon marocain authentique, un salon européen, une salle à manger, et une cuisine traditionnelle.
-
-4 chambres spacieuses à l'étage, dont 2 avec salle de bain privative. Patio intérieur avec fontaine et jardin arboré.
-
-Architecture typique avec zellige, boiseries sculptées et plafonds en stuc. Garage double et terrasse sur le toit avec vue sur la ville.
-
-Parfaite pour une famille recherchant l'authenticité dans un quartier calme et recherché de Casablanca.`,
+      name: {
+        fr: "Belle maison traditionnelle - Quartier Anfa",
+        en: "Beautiful traditional house - Anfa District",
+      },
+      description: {
+        fr: `Charmante maison traditionnelle marocaine de 280m² sur un terrain de 400m², idéalement située dans le quartier résidentiel d'Anfa. Cette propriété familiale offre des volumes généreux avec un salon marocain authentique, et 4 chambres spacieuses à l'étage.`,
+        en: `Charming traditional Moroccan house of 280m² on a 400m² plot, ideally located in the residential Anfa district. This family property offers generous volumes with an authentic Moroccan living room and 4 spacious bedrooms upstairs.`,
+      },
       price: 4500000, // 4,5 millions MAD
       userId: users[2].id,
       typeId: maisonType.id,
@@ -877,7 +935,10 @@ Parfaite pour une famille recherchant l'authenticité dans un quartier calme et 
           zip: "20100",
           latitude: 33.5892,
           longitude: -7.6164,
-          landmark: "Proche du Lycée Lyautey",
+          landmark: {
+            fr: "Proche du Lycée Lyautey",
+            en: "Near Lycée Lyautey",
+          },
         },
       },
       feature: {
@@ -889,6 +950,9 @@ Parfaite pour une famille recherchant l'authenticité dans un quartier calme et 
           hasSwimmingPool: false,
           hasGardenYard: true,
           hasBalcony: false,
+          floor: 1,
+          totalFloors: 2,
+          yearBuilt: 1995,
         },
       },
       images: {
@@ -930,12 +994,20 @@ Parfaite pour une famille recherchant l'authenticité dans un quartier calme et 
     },
   });
 
-  console.log("✅ Annonce 3 créée : Maison Casablanca"); // ============================================ // 4. CRÉER LES ABONNEMENTS DE TEST (NOUVEAU) // ============================================
-  console.log("\n💳 Création d'abonnements de test...");
+  console.log("✅ Annonce 3 créée : Maison Casablanca");
+
+  // ============================================
+  // 4. CRÉER LES ABONNEMENTS DE TEST
+  // ============================================
 
   const today = new Date();
   const nextYear = new Date(today);
-  nextYear.setFullYear(today.getFullYear() + 1); // 4.1 Récupérer les plans d'abonnement pour lier les subscriptions // On suppose que les plans "Diamant", "Or" et "Bronze" existent grâce au premier seed.
+  nextYear.setFullYear(today.getFullYear() + 1);
+
+  console.log("\n💳 Création d'abonnements de test...");
+
+  // 4.1 Récupérer les plans d'abonnement pour lier les subscriptions
+  // On suppose que les plans "Diamant", "Or" et "Bronze" existent grâce au premier seed.
 
   const plans = await prisma.subscriptionPlan.findMany();
 
@@ -958,11 +1030,13 @@ Parfaite pour une famille recherchant l'authenticité dans un quartier calme et 
         userId: users[0].id,
         planId: planDiamant.id,
         paymentID: "sub_amadou_diamant",
-        status: "active",
+        status: SubscriptionStatus.ACTIVE, // CHANGEMENT CRITIQUE: Utilisation de l'ENUM
         startDate: today,
         endDate: nextYear,
       },
-    }), // Abonnement 2: Fatima Traoré (user_2_seed) - Plan OR
+    }),
+
+    // Abonnement 2: Fatima Traoré (user_2_seed) - Plan OR
 
     prisma.subscriptions.upsert({
       where: { paymentID: "sub_fatima_or" },
@@ -971,11 +1045,13 @@ Parfaite pour une famille recherchant l'authenticité dans un quartier calme et 
         userId: users[1].id,
         planId: planOr.id,
         paymentID: "sub_fatima_or",
-        status: "active",
+        status: SubscriptionStatus.ACTIVE, // CHANGEMENT CRITIQUE: Utilisation de l'ENUM
         startDate: today,
         endDate: nextYear,
       },
-    }), // Abonnement 3: Moussa Koné (user_3_seed) - Plan BRONZE (Exemple de statut "pending")
+    }),
+
+    // Abonnement 3: Moussa Koné (user_3_seed) - Plan BRONZE (Exemple de statut "pending")
 
     prisma.subscriptions.upsert({
       where: { paymentID: "sub_moussa_bronze_pending" },
@@ -984,7 +1060,7 @@ Parfaite pour une famille recherchant l'authenticité dans un quartier calme et 
         userId: users[2].id,
         planId: planBronze.id,
         paymentID: "sub_moussa_bronze_pending",
-        status: "active",
+        status: SubscriptionStatus.ACTIVE, // CHANGEMENT CRITIQUE: Utilisation de l'ENUM
         startDate: today,
         endDate: nextYear,
       },
@@ -992,6 +1068,10 @@ Parfaite pour une famille recherchant l'authenticité dans un quartier calme et 
   ]);
 
   console.log(`✅ ${subscriptions.length} abonnements créés`); // ============================================ // 5. STATISTIQUES FINALES (Ancienne section 4) // ============================================
+
+  // ============================================
+  // 5. STATISTIQUES FINALES
+  // ============================================
 
   const totalProperties = await prisma.property.count();
   const totalUsers = await prisma.user.count();

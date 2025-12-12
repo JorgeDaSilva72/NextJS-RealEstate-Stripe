@@ -536,13 +536,13 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
   //uncomment next line if you use Prisma <5.10
-  // directUrl = env("DATABASE_URL_UNPOOLED")
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 model User {
   id            String          @id
-  firstName     Json
-  lastName      Json
+  firstName     String
+  lastName      String
   email         String          @unique // AJOUT: index unique pour performances
   avatarUrl     String?
   createdAt     DateTime        @default(now())
@@ -561,7 +561,7 @@ model User {
 model Property {
   id          Int    @id @default(autoincrement())
   name        Json
-  description Json @db.Text // CHANGEMENT: Text au lieu de String pour longs textes
+  description Json 
   price       Int
   currency    String @default("XOF") // AJOUT: devise de l'annonce
 
@@ -611,6 +611,13 @@ model Property {
 }
 
 
+enum AppointmentState {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELED
+}
+
 model Appointment {
   id        Int      @id @default(autoincrement())
   start     DateTime
@@ -618,7 +625,7 @@ model Appointment {
   title     String   @default("Visite de l'immobilier")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt // AJOUT
-  state     String   @default("pending") // AMÉLIORATION: utiliser enum
+  state AppointmentState @default(PENDING) // Changement : String -> AppointmentState
 
 // Relation avec User
   userId String
@@ -667,8 +674,8 @@ model Country {
   currency       String   // Devise (ex: "XOF", "MAD")
   currencySymbol String   // Symbole (ex: "FCFA", "DH")
   flagEmoji      String?  // Emoji du drapeau (ex: "🇸🇳")
-  latitude       Float?   // Centre géographique du pays
-  longitude      Float?
+  latitude       Decimal?   // Centre géographique du pays
+  longitude      Decimal?
   isActive       Boolean  @default(true)
   displayOrder   Int      @default(0)
   createdAt      DateTime @default(now())
@@ -707,8 +714,8 @@ model Region {
   countryId Int
   country   Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
   code      String?  // Code de la région (optionnel)
-  latitude  Float?
-  longitude Float?
+  latitude  Decimal?
+  longitude Decimal?
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -745,8 +752,8 @@ model City {
   countryId  Int
   country    Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
   code       String?  // Code postal ou code ville
-  latitude   Float?
-  longitude  Float?
+  latitude   Decimal?
+  longitude  Decimal?
   population Int?     // Population (optionnel)
   isActive   Boolean  @default(true)
   isFeatured Boolean  @default(false) // Pour mettre en avant certaines villes
@@ -774,6 +781,7 @@ model CityTranslation {
   @@unique([cityId, languageId])
   @@index([languageId])
   @@index([name]) // AJOUT: recherche par nom de ville
+  @@index([languageId, name]) // AJOUT: Optimisation de la recherche par langue
 }
 
 // ============================================
@@ -852,8 +860,8 @@ model PropertyLocation {
   landmark     Json?
 
   // Coordonnées GPS précises de la propriété
-  latitude  Float?
-  longitude Float?
+  latitude  Decimal?
+  longitude Decimal?
 
   propertyId Int      @unique
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
@@ -928,7 +936,7 @@ model Contact {
 model SubscriptionPlan {
   id       Int    @id @default(autoincrement())
   namePlan String
-  price    Float
+  price    Decimal // changement
   duration String @default("AN")
 
 
@@ -957,10 +965,18 @@ model SubscriptionPlan {
   @@index([isActive, displayOrder]) // AJOUT
 }
 
+enum SubscriptionStatus {
+  ACTIVE
+  PAUSED
+  CANCELED
+  EXPIRED
+  PENDING
+}
+
 model Subscriptions {
   id        Int    @id @default(autoincrement())
   paymentID String @unique // AJOUT: unique
-  status    String @default("active") // AJOUT: statut de l'abonnement
+  status SubscriptionStatus @default(ACTIVE) // Changement : String -> SubscriptionStatus
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -8,12 +8,13 @@
     "build": "prisma generate && cross-env NODE_OPTIONS=--max-old-space-size=4096 next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "node --loader ts-node/esm prisma/seed3.ts",
-    "3listingsSeed": "node --loader ts-node/esm prisma/3listingsSeed.ts",
     "prisma:generate": "node node_modules/.bin/prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:reset": "node node_modules/.bin/prisma migrate reset --force"
+    "prisma:reset": "node node_modules/.bin/prisma migrate reset --force",
+    "db:seed:ref": "node --loader ts-node/esm prisma/seed/01_reference.ts",
+    "db:seed:dev": "node --loader ts-node/esm prisma/seed/02_dev_data.ts",
+    "seed": "npm run db:seed:ref && npm run db:seed:dev"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

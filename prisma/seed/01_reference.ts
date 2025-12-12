@@ -1679,8 +1679,8 @@ const countries = [
 const plans = [
   {
     namePlan: "Gratuit",
-    price: 0,
-    duration: "AN",
+    price: "0.00", // CHANGEMENT: string
+    duration: "ANNUAL",
     startDate: new Date("2024-12-01"),
     endDate: new Date("2025-12-31"),
     premiumAds: 3,
@@ -1692,8 +1692,8 @@ const plans = [
   },
   {
     namePlan: "Bronze",
-    price: 150,
-    duration: "AN",
+    price: "150.00", // CHANGEMENT: string
+    duration: "ANNUAL",
     startDate: new Date("2024-12-01"),
     endDate: new Date("2025-12-31"),
     premiumAds: 5,
@@ -1706,8 +1706,8 @@ const plans = [
   },
   {
     namePlan: "Argent",
-    price: 250,
-    duration: "AN",
+    price: "250.00", // CHANGEMENT: string
+    duration: "ANNUAL",
     startDate: new Date("2024-12-01"),
     endDate: new Date("2025-12-31"),
     premiumAds: 10,
@@ -1720,8 +1720,8 @@ const plans = [
   },
   {
     namePlan: "Or",
-    price: 400,
-    duration: "AN",
+    price: "400.00", // CHANGEMENT: string
+    duration: "ANNUAL",
     startDate: new Date("2024-12-01"),
     endDate: new Date("2025-12-31"),
     premiumAds: 20,
@@ -1734,8 +1734,8 @@ const plans = [
   },
   {
     namePlan: "Diamant",
-    price: 1500,
-    duration: "AN",
+    price: "1500.00", // CHANGEMENT: string
+    duration: "ANNUAL",
     startDate: new Date("2024-12-01"),
     endDate: new Date("2025-12-31"),
     premiumAds: 25,
@@ -1755,6 +1755,7 @@ console.log("🧹 Resetting database...");
 // ============================================================
 
 // Children first (translations, property data, etc.)
+
 await prisma.propertyStatusTranslation.deleteMany();
 await prisma.propertyTypeTranslation.deleteMany();
 await prisma.cityTranslation.deleteMany();
@@ -2071,6 +2072,16 @@ async function main() {
   }
   console.log(`✅ ${countries.length} pays créés avec régions et villes\n`);
 
+  // --- NOUVEAU: Récupérer l'ID du premier pays créé ---
+  // On suppose que le premier pays de la liste (Angola) a l'ID 1 après la réinitialisation
+  // Vous pouvez aussi chercher le Sénégal (SN)
+  const senegal = await prisma.country.findUnique({
+    where: { code: "SN" },
+    select: { id: true },
+  });
+
+  const defaultCountryId = senegal?.id || 1; // Utiliser l'ID du Sénégal, ou 1 par défaut
+
   // 5. CRÉER LES PLANS D'ABONNEMENT
   console.log("💎 Création des plans d'abonnement...");
   for (const plan of plans) {
@@ -2079,7 +2090,7 @@ async function main() {
         namePlan: plan.namePlan,
         price: plan.price,
         duration: plan.duration,
-        country: { connect: { id: 1 } }, // arbitraire mais les pays doivent être crées avant
+        country: { connect: { id: defaultCountryId } }, // arbitraire mais les pays doivent être crées avant
         startDate: plan.startDate,
         endDate: plan.endDate,
         premiumAds: plan.premiumAds,
