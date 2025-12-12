@@ -472,7 +472,8 @@ export type AddPropertyOutputType = z.infer<
 
 // La fonction reste la même car les données d'entrée (propertyData) sont déjà adaptées
 export async function saveProperty(
-  propertyData: AddPropertyOutputType,
+  // propertyData: AddPropertyOutputType,
+  propertyData: any, // Changed to any to accept multilingual structure
   imagesUrls: string[],
   videoUrls: string[],
   userId: string
@@ -484,12 +485,33 @@ export async function saveProperty(
     throw new Error("Les champs obligatoires sont manquants.");
   }
 
+  // Handle multilingual name and description
+  // If name is already an object, use it as is, otherwise convert string to object
+  const multilingualName = typeof propertyData.name === 'object'
+    ? propertyData.name
+    : { fr: propertyData.name, en: propertyData.name };
+
+  const multilingualDescription = propertyData.description
+    ? (typeof propertyData.description === 'object'
+      ? propertyData.description
+      : { fr: propertyData.description, en: propertyData.description })
+    : null;
+
+  // todo contrôler la limite des annonce en fonction des plans d'abonnement
+  // todo 1 solution : modifier schéma Zod maxImagesAllowed: z.number().optional()
+
+  // if (imagesUrls.length > (propertyData.maxImagesAllowed || 10)) {
+  //   throw new Error(
+  //     `Le nombre maximal d'images (${propertyData.maxImagesAllowed || 10}) a été dépassé.`
+  //   );
+  // }
+
   try {
     const result = await prisma.$transaction(async (tx) => {
       const property = await tx.property.create({
         data: {
-          name: propertyData.name,
-          description: propertyData.description,
+          name: multilingualName,
+          description: multilingualDescription,
           price: propertyData.price,
           statusId: propertyData.statusId,
           typeId: propertyData.typeId,
@@ -525,7 +547,9 @@ export async function saveProperty(
 // Fonction editProperty : Correction de la signature du PropertyId
 export async function editProperty(
   propertyId: string, // ✅ CHANGEMENT : Accepte un string pour l'ID
-  propertyData: AddPropertyOutputType,
+  //propertyData: AddPropertyOutputType,
+  
+  propertyData: any, // Changed to any to accept multilingual structure
   newImagesUrls: string[],
   deletedImageIDs: number[],
   newVideosUrls: string[],
@@ -540,14 +564,24 @@ export async function editProperty(
   if (isNaN(idAsNumber)) {
     throw new Error("L'identifiant de la propriété n'est pas valide.");
   }
+  // Handle multilingual name and description
+  const multilingualName = typeof propertyData.name === 'object'
+    ? propertyData.name
+    : { fr: propertyData.name, en: propertyData.name };
+
+  const multilingualDescription = propertyData.description
+    ? (typeof propertyData.description === 'object'
+      ? propertyData.description
+      : { fr: propertyData.description, en: propertyData.description })
+    : null;
 
   try {
     const dataToUpdate = {
-      name: propertyData.name,
+      name: multilingualName,
       price: propertyData.price,
       statusId: propertyData.statusId,
       typeId: propertyData.typeId,
-      description: propertyData.description,
+      description: multilingualDescription,
       contact: {
         update: propertyData.contact,
       },

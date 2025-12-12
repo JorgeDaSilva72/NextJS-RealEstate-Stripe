@@ -1,0 +1,171 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import {
+  getRealtimeReport,
+  getTrafficOverview,
+  getTopPages,
+  getUserBehavior,
+  getTrafficSources,
+} from "@/lib/google-analytics/ga4-client";
+
+/**
+ * Get analytics data
+ * GET /api/analytics/data?type=overview&startDate=2024-01-01&endDate=2024-01-31
+ */
+export async function GET(req: NextRequest) {
+  try {
+    // Check if user is authenticated
+    const session = await getKindeServerSession();
+    const { getUser } = session;
+    const user = await getUser();
+
+    if (!user || !user.id) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const searchParams = req.nextUrl.searchParams;
+    const type = searchParams.get("type") || "overview";
+    const startDate = searchParams.get("startDate") || "30daysAgo";
+    const endDate = searchParams.get("endDate") || "today";
+
+    console.log(`[Analytics Data API] Request for user ${user.id}, type: ${type}`);
+
+    let data;
+    let errorDetails: any = null;
+
+    try {
+      switch (type) {
+        case "realtime":
+          data = await getRealtimeReport(user.id);
+          break;
+
+        case "overview":
+          data = await getTrafficOverview(user.id, startDate, endDate);
+          break;
+
+        case "topPages":
+          const limit = parseInt(searchParams.get("limit") || "10");
+          data = await getTopPages(user.id, startDate, endDate, limit);
+          break;
+
+        case "behavior":
+          data = await getUserBehavior(user.id, startDate, endDate);
+          break;
+
+        case "sources":
+          data = await getTrafficSources(user.id, startDate, endDate);
+          break;
+
+        default:
+          return NextResponse.json(
+            { error: "Invalid type parameter" },
+            { status: 400 }
+          );
+      }
+    } catch (apiError: any) {
+      console.error(`[Analytics Data API] Error in API call for user ${user.id}:`, apiError);
+      errorDetails = {
+        message: apiError?.message,
+        code: apiError?.code,
+        response: apiError?.response?.data,
+      };
+    }
+
+    // If data is null, it means authentication failed or no token available
+    if (data === null) {
+      console.warn(`[Analytics Data API] Data is null for user ${user.id}, type: ${type}`);
+      console.warn(`[Analytics Data API] Error details:`, errorDetails);
+      return NextResponse.json(
+        { 
+          error: "Authentication required. Please reconnect your Google Analytics account.",
+          requiresReconnect: true,
+          data: null,
+          debug: process.env.NODE_ENV === "development" ? errorDetails : undefined,
+        },
+        { status: 401 }
+      );
+    }
+
+    // Check if data has an error property (from getTrafficOverview error handling)
+    if (data?.error) {
+      console.warn(`[Analytics Data API] Data contains error for user ${user.id}, type: ${type}`, data.error);
+      return NextResponse.json(
+        { 
+          error: data.error || "Failed to fetch analytics data",
+          requiresReconnect: data.code === "NO_CLIENT",
+          data: null,
+          debug: process.env.NODE_ENV === "development" ? data : undefined,
+        },
+        { status: data.code === "NO_CLIENT" ? 401 : 500 }
+      );
+    }
+
+    // GA4 API returns data with rows property directly
+    // If rows is undefined, it means empty data, so return empty structure
+    const responseData = data?.rows !== undefined ? data : { rows: [], rowCount: 0 };
+    
+    console.log(`[Analytics Data API] Successfully returning data for user ${user.id}, type: ${type}, rows: ${responseData.rows?.length || 0}, rowCount: ${responseData.rowCount || 0}`);
+    
+    return NextResponse.json({ data: responseData, success: true });
+  } catch (error: any) {
+    console.error("Error fetching analytics data:", error);
+    
+    // In production, don't expose internal error details
+    const isProduction = process.env.NODE_ENV === "production";
+    const errorMessage = error?.message || "Unknown error";
+    
+    // Check if it's a property ID error
+    if (errorMessage.includes("GOOGLE_ANALYTICS_PROPERTY_ID")) {
+      return NextResponse.json(
+        { 
+          error: isProduction 
+            ? "Google Analytics configuration error. Please contact support."
+            : errorMessage,
+          hint: isProduction ? undefined : "Please add GOOGLE_ANALYTICS_PROPERTY_ID to your .env.local file."
+        },
+        { status: 400 }
+      );
+    }
+    
+    // Check if it's an authentication error
+    if (errorMessage.includes("token") || errorMessage.includes("auth") || 
+        errorMessage.includes("401") || errorMessage.includes("403") ||
+        errorMessage.includes("No valid access token")) {
+      return NextResponse.json(
+        { 
+          error: "Authentication required. Please reconnect your Google Analytics account.",
+          requiresReconnect: true
+        },
+        { status: 401 }
+      );
+    }
+
+    // Check if it's a property not found error
+    if (errorMessage.includes("404") || errorMessage.includes("not found") || 
+        errorMessage.includes("runReport") || errorMessage.includes("P2021")) {
+      return NextResponse.json(
+        { 
+          error: isProduction
+            ? "Google Analytics property not found. Please verify your configuration."
+            : "Google Analytics property not found. Please verify your GOOGLE_ANALYTICS_PROPERTY_ID is correct.",
+        },
+        { status: 404 }
+      );
+    }
+
+    // Generic error response
+    return NextResponse.json(
+      { 
+        error: isProduction 
+          ? "Failed to fetch analytics data. Please try again later."
+          : errorMessage,
+        success: false
+      },
+      { status: 500 }
+    );
+  }
+}
+

@@ -2670,6 +2670,7 @@ const Location = (props: Props) => {
     trigger,
     getValues, // 🎯 Utiliser getValues
     watch,
+    control,
   } = useFormContext<AddPropertyInputType>();
 
   // Surveillance et valeurs initiales RHF

@@ -10,6 +10,7 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "publishAd": "Post an ad",
+    "analytics": "Analytics",
     "home": "Home",
     "menu": {
       "realEstate": "Real Estate",
@@ -27,7 +28,6 @@
     "acheter": "Buy",
     "louer": "Rent",
     "services": "Services",
-
     "service-visite3D": {
       "title": "Virtual Tour",
       "description": "Immersive virtual tour"
@@ -36,7 +36,6 @@
       "title": "Pricing & Plans",
       "description": "Discover our offers. "
     },
-
     "buy-apartment": {
       "title": "Buy an apartment",
       "description": "Find the perfect property for you"
@@ -112,7 +111,6 @@
       "answer": "On each listing, you will find a 'Contact' button that allows you to send a direct message to the seller. You can also save listings to your favorites to find them easily."
     }
   },
-
   "FeedbackModal": {
     "title": "Feedback",
     "form": {
@@ -197,7 +195,6 @@
       }
     }
   },
-
   "ContactModal": {
     "title": "Contact Us",
     "form": {
@@ -377,7 +374,6 @@
       "viewProperties": "View rentals →"
     }
   },
-
   "SeasonalRentPage": {
     "heroTitle": "Seasonal Rentals in Morocco",
     "heroSubtitle": "Unforgettable stays in the most beautiful destinations of the kingdom",
@@ -430,7 +426,6 @@
       }
     }
   },
-
   "FurnishedRentPage": {
     "benefits": {
       "immediateSettlement": {
@@ -488,7 +483,6 @@
     },
     "retry": "Retry"
   },
-
   "ExclusiveRentals": {
     "common": {
       "exclusiveRental": "Exclusive Rental",
@@ -623,7 +617,6 @@
     "meetingRequestError": "Error sending the request",
     "meetingRequestErrorTryAgain": "An error occurred while sending the request. Please try again."
   },
-
   "Visit3DPack": {
     "packVisit3D": "Virtual Tour Pack",
     "scheduleAppointment": "Schedule an Appointment",
@@ -653,7 +646,6 @@
       }
     }
   },
-
   "PurchasePlan": {
     "payWith": "Pay with:",
     "paypal": "PayPal",
@@ -715,7 +707,10 @@
     "propertyAdded": "Property added!",
     "photoLimitExceeded": "You have exceeded the limit of {limit} photos.",
     "videoLimitExceeded": "You have exceeded the limit of {limit} video.",
-    "unlimited": "Unlimited"
+    "unlimited": "Unlimited",
+    "translating": "Translating to other languages...",
+    "processing": "Processing...",
+    "saving": "Saving..."
   },
   "PropertyForm": {
     "Basic": {
@@ -904,7 +899,6 @@
     "cancel": "Cancel",
     "delete": "Delete"
   },
-
   "VirtualTourPage": {
     "hero": {
       "title": "Experience the Future of Real Estate",

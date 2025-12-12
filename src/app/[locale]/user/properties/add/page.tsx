@@ -274,31 +274,31 @@ const AddPropertyPage = async () => {
     const { getUser } = await getKindeServerSession();
     const user = await getUser();
 
-    const dbUser = await getUserById(user ? user.id : "");
-    if (!dbUser || !dbUser.id) {
-      throw new Error(t("authError"));
+    // If no user from Kinde, redirect to login
+    if (!user || !user.id) {
+      redirect("/api/auth/login");
     }
 
     // --- LOGIQUE D'ABONNEMENT (Inchangement) ---
     const userSubscription = await prisma.subscriptions.findFirst({
-      where: { userId: dbUser?.id },
+      where: { userId: dbUser.id },
       include: { plan: true },
       orderBy: { createdAt: "desc" },
     });
 
     planDetails = userSubscription?.plan
       ? {
-          namePlan: userSubscription.plan.namePlan,
-          premiumAds: userSubscription.plan.premiumAds,
-          photosPerAd: userSubscription.plan.photosPerAd,
-          shortVideosPerAd: userSubscription.plan.shortVideosPerAd,
-          youtubeVideoDuration: userSubscription.plan.youtubeVideoDuration,
-        }
+        namePlan: userSubscription.plan.namePlan,
+        premiumAds: userSubscription.plan.premiumAds,
+        photosPerAd: userSubscription.plan.photosPerAd,
+        shortVideosPerAd: userSubscription.plan.shortVideosPerAd,
+        youtubeVideoDuration: userSubscription.plan.youtubeVideoDuration,
+      }
       : null;
 
     const totalPropertiesCount = await prisma.property.count({
       where: {
-        userId: user?.id,
+        userId: user.id,
       },
     });
 
@@ -331,7 +331,9 @@ const AddPropertyPage = async () => {
     }
     // --- FIN LOGIQUE D'ABONNEMENT ---
   } catch (error) {
-    console.log((error as Error).message);
+    console.error("Error in AddPropertyPage:", error);
+    // If there's any error, redirect to login
+    redirect("/api/auth/login");
   }
 
   // 2. REQUÊTES PRISMA AVEC TRADUCTION

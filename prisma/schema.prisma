@@ -178,6 +178,11 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 // modification branche feature/multilingual-countries
+//generator client {
+//  provider = "prisma-client-js"
+// }
+
+//Developement
 
 // generator client {
 //   provider = "prisma-client-js"
@@ -523,23 +528,21 @@
 //   user      User             @relation(fields: [userId], references: [id])
 // }
 
-// ----------------------------------------------------------
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  //url      = env("DATABASE_URL")
-  // Utilisez l'URL non-poolée pour que Prisma CLI fonctionne correctement
-  url      = env("DATABASE_URL_UNPOOLED")
+  url      = env("DATABASE_URL")
+  //uncomment next line if you use Prisma <5.10
+  // directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 model User {
   id            String          @id
-  firstName     String
-  lastName      String
+  firstName     Json
+  lastName      Json
   email         String          @unique // AJOUT: index unique pour performances
   avatarUrl     String?
   createdAt     DateTime        @default(now())
@@ -547,6 +550,9 @@ model User {
   Property      Property[]
   subscriptions Subscriptions[]
   appointments  Appointment[]
+  
+  // Google Analytics OAuth tokens
+  googleAnalyticsToken GoogleAnalyticsToken?
 
   @@index([email]) // AJOUT: index pour recherche rapide
   @@index([createdAt]) // AJOUT: pour trier par date
@@ -554,8 +560,8 @@ model User {
 
 model Property {
   id          Int    @id @default(autoincrement())
-  name        String
-  description String @db.Text // CHANGEMENT: Text au lieu de String pour longs textes
+  name        Json
+  description Json @db.Text // CHANGEMENT: Text au lieu de String pour longs textes
   price       Int
   currency    String @default("XOF") // AJOUT: devise de l'annonce
 
@@ -587,8 +593,11 @@ model Property {
   publishedAt DateTime? // AJOUT: date de publication
   expiresAt   DateTime? // AJOUT: date d'expiration
 
-  appointments Appointment[]
+ 
 
+  // Relation avec les rendez-vous
+  appointments Appointment[]
+  
   // AJOUT: Indexes pour performances
   @@index([userId])
   @@index([typeId])
@@ -597,7 +606,10 @@ model Property {
   @@index([isActive, isFeatured]) // Recherche des annonces actives/premium
   @@index([createdAt(sort: Desc)]) // Tri par date décroissante
   @@index([price]) // Recherche par prix
+
+  
 }
+
 
 model Appointment {
   id        Int      @id @default(autoincrement())
@@ -608,9 +620,11 @@ model Appointment {
   updatedAt DateTime @updatedAt // AJOUT
   state     String   @default("pending") // AMÉLIORATION: utiliser enum
 
+// Relation avec User
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // AJOUT: Cascade
 
+// Relation avec Property
   propertyId Int
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade) // AJOUT: Cascade
 
@@ -835,7 +849,7 @@ model PropertyLocation {
   // Champs conservés pour compatibilité et détails
   neighborhood String?
   zip          String?
-  landmark     String?
+  landmark     Json?
 
   // Coordonnées GPS précises de la propriété
   latitude  Float?
@@ -963,4 +977,16 @@ model Subscriptions {
   @@index([planId])
   @@index([endDate]) // AJOUT: pour vérifier les expirations
   @@index([status]) // AJOUT
+ 
+}
+
+model GoogleAnalyticsToken {
+  id           Int      @id @default(autoincrement())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken  String // Encrypted access token
+  refreshToken String // Encrypted refresh token
+  expiryDate   DateTime // Token expiration date
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

@@ -12,6 +12,7 @@ import Image from "next/image";
 import { Avatar } from "@nextui-org/react";
 import { userOptions } from "@/data/userOptions";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { useLocale } from "next-intl";
 
 interface Props {
   user: PrismaUser;
@@ -24,6 +25,18 @@ const UserProfilePanel = ({ user }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
   const router = useRouter();
+  const locale = useLocale();
+
+  const getLocalizedText = (field: any, locale: string): string => {
+    if (!field) return "";
+    if (typeof field === "string") return field;
+    if (typeof field === "object") {
+      return (
+        field[locale] || field.fr || field.en || Object.values(field)[0] || ""
+      );
+    }
+    return String(field);
+  };
 
   useEffect(() => {
     // Vérification de l'avatar utilisateur uniquement après le montage côté client
@@ -75,14 +88,13 @@ const UserProfilePanel = ({ user }: Props) => {
     : "opacity-0 pointer-events-none scale-0";
 
   const getOptionClass = (url: string) =>
-    `option hover:scale-95 hover:text-white shadow-md border border-[#ccc] cursor-pointer rounded-md text-[#333] bg-[#f9f9f9] p-3 flex items-center gap-3 transition-all duration-300 ease-in-out transform ${
-      url === "/logout"
-        ? "hover:bg-red-600"
-        : url === "/user/favoriteProperties"
+    `option hover:scale-95 hover:text-white shadow-md border border-[#ccc] cursor-pointer rounded-md text-[#333] bg-[#f9f9f9] p-3 flex items-center gap-3 transition-all duration-300 ease-in-out transform ${url === "/logout"
+      ? "hover:bg-red-600"
+      : url === "/user/favoriteProperties"
         ? "hover:bg-[#e685c2d4]"
         : url === "/user/properties"
-        ? "hover:bg-blue-500"
-        : "hover:bg-gray-600"
+          ? "hover:bg-blue-500"
+          : "hover:bg-gray-600"
     }`;
 
   const getRedirectURL = () =>
@@ -103,9 +115,8 @@ const UserProfilePanel = ({ user }: Props) => {
     <>
       <div
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`transition duration-300 ease-in-out flex justify-center items-center cursor-pointer w-12 h-12 rounded-full overflow-hidden flex-shrink-0 active:scale-90 ${
-          pathname == "/" ? "animate-shadowPulse" : "animate-shadowPulseBlue"
-        }`}
+        className={`transition duration-300 ease-in-out flex justify-center items-center cursor-pointer w-12 h-12 rounded-full overflow-hidden flex-shrink-0 active:scale-90 ${pathname == "/" ? "animate-shadowPulse" : "animate-shadowPulseBlue"
+          }`}
       >
         <Avatar
           // src={isAvatar && user.avatarUrl ? user.avatarUrl : "/user.png"}
@@ -147,7 +158,7 @@ const UserProfilePanel = ({ user }: Props) => {
                     router.push(getRedirectURL());
                   }, 1000);
                 }}
-                // onClick={handleLinkClick} // Ferme le menu au clic sur Déconnexion
+              // onClick={handleLinkClick} // Ferme le menu au clic sur Déconnexion
               >
                 {option.svg}
                 <span>{option.name}</span>
@@ -168,9 +179,8 @@ const UserProfilePanel = ({ user }: Props) => {
                 {option.svg}
                 <span>
                   {option.url == "/user/profile"
-                    ? `${user?.firstName || ""} ${
-                        user?.lastName?.[0]?.toUpperCase() || ""
-                      }`
+                    ? `${getLocalizedText((user as any)?.firstname, locale)} ${getLocalizedText((user as any)?.lastname, locale)?.[0]?.toUpperCase() || ""
+                    }`
                     : option.name}
                 </span>
               </Link>

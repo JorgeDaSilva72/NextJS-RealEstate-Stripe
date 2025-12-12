@@ -593,13 +593,13 @@ import {
 import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
 import { formatPrice } from "@/lib/formatPrice";
 import { useFavorites } from "../context/FavoriteContext";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/routing";
 
 // 🚨 INTERFACE MISE À JOUR POUR LE NOUVEAU SCHÉMA DE DONNÉES
 interface Property {
   id: number;
-  name: string;
+  name: any; // Changed from string to any to match Json type from Prisma
   price: number;
   type?: {
     code: string; // ANCIEN: value
@@ -640,6 +640,18 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
   // les traductions correspondantes dans vos fichiers i18n.
   const t = useTranslations("PropertyCard");
   const tCommon = useTranslations("Common"); // Supposons que les codes comme "for_sale" ou "house" sont là
+
+  const locale = useLocale();
+
+  // Helper function to extract text from multilingual JSON
+  const getLocalizedText = (field: any, locale: string): string => {
+    if (!field) return '';
+    if (typeof field === 'string') return field;
+    if (typeof field === 'object') {
+      return field[locale] || field.fr || field.en || field.ar || field.pt || '';
+    }
+    return String(field);
+  };
 
   const [isImageLoading, setIsImageLoading] = React.useState(true);
   const [isHovered, setIsHovered] = React.useState(false);

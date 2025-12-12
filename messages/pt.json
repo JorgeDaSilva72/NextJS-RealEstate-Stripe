@@ -10,6 +10,7 @@
     "openMenu": "Abrir menu",
     "closeMenu": "Fechar menu",
     "publishAd": "Publicar anúncio",
+    "analytics": "Análises",
     "home": "Início",
     "menu": {
       "realEstate": "Imóveis",
@@ -27,7 +28,6 @@
     "acheter": "Comprar",
     "louer": "Alugar",
     "services": "Serviços",
-
     "service-visite3D": {
       "title": "Visita Virtual",
       "description": "Visita virtual imersiva"
@@ -617,7 +617,6 @@
     "meetingRequestError": "Erro ao enviar a solicitação",
     "meetingRequestErrorTryAgain": "Ocorreu um erro ao enviar a solicitação. Por favor, tente novamente."
   },
-
   "Visit3DPack": {
     "packVisit3D": "Pacote de Visita Virtual",
     "scheduleAppointment": "Agendar uma Reunião",
@@ -647,7 +646,6 @@
       }
     }
   },
-
   "PurchasePlan": {
     "payWith": "Pagar com:",
     "paypal": "PayPal",
@@ -709,7 +707,10 @@
     "propertyAdded": "Anúncio adicionado!",
     "photoLimitExceeded": "Você excedeu o limite de {limit} fotos.",
     "videoLimitExceeded": "Você excedeu o limite de {limit} vídeos.",
-    "unlimited": "Ilimitado"
+    "unlimited": "Ilimitado",
+    "translating": "Traduzindo para outros idiomas...",
+    "processing": "Processando...",
+    "saving": "Salvando..."
   },
   "PropertyForm": {
     "Basic": {
@@ -809,7 +810,6 @@
     "clearFilters": "Limpar filtros",
     "closeModal": "Fechar a janela de filtros"
   },
-
   "filters": {
     "allPropertyTypes": "Todos os tipos de imóveis",
     "allOperations": "Todas as operações",
@@ -835,7 +835,6 @@
     "fetchErrorStatuses": "Erro ao recuperar os status:",
     "fetchErrorTypes": "Erro ao recuperar os tipos:"
   },
-
   "PropertyCard": {
     "imageNotAvailable": "Imagem não disponível",
     "imageAlt": "{propertyName} - Imagem {imageNumber}",
@@ -848,12 +847,10 @@
     "detailsNotAvailable": "Detalhes não disponíveis",
     "area": "{area} m²"
   },
-
   "DescriptionCard": {
     "showMore": "Mostrar mais",
     "showLess": "Mostrar menos"
   },
-
   "MeetingModal": {
     "title": "Pedido de agendamento - Pacote {planName}",
     "fields": {
@@ -896,14 +893,12 @@
       "sending": "Enviando..."
     }
   },
-
   "ModalDelete": {
     "title": "Exclusão",
     "confirmation": "Tem certeza de que deseja excluir {slug}?",
     "cancel": "Cancelar",
     "delete": "Excluir"
   },
-
   "VirtualTourPage": {
     "hero": {
       "title": "Experimente o futuro do mercado imobiliário",

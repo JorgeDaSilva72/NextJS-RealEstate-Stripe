@@ -1181,7 +1181,7 @@ const Appbar = ({ children }: Props) => {
         </NavbarBrand>
       </NavbarContent>
 
-      <NavbarContent className="hidden lg:flex gap-6" justify="center">
+      <NavbarContent className="hidden lg:flex gap-8 ml-16" justify="center">
         {navigationItems.map((item) => (
           <Dropdown key={item.label}>
             <NavbarItem>
@@ -1214,6 +1214,28 @@ const Appbar = ({ children }: Props) => {
       </NavbarContent>
 
       <NavbarContent justify="end">
+        <Button
+          as={Link}
+          href={`/analytics/dashboard`}
+          className="flex items-center gap-2 bg-transparent text-foreground hover:bg-default-100 p-2 md:px-4 rounded-lg transition-colors duration-300"
+          radius="sm"
+          variant="light"
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            strokeWidth="2"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"
+            />
+          </svg>
+          <span className="hidden sm:block">{t("analytics")}</span>
+        </Button>
         <Button
           as={Link}
           href={`/user/properties/add`}
@@ -1277,6 +1299,29 @@ const Appbar = ({ children }: Props) => {
 
           {/* Bouton pour publier une annonce et language switcher en bas */}
           <div className="flex flex-col gap-4 mt-4 sticky bottom-4">
+            <Button
+              as={Link}
+              href={`/analytics/dashboard`}
+              className="w-full flex items-center justify-center gap-2 bg-default-100 text-foreground hover:bg-default-200 p-3 rounded-lg"
+              radius="sm"
+              variant="light"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                strokeWidth="2"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"
+                />
+              </svg>
+              <span>{t("analytics")}</span>
+            </Button>
             <Button
               as={Link}
               href={`/user/properties/add`}
