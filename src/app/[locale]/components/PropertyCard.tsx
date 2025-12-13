@@ -731,6 +731,7 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
   // Pour afficher le nom, vous devez soit :
   // 1. Modifier la requête dans app/page.tsx pour joindre CityTranslation (recommandé).
   // 2. Ou faire une requête supplémentaire/utiliser un contexte global pour les noms des villes.
+
   // const displayCity = property.location?.city
   //   ? `City ID: ${property.location.city.id}` // Afficher l'ID
   //   : t("notAvailable"); // Ou un placeholder
@@ -739,6 +740,9 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
   const translatedCityName = property.location?.city?.translations?.[0]?.name;
 
   const displayCity = translatedCityName || t("notAvailable");
+
+  // 🚨 Extraction du nom traduit pour le titre
+  const translatedPropertyName = getLocalizedText(property.name, locale);
 
   return (
     <Link href={`/property/${property.id}`} className="hover:no-underline">
@@ -772,7 +776,7 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
                     isHovered ? "scale-110" : "scale-100"
                   }`}
                   alt={t("imageAlt", {
-                    propertyName: property.name,
+                    propertyName: translatedPropertyName, // ✅ CORRECTION : Utiliser la chaîne traduite
                     imageNumber: currentImageIndex + 1,
                   })}
                   onLoad={handleImageLoad}
@@ -856,7 +860,7 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
 
           <div className="p-2 flex flex-col">
             <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
-              {getLocalizedText(property.name, locale)}{" "}
+              {translatedPropertyName}
               {/* ✅ CORRECTION APPLIQUÉE ICI */}
             </h3>
 

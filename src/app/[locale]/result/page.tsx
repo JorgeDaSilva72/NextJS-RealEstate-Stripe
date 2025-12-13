@@ -765,22 +765,34 @@ export default async function Home({ params, searchParams }: Props) {
 
     // --- RECHERCHE GLOBALE (OR) ---
     if (!!query) {
-      // CORRECTION MAJEURE: Recherche dans le JSON.
-      // Pour Postgre, Prisma ne permet pas de filtrer directement un champ JSON
-      // en profondeur (ex: name->fr) dans une clause `contains` nativement.
-      // L'approche la plus simple est d'utiliser `JSON_CONTAINS` ou `JSON_OVERLAPS`
-      // qui n'est pas supporté par la clause `contains` générique.
-      // En attendant la solution idéale (index JSONB), nous faisons une recherche générique
-      // sur le bloc JSON complet ou nous forçons la recherche sur le champ entier (moins performant).
+      // La recherche JSONB doit être gérée par une requête brute
+      // ou en recherchant un objet JSON spécifique, ce qui n'est pas compatible avec 'contains' flou.
 
-      // Pour l'instant, on se base sur la recherche dans le champ name/description complet (qui sont des objets {fr: '...', en: '...'})
-      // Note: Cette recherche est limitée et ne trouvera que si la string `query` est dans le JSON BARE.
-      // Une solution complète nécessiterait une extension ou un filtre SQL natif via Prisma.$queryRaw.
-      // Pour le démo, nous conservons la syntaxe de base, mais soyez conscient de la limitation de recherche sur JSONB.
-      where.OR = [
-        { name: { contains: String(query), mode: "insensitive" } as any },
+      // Pour une recherche FULGURANTE et multilingue sur des champs JSONB,
+      // le mieux est de créer un filtre qui injecte le SQL:
+
+      // La façon la plus simple et la plus sûre de filtrer sur une LOCALE spécifique dans un champ JSONB (name/description) :
+      where.AND = [
+        // Ajoutez ce filtre à la clause AND pour que la recherche se combine avec les autres filtres (ville, prix, etc.)
         {
-          description: { contains: String(query), mode: "insensitive" } as any,
+          OR: [
+            {
+              // Recherche floue sur le nom traduit (name->>'locale')
+              name: {
+                path: [locale], // Cible la clé 'fr', 'en', etc.
+                string_contains: String(query),
+                mode: "insensitive",
+              } as any, // Forçage de type car Prisma ne supporte pas cela directement dans where
+            },
+            {
+              // Recherche floue sur la description traduite (description->>'locale')
+              description: {
+                path: [locale],
+                string_contains: String(query),
+                mode: "insensitive",
+              } as any,
+            },
+          ],
         },
       ];
     }
