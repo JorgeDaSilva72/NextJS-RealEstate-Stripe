@@ -654,8 +654,16 @@ export default async function Home({ params, searchParams }: Props) {
     ? Number(searchParams.queryType)
     : undefined;
 
+  // 🚨 CORRECTION : Lire 'cityId' pour correspondre au hook client
+  const cityIdParam = searchParams.cityId as string | undefined;
+
   // Le filtre 'city' est maintenant l'ID de la City
-  const cityId = searchParams.city ? Number(searchParams.city) : undefined;
+  // const cityId = searchParams.city ? Number(searchParams.city) : undefined;
+
+  const cityId =
+    cityIdParam && cityIdParam.toLowerCase() !== "none"
+      ? Number(cityIdParam)
+      : undefined;
   // Le filtre 'country' est maintenant l'ID du Country
   const countryId = searchParams.country
     ? Number(searchParams.country)

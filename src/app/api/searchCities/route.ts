@@ -15,7 +15,20 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const countryId = countryIdStr ? parseInt(countryIdStr, 10) : null;
+    // 🚨 AMÉLIORATION : Ne convertir en nombre que si la chaîne n'est pas "none" ou vide
+    let countryId: number | null = null;
+    if (
+      countryIdStr &&
+      countryIdStr !== "" &&
+      countryIdStr.toLowerCase() !== "none"
+    ) {
+      const parsedId = parseInt(countryIdStr, 10);
+      if (!isNaN(parsedId)) {
+        countryId = parsedId;
+      }
+    }
+
+    // const countryId = countryIdStr ? parseInt(countryIdStr, 10) : null;
 
     // 1. Trouver l'ID de la langue active
     const language = await prisma.language.findUnique({
@@ -33,9 +46,15 @@ export async function GET(request: NextRequest) {
     const cityWhereClause: any = {
       isActive: true,
     };
-    if (countryId && countryIdStr !== "none") {
-      // 'none' est la valeur par défaut dans le hook
+    if (countryId) {
+      // Cas 1: Un pays est sélectionné, on filtre.
       cityWhereClause.countryId = countryId;
+    } else {
+      // Cas 2: AUCUN pays sélectionné (pour permettre le filtrage Ville seul).
+      // Pour éviter de charger des milliers de villes au démarrage, on filtre
+      // par défaut sur les villes mises en avant (isFeatured).
+      // C'est ce qui permet de sélectionner une ville rapidement sans choisir un pays.
+      cityWhereClause.isFeatured = true;
     }
 
     // 3. Récupérer les villes et les traductions

@@ -853,11 +853,23 @@ const useFilterDatas = () => {
       t("fetchErrorCountries")
     );
 
-    // Fetch des villes (dépend de la locale ET du pays sélectionné)
-    // S'exécute si le pays change (cas d'usage : on change le pays, on veut mettre à jour les villes)
+    // 🚨 CORRECTION POUR LES VILLES
+    // On ne charge les villes QUE si la condition est remplie.
+    const isCountrySelected =
+      selectedCountry && selectedCountry.toLowerCase() !== "none";
+    let citiesUrl = `/api/searchCities?lang=${locale}`;
+
+    // N'AJOUTER LE FILTRE PAYS QUE S'IL Y A UN PAYS VALIDE SÉLECTIONNÉ
+    if (isCountrySelected) {
+      // Si un pays est sélectionné, on filtre.
+      citiesUrl += `&countryId=${selectedCountry}`;
+    }
+
+    // Si isCountrySelected est false, citiesUrl est simplement /api/searchCities?lang={locale}
+    // C'est cette URL qui permet de charger toutes les villes (ou les villes principales).
     fetchValue(
       setCities,
-      `/api/searchCities?lang=${locale}&countryId=${selectedCountry}`,
+      citiesUrl, // Utilisation de l'URL construite conditionnellement
       t("fetchErrorCities")
     );
   }, [locale, selectedCountry, fetchValue, t]);
