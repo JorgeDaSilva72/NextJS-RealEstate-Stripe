@@ -651,6 +651,7 @@ import { getTranslations } from "next-intl/server";
 import DescriptionCard from "../../components/DescriptionCard ";
 import { Link } from "@/i18n/routing";
 import { getLanguageIdByCode } from "@/lib/utils"; // 🚨 AJOUT : Utilitaire pour récupérer l'ID de langue
+import { getLocalizedText, LocalizedText } from "@/lib/utils/translation-utils";
 
 export interface Props {
   params: {
@@ -721,7 +722,7 @@ const PropertyPage = async ({ params }: Props) => {
       isActive: true, // Sécurité : n'afficher que les annonces actives
     },
     include: {
-      // 🚨 MULTILINGUE STATUT
+      // 🚨 MULTILINGUE STATUT & TYPE: Ces modèles utilisent des tables de traduction.
       status: {
         include: {
           translations: {
@@ -776,8 +777,10 @@ const PropertyPage = async ({ params }: Props) => {
         },
       },
       contact: true,
-      images: true, // Pas de changement ici, on veut toutes les images
-      videos: true, // Pas de changement ici
+      images: true,
+      videos: true,
+      // Note: name, description, price, currency, landmark sont sélectionnés implicitement
+      // car ils sont des champs directs dans le modèle Property et PropertyLocation.
     },
   });
 
@@ -806,15 +809,33 @@ const PropertyPage = async ({ params }: Props) => {
   };
 
   // Helper function to extract text from multilingual JSON
-  const getLocalizedText = (field: any, locale: string = 'fr'): string => {
-    if (!field) return '';
-    if (typeof field === 'string') return field;
-    if (typeof field === 'object') {
-      // Try requested locale first, then fallback to fr, en, ar, pt
-      return field[locale] || field.fr || field.en || field.ar || field.pt || '';
-    }
-    return String(field);
-  };
+  // const getLocalizedText = (field: any, locale: string = "fr"): string => {
+  //   if (!field) return "";
+  //   if (typeof field === "string") return field;
+  //   if (typeof field === "object") {
+  //     // Try requested locale first, then fallback to fr, en, ar, pt
+  //     return (
+  //       field[locale] || field.fr || field.en || field.ar || field.pt || ""
+  //     );
+  //   }
+  //   return String(field);
+  // };
+
+  // Utilisez getLocalizedText pour les champs JSON
+  // 🚨 CORRECTION CRITIQUE: Forcer le type pour satisfaire le contrat de getLocalizedText
+  const translatedName = getLocalizedText(
+    property.name as LocalizedText,
+    params.locale
+  );
+  const translatedDescription = getLocalizedText(
+    property.description as LocalizedText,
+    params.locale
+  );
+  // L'objet location?.landmark peut être null, d'où le casting sur l'objet lui-même si non null
+  const translatedLandmark = getLocalizedText(
+    property.location?.landmark as LocalizedText,
+    params.locale
+  );
 
   const currentUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/${params.locale}/property/${params.id}`;
 
@@ -831,17 +852,20 @@ const PropertyPage = async ({ params }: Props) => {
           {/* Affichage des images/vidéos */}
           {property.images.length > 0 && (
             <div className="col-span-1 lg:col-span-2 rounded-2xl overflow-hidden shadow-lg">
-              <ImageThumbnails images={property.images.map((img: any) => img.url)} />
+              <ImageThumbnails
+                images={property.images.map((img: any) => img.url)}
+              />
             </div>
           )}
 
           <div
-            className={`col-span-1 ${property.images.length === 0 ? "lg:col-span-3" : ""
-              } space-y-6`}
+            className={`col-span-1 ${
+              property.images.length === 0 ? "lg:col-span-3" : ""
+            } space-y-6`}
           >
             <Card className="p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
               <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-4">
-                {getLocalizedText(property.name, params.locale)}
+                {translatedName} {/* Utilisez la variable traduite */}
               </h2>
 
               <div className="flex gap-2 text-sm text-gray-600">
@@ -880,15 +904,18 @@ const PropertyPage = async ({ params }: Props) => {
               <div className="mt-4">
                 <ShareButtons
                   url={currentUrl}
-                  title={t("shareTitle", { propertyName: getLocalizedText(property.name, params.locale) })}
-                  description={getLocalizedText(property.description, params.locale)}
+                  title={t("shareTitle", {
+                    propertyName: translatedName,
+                  })}
+                  description={translatedDescription} // Utilisez la variable traduite
                 />
               </div>
             </Card>
             <Card className="p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
               <Title title={t("description")} />
               <div className="mt-4">
-                <DescriptionCard description={getLocalizedText(property.description, params.locale)} />
+                <DescriptionCard description={translatedDescription} />{" "}
+                {/* Utilisez la variable traduite */}
               </div>
             </Card>
             {/* ... (Features inchangés) */}
@@ -968,7 +995,7 @@ const PropertyPage = async ({ params }: Props) => {
                 <Attribute
                   icon="ℹ️"
                   label={t("information")}
-                  value={getLocalizedText(property.location?.landmark, params.locale)}
+                  value={translatedLandmark} // Utilisez la variable traduite
                 />
               </div>
             </Card>

@@ -1,7 +1,9 @@
 // Définition d'un type pour le bloc de traduction JSON
-interface LocalizedText {
+export interface LocalizedText {
+  fr: string;
+  en?: string;
+  // Ajoutez d'autres langues si nécessaire
   [key: string]: string | undefined;
-  fr: string; // Supposons que le français est toujours requis
 }
 
 /**
