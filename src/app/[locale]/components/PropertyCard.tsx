@@ -595,12 +595,13 @@ import { formatPrice } from "@/lib/formatPrice";
 import { useFavorites } from "../context/FavoriteContext";
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/routing";
+import { getLocalizedText } from "@/lib/utils/translation-utils"; // <-- NOUVEL IMPORT
 
 // 🚨 INTERFACE MISE À JOUR POUR LE NOUVEAU SCHÉMA DE DONNÉES
 interface Property {
   id: number;
   name: any; // Changed from string to any to match Json type from Prisma
-  price: number;
+  price: any; // CORRECTION : Changer de 'number' à 'any' ou 'string' (puisque c'est Decimal)
   type?: {
     code: string; // ANCIEN: value
   };
@@ -642,16 +643,6 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
   const tCommon = useTranslations("Common"); // Supposons que les codes comme "for_sale" ou "house" sont là
 
   const locale = useLocale();
-
-  // Helper function to extract text from multilingual JSON
-  const getLocalizedText = (field: any, locale: string): string => {
-    if (!field) return '';
-    if (typeof field === 'string') return field;
-    if (typeof field === 'object') {
-      return field[locale] || field.fr || field.en || field.ar || field.pt || '';
-    }
-    return String(field);
-  };
 
   const [isImageLoading, setIsImageLoading] = React.useState(true);
   const [isHovered, setIsHovered] = React.useState(false);
@@ -865,7 +856,8 @@ const PropertyCard = ({ property, onFavorite, isFavorite = false }: Props) => {
 
           <div className="p-2 flex flex-col">
             <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
-              {property.name}
+              {getLocalizedText(property.name, locale)}{" "}
+              {/* ✅ CORRECTION APPLIQUÉE ICI */}
             </h3>
 
             <div className="flex flex-wrap items-center gap-4 mb-2 text-gray-600">

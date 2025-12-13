@@ -1078,10 +1078,10 @@ async function main() {
   const totalSubscriptions = await prisma.subscriptions.count(); // AJOUT
 
   console.log("\n🎉 Seeding terminé avec succès !");
-  console.log(`📊 Statistiques :`);
-  console.log(`   - ${totalUsers} utilisateurs`);
-  console.log(`   - ${totalProperties} annonces immobilières`);
-  console.log(`   - ${totalSubscriptions} abonnements actifs`);
+  console.log(`Statistiques :`);
+  console.log(`- ${totalUsers} utilisateurs`);
+  console.log(`- ${totalProperties} annonces immobilières`);
+  console.log(`- ${totalSubscriptions} abonnements actifs`);
 }
 
 main()

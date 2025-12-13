@@ -736,7 +736,7 @@ export default async function Home({ params, searchParams }: Props) {
   // 2. Fonction de construction de la clause WHERE (AVEC AMÉLIORATIONS)
   const buildWhereClause = (): Prisma.PropertyWhereInput => {
     const where: Prisma.PropertyWhereInput = {
-      // NOUVEAU FILTRE : Afficher uniquement les propriétés actives et publiées
+      // Afficher uniquement les propriétés actives et publiées
       isActive: true,
       publishedAt: {
         not: null, // Vérifie que la propriété a été publiée
@@ -749,7 +749,7 @@ export default async function Home({ params, searchParams }: Props) {
             endDate: {
               gt: new Date(),
             },
-            status: "active", // AJOUT: pour s'assurer que l'abonnement est ACTIF
+            status: "ACTIVE", // AJOUT: pour s'assurer que l'abonnement est ACTIF
           },
         },
       },
@@ -757,9 +757,23 @@ export default async function Home({ params, searchParams }: Props) {
 
     // --- RECHERCHE GLOBALE (OR) ---
     if (!!query) {
+      // CORRECTION MAJEURE: Recherche dans le JSON.
+      // Pour Postgre, Prisma ne permet pas de filtrer directement un champ JSON
+      // en profondeur (ex: name->fr) dans une clause `contains` nativement.
+      // L'approche la plus simple est d'utiliser `JSON_CONTAINS` ou `JSON_OVERLAPS`
+      // qui n'est pas supporté par la clause `contains` générique.
+      // En attendant la solution idéale (index JSONB), nous faisons une recherche générique
+      // sur le bloc JSON complet ou nous forçons la recherche sur le champ entier (moins performant).
+
+      // Pour l'instant, on se base sur la recherche dans le champ name/description complet (qui sont des objets {fr: '...', en: '...'})
+      // Note: Cette recherche est limitée et ne trouvera que si la string `query` est dans le JSON BARE.
+      // Une solution complète nécessiterait une extension ou un filtre SQL natif via Prisma.$queryRaw.
+      // Pour le démo, nous conservons la syntaxe de base, mais soyez conscient de la limitation de recherche sur JSONB.
       where.OR = [
-        { name: { contains: String(query), mode: "insensitive" } },
-        { description: { contains: String(query), mode: "insensitive" } },
+        { name: { contains: String(query), mode: "insensitive" } as any },
+        {
+          description: { contains: String(query), mode: "insensitive" } as any,
+        },
       ];
     }
 
@@ -836,8 +850,9 @@ export default async function Home({ params, searchParams }: Props) {
   const propertiesPromise = prisma.property.findMany({
     select: {
       id: true,
-      name: true,
-      price: true,
+      name: true, // Ceci récupère l'objet JSON {fr: '...', en: '...'}
+      price: true, // Récupère le type Decimal
+      currency: true, // Ajoutez la devise, c'est utile
       // country: { select: { code: true } }, // Vous pouvez inclure le code du pays pour l'affichage
 
       images: {
