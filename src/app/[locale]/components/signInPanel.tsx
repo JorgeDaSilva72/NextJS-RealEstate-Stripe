@@ -266,6 +266,11 @@ const SignInPanel = async () => {
       },
     });
 
+    // Retournez quelque chose si dbUser est null pour le diagnostique
+ if (!dbUser) {
+ return <div className="text-red-500">ERREUR: Utilisateur Kinde connecté, mais DB non trouvée pour ID: {user?.id}</div>;
+}
+
     return (
       <div className="flex items-center gap-3">
         {dbUser && (

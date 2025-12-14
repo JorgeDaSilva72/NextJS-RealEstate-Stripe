@@ -541,8 +541,8 @@ datasource db {
 
 model User {
   id            String          @id
-  firstName     String
-  lastName      String
+  firstname     String?
+  lastname      String?
   email         String          @unique // AJOUT: index unique pour performances
   avatarUrl     String?
   createdAt     DateTime        @default(now())
