@@ -546,8 +546,8 @@ async function main() {
       update: {},
       create: {
         id: "user_1_seed",
-        firstName: "Amadou",
-        lastName: "Diallo",
+        firstname: "Amadou",
+        lastname: "Diallo",
         email: "amadou.diallo@example.com",
         avatarUrl: "https://i.pravatar.cc/150?img=12",
       },
@@ -557,8 +557,8 @@ async function main() {
       update: {},
       create: {
         id: "user_2_seed",
-        firstName: "Fatima",
-        lastName: "Traoré",
+        firstname: "Fatima",
+        lastname: "Traoré",
         email: "fatima.traore@example.com",
         avatarUrl: "https://i.pravatar.cc/150?img=45",
       },
@@ -568,8 +568,8 @@ async function main() {
       update: {},
       create: {
         id: "user_3_seed",
-        firstName: "Moussa",
-        lastName: "Koné",
+        firstname: "Moussa",
+        lastname: "Koné",
         email: "moussa.kone@example.com",
         avatarUrl: "https://i.pravatar.cc/150?img=33",
       },

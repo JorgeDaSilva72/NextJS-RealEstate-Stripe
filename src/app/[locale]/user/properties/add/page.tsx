@@ -221,6 +221,7 @@
 "use server";
 
 import React from "react";
+import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { getUserById } from "@/lib/actions/user";
@@ -229,6 +230,7 @@ import { getUserById } from "@/lib/actions/user";
 import AddPropertyClient from "./_components/AddPropertyClient";
 import { getTranslations, getLocale } from "next-intl/server"; // Importation de getLocale
 import { getLanguageIdByCode } from "@/lib/utils"; // Assurez-vous que ce chemin est correct
+
 
 // ⚠️ IMPORTANT : Définir les types des données incluant les traductions.
 // Assurez-vous que les champs 'translations' existent sur vos modèles PropertyType et PropertyStatus dans schema.prisma.
@@ -276,6 +278,21 @@ const AddPropertyPage = async () => {
 
     // If no user from Kinde, redirect to login
     if (!user || !user.id) {
+      redirect("/api/auth/login");
+    }
+
+    // Récupérer l'utilisateur DB
+    const dbUser = await prisma.user.findUnique({
+    where: { id: user.id },
+    // Vous pourriez inclure directement ici les données d'abonnement
+    // si cela rend le code plus clair, mais nous le faisons après pour l'instant.
+    });
+
+    if (!dbUser) {
+      // L'utilisateur est connecté via Kinde mais n'est pas dans la DB.
+      // Cela ne devrait plus arriver après correction des problèmes de connexion.
+      // Si cela arrive, vous pourriez choisir de le créer ici ou de le rediriger.
+      console.error("User found in Kinde but not in DB. Redirection.");
       redirect("/api/auth/login");
     }
 

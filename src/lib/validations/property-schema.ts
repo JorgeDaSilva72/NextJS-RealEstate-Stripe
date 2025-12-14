@@ -1,9 +1,13 @@
 import { z } from "zod";
 
 // Validation pour les champs traduisibles (JSON)
+// Schéma pour les champs multilingues (name, description, landmark)
+// On suppose ici que toutes les locales supportées (fr, en, ...) doivent être fournies,
+// mais au moins une est obligatoire (par exemple, 'fr').
 const TranslatedStringSchema = z.object({
-  fr: z.string().min(1, "Le texte en français est requis"),
+  fr: z.string().min(1, "La traduction française est obligatoire."),
   en: z.string().optional(), // L'anglais peut être optionnel au début
+  // Ajoutez d'autres locales si nécessaire
 });
 
 export const PropertyFormSchema = z.object({
