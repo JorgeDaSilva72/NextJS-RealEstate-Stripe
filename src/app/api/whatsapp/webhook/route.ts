@@ -2,6 +2,7 @@
  * WhatsApp Webhook API Route
  * Handles incoming webhooks from Meta Cloud API
  * @route /api/whatsapp/webhook
+ * Updated: 2024 - Force rebuild to fix 404 in production
  */
 
 import { NextRequest, NextResponse } from 'next/server';
