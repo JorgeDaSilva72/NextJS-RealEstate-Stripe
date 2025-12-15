@@ -295,51 +295,54 @@
 
 import createMiddleware from "next-intl/middleware";
 import { withAuth } from "@kinde-oss/kinde-auth-nextjs/middleware";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { routing } from "./i18n/routing";
 
-// Configuration pour next-intl basée sur votre routing.ts
+// Internationalization middleware configuration
 const nextIntlMiddleware = createMiddleware({
-  // Utiliser la même configuration que dans routing.ts
   locales: routing.locales,
   defaultLocale: routing.defaultLocale,
   localePrefix: "always",
 });
 
-// Middleware combiné
-export default async function middleware(request: any) {
+// Combined middleware: i18n + auth, but NEVER touch /api routes
+export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // Exclude oauth2callback from locale routing (works at /oauth2callback)
-  // This route must be accessible without locale prefix for Google OAuth redirect
-  if (pathname === "/oauth2callback" || pathname === "/oauth2callback/") {
-    // Allow the route to be accessed without locale prefix
+  // 1) HARD SKIP: API & internal paths must NEVER go through i18n/auth
+  if (
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/_vercel") ||
+    pathname.match(/\.[^/]+$/) // static files like /favicon.ico, *.png, etc.
+  ) {
     return NextResponse.next();
   }
 
-  // Vérifier si la route actuelle nécessite une authentification
+  // 2) Allow oauth2callback without locale/auth (Google redirect)
+  if (pathname === "/oauth2callback" || pathname === "/oauth2callback/") {
+    return NextResponse.next();
+  }
+
+  // 3) Auth only for /user/* routes (after skipping /api)
   if (pathname.includes("/user/")) {
-    // Appliquer l'authentification uniquement pour les routes /user/*
     const authResult = await withAuth(request);
     if (authResult instanceof NextResponse) {
       return authResult;
     }
   }
 
-  // Appliquer next-intl pour toutes les routes
+  // 4) Apply next-intl for all other routes (pages)
   return nextIntlMiddleware(request);
 }
 
-// Configuration des routes où le middleware s'applique
+// Matcher: do NOT match /api, only match normal page routes
 export const config = {
   matcher: [
-    // Routes authentifiées
+    // Authenticated user routes (pages)
     "/user/:path*",
-    // Routes pour next-intl (ne pas localiser les images et autres fichiers statiques)
-    // Exclure `api/`, `oauth2callback`, `_next`, `_vercel`, et fichiers statiques
-    "/((?!api|oauth2callback|_next|_vercel|.*\\..*).*)", 
-
-    // Assurer que les préfixes de langue sont gérés
+    // i18n routes, excluding api/_next/_vercel/static (enforced again above)
+    "/((?!api|oauth2callback|_next|_vercel|.*\\..*).*)",
     "/(fr|en|pt|ar)/:path*",
   ],
 };
