@@ -20,29 +20,44 @@ const prisma = new PrismaClient();
 export class WhatsAppWebhookHandler {
   /**
    * Verify webhook challenge (for initial setup)
+   * Facebook sends: hub.mode=subscribe, hub.verify_token=YOUR_TOKEN, hub.challenge=RANDOM_STRING
    */
   static verifyWebhook(params: {
     mode: string;
     token: string;
     challenge: string;
   }): { verified: boolean; challenge?: string } {
+    // Use hardcoded fallback if env var not set (for Vercel without env access)
     const verifyToken =
       process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN ?? "whatsapp_verify_123";
 
-    if (!verifyToken) {
-      console.error('[Webhook] WHATSAPP_WEBHOOK_VERIFY_TOKEN not set');
-      return { verified: false };
-    }
+    console.log('[Webhook] Verification attempt:', {
+      mode: params.mode,
+      expectedToken: verifyToken,
+      receivedToken: params.token,
+      tokensMatch: params.token === verifyToken,
+    });
 
+    // Facebook requires mode to be 'subscribe' and token must match exactly
     if (params.mode === 'subscribe' && params.token === verifyToken) {
-      console.log('[Webhook] Webhook verified successfully');
+      console.log('[Webhook] ✅ Webhook verified successfully');
       return {
         verified: true,
         challenge: params.challenge,
       };
     }
 
-    console.error('[Webhook] Verification failed');
+    // Log why verification failed
+    if (params.mode !== 'subscribe') {
+      console.error('[Webhook] ❌ Invalid mode:', params.mode, '(expected: subscribe)');
+    } else if (params.token !== verifyToken) {
+      console.error('[Webhook] ❌ Token mismatch:', {
+        expected: verifyToken,
+        received: params.token,
+        lengthMatch: verifyToken.length === params.token.length,
+      });
+    }
+
     return { verified: false };
   }
 

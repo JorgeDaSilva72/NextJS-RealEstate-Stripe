@@ -14,6 +14,7 @@ import {
 /**
  * GET - Webhook verification
  * Called by Meta when setting up the webhook
+ * MUST return plain text challenge (not JSON) for Facebook verification
  */
 export async function GET(request: NextRequest) {
   try {
@@ -22,35 +23,52 @@ export async function GET(request: NextRequest) {
     const token = searchParams.get('hub.verify_token');
     const challenge = searchParams.get('hub.challenge');
 
+    // Log for debugging
+    console.log('[Webhook API] GET request received:', {
+      mode,
+      token: token ? '***' : null,
+      challenge,
+    });
+
+    // Facebook requires all three parameters
     if (!mode || !token || !challenge) {
-      return NextResponse.json(
-        { error: 'Missing required parameters' },
-        { status: 400 }
-      );
+      console.error('[Webhook API] Missing required parameters:', {
+        hasMode: !!mode,
+        hasToken: !!token,
+        hasChallenge: !!challenge,
+      });
+      return new NextResponse('Missing required parameters', { status: 400 });
     }
 
+    // Verify webhook
     const result = verifyWebhook({
       mode,
       token,
       challenge,
     });
 
-    if (result.verified) {
-      console.log('[Webhook API] Webhook verified successfully');
-      return new NextResponse(result.challenge, { status: 200 });
+    if (result.verified && result.challenge) {
+      console.log('[Webhook API] ✅ Webhook verified successfully');
+      // CRITICAL: Facebook requires plain text response (not JSON)
+      // Content-Type should be text/plain
+      return new NextResponse(result.challenge, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      });
     } else {
-      console.error('[Webhook API] Webhook verification failed');
-      return NextResponse.json(
-        { error: 'Verification failed' },
-        { status: 403 }
-      );
+      console.error('[Webhook API] ❌ Webhook verification failed', {
+        mode,
+        expectedToken: process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN || 'whatsapp_verify_123',
+        receivedToken: token,
+      });
+      // Return plain text error for Facebook
+      return new NextResponse('Verification failed', { status: 403 });
     }
   } catch (error) {
     console.error('[Webhook API] GET error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return new NextResponse('Internal server error', { status: 500 });
   }
 }
 
