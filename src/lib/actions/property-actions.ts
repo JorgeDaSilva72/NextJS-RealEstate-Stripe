@@ -40,8 +40,8 @@ export async function createPropertyAction(
         userId: userId, // L'ID de l'utilisateur connecté
         countryId: countryId,
         typeId: typeId,
-        statusId: statusId, // Assurez-vous d'envoyer l'ID du statut (ex: 1) ou le code si vous avez changé la logique
-        price: price, // Prisma convertira la string en Decimal
+        statusId: Number(statusId), // ID numérique attendu par Prisma
+        price: Number(price), // convertir la string en number pour Prisma
         isActive: false, // Par défaut, en attente de modération ou paiement
         isFeatured: false,
         publishedAt: new Date(),

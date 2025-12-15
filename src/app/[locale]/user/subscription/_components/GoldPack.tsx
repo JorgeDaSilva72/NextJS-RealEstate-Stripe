@@ -273,7 +273,9 @@ const GoldPack: React.FC<GoldPackProps> = ({
 
         {/* Price */}
         <h2 className="text-2xl font-bold text-center mt-4">
-          <span className="text-5xl">{price} €</span>
+        <span className="text-5xl">
+          {typeof price === "number" ? price : price?.toString()} €
+        </span>
           <span className="text-lg">/ {duration}</span>
         </h2>
       </div>

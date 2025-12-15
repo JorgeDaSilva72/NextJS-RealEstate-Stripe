@@ -718,10 +718,10 @@ const Features = (props: Props) => {
   const handleNext = async () => {
     if (
       await trigger([
-        "propertyFeature.area",
-        "propertyFeature.bathrooms",
-        "propertyFeature.bedrooms",
-        "propertyFeature.parkingSpots",
+        "feature.area",
+        "feature.bathrooms",
+        "feature.bedrooms",
+        "feature.parkingSpots",
       ])
     ) {
       props.next();
@@ -777,14 +777,14 @@ const Features = (props: Props) => {
         <NumberInput
           key={feature.name}
           label={feature.label}
-          value={getValues(`propertyFeature.${feature.name}`) || 0}
+          value={getValues(`feature.${feature.name}`) || 0}
           onChange={(value) => {
-            setValue(`propertyFeature.${feature.name}`, value, {
+            setValue(`feature.${feature.name}`, value, {
               shouldValidate: true,
             });
           }}
-          errorMessage={errors.propertyFeature?.[feature.name]?.message}
-          isInvalid={!!errors.propertyFeature?.[feature.name]}
+          errorMessage={errors.feature?.[feature.name]?.message}
+          isInvalid={!!errors.feature?.[feature.name]}
           min={feature.min}
         />
       ))}
@@ -794,7 +794,7 @@ const Features = (props: Props) => {
           <Controller
             key={feature.name}
             control={control}
-            name={`propertyFeature.${feature.name}`}
+            name={`feature.${feature.name}`}
             render={({ field }) => (
               <Checkbox
                 isSelected={field.value || false}

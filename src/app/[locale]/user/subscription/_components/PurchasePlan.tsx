@@ -751,8 +751,13 @@ const PurchasePlan = ({
   const initiateStripePayment = async () => {
     setIsLoading(true);
     try {
+      const numericPrice =
+        typeof plan.price === "number"
+          ? plan.price
+          : (plan.price as any).toNumber?.() ?? Number(plan.price);
+
       const paymentIntent = await createPaymentIntent(
-        plan.price * 100,
+        numericPrice * 100,
         `Payment of the user ${user?.given_name} ${user?.family_name} for buying ${plan.namePlan}.`
       );
       setClientSecret(paymentIntent.client_secret);
@@ -884,7 +889,12 @@ const PurchasePlan = ({
     }
   };
 
-  if (plan.price === 0) {
+  const numericPrice =
+    typeof plan.price === "number"
+      ? plan.price
+      : (plan.price as any).toNumber?.() ?? Number(plan.price);
+
+  if (numericPrice === 0) {
     return (
       <Button
         aria-label={t("tryForFree")}

@@ -554,6 +554,10 @@ model User {
   // Google Analytics OAuth tokens
   googleAnalyticsToken GoogleAnalyticsToken?
 
+  // WhatsApp Relations
+  whatsappConversations     WhatsAppConversation[]
+  assignedWhatsappConversations WhatsAppConversation[] @relation("AssignedConversations")
+
   @@index([email]) // AJOUT: index pour recherche rapide
   @@index([createdAt]) // AJOUT: pour trier par date
 }
@@ -597,6 +601,9 @@ model Property {
 
   // Relation avec les rendez-vous
   appointments Appointment[]
+  
+  // WhatsApp Relations
+  whatsappConversations WhatsAppConversation[]
   
   // AJOUT: Indexes pour performances
   @@index([userId])
@@ -1005,4 +1012,216 @@ model GoogleAnalyticsToken {
   expiryDate   DateTime // Token expiration date
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+// ============================================
+// WHATSAPP BUSINESS API INTEGRATION
+// ============================================
+
+model WhatsAppAccount {
+  id                String    @id @default(cuid())
+  phoneNumberId     String    @unique // WhatsApp Business Phone Number ID
+  phoneNumber       String    // Display phone number
+  businessAccountId String    // WhatsApp Business Account ID
+  isActive          Boolean   @default(true)
+  isVerified        Boolean   @default(false)
+  webhookVerified   Boolean   @default(false)
+  
+  // API Configuration
+  accessToken       String    @db.Text // Encrypted access token
+  tokenExpiresAt    DateTime?
+  
+  // Metadata
+  displayName       String?
+  profilePictureUrl String?
+  timezone          String    @default("UTC")
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  // Relations
+  messages          WhatsAppMessage[]
+  conversations     WhatsAppConversation[]
+  templates         WhatsAppTemplate[]
+
+  @@index([isActive])
+  @@index([phoneNumberId])
+}
+
+enum ConversationStatus {
+  ACTIVE
+  ARCHIVED
+  BLOCKED
+  SPAM
+}
+
+model WhatsAppConversation {
+  id              String    @id @default(cuid())
+  accountId       String
+  account         WhatsAppAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  
+  // Participant Information
+  userPhone       String    // User's WhatsApp number
+  userName        String?   // User's name from WhatsApp profile
+  
+  // Associated Records
+  userId          String?
+  user            User?     @relation(fields: [userId], references: [id])
+  propertyId      Int?
+  property        Property? @relation(fields: [propertyId], references: [id])
+  
+  // Conversation Status
+  status          ConversationStatus @default(ACTIVE)
+  lastMessageAt   DateTime  @default(now())
+  unreadCount     Int       @default(0)
+  
+  // Assignment
+  assignedToUserId String?  // Admin/Agent assigned
+  assignedTo       User?    @relation("AssignedConversations", fields: [assignedToUserId], references: [id])
+  
+  // Metadata
+  tags            String[]  // Tags for categorization
+  notes           String?   @db.Text
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  messages        WhatsAppMessage[]
+  
+  @@index([accountId])
+  @@index([userId])
+  @@index([propertyId])
+  @@index([status])
+  @@index([lastMessageAt(sort: Desc)])
+  @@index([userPhone])
+}
+
+enum MessageDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  DOCUMENT
+  AUDIO
+  LOCATION
+  CONTACTS
+  TEMPLATE
+  INTERACTIVE
+}
+
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+  FAILED
+  DELETED
+}
+
+model WhatsAppMessage {
+  id              String    @id @default(cuid())
+  
+  // WhatsApp IDs
+  waMessageId     String    @unique // WhatsApp message ID
+  accountId       String
+  account         WhatsAppAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  
+  conversationId  String
+  conversation    WhatsAppConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  
+  // Message Content
+  direction       MessageDirection // INBOUND or OUTBOUND
+  type            MessageType // TEXT, IMAGE, VIDEO, DOCUMENT, etc.
+  content         Json      // Message content (text, media URLs, etc.)
+  
+  // Sender/Recipient
+  fromPhone       String
+  toPhone         String
+  
+  // Status Tracking
+  status          MessageStatus @default(SENT)
+  errorCode       String?
+  errorMessage    String?
+  
+  // Timing
+  sentAt          DateTime  @default(now())
+  deliveredAt     DateTime?
+  readAt          DateTime?
+  
+  // Template (if applicable)
+  templateName    String?
+  templateId      String?
+  template        WhatsAppTemplate? @relation(fields: [templateId], references: [id])
+  
+  // Context (reply/forwarded)
+  replyToId       String?
+  context         Json?
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([accountId])
+  @@index([conversationId])
+  @@index([waMessageId])
+  @@index([direction])
+  @@index([status])
+  @@index([sentAt(sort: Desc)])
+  @@index([fromPhone])
+  @@index([toPhone])
+}
+
+enum TemplateCategory {
+  MARKETING
+  UTILITY
+  AUTHENTICATION
+}
+
+enum TemplateStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  DISABLED
+}
+
+model WhatsAppTemplate {
+  id              String    @id @default(cuid())
+  accountId       String
+  account         WhatsAppAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  
+  // Template Information
+  name            String    // Template name
+  category        TemplateCategory
+  language        String    // Language code (e.g., "en", "fr", "ar")
+  status          TemplateStatus @default(PENDING)
+  
+  // Template Content
+  headerType      String?   // TEXT, IMAGE, VIDEO, DOCUMENT
+  headerContent   String?   @db.Text
+  bodyText        String    @db.Text
+  footerText      String?
+  
+  // Template Variables
+  variables       Json?     // Variable mappings
+  
+  // WhatsApp Template ID
+  waTemplateId    String?   @unique
+  
+  // Usage Statistics
+  sentCount       Int       @default(0)
+  lastUsedAt      DateTime?
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  messages        WhatsAppMessage[]
+  
+  @@unique([accountId, name, language])
+  @@index([accountId])
+  @@index([status])
+  @@index([category])
 }

@@ -280,7 +280,10 @@ const DiamondPack: React.FC<DiamondPackProps> = ({
             </h1>
 
             <h2 className="text-lg sm:text-xl font-bold text-center mt-4">
-              <span className="text-6xl">{price} €</span> / {duration}
+              <span className="text-6xl">
+                {typeof price === "number" ? price : price?.toString()} €
+              </span>{" "}
+              / {duration}
             </h2>
             <p className="text-xs sm:text-sm text-gray-400 text-center mt-2">
               {t("specialOffer", {

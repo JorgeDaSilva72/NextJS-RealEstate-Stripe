@@ -437,8 +437,25 @@ const Basic = (props: Props) => {
   const watchedStatusId = watch("statusId");
 
   // La valeur initiale pour l'édition (string)
-  const initialTypeId = getValues().typeId;
-  const initialStatusId = getValues().statusId;
+  const formValues = getValues();
+  const initialTypeId = formValues.typeId;
+  const initialStatusId = formValues.statusId;
+
+  // ✅ Extraire une valeur string pour les champs potentiellement multilingues
+  const getLocalizedValue = (value: unknown): string => {
+    if (typeof value === "string") return value;
+    if (value && typeof value === "object") {
+      const obj = value as Record<string, unknown>;
+      // Priorité au français, sinon premier champ dispo, sinon chaîne vide
+      if (typeof obj.fr === "string") return obj.fr;
+      const first = Object.values(obj).find((v) => typeof v === "string");
+      return (first as string) ?? "";
+    }
+    return "";
+  };
+
+  const defaultName = getLocalizedValue(formValues.name);
+  const defaultDescription = getLocalizedValue(formValues.description);
 
   // 🎯 LOG DE DÉBOGAGE
   console.log("--- DÉBOGAGE BASIC.TSX (EDITION) ---");
@@ -471,7 +488,7 @@ const Basic = (props: Props) => {
         label={t("title")}
         className="col-span-1 md:col-span-3"
         name="name"
-        defaultValue={getValues().name}
+        defaultValue={defaultName}
       />
       <Textarea
         {...register("description")}
@@ -480,7 +497,7 @@ const Basic = (props: Props) => {
         label={t("description")}
         className="col-span-1 md:col-span-3"
         name="description"
-        defaultValue={getValues().description}
+        defaultValue={defaultDescription}
       />
 
       {/* SÉLECTION DU TYPE DE BIEN (PROPERTY TYPE) */}

@@ -2,6 +2,7 @@
 
 import { AppointmentEvent } from "@/app/[locale]/property/[id]/appointment/page";
 import prisma from "../prisma";
+import { AppointmentState } from "@prisma/client";
 
 export const createAppointment = async (appointment: AppointmentEvent) => {
   if (!appointment?.userId) {
@@ -30,8 +31,14 @@ export const createAppointment = async (appointment: AppointmentEvent) => {
     }
 
     const result = await prisma.$transaction(async (tx) => {
+      const { state, ...rest } = appointment;
       const AddedAppointment = await tx.appointment.create({
-        data: { ...appointment },
+        data: {
+          ...rest,
+          ...(state
+            ? { state: state as AppointmentState }
+            : { state: AppointmentState.PENDING }),
+        },
       });
       return AddedAppointment;
     });
@@ -79,7 +86,7 @@ export const updateAppointment = async (appointment: AppointmentEvent) => {
         data: [],
       };
     }
-    if (updatedAppointment.state != "pending") {
+    if (updatedAppointment.state !== AppointmentState.PENDING) {
       console.error("Erreur le rendez-vous ne peut plus être modifier");
       return {
         success: false,
@@ -95,9 +102,13 @@ export const updateAppointment = async (appointment: AppointmentEvent) => {
         data: [],
       };
     }
+    const { state, ...rest } = appointment;
     const result = await prisma.appointment.update({
       where: { id: appointment.id },
-      data: { ...appointment },
+      data: {
+        ...rest,
+        ...(state ? { state: state as AppointmentState } : {}),
+      },
     });
     console.log("Modification rendez-vous réussie : ", { result });
     const allAppointmentsByProperty = await getAppointmentsByProperty(
@@ -135,7 +146,7 @@ export const deleteAppointment = async (id: number, propertyId: number) => {
     const date = new Date();
     if (
       deletedAppointment.start > date &&
-      deletedAppointment.state == "accepted"
+      deletedAppointment.state === AppointmentState.CONFIRMED
     ) {
       console.error(
         "Erreur vous n'avez plus le droit d'annuler le rendez-vous"
@@ -208,14 +219,14 @@ export const getAppointmentsByProperty = async (propertyId: number) => {
 
 export const changeAppointmentState = async (
   id: number,
-  state: string,
+  state: AppointmentState,
   propertyId: number
 ) => {
   try {
-    if (state == "accepted") {
+    if (state === AppointmentState.CONFIRMED) {
       await prisma.appointment.update({
         where: { id },
-        data: { state: state },
+        data: { state },
       });
     } else {
       await prisma.appointment.delete({ where: { id } });

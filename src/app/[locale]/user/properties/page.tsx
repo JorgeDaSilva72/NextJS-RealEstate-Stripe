@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { AppointmentState } from "@prisma/client";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import React from "react";
 import PropertiesTable from "./_components/PropertiesTable";
@@ -22,7 +23,7 @@ const PropertiesPage = async ({ searchParams }: Props) => {
       type: true,
       status: true,
       appointments: {
-        where: {state: "pending"}
+        where: { state: AppointmentState.PENDING },
       },
     },
     skip: (+pagenum - 1) * PAGE_SIZE,

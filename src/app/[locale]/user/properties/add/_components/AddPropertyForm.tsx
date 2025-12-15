@@ -1221,6 +1221,9 @@ import { z } from "zod";
 // 🚨 NOUVEAU : Importation du schéma et du type de l'action Server
 import { PropertyFormInputType, PropertyFormSchema } from "@/lib/schemas/property2"; 
 import { createPropertyAction, editPropertyAction } from "@/lib/actions/property2"; // Assurez-vous d'avoir editPropertyAction
+
+// ✅ Alias de compatibilité pour l'ancien type utilisé dans d'autres composants
+export type AddPropertyInputType = PropertyFormInputType;
 // ⚠️ NOTE : Votre schéma doit être le `PropertyFormSchema` unique (plus de getAddPropertyFormSchema(t))
 
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
