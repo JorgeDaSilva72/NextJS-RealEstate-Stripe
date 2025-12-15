@@ -11,6 +11,13 @@ import {
   processWebhook,
 } from '@/lib/whatsapp/webhook-handler';
 
+// Explicitly set runtime to ensure compatibility
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
+// Ensure route segment config is properly set
+export const fetchCache = 'force-no-store';
+
 /**
  * GET - Webhook verification
  * Called by Meta when setting up the webhook
@@ -36,8 +43,16 @@ export async function GET(request: NextRequest) {
         hasMode: !!mode,
         hasToken: !!token,
         hasChallenge: !!challenge,
+        url: request.url,
+        searchParams: Object.fromEntries(searchParams.entries()),
       });
-      return new NextResponse('Missing required parameters', { status: 400 });
+      // Return plain text error (Facebook expects plain text)
+      return new NextResponse('Missing required parameters', { 
+        status: 400,
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      });
     }
 
     // Verify webhook
@@ -64,12 +79,37 @@ export async function GET(request: NextRequest) {
         receivedToken: token,
       });
       // Return plain text error for Facebook
-      return new NextResponse('Verification failed', { status: 403 });
+      return new NextResponse('Verification failed', { 
+        status: 403,
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      });
     }
   } catch (error) {
     console.error('[Webhook API] GET error:', error);
-    return new NextResponse('Internal server error', { status: 500 });
+    return new NextResponse('Internal server error', { 
+      status: 500,
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+    });
   }
+}
+
+/**
+ * OPTIONS - Handle CORS preflight requests
+ * Some deployments may require this
+ */
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, x-hub-signature-256',
+    },
+  });
 }
 
 /**
