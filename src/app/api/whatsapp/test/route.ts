@@ -105,6 +105,14 @@ export async function POST(request: NextRequest) {
         {
           success: true,
           data: result.data,
+          warning: 'Message sent successfully, but you may not receive it if:',
+          reasons: [
+            '1. This is the FIRST message to this number (WhatsApp requires template messages for first contact)',
+            '2. More than 24 hours passed since user last messaged you (24-hour messaging window expired)',
+            '3. Phone number is not registered on WhatsApp',
+          ],
+          solution: 'To send first message: Use an approved WhatsApp template. Check message status: GET /api/whatsapp/check-status?messageId=' + result.data?.messages?.[0]?.id,
+          checkStatus: `/api/whatsapp/check-status?messageId=${result.data?.messages?.[0]?.id}`,
         },
         { status: 200 }
       );
