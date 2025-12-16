@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
         approvedTemplates,
       },
       environment: {
-        hasAccessToken: !!(process.env.WHATSAPP_ACCESS_TOKEN ?? "EAAZA6hb3eKzIBQFlbJtANnzWk7BthfbNqr9wk12dNPxICR5A5boIyU5ns3ZAVZBsSeldoNwrm78Fl8zAeOGQeQuuKP8NevZBPf6S3LkMOEZBhVbo1j3y2HaR98hs2S0YvP1JbhURnK9u5tjcZCqzgZCuM7MMKBKIPg1Tc2uZCKWqLFqU9TRX0e6r9qyd6ZAauoKlVdV9ZBguMf3zyI1J0jRul5bF6jsjLRVPgKkTSZCLO6YzwY6P3wmSZA0ihURzvAOqGV5e2tpb1R0p7MB0NDKvBpaYB5oZD"),
+        hasAccessToken: !!(process.env.WHATSAPP_ACCESS_TOKEN ?? "EAAZA6hb3eKzIBQIKq8Wrdx2Lg87jEkvL4foV3OjpnoLZBFnCtG2yaaFZCNUzXmEOB7iB4ZBPW1FYtT3xE4oZCnZBuHxOR6vGnXTnBL8zt4UxqHOnwCrPGGySDmJzMejbbnydApFr31k9xPJVmlZAx7LLo28DZBZCubidxHfJ0RllnX8YdQAun6Xj5kAuFVGRoYykvDLhhJVoq3h9JHjt4CmxVP3EIxE95lNVetZCoGhZCSCqaChTsRZCYB60ovIjo7MHaKjaYOoWAIr27YokPZC49tZCs6AQZDZD"),
         hasPhoneNumberId: !!(process.env.WHATSAPP_PHONE_NUMBER_ID ?? "947502885103297"),
         hasWebhookToken: !!(process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN ?? "whatsapp_verify_123"),
         hasAppSecret: !!(process.env.WHATSAPP_APP_SECRET ?? "c64bcf5adf43290e06abb0730d2ecfde"),
