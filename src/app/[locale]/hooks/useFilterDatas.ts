@@ -774,20 +774,20 @@ const useFilterDatas = () => {
 
   // --- 2. États pour les sliders (Peut lire searchParams directement) ---
   const [priceRange, setPriceRange] = useState([
-    Number(searchParams.get("minPrice")) || 0,
-    Number(searchParams.get("maxPrice")) || 1000000,
+    Number(searchParams?.get("minPrice")) || 0,
+    Number(searchParams?.get("maxPrice")) || 1000000,
   ]);
   const [areaRange, setAreaRange] = useState([
-    Number(searchParams.get("minArea")) || 0,
-    Number(searchParams.get("maxArea")) || 1000,
+    Number(searchParams?.get("minArea")) || 0,
+    Number(searchParams?.get("maxArea")) || 1000,
   ]);
   const [bedroomsRange, setBedroomsRange] = useState([
-    Number(searchParams.get("minBedrooms")) || 0,
-    Number(searchParams.get("maxBedrooms")) || 10,
+    Number(searchParams?.get("minBedrooms")) || 0,
+    Number(searchParams?.get("maxBedrooms")) || 10,
   ]);
   const [bathroomsRange, setBathroomsRange] = useState([
-    Number(searchParams.get("minBathrooms")) || 0,
-    Number(searchParams.get("maxBathrooms")) || 10,
+    Number(searchParams?.get("minBathrooms")) || 0,
+    Number(searchParams?.get("maxBathrooms")) || 10,
   ]);
 
   const [filterDatas, setFilterDatas] = useState<SelectFilterTypes>([]);
@@ -890,7 +890,7 @@ const useFilterDatas = () => {
 
     // Exécuter la synchronisation
     filtersToSync.forEach(({ name, setter }) => {
-      const paramValue = searchParams.get(name);
+      const paramValue = searchParams?.get(name);
 
       if (paramValue && paramValue !== "none") {
         // Mettez à jour l'état avec l'ID STRING de l'URL.

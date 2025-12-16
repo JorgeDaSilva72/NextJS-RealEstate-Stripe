@@ -149,6 +149,10 @@ export async function POST(request: NextRequest) {
         }
 
         // Store message
+        if (!messageId) {
+          throw new Error('Message ID is required');
+        }
+        
         await prisma.whatsAppMessage.create({
           data: {
             waMessageId: messageId,

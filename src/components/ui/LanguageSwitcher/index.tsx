@@ -756,7 +756,9 @@ const LanguageSwitcher = () => {
       return;
     }
     // Sinon, naviguer vers la nouvelle langue
-    router.push(`/${newLocale}${pathname.slice(3)}`);
+    if (pathname) {
+      router.push(`/${newLocale}${pathname.slice(3)}`);
+    }
   };
 
   const currentLanguage = languages.find((lang) => lang.code === locale);

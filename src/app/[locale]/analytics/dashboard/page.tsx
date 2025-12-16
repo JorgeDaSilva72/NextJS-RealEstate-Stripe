@@ -15,8 +15,8 @@ export default function AnalyticsDashboardPage() {
     checkConnection();
     
     // Check for success/error messages from OAuth callback
-    const success = searchParams.get("success");
-    const error = searchParams.get("error");
+    const success = searchParams?.get("success");
+    const error = searchParams?.get("error");
     
     if (success === "true") {
       // Refresh connection status after successful OAuth

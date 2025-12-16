@@ -238,9 +238,10 @@ import { getLanguageIdByCode } from "@/lib/utils"; // Assurez-vous que ce chemin
 // Type pour un item récupéré avec sa traduction
 interface ItemWithTranslation {
   id: number;
-  code: string; // Ajout du code pour la transformation
+  code: string | null; // Ajout du code pour la transformation (can be null from DB)
   translations: {
-    value: string;
+    value?: string;
+    name?: string;
   }[];
 }
 // Type simplifié pour le composant client
@@ -366,7 +367,10 @@ const AddPropertyPage = async () => {
   }
 
   // 2. REQUÊTES PRISMA AVEC TRADUCTION
-  let propertyTypesRaw, propertyStatusesRaw, countriesRaw, citiesRaw;
+  let propertyTypesRaw: ItemWithTranslation[] = [];
+  let propertyStatusesRaw: ItemWithTranslation[] = [];
+  let countriesRaw: ItemWithTranslation[] = [];
+  let citiesRaw: ItemWithTranslation[] = [];
   
   try {
     [propertyTypesRaw, propertyStatusesRaw, countriesRaw, citiesRaw] =
@@ -457,11 +461,12 @@ const AddPropertyPage = async () => {
 
       // Si c'est un PropertyType/Status, on utilise 'value'. Si Country/City, on utilise 'name'.
       const translatedName = translationValue.value || translationValue.name;
+      const code = item.code || `code_${item.id}`;
 
       return {
         id: item.id,
-        code: item.code,
-        name: translatedName || item.code || `ID ${item.id} (No Translation)`,
+        code: code,
+        name: translatedName || code || `ID ${item.id} (No Translation)`,
       };
     });
 

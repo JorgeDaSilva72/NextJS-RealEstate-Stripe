@@ -811,10 +811,10 @@ const Search = () => {
   const [once, setOnce] = useState(true);
 
   const [searchQuery, setSearchQuery] = useState(
-    searchParams.get("query") ?? ""
+    searchParams?.get("query") ?? ""
   );
 
-  const keyCache = searchParams.get("key_cache") || "initial";
+  const keyCache = searchParams?.get("key_cache") || "initial";
   // Ancien état cityValue supprimé, car la ville est maintenant gérée par SearchSelect via selectFilters.
 
   const handleInputChange = (query: string) => {
@@ -828,7 +828,7 @@ const Search = () => {
   const handleChange = React.useCallback(
     async (query?: string) => {
       // 'city' a été retiré des paramètres
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParams?.toString() || "");
       if (query) {
         params.set("query", query);
         setLoading(true);
@@ -863,7 +863,7 @@ const Search = () => {
   };
 
   const resetSearchQuery = () => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString() || "");
     params.delete("query");
     setSearchQuery("");
     const newUrl = params.toString()
@@ -877,7 +877,7 @@ const Search = () => {
   useEffect(() => {
     // La logique de synchronisation de cityValue a été supprimée.
 
-    const queryParam = searchParams.get("query") ?? "";
+    const queryParam = searchParams?.get("query") ?? "";
     if (!searchQuery && queryParam !== searchQuery) {
       setSearchQuery(queryParam);
     }
@@ -966,7 +966,7 @@ const Search = () => {
                         value={item.range || []}
                         step={item.step || 1}
                         rangeValue={item.rangeValue || [0, 10]}
-                        searchParams={searchParams}
+                        searchParams={searchParams!}
                         setValue={item.setRange}
                         name={item.name}
                         formatOptions={item.formatOptions}
@@ -983,7 +983,7 @@ const Search = () => {
                         value={item.value || ""}
                         setValue={item.setValue}
                         values={item.items || []}
-                        searchParams={searchParams}
+                        searchParams={searchParams!}
                         name={item.name}
                       />
                     )}
