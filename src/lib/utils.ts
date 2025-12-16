@@ -52,9 +52,19 @@ export const isValidDate = (
 export async function getLanguageIdByCode(
   code: string
 ): Promise<number | undefined> {
-  const lang = await prisma.language.findUnique({
-    where: { code: code },
+  // La requête doit trouver la langue par son CODE ('fr', 'en', etc.)
+  const language = await prisma.language.findUnique({
+    where: { code: code }, // <-- souvent le code de la locale
     select: { id: true },
   });
-  return lang?.id;
+  // Si l'anglais n'est pas trouvé dans la DB, ou si la DB n'a que le français.
+    if (!language) {
+        // Optionnel : Fallback vers la langue par défaut si la langue demandée n'est pas trouvée
+        const defaultLang = await prisma.language.findFirst({
+             where: { isDefault: true },
+             select: { id: true }
+        });
+        return defaultLang?.id;
+    }
+  return language?.id;
 }

@@ -229,7 +229,7 @@ import { getUserById } from "@/lib/actions/user";
 // car nous allons manipuler les données avec les traductions incluses.
 import AddPropertyClient from "./_components/AddPropertyClient";
 import { getTranslations, getLocale } from "next-intl/server"; // Importation de getLocale
-import { getLanguageIdByCode } from "@/lib/utils"; // Assurez-vous que ce chemin est correct
+import { getLanguageIdByCode } from "@/lib/utils"; 
 
 
 // ⚠️ IMPORTANT : Définir les types des données incluant les traductions.
@@ -261,6 +261,11 @@ const AddPropertyPage = async () => {
   // 1. DÉTERMINER L'ID DE LA LANGUE
   // ✅ ÉTAPE 2 : ATTENDRE la fonction getLanguageIdByCode qui est asynchrone.
   const languageId = await getLanguageIdByCode(currentLocale);
+
+  console.log("--- DÉBOGAGE TRADUCTION SERVER ---");
+ console.log(`Locale Next-Intl : ${currentLocale}`); 
+console.log(`ID de la Langue (DB) : ${languageId}`); // 🚨 VÉRIFIEZ CE NUMÉRO
+ console.log("----------------------------------");
 
   if (!languageId) {
     console.error(`Language ID for locale ${currentLocale} not found.`);

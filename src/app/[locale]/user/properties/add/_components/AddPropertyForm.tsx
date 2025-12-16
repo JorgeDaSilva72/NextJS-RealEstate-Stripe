@@ -1328,7 +1328,7 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
         } as any, // ⚠️ Le typage direct peut être difficile, `as any` est temporaire ici
         description: { 
             [locale]: getLocalizedText(props.property?.description, locale) || "",
-        } as any,
+        } as any, // C'est un objet, pas une string !
         
         // Relations Imbriquées :
         contact: {
