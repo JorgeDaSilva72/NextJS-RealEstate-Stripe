@@ -260,12 +260,24 @@ const AddPropertyPage = async () => {
 
   // 1. DÉTERMINER L'ID DE LA LANGUE
   // ✅ ÉTAPE 2 : ATTENDRE la fonction getLanguageIdByCode qui est asynchrone.
-  const languageId = await getLanguageIdByCode(currentLocale);
+  let languageId: number | undefined;
+  try {
+    languageId = await getLanguageIdByCode(currentLocale);
+  } catch (error) {
+    console.error(`Error fetching language ID for locale ${currentLocale}:`, error);
+  }
 
   if (!languageId) {
     console.error(`Language ID for locale ${currentLocale} not found.`);
-    // Vous pouvez choisir de forcer la langue par défaut ou de lancer une erreur
-    // Nous continuons, mais les traductions seront manquantes si aucune langue n'est trouvée
+    // Try to get default language (usually 'en' or 'fr')
+    try {
+      languageId = await getLanguageIdByCode('en');
+      if (!languageId) {
+        languageId = await getLanguageIdByCode('fr');
+      }
+    } catch (error) {
+      console.error('Error fetching default language:', error);
+    }
   }
 
   // Initialisation des limites de médias
@@ -354,78 +366,85 @@ const AddPropertyPage = async () => {
   }
 
   // 2. REQUÊTES PRISMA AVEC TRADUCTION
-  const [propertyTypesRaw, propertyStatusesRaw, countriesRaw, citiesRaw] =
-    await Promise.all([
-      // Récupérer les types de biens
-      prisma.propertyType.findMany({
-        select: {
-          id: true,
-          code: true,
-          translations: {
-            where: {
-              languageId: languageId,
+  let propertyTypesRaw, propertyStatusesRaw, countriesRaw, citiesRaw;
+  
+  try {
+    [propertyTypesRaw, propertyStatusesRaw, countriesRaw, citiesRaw] =
+      await Promise.all([
+        // Récupérer les types de biens
+        prisma.propertyType.findMany({
+          select: {
+            id: true,
+            code: true,
+            translations: {
+              where: languageId ? { languageId: languageId } : undefined,
+              select: {
+                value: true,
+              },
+              take: 1,
             },
-            select: {
-              value: true,
-            },
-            take: 1,
           },
-        },
-        orderBy: {
-          displayOrder: "asc", // Optionnel: Assurer un ordre d'affichage
-        },
-      }),
+          orderBy: {
+            displayOrder: "asc", // Optionnel: Assurer un ordre d'affichage
+          },
+        }),
 
-      // Récupérer les statuts de biens
-      prisma.propertyStatus.findMany({
-        select: {
-          id: true,
-          code: true,
-          translations: {
-            where: {
-              languageId: languageId,
+        // Récupérer les statuts de biens
+        prisma.propertyStatus.findMany({
+          select: {
+            id: true,
+            code: true,
+            translations: {
+              where: languageId ? { languageId: languageId } : undefined,
+              select: {
+                value: true,
+              },
+              take: 1,
             },
-            select: {
-              value: true,
+          },
+          orderBy: {
+            displayOrder: "asc", // Optionnel: Assurer un ordre d'affichage
+          },
+        }),
+
+        // Récupérer les Pays traduits
+        prisma.country.findMany({
+          where: { isActive: true },
+          select: {
+            id: true,
+            code: true,
+            translations: {
+              where: languageId ? { languageId: languageId } : undefined,
+              select: { name: true },
+              take: 1,
             },
-            take: 1,
           },
-        },
-        orderBy: {
-          displayOrder: "asc", // Optionnel: Assurer un ordre d'affichage
-        },
-      }),
+          orderBy: { displayOrder: "asc" },
+        }),
 
-      // Récupérer les Pays traduits
-      prisma.country.findMany({
-        where: { isActive: true },
-        select: {
-          id: true,
-          code: true,
-          translations: {
-            where: { languageId: languageId },
-            select: { name: true },
-            take: 1,
+        // Récupérer les Villes traduites
+        prisma.city.findMany({
+          where: { isActive: true },
+          select: {
+            id: true,
+            code: true,
+            translations: {
+              where: languageId ? { languageId: languageId } : undefined,
+              select: { name: true },
+              take: 1,
+            },
           },
-        },
-        orderBy: { displayOrder: "asc" },
-      }),
-
-      // Récupérer les Villes traduites
-      prisma.city.findMany({
-        where: { isActive: true },
-        select: {
-          id: true,
-          code: true,
-          translations: {
-            where: { languageId: languageId },
-            select: { name: true },
-            take: 1,
-          },
-        },
-        orderBy: { countryId: "asc" }, // Optionnel: Tri par pays ou ordre
-      }),
-    ]);
+          orderBy: { countryId: "asc" }, // Optionnel: Tri par pays ou ordre
+        }),
+      ]);
+  } catch (error) {
+    console.error("Error fetching property data:", error);
+    // Return empty arrays if query fails to prevent page crash
+    propertyTypesRaw = [];
+    propertyStatusesRaw = [];
+    countriesRaw = [];
+    citiesRaw = [];
+  }
 
   // 3. Transformation des données pour le composant client
   const mapItems = (items: ItemWithTranslation[]): ClientItem[] =>

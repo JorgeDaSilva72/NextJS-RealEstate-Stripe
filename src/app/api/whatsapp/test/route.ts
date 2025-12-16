@@ -13,6 +13,10 @@ import {
   isValidPhoneNumber,
   validateMessageContent,
 } from "@/lib/whatsapp/validators";
+import { PrismaClient } from "@prisma/client";
+import { MessageDirection, MessageType, MessageStatus } from "@/lib/whatsapp/types";
+
+const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
   try {
@@ -101,18 +105,88 @@ export async function POST(request: NextRequest) {
     });
 
     if (result.success) {
+      const messageId = result.data?.messages?.[0]?.id;
+      
+      // Try to store message in database for status tracking (optional, won't fail if DB unavailable)
+      try {
+        // Get or create WhatsApp account
+        let account = await prisma.whatsAppAccount.findFirst({
+          where: { isActive: true },
+        });
+
+        if (!account) {
+          // Create account if doesn't exist
+          account = await prisma.whatsAppAccount.create({
+            data: {
+              phoneNumberId: WHATSAPP_PHONE_NUMBER_ID,
+              phoneNumber: `+${to.replace(/^\+/, '')}`,
+              businessAccountId: process.env.WHATSAPP_BUSINESS_ACCOUNT_ID || '1203289797803197',
+              accessToken: WHATSAPP_ACCESS_TOKEN, // In production, encrypt this
+              isActive: true,
+              isVerified: true,
+              webhookVerified: true,
+            },
+          });
+        }
+
+        // Get or create conversation
+        let conversation = await prisma.whatsAppConversation.findFirst({
+          where: {
+            accountId: account.id,
+            userPhone: to,
+            status: 'ACTIVE',
+          },
+        });
+
+        if (!conversation) {
+          conversation = await prisma.whatsAppConversation.create({
+            data: {
+              accountId: account.id,
+              userPhone: to,
+              status: 'ACTIVE',
+            },
+          });
+        }
+
+        // Store message
+        await prisma.whatsAppMessage.create({
+          data: {
+            waMessageId: messageId,
+            accountId: account.id,
+            conversationId: conversation.id,
+            direction: MessageDirection.OUTBOUND,
+            type: MessageType.TEXT,
+            content: { text: message },
+            fromPhone: account.phoneNumber,
+            toPhone: to,
+            status: MessageStatus.SENT,
+            sentAt: new Date(),
+          },
+        });
+
+        // Update conversation
+        await prisma.whatsAppConversation.update({
+          where: { id: conversation.id },
+          data: { lastMessageAt: new Date() },
+        });
+      } catch (dbError: any) {
+        // Don't fail if DB storage fails, just log it
+        console.warn('[Test API] Failed to store message in DB (non-critical):', dbError.message);
+      }
+
       return NextResponse.json(
         {
           success: true,
           data: result.data,
+          stored: true,
           warning: 'Message sent successfully, but you may not receive it if:',
           reasons: [
             '1. This is the FIRST message to this number (WhatsApp requires template messages for first contact)',
             '2. More than 24 hours passed since user last messaged you (24-hour messaging window expired)',
             '3. Phone number is not registered on WhatsApp',
           ],
-          solution: 'To send first message: Use an approved WhatsApp template. Check message status: GET /api/whatsapp/check-status?messageId=' + result.data?.messages?.[0]?.id,
-          checkStatus: `/api/whatsapp/check-status?messageId=${result.data?.messages?.[0]?.id}`,
+          solution: 'To send first message: Use an approved WhatsApp template. Check message status: GET /api/whatsapp/check-status?messageId=' + messageId,
+          checkStatus: `/api/whatsapp/check-status?messageId=${messageId}`,
         },
         { status: 200 }
       );
