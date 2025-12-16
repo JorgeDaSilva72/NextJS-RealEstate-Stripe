@@ -717,7 +717,9 @@
       "title": "Título do anúncio",
       "description": "Descrição",
       "propertyType": "Tipo de imóvel",
+      "propertyTypePlaceholder": "Selecione um tipo de imóvel",
       "transactionType": "Tipo de transação",
+      "transactionTypePlaceholder": "Selecione um tipo de transação",
       "priceInEuros": "Preço em euros",
       "previous": "Anterior",
       "next": "Próximo"
@@ -726,6 +728,8 @@
       "address": "Endereço",
       "zipCode": "CEP",
       "city": "Cidade",
+      "chooseCity": "Escolha uma cidade",
+      "streetAddressPlaceholder": "Digite o endereço da rua",
       "country": "País",
       "region": "Região",
       "additionalInfo": "Informações adicionais",

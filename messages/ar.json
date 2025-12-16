@@ -717,7 +717,9 @@
       "title": "عنوان الإعلان",
       "description": "الوصف",
       "propertyType": "نوع العقار المطلوب",
+      "propertyTypePlaceholder": "اختر نوع العقار",
       "transactionType": "نوع المعاملة",
+      "transactionTypePlaceholder": "اختر نوع المعاملة",
       "priceInEuros": "السعر باليورو",
       "previous": "السابق",
       "next": "التالي"
@@ -726,6 +728,8 @@
       "address": "العنوان",
       "zipCode": "الرمز البريدي",
       "city": "المدينة",
+      "chooseCity": "اختر مدينة",
+      "streetAddressPlaceholder": "أدخل عنوان الشارع",
       "country": "البلد",
       "region": "المنطقة",
       "additionalInfo": "معلومات إضافية",

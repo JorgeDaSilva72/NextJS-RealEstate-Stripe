@@ -721,7 +721,9 @@
       "title": "Titre de l'annonce",
       "description": "Description",
       "propertyType": "Type de bien recherché",
+      "propertyTypePlaceholder": "Sélectionnez un type de bien",
       "transactionType": "Type de transaction",
+      "transactionTypePlaceholder": "Sélectionnez un type de transaction",
       "priceInEuros": "Prix en euros",
       "previous": "Précédent",
       "next": "Suivant"
@@ -730,6 +732,8 @@
       "address": "Adresse",
       "zipCode": "Code postal",
       "city": "Ville",
+      "chooseCity": "Choisissez une ville",
+      "streetAddressPlaceholder": "Entrez l'adresse de la rue",
       "country": "Pays",
       "region": "Région",
       "additionalInfo": "Informations complémentaires",

@@ -1755,37 +1755,151 @@ console.log("🧹 Resetting database...");
 // ============================================================
 
 // Children first (translations, property data, etc.)
+// Wrap delete operations in try-catch to handle missing tables gracefully
 
-await prisma.propertyStatusTranslation.deleteMany();
-await prisma.propertyTypeTranslation.deleteMany();
-await prisma.cityTranslation.deleteMany();
-await prisma.regionTranslation.deleteMany();
-await prisma.countryTranslation.deleteMany();
+try {
+  await prisma.propertyStatusTranslation.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error; // P2021 = table doesn't exist
+  console.log('⚠️  PropertyStatusTranslation table does not exist, skipping...');
+}
 
-await prisma.propertyImage.deleteMany();
-await prisma.propertyVideo.deleteMany();
-await prisma.propertyFeature.deleteMany();
-await prisma.propertyLocation.deleteMany();
-await prisma.appointment.deleteMany();
-await prisma.contact.deleteMany();
+try {
+  await prisma.propertyTypeTranslation.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  PropertyTypeTranslation table does not exist, skipping...');
+}
 
-await prisma.subscriptions.deleteMany();
-await prisma.subscriptionPlan.deleteMany();
+try {
+  await prisma.cityTranslation.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  CityTranslation table does not exist, skipping...');
+}
+
+try {
+  await prisma.regionTranslation.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  RegionTranslation table does not exist, skipping...');
+}
+
+try {
+  await prisma.countryTranslation.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  CountryTranslation table does not exist, skipping...');
+}
+
+try {
+  await prisma.propertyImage.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  PropertyImage table does not exist, skipping...');
+}
+
+try {
+  await prisma.propertyVideo.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  PropertyVideo table does not exist, skipping...');
+}
+
+try {
+  await prisma.propertyFeature.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  PropertyFeature table does not exist, skipping...');
+}
+
+try {
+  await prisma.propertyLocation.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  PropertyLocation table does not exist, skipping...');
+}
+
+try {
+  await prisma.appointment.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  Appointment table does not exist, skipping...');
+}
+
+try {
+  await prisma.contact.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  Contact table does not exist, skipping...');
+}
+
+try {
+  await prisma.subscriptions.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  Subscriptions table does not exist, skipping...');
+}
+
+try {
+  await prisma.subscriptionPlan.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  SubscriptionPlan table does not exist, skipping...');
+}
 
 // Properties depending on other models
-await prisma.property.deleteMany();
+try {
+  await prisma.property.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  Property table does not exist, skipping...');
+}
 
 // Geographic & taxonomy models
-await prisma.city.deleteMany();
-await prisma.region.deleteMany();
-await prisma.country.deleteMany();
+try {
+  await prisma.city.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  City table does not exist, skipping...');
+}
+
+try {
+  await prisma.region.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  Region table does not exist, skipping...');
+}
+
+try {
+  await prisma.country.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  Country table does not exist, skipping...');
+}
 
 // Type & status
-await prisma.propertyType.deleteMany();
-await prisma.propertyStatus.deleteMany();
+try {
+  await prisma.propertyType.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  PropertyType table does not exist, skipping...');
+}
+
+try {
+  await prisma.propertyStatus.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  PropertyStatus table does not exist, skipping...');
+}
 
 // Finally: languages
-await prisma.language.deleteMany();
+try {
+  await prisma.language.deleteMany();
+} catch (error: any) {
+  if (error.code !== 'P2021') throw error;
+  console.log('⚠️  Language table does not exist, skipping...');
+}
 
 console.log("✔️ Database cleared");
 

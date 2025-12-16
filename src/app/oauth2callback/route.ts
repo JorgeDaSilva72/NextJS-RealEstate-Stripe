@@ -38,13 +38,18 @@ export async function GET(req: NextRequest) {
     });
 
     if (!dbUser) {
+      // Validate required fields
+      if (!user.email || user.email.trim() === "") {
+        throw new Error("Email is required for user creation");
+      }
+
       // Create user if they don't exist
       await prisma.user.create({
         data: {
           id: user.id,
-          firstname: user.given_name ?? "",
-          lastname: user.family_name ?? "",
-          email: user.email ?? "",
+          firstname: user.given_name?.trim() || null,
+          lastname: user.family_name?.trim() || null,
+          email: user.email.trim(),
           avatarUrl: generateAvatarUrl(user.id),
         },
       });

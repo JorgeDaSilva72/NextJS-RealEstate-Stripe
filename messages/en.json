@@ -717,7 +717,9 @@
       "title": "Property Title",
       "description": "Description",
       "propertyType": "Property Type",
+      "propertyTypePlaceholder": "Select a property type",
       "transactionType": "Transaction Type",
+      "transactionTypePlaceholder": "Select a transaction type",
       "priceInEuros": "Price in Euros",
       "previous": "Previous",
       "next": "Next"
@@ -726,6 +728,8 @@
       "address": "Address",
       "zipCode": "Zip Code",
       "city": "City",
+      "chooseCity": "Choose a city",
+      "streetAddressPlaceholder": "Enter street address",
       "country": "Country",
       "region": "Region",
       "additionalInfo": "Additional Information",
