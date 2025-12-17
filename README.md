@@ -44,9 +44,9 @@ Suivez ces étapes pour lancer le projet en environnement de développement loca
 
 Assurez-vous d'avoir installé les outils suivants :
 
-- **Node.js** (version recommandée : `[ex: v20.x]`)
-- **[npm / yarn / pnpm]** (gestionnaire de paquets)
-- **Git**
+- **Node.js** v20.x ou supérieure recommandée.
+- **npm** ou **yarn** ou **pnpm** (gestionnaire de paquets)
+- **Git** installé
 
 ### 2. Cloner le Dépôt
 
@@ -88,6 +88,9 @@ Vous devez configurer votre base de données locale (ou de développement) et ex
 
 Configurez les variables DATABASE_URL et DATABASE_URL_UNPOOLED dans votre .env.local avec les informations d'accès que nous vous avons fournies.
 
+# Générer le client Prisma
+npx prisma generate
+
 Exécutez les migrations (pour créer le schéma) :
 
 Bash
@@ -126,10 +129,12 @@ server/ : Fonctions et logiques côté serveur (ex: interactions avec la base de
 
 🧑‍💻 Conventions de Développement
 
+1. Branches
+
 Pour maintenir un code base cohérent, veuillez respecter les conventions suivantes :
 
 Git et Branches
-Branche Principale : main (toujours stable, correspond à la production).
+Branche Principale : main (toujours stable, correspond à la production).Branche protégée. Jamais de push direct
 
 Branches de Travail : Basez toujours vos travaux sur main. Nommez vos branches en utilisant le format :
 
@@ -137,7 +142,9 @@ feature/[description-de-la-feature] (pour les nouvelles fonctionnalités)
 
 fix/[description-du-bug] (pour les corrections de bugs)
 
-Soumission : Tout travail doit passer par une Pull Request (PR) et nécessite l'approbation d'au moins un autre développeur avant d'être fusionné dans main.
+2. Pull Requests (PR)
+
+Soumission : Tout travail doit passer par une Pull Request (PR) et nécessite l'approbation d'au moins un autre développeur avant d'être fusionné dans main. Le code doit compiler sans erreur en local avant la soumission.
 
 Qualité du Code
 Linting & Formatage : Nous utilisons ESLint et Prettier. Votre IDE devrait appliquer automatiquement les règles. Si ce n'est pas le cas, vous pouvez lancer manuellement :
@@ -150,6 +157,20 @@ Requêtes à la Base de Données
 Toutes les interactions avec la base de données doivent passer par Prisma.
 
 Jamais de requêtes SQL brutes à moins d'une justification exceptionnelle et d'une revue.
+
+3. Spécificités Windows
+
+Si vous rencontrez des erreurs de types "Filename too long" lors du clone :
+
+Bash
+
+git config --global core.longpaths true
+
+
+🌍 SEO & Internationalisation
+SEO : Sitemap et Robots.txt sont générés dynamiquement à partir de la base de données.
+
+Traductions : Toute nouvelle chaîne de caractères doit être ajoutée dans messages/fr.json et messages/en.json.
 
 📝 Contact
 Pour toute question ou blocage, veuillez contacter :
