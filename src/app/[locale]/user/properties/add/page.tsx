@@ -229,8 +229,7 @@ import { getUserById } from "@/lib/actions/user";
 // car nous allons manipuler les données avec les traductions incluses.
 import AddPropertyClient from "./_components/AddPropertyClient";
 import { getTranslations, getLocale } from "next-intl/server"; // Importation de getLocale
-import { getLanguageIdByCode } from "@/lib/utils"; // Assurez-vous que ce chemin est correct
-
+import { getLanguageIdByCode } from "@/lib/utils"; 
 
 // ⚠️ IMPORTANT : Définir les types des données incluant les traductions.
 // Assurez-vous que les champs 'translations' existent sur vos modèles PropertyType et PropertyStatus dans schema.prisma.
@@ -250,10 +249,20 @@ interface ClientItem {
   code: string;
   name: string; // Nom traduit
 }
-const AddPropertyPage = async () => {
+// const AddPropertyPage = async () => {
+const AddPropertyPage = async ({ 
+  params 
+}: { 
+  params: { locale: string } 
+}) => {
   const t = await getTranslations("AddPropertyPage");
   // ⚠️ ÉTAPE 1 : Récupérer la locale. L'appel est asynchrone dans Next-Intl/Server, mais nous le traitons comme une string.
-  const currentLocale: string = await getLocale();
+  // const currentLocale: string = await getLocale();
+
+  // 2. Récupérez la locale directement depuis l'URL (plus fiable que getLocale ici)
+  // On attend params pour les versions récentes de Next.js
+  const { locale } = await params; 
+  const currentLocale = locale;
 
   let showModal = false;
   let modalMessage = "";
@@ -280,6 +289,11 @@ const AddPropertyPage = async () => {
       console.error('Error fetching default language:', error);
     }
   }
+
+  console.log("#############################################");
+  console.log("NOUVELLE LOCALE DETECTÉE:", currentLocale);
+  console.log("NOUVEL ID LANGUE:", languageId);
+  console.log("#############################################");
 
   // Initialisation des limites de médias
   let photoLimit = 8;
@@ -451,24 +465,41 @@ const AddPropertyPage = async () => {
   }
 
   // 3. Transformation des données pour le composant client
-  const mapItems = (items: ItemWithTranslation[]): ClientItem[] =>
-    items.map((item) => {
-      // Pour les Pays et Villes, la traduction est dans item.translations[0]?.name
-      const translationValue = item.translations[0] as {
-        value?: string;
-        name?: string;
-      };
+  // const mapItems = (items: ItemWithTranslation[]): ClientItem[] =>
+  //   items.map((item) => {
+  //     // Pour les Pays et Villes, la traduction est dans item.translations[0]?.name
+  //     const translationValue = item.translations[0] as {
+  //       value?: string;
+  //       name?: string;
+  //     };
 
-      // Si c'est un PropertyType/Status, on utilise 'value'. Si Country/City, on utilise 'name'.
-      const translatedName = translationValue.value || translationValue.name;
-      const code = item.code || `code_${item.id}`;
+  //     // Si c'est un PropertyType/Status, on utilise 'value'. Si Country/City, on utilise 'name'.
+  //     const translatedName = translationValue.value || translationValue.name;
+  //     const code = item.code || `code_${item.id}`;
 
-      return {
-        id: item.id,
-        code: code,
-        name: translatedName || code || `ID ${item.id} (No Translation)`,
-      };
-    });
+  //     return {
+  //       id: item.id,
+  //       code: code,
+  //       name: translatedName || code || `ID ${item.id} (No Translation)`,
+  //     };
+  //   });
+const mapItems = (items: ItemWithTranslation[]): ClientItem[] =>
+  items.map((item) => {
+    // On récupère la première traduction trouvée par le filtre languageId
+    const translationEntry = item.translations[0];
+
+    // On extrait la valeur (PropertyType) ou le nom (City/Country)
+    const translatedName = translationEntry?.value || translationEntry?.name;
+    const code = item.code || `code_${item.id}`;
+
+    return {
+      id: item.id,
+      code: code,
+      // MODIFICATION : Si translatedName est absent, on affiche le CODE technique. 
+      // Si vous voyez "APARTMENT" au lieu de "Appartement", c'est que la traduction EN manque en DB.
+      name: translatedName || `[MISSING] ${code.toUpperCase()}`,
+    };
+  });
 
   return (
     <AddPropertyClient
