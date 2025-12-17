@@ -2869,7 +2869,7 @@ const currentLocale = (params.locale as string) || "fr";
     // ✅ Déclenchement de la validation sur les chemins exacts du schéma
     const isValid = await trigger([
       "location.cityId" as any, 
-      "location.streetAddress" as any,
+      // "location.streetAddress" as any,
       // `location.landmark.${currentLocale}` as any // ✅ Ajoutez landmark à la validation
     ]);
     if (isValid) {

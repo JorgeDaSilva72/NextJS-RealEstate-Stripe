@@ -16,16 +16,16 @@ export const MultilingualTextSchema = z.object({
 
 // Schéma pour les caractéristiques
 export const PropertyFeatureSchema = z.object({
-  bedrooms: z.number().int().min(1, "Doit avoir au moins 1 chambre."),
-  bathrooms: z.number().int().min(1, "Doit avoir au moins 1 salle de bain."),
-  parkingSpots: z.number().int().min(0),
-  area: z.number().int().min(10, "La surface doit être d'au moins 10 m²."),
-  hasSwimmingPool: z.boolean(),
-  hasGardenYard: z.boolean(),
-  hasBalcony: z.boolean(),
+  bedrooms: z.number().int().min(0).default(1),
+  bathrooms: z.number().int().min(0).default(1),
+  parkingSpots: z.number().int().min(0).default(0),
+ area: z.number().int().min(0).default(0),
+  hasSwimmingPool: z.boolean().default(false),
+  hasGardenYard: z.boolean().default(false),
+  hasBalcony: z.boolean().default(false),
   floor: z.number().int().min(0).optional(),
-  totalFloors: z.number().int().min(1).optional(),
-  yearBuilt: z.number().int().min(1900).optional(),
+  totalFloors: z.number().int().min(0).optional(),
+  yearBuilt: z.number().int().min(1800).optional(),
 });
 
 // Schéma pour la localisation

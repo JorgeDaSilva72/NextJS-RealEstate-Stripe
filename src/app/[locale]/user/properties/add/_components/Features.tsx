@@ -690,6 +690,153 @@
 // ----------------------------------------------------------
 // next-intl with claude
 
+// import React from "react";
+// import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
+// import { Button, Card, Checkbox, cn } from "@nextui-org/react";
+// import { Controller, useFormContext } from "react-hook-form";
+// import NumberInput from "./NumberInput";
+// import { AddPropertyInputType } from "./AddPropertyForm";
+// import { useTranslations } from "next-intl";
+
+// interface Props {
+//   next: () => void;
+//   prev: () => void;
+//   className?: string;
+// }
+
+// const Features = (props: Props) => {
+//   const t = useTranslations("PropertyForm.Features");
+
+//   const {
+//     formState: { errors },
+//     control,
+//     trigger,
+//     getValues,
+//     setValue,
+//   } = useFormContext<AddPropertyInputType>();
+
+//   const handleNext = async () => {
+//     if (
+//       await trigger([
+//         "feature.area",
+//         "feature.bathrooms",
+//         "feature.bedrooms",
+//         "feature.parkingSpots",
+//       ])
+//     ) {
+//       props.next();
+//     }
+//   };
+
+//   const features = [
+//     {
+//       name: "bedrooms" as const,
+//       label: t("bedrooms"),
+//       min: 0,
+//     },
+//     {
+//       name: "bathrooms" as const,
+//       label: t("bathrooms"),
+//       min: 0,
+//     },
+//     {
+//       name: "parkingSpots" as const,
+//       label: t("parkingSpots"),
+//       min: 0,
+//     },
+//     {
+//       name: "area" as const,
+//       label: t("area"),
+//       min: 0,
+//     },
+//   ];
+
+//   const checkboxFeatures = [
+//     {
+//       name: "hasSwimmingPool" as const,
+//       label: t("hasSwimmingPool"),
+//     },
+//     {
+//       name: "hasGardenYard" as const,
+//       label: t("hasGardenYard"),
+//     },
+//     {
+//       name: "hasBalcony" as const,
+//       label: t("hasBalcony"),
+//     },
+//   ];
+
+//   return (
+//     <Card
+//       className={cn(
+//         "p-2 grid grid-cols-1 md:grid-cols-2 gap-3",
+//         props.className
+//       )}
+//     >
+//       {features.map((feature) => (
+//         <NumberInput
+//           key={feature.name}
+//           label={feature.label}
+//           value={getValues(`feature.${feature.name}`) || 0}
+//           onChange={(value) => {
+//             setValue(`feature.${feature.name}`, value, {
+//               shouldValidate: true,
+//             });
+//           }}
+//           errorMessage={errors.feature?.[feature.name]?.message}
+//           isInvalid={!!errors.feature?.[feature.name]}
+//           min={feature.min}
+//         />
+//       ))}
+
+//       <div className="flex flex-col items-start gap-2 md:flex-row justify-around md:col-span-2">
+//         {checkboxFeatures.map((feature) => (
+//           <Controller
+//             key={feature.name}
+//             control={control}
+//             name={`feature.${feature.name}`}
+//             render={({ field }) => (
+//               <Checkbox
+//                 isSelected={field.value || false}
+//                 onChange={field.onChange}
+//                 className="mr-2"
+//               >
+//                 {feature.label}
+//               </Checkbox>
+//             )}
+//           />
+//         ))}
+//       </div>
+
+//       <div className="flex flex-col md:flex-row justify-center col-span-1 md:col-span-2 gap-3 mt-4">
+//         <Button
+//           onClick={props.prev}
+//           startContent={<ChevronLeftIcon className="w-6" />}
+//           color="primary"
+//           className="w-full md:w-36"
+//         >
+//           {t("previous")}
+//         </Button>
+//         <Button
+//           onClick={handleNext}
+//           endContent={<ChevronRightIcon className="w-6" />}
+//           color="primary"
+//           className="w-full md:w-36"
+//         >
+//           {t("next")}
+//         </Button>
+//       </div>
+//     </Card>
+//   );
+// };
+
+// export default Features;
+
+
+// 17/12/2025 
+
+"use client";
+
 import React from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
 import { Button, Card, Checkbox, cn } from "@nextui-org/react";
@@ -716,23 +863,27 @@ const Features = (props: Props) => {
   } = useFormContext<AddPropertyInputType>();
 
   const handleNext = async () => {
-    if (
-      await trigger([
-        "feature.area",
-        "feature.bathrooms",
-        "feature.bedrooms",
-        "feature.parkingSpots",
-      ])
-    ) {
+    // ✅ Validation des champs numériques avec les chemins exacts
+    const isValid = await trigger([
+      "feature.area",
+      "feature.bathrooms",
+      "feature.bedrooms",
+      "feature.parkingSpots",
+    ] as any);
+
+    if (isValid) {
       props.next();
+    } else {
+      console.log("Erreurs caractéristiques :", errors.feature);
     }
   };
 
+  // ✅ Alignement avec le schéma Zod (min 1 pour bedrooms/bathrooms, min 10 pour area)
   const features = [
     {
       name: "bedrooms" as const,
       label: t("bedrooms"),
-      min: 0,
+      min: 0, 
     },
     {
       name: "bathrooms" as const,
@@ -747,58 +898,46 @@ const Features = (props: Props) => {
     {
       name: "area" as const,
       label: t("area"),
-      min: 0,
+      min: 0,  
     },
   ];
 
   const checkboxFeatures = [
-    {
-      name: "hasSwimmingPool" as const,
-      label: t("hasSwimmingPool"),
-    },
-    {
-      name: "hasGardenYard" as const,
-      label: t("hasGardenYard"),
-    },
-    {
-      name: "hasBalcony" as const,
-      label: t("hasBalcony"),
-    },
+    { name: "hasSwimmingPool" as const, label: t("hasSwimmingPool") },
+    { name: "hasGardenYard" as const, label: t("hasGardenYard") },
+    { name: "hasBalcony" as const, label: t("hasBalcony") },
   ];
 
   return (
-    <Card
-      className={cn(
-        "p-2 grid grid-cols-1 md:grid-cols-2 gap-3",
-        props.className
-      )}
-    >
+    <Card className={cn("p-2 grid grid-cols-1 md:grid-cols-2 gap-3", props.className)}>
       {features.map((feature) => (
         <NumberInput
           key={feature.name}
           label={feature.label}
-          value={getValues(`feature.${feature.name}`) || 0}
+          // ✅ Utilisation d'un accès sécurisé pour la valeur
+          value={getValues(`feature.${feature.name}` as any) || 0}
           onChange={(value) => {
-            setValue(`feature.${feature.name}`, value, {
+            setValue(`feature.${feature.name}` as any, value, {
               shouldValidate: true,
             });
           }}
-          errorMessage={errors.feature?.[feature.name]?.message}
-          isInvalid={!!errors.feature?.[feature.name]}
+          // ✅ Correction de l'accès aux erreurs imbriquées
+          errorMessage={(errors.feature as any)?.[feature.name]?.message}
+          isInvalid={!!(errors.feature as any)?.[feature.name]}
           min={feature.min}
         />
       ))}
 
-      <div className="flex flex-col items-start gap-2 md:flex-row justify-around md:col-span-2">
+      <div className="flex flex-col items-start gap-2 md:flex-row justify-around md:col-span-2 mt-2">
         {checkboxFeatures.map((feature) => (
           <Controller
             key={feature.name}
             control={control}
-            name={`feature.${feature.name}`}
+            name={`feature.${feature.name}` as any}
             render={({ field }) => (
               <Checkbox
-                isSelected={field.value || false}
-                onChange={field.onChange}
+                isSelected={!!field.value}
+                onValueChange={field.onChange} // Utilisation de onValueChange pour NextUI
                 className="mr-2"
               >
                 {feature.label}
