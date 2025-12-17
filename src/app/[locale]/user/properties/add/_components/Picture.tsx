@@ -867,6 +867,285 @@
 // end ----------------------------------------------------------
 // next-intl with claude
 
+// import React, { useEffect, useState } from "react";
+// import { Button, Card } from "@nextui-org/react";
+// import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
+// import { PropertyImage, PropertyVideo } from "@prisma/client";
+// import Image from "next/image";
+// import PictureCard from "./PictureCard";
+// import { toast } from "react-toastify";
+// import { PhotoIcon } from "@heroicons/react/24/outline";
+// import ButtonClose from "@/app/[locale]/components/ButtonClose";
+// import { useTranslations } from "next-intl";
+
+// interface Props {
+//   next: () => void;
+//   prev: () => void;
+//   className?: string;
+//   images: File[];
+//   setImages: (images: File[]) => void;
+//   videos?: string[];
+//   setVideos?: (videos: string[]) => void;
+//   savedImagesUrl?: PropertyImage[];
+//   setSavedImageUrl?: (propertyImages: PropertyImage[]) => void;
+//   savedVideosUrl?: PropertyVideo[];
+//   setSavedVideoUrl?: (propertyVideos: PropertyVideo[]) => void;
+//   maxImages: number;
+//   maxVideos?: number;
+//   isPremium: boolean;
+// }
+
+// const MAX_SIZE_MB = 2;
+// export const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+
+// const Picture = ({
+//   next,
+//   prev,
+//   className,
+//   images,
+//   setImages,
+//   savedImagesUrl = [],
+//   setSavedImageUrl,
+//   savedVideosUrl = [],
+//   setSavedVideoUrl,
+//   maxImages,
+//   videos = [],
+//   setVideos,
+//   maxVideos = 0,
+//   isPremium,
+// }: Props) => {
+//   const t = useTranslations("PropertyForm.Picture");
+//   const [error, setError] = useState<string | null>(null);
+//   const [videoUrl, setVideoUrl] = useState<string>("");
+
+//   useEffect(() => {
+//     if (error) {
+//       toast.error(error);
+//     }
+//   }, [error]);
+
+//   const handleSelectImages = (event: React.ChangeEvent<HTMLInputElement>) => {
+//     const selectedFiles = Array.from(event.target.files as FileList);
+
+//     if (
+//       images.length + savedImagesUrl.length + selectedFiles.length >
+//       maxImages
+//     ) {
+//       setError(t("maxImagesError", { count: maxImages }));
+//       return;
+//     }
+
+//     const validFiles = selectedFiles.filter((file) =>
+//       file.type.startsWith("image/")
+//     );
+
+//     if (validFiles.length !== selectedFiles.length) {
+//       setError(t("invalidFilesError"));
+//       return;
+//     }
+
+//     const validFileSizes = selectedFiles.filter(
+//       (file) => file.size <= MAX_SIZE_BYTES
+//     );
+
+//     if (selectedFiles.length !== validFileSizes.length) {
+//       setError(t("fileSizeError", { size: MAX_SIZE_MB }));
+//       return;
+//     }
+
+//     setError(null);
+//     setImages([...validFileSizes, ...images]);
+//   };
+
+//   const removeImage = (index: number) => {
+//     setImages(images.filter((_, i) => i !== index));
+//   };
+
+//   const removeSavedImage = (id: number) => {
+//     setSavedImageUrl?.(savedImagesUrl.filter((img) => img.id !== id));
+//   };
+
+//   const handleAddVideo = () => {
+//     if (!isPremium) {
+//       setError(t("premiumOnlyError"));
+//       return;
+//     }
+
+//     const youtubeRegex =
+//       /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/;
+
+//     if (!youtubeRegex.test(videoUrl)) {
+//       setError(t("invalidYoutubeLink"));
+//       return;
+//     }
+
+//     if (savedVideosUrl.length >= maxVideos) {
+//       setError(t("maxVideosError", { count: maxVideos }));
+//       return;
+//     }
+
+//     setError(null);
+//     setVideos?.([...videos, videoUrl]);
+//     setVideoUrl("");
+//   };
+
+//   const removeVideo = (index: number) => {
+//     setVideos?.(videos.filter((_, i) => i !== index));
+//   };
+
+//   const removeSavedVideo = (id: number) => {
+//     const videos = savedVideosUrl.filter((video) => video.id !== id);
+//     setSavedVideoUrl?.(videos);
+//   };
+
+//   return (
+//     <Card className={`p-4 ${className}`}>
+//       <div>
+//         <input
+//           type="file"
+//           accept=".jpg,.jpeg,.webp"
+//           multiple
+//           onChange={handleSelectImages}
+//           className="hidden"
+//           id="image-upload"
+//         />
+//         <label
+//           htmlFor="image-upload"
+//           className="cursor-pointer border border-dashed p-4 text-center rounded-lg hover:bg-gray-100 flex flex-col items-center"
+//         >
+//           <PhotoIcon className="w-8 h-8 text-gray-500" />
+//           <span className="text-sm text-gray-500 mt-2">
+//             {t("clickToAddImages")}
+//           </span>
+//           <span className="text-sm text-gray-500 mt-2">
+//             {t("acceptedFormats")}
+//           </span>
+//         </label>
+
+//         <div className="flex flex-wrap gap-4 mt-4">
+//           {savedImagesUrl?.map((image, index) => (
+//             <PictureCard
+//               key={`saved-${image.id}`}
+//               src={image.url}
+//               index={index}
+//               onDelete={(idx) => removeSavedImage(savedImagesUrl[idx].id)}
+//             />
+//           ))}
+//           {images.map((file, index) => (
+//             <div key={`new-${index}`} className="relative">
+//               <Image
+//                 width={300}
+//                 height={200}
+//                 src={URL.createObjectURL(file)}
+//                 alt={file.name}
+//                 className="w-24 h-24 object-cover rounded-lg"
+//               />
+//               <ButtonClose
+//                 top="top-1"
+//                 right="right-1"
+//                 width="w-6"
+//                 height="h-6"
+//                 onClick={() => removeImage(index)}
+//               />
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+
+//       <div className="mt-6">
+//         <label className="block text-sm font-medium text-gray-700">
+//           {t("addYoutubeVideo")}
+//         </label>
+//         {!isPremium ? (
+//           <p className="text-gray-500 mt-2">
+//             <strong>{t("note")}:</strong> {t("premiumFeatureNote")}
+//           </p>
+//         ) : (
+//           <div className="flex gap-2 mt-2">
+//             <input
+//               type="text"
+//               value={videoUrl}
+//               onChange={(e) => setVideoUrl(e.target.value)}
+//               placeholder={t("enterYoutubeLink")}
+//               className="flex-grow p-2 border rounded-lg"
+//             />
+//             <Button onClick={handleAddVideo} color="primary">
+//               {t("add")}
+//             </Button>
+//           </div>
+//         )}
+
+//         <div className="mt-4 flex flex-wrap gap-4">
+//           {savedVideosUrl?.map((video, index) => (
+//             <div key={index} className="relative w-36 h-36">
+//               <iframe
+//                 src={`https://www.youtube.com/embed/${new URL(
+//                   video.url
+//                 ).searchParams.get("v")}`}
+//                 frameBorder="0"
+//                 allowFullScreen
+//                 className="w-full h-full object-contain rounded"
+//               />
+//               <ButtonClose
+//                 top="top-1"
+//                 right="right-1"
+//                 width="w-6"
+//                 height="h-6"
+//                 onClick={() => removeSavedVideo(savedVideosUrl[index].id)}
+//               />
+//             </div>
+//           ))}
+
+//           {videos.map((video, index) => (
+//             <div key={index} className="relative w-36 h-36">
+//               <iframe
+//                 src={`https://www.youtube.com/embed/${new URL(
+//                   video
+//                 ).searchParams.get("v")}`}
+//                 frameBorder="0"
+//                 allowFullScreen
+//                 className="w-full h-full object-contain rounded"
+//               />
+//               <ButtonClose
+//                 top="top-1"
+//                 right="right-1"
+//                 width="w-6"
+//                 height="h-6"
+//                 onClick={() => removeVideo(index)}
+//               />
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+
+//       <div className="flex justify-center gap-4 mt-6">
+//         <Button
+//           onClick={prev}
+//           startContent={<ChevronLeftIcon className="w-6" />}
+//           color="primary"
+//           className="w-full md:w-36"
+//         >
+//           {t("previous")}
+//         </Button>
+//         <Button
+//           onClick={next}
+//           endContent={<ChevronRightIcon className="w-6" />}
+//           color="primary"
+//           className="w-full md:w-36"
+//         >
+//           {t("next")}
+//         </Button>
+//       </div>
+//     </Card>
+//   );
+// };
+
+// export default Picture;
+
+// 17/12/2025
+
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { Button, Card } from "@nextui-org/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
@@ -921,40 +1200,38 @@ const Picture = ({
   useEffect(() => {
     if (error) {
       toast.error(error);
+      setError(null); // Reset après affichage
     }
   }, [error]);
+
+  // Fonction utilitaire pour extraire l'ID YouTube (gère short links et standard)
+  const getYouTubeID = (url: string) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
 
   const handleSelectImages = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(event.target.files as FileList);
 
-    if (
-      images.length + savedImagesUrl.length + selectedFiles.length >
-      maxImages
-    ) {
+    if (images.length + savedImagesUrl.length + selectedFiles.length > maxImages) {
       setError(t("maxImagesError", { count: maxImages }));
       return;
     }
 
-    const validFiles = selectedFiles.filter((file) =>
-      file.type.startsWith("image/")
-    );
-
+    const validFiles = selectedFiles.filter((file) => file.type.startsWith("image/"));
     if (validFiles.length !== selectedFiles.length) {
       setError(t("invalidFilesError"));
       return;
     }
 
-    const validFileSizes = selectedFiles.filter(
-      (file) => file.size <= MAX_SIZE_BYTES
-    );
-
+    const validFileSizes = selectedFiles.filter((file) => file.size <= MAX_SIZE_BYTES);
     if (selectedFiles.length !== validFileSizes.length) {
       setError(t("fileSizeError", { size: MAX_SIZE_MB }));
       return;
     }
 
-    setError(null);
-    setImages([...validFileSizes, ...images]);
+    setImages([...images, ...validFileSizes]);
   };
 
   const removeImage = (index: number) => {
@@ -971,20 +1248,17 @@ const Picture = ({
       return;
     }
 
-    const youtubeRegex =
-      /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/;
-
-    if (!youtubeRegex.test(videoUrl)) {
+    const videoId = getYouTubeID(videoUrl);
+    if (!videoId) {
       setError(t("invalidYoutubeLink"));
       return;
     }
 
-    if (savedVideosUrl.length >= maxVideos) {
+    if ((videos.length + savedVideosUrl.length) >= maxVideos) {
       setError(t("maxVideosError", { count: maxVideos }));
       return;
     }
 
-    setError(null);
     setVideos?.([...videos, videoUrl]);
     setVideoUrl("");
   };
@@ -993,17 +1267,13 @@ const Picture = ({
     setVideos?.(videos.filter((_, i) => i !== index));
   };
 
-  const removeSavedVideo = (id: number) => {
-    const videos = savedVideosUrl.filter((video) => video.id !== id);
-    setSavedVideoUrl?.(videos);
-  };
-
   return (
-    <Card className={`p-4 ${className}`}>
-      <div>
+    <Card className={`p-4 gap-4 ${className}`}>
+      {/* SECTION IMAGES */}
+      <div className="space-y-4">
         <input
           type="file"
-          accept=".jpg,.jpeg,.webp"
+          accept="image/jpeg,image/png,image/webp"
           multiple
           onChange={handleSelectImages}
           className="hidden"
@@ -1011,127 +1281,130 @@ const Picture = ({
         />
         <label
           htmlFor="image-upload"
-          className="cursor-pointer border border-dashed p-4 text-center rounded-lg hover:bg-gray-100 flex flex-col items-center"
+          className="cursor-pointer border-2 border-dashed border-gray-300 p-8 text-center rounded-xl hover:bg-gray-50 hover:border-primary transition-all flex flex-col items-center"
         >
-          <PhotoIcon className="w-8 h-8 text-gray-500" />
-          <span className="text-sm text-gray-500 mt-2">
-            {t("clickToAddImages")}
-          </span>
-          <span className="text-sm text-gray-500 mt-2">
-            {t("acceptedFormats")}
-          </span>
+          <PhotoIcon className="w-12 h-12 text-gray-400" />
+          <span className="text-sm font-medium text-gray-600 mt-2">{t("clickToAddImages")}</span>
+          <span className="text-xs text-gray-400 mt-1">{t("acceptedFormats")} (Max {MAX_SIZE_MB}MB)</span>
         </label>
 
-        <div className="flex flex-wrap gap-4 mt-4">
-          {savedImagesUrl?.map((image, index) => (
-            <PictureCard
-              key={`saved-${image.id}`}
-              src={image.url}
-              index={index}
-              onDelete={(idx) => removeSavedImage(savedImagesUrl[idx].id)}
-            />
-          ))}
-          {images.map((file, index) => (
-            <div key={`new-${index}`} className="relative">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          {/* Images déjà en base (Mode édition) */}
+          {savedImagesUrl.map((image) => (
+            <div key={`saved-${image.id}`} className="relative group aspect-square">
               <Image
-                width={300}
-                height={200}
+                fill
+                src={image.url}
+                alt="Property"
+                className="object-cover rounded-lg shadow-sm"
+              />
+              <ButtonClose 
+              top="top-1"
+              right="right-1"
+              width="w-6"
+              height="h-6"
+              onClick={() => removeSavedImage(image.id)} />
+            </div>
+          ))}
+
+          {/* Nouvelles images sélectionnées */}
+          {images.map((file, index) => (
+            <div key={`new-${index}`} className="relative aspect-square">
+              <Image
+                fill
                 src={URL.createObjectURL(file)}
                 alt={file.name}
-                className="w-24 h-24 object-cover rounded-lg"
+                className="object-cover rounded-lg shadow-sm"
               />
-              <ButtonClose
-                top="top-1"
-                right="right-1"
-                width="w-6"
-                height="h-6"
-                onClick={() => removeImage(index)}
-              />
+              <ButtonClose 
+              top="top-1"
+              right="right-1"
+              width="w-6"
+              height="h-6"
+              onClick={() => removeImage(index)} />
             </div>
           ))}
         </div>
       </div>
 
-      <div className="mt-6">
-        <label className="block text-sm font-medium text-gray-700">
+      {/* SECTION VIDÉOS */}
+      <div className="border-t pt-6 mt-2">
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
           {t("addYoutubeVideo")}
         </label>
+        
         {!isPremium ? (
-          <p className="text-gray-500 mt-2">
-            <strong>{t("note")}:</strong> {t("premiumFeatureNote")}
-          </p>
+          <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
+            <p className="text-xs text-amber-700 leading-relaxed">
+              <span className="font-bold">✨ {t("premiumFeatureTitle")}:</span> {t("premiumFeatureNote")}
+            </p>
+          </div>
         ) : (
-          <div className="flex gap-2 mt-2">
+          <div className="flex gap-2">
             <input
               type="text"
               value={videoUrl}
               onChange={(e) => setVideoUrl(e.target.value)}
-              placeholder={t("enterYoutubeLink")}
-              className="flex-grow p-2 border rounded-lg"
+              placeholder="https://www.youtube.com/watch?v=..."
+              className="flex-grow p-2 text-sm border rounded-lg focus:ring-2 focus:ring-primary/20 outline-none"
             />
-            <Button onClick={handleAddVideo} color="primary">
+            <Button onClick={handleAddVideo} color="primary" size="sm">
               {t("add")}
             </Button>
           </div>
         )}
 
-        <div className="mt-4 flex flex-wrap gap-4">
-          {savedVideosUrl?.map((video, index) => (
-            <div key={index} className="relative w-36 h-36">
-              <iframe
-                src={`https://www.youtube.com/embed/${new URL(
-                  video.url
-                ).searchParams.get("v")}`}
-                frameBorder="0"
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {/* Vidéos sauvegardées */}
+          {savedVideosUrl.map((video) => (
+            <div key={`saved-vid-${video.id}`} className="relative aspect-video">
+               <iframe
+                src={`https://www.youtube.com/embed/${getYouTubeID(video.url)}`}
+                className="w-full h-full rounded-lg shadow-sm"
                 allowFullScreen
-                className="w-full h-full object-contain rounded"
               />
-              <ButtonClose
-                top="top-1"
-                right="right-1"
-                width="w-6"
-                height="h-6"
-                onClick={() => removeSavedVideo(savedVideosUrl[index].id)}
-              />
+              <ButtonClose 
+              top="top-1"
+              right="right-1"
+              width="w-6"
+              height="h-6"
+              onClick={() => setSavedVideoUrl?.(savedVideosUrl.filter(v => v.id !== video.id))} />
             </div>
           ))}
-
-          {videos.map((video, index) => (
-            <div key={index} className="relative w-36 h-36">
+          
+          {/* Nouvelles vidéos */}
+          {videos.map((url, index) => (
+            <div key={`new-vid-${index}`} className="relative aspect-video">
               <iframe
-                src={`https://www.youtube.com/embed/${new URL(
-                  video
-                ).searchParams.get("v")}`}
-                frameBorder="0"
+                src={`https://www.youtube.com/embed/${getYouTubeID(url)}`}
+                className="w-full h-full rounded-lg shadow-sm"
                 allowFullScreen
-                className="w-full h-full object-contain rounded"
               />
-              <ButtonClose
-                top="top-1"
+              <ButtonClose top="top-1"
                 right="right-1"
                 width="w-6"
                 height="h-6"
-                onClick={() => removeVideo(index)}
-              />
+                onClick={() => removeVideo(index)} />
             </div>
           ))}
         </div>
       </div>
 
-      <div className="flex justify-center gap-4 mt-6">
+      {/* NAVIGATION */}
+      <div className="flex justify-center gap-4 mt-4">
         <Button
           onClick={prev}
-          startContent={<ChevronLeftIcon className="w-6" />}
-          color="primary"
-          className="w-full md:w-36"
+          variant="flat"
+          startContent={<ChevronLeftIcon className="w-5" />}
+          className="w-32"
         >
           {t("previous")}
         </Button>
         <Button
-          onClick={next}
-          endContent={<ChevronRightIcon className="w-6" />}
+          onClick={next} // Pas de validation bloquante ici
           color="primary"
-          className="w-full md:w-36"
+          endContent={<ChevronRightIcon className="w-5" />}
+          className="w-32"
         >
           {t("next")}
         </Button>

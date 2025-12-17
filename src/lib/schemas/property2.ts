@@ -80,7 +80,7 @@ export const PropertyFormSchema = z.object({
   contact: ContactSchema,
   
   // Liste d'images et de vidéos
-  images: z.array(PropertyImageSchema).min(1, "Au moins une image est obligatoire."),
+ images: z.array(PropertyImageSchema).optional().default([]),
   // Simplifié pour l'instant
   videos: z.array(z.object({ url: z.string().url() })).optional(), 
 });
