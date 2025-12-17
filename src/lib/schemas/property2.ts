@@ -1,13 +1,18 @@
 import { z } from "zod";
 
 // Schéma pour les champs multilingues (name, description, landmark)
-// On suppose ici que toutes les locales supportées (fr, en, ...) doivent être fournies,
-// mais au moins une est obligatoire (par exemple, 'fr').
+
 export const MultilingualTextSchema = z.object({
-  fr: z.string().min(3, "La traduction française est obligatoire."),
-  en: z.string().optional(),
+  fr: z.string().optional().or(z.literal("")), 
+  en: z.string().optional().or(z.literal("")),
   // Ajoutez d'autres locales si nécessaire
 });
+
+// Pour garder le Titre et la Description obligatoires, créez un schéma spécifique :
+// export const MandatoryMultilingualSchema = z.object({
+//   fr: z.string().min(1, "La traduction française est obligatoire."),
+//   en: z.string().optional(),
+// });
 
 // Schéma pour les caractéristiques
 export const PropertyFeatureSchema = z.object({
@@ -25,9 +30,11 @@ export const PropertyFeatureSchema = z.object({
 
 // Schéma pour la localisation
 export const PropertyLocationSchema = z.object({
-  countryId: z.number().int().min(1, "Le pays est obligatoire."),
+  // countryId: z.number().int().min(1, "Le pays est obligatoire."),
+  countryId: z.number().int().optional(),
   cityId: z.number().int().min(1, "La ville est obligatoire."),
-  streetAddress: z.string().min(5, "L'adresse est obligatoire."),
+  // streetAddress: z.string().min(5, "L'adresse est obligatoire."),
+  streetAddress: z.string().optional(),
   neighborhood: z.string().optional(),
   zip: z.string().optional(),
   // landmark est multilingue

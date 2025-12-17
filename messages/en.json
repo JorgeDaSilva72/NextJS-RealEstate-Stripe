@@ -722,7 +722,9 @@
       "transactionTypePlaceholder": "Select a transaction type",
       "priceInEuros": "Price in Euros",
       "previous": "Previous",
-      "next": "Next"
+      "next": "Next",
+      "titlePlaceholder": "Enter a title",
+      "descriptionPlaceholder": "Enter a description"
     },
     "Location": {
       "address": "Address",
@@ -742,7 +744,8 @@
       "noAddressDetails": "No details available for this address",
       "googleMapsError": "Error loading Google Maps. Please try again later.",
       "previous": "Previous",
-      "next": "Next"
+      "next": "Next",
+      "landmarkPlaceholder": "Enter additional information"
     },
     "Features": {
       "bedrooms": "Bedroom(s)",

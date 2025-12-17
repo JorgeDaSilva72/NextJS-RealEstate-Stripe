@@ -726,7 +726,9 @@
       "transactionTypePlaceholder": "Sélectionnez un type de transaction",
       "priceInEuros": "Prix en euros",
       "previous": "Précédent",
-      "next": "Suivant"
+      "next": "Suivant",
+      "titlePlaceholder": "Entrez un titre",
+      "descriptionPlaceholder": "Entrez une description"
     },
     "Location": {
       "address": "Adresse",
@@ -746,7 +748,8 @@
       "noAddressDetails": "Aucun détail disponible pour cette adresse",
       "googleMapsError": "Erreur de chargement de Google Maps. Veuillez réessayer ultérieurement.",
       "previous": "Précédent",
-      "next": "Suivant"
+      "next": "Suivant",
+      "landmarkPlaceholder": "Entrez des informations complémentaires"
     },
     "Features": {
       "bedrooms": "Chambre(s)",

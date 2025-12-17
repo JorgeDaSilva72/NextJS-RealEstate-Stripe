@@ -2635,31 +2635,217 @@
 
 // 08/12/2025 pour s adapter au nouveau prisma feature/multlingual-countries
 
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
-// import { Button, Card, Input, Select, SelectItem, cn } from "@nextui-org/react";
-import { Button, Card, Input, SelectItem, cn } from "@nextui-org/react";
+// import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
+// // import { Button, Card, Input, Select, SelectItem, cn } from "@nextui-org/react";
+// import { Button, Card, Input, SelectItem, cn } from "@nextui-org/react";
 
-import React, { useMemo } from "react";
+// import React, { useMemo } from "react";
+// import { useFormContext } from "react-hook-form";
+// import { AddPropertyInputType } from "./AddPropertyForm";
+// import { useTranslations } from "next-intl";
+
+// // Définition de la structure des options traduites (doit correspondre à AddPropertyClient)
+// interface TranslatedClientItem {
+//   id: number;
+//   code: string;
+//   name: string; // Nom traduit (Pays ou Ville)
+// }
+
+// interface Props {
+//   next: () => void;
+//   prev: () => void;
+//   className?: string;
+
+//   // ⚠️ NOUVEAU : Récupération des listes de Pays/Villes traduits
+//   countries: TranslatedClientItem[];
+//   cities: TranslatedClientItem[];
+//   // (Note: Ces props doivent être passées depuis AddPropertyForm)
+// }
+
+// const Location = (props: Props) => {
+//   const t = useTranslations("PropertyForm.Location");
+//   const {
+//     register,
+//     formState: { errors },
+//     trigger,
+//     getValues, // 🎯 Utiliser getValues
+//     watch,
+//     control,
+//   } = useFormContext<AddPropertyInputType>();
+
+//   // Surveillance et valeurs initiales RHF
+//   const watchedCityId = watch("location.cityId");
+//   const initialCityId = getValues().location?.cityId;
+
+//   // 🎯 LOG DE DÉBOGAGE
+//   console.log("--- DÉBOGAGE LOCATION.TSX (EDITION) ---");
+//   console.log(
+//     "1. ID de la ville RHF (attendue: string):",
+//     initialCityId,
+//     typeof initialCityId
+//   );
+//   console.log("2. Liste des villes (ID/Nom):", props.cities);
+//   console.log("-----------------------------------------");
+
+//   const handleNext = async () => {
+//     // 🎯 Seul cityId est obligatoire selon le schéma Zod corrigé
+//     if (await trigger(["location.cityId", "location.streetAddress"])) {
+//       props.next();
+//     }
+//   };
+
+//   // Les autres champs (streetAddress, zip, landmark) sont gérés par RHF Register.
+
+//   return (
+//     <Card
+//       className={cn(
+//         "p-4 grid grid-cols-1 md:grid-cols-2 gap-4",
+//         props.className
+//       )}
+//     >
+//       {/* 🛑 Ancienne logique Google Maps supprimée (trop complexe avec les IDs) 🛑 */}
+
+//       {/* SÉLECTION DE LA VILLE (OBLIGATOIRE DANS ZOD) */}
+//       {/* <div className="col-span-1 md:col-span-2">
+//         <Select
+//           {...register("location.cityId", {
+//             setValueAs: (v: any) => v.toString(),
+//           })}
+//           errorMessage={errors.location?.cityId?.message}
+//           isInvalid={!!errors.location?.cityId}
+//           label={t("city")}
+//           placeholder={t("chooseCity")}
+//           selectionMode="single"
+//           name="location.cityId"
+//           // defaultSelectedKeys={[currentCityId ? currentCityId.toString() : ""]}
+//           selectedKeys={currentCityId ? [currentCityId] : []}
+//         >
+//           {props.cities.map((item) => (
+//             <SelectItem key={item.id.toString()} value={item.id.toString()}>
+//               {item.name}
+//             </SelectItem>
+//           ))}
+//         </Select>
+//       </div> */}
+
+//       {/* ✅ NOUVEAU : SÉLECTION DE LA VILLE (cityId) en Select HTML Natif */}
+//       <div className="col-span-1 md:col-span-2 flex flex-col gap-2">
+//         <label className="text-sm font-medium text-gray-700">{t("city")}</label>
+//         <select
+//           // 🎯 Utiliser register directement sur le select natif
+//           {...register("location.cityId", {
+//             setValueAs: (v) => v.toString(),
+//           })}
+//           className={cn(
+//             "p-3 border rounded-lg bg-gray-50 appearance-none",
+//             "focus:border-blue-500 focus:ring-blue-500",
+//             { "border-red-500": !!errors.location?.cityId }
+//           )}
+//           name="location.cityId"
+//           // Utiliser la valeur RHF pour l'initialisation (qui est la string ID)
+//           defaultValue={watchedCityId || initialCityId || ""}
+//         >
+//           <option value="" disabled>
+//             {t("chooseCity") || "Choisir une ville"}
+//           </option>
+
+//           {/* S'assurer que props.cities n'est pas undefined avant le map */}
+//           {(props.cities || []).map((item) => (
+//             <option key={item.id} value={item.id.toString()}>
+//               {item.name}
+//             </option>
+//           ))}
+//         </select>
+//         {errors.location?.cityId && (
+//           <p className="text-red-500 text-xs mt-1">
+//             {errors.location.cityId.message}
+//           </p>
+//         )}
+//       </div>
+
+//       {/* STREET ADDRESS (Obligatoire/Optionnel dans Zod) */}
+//       <div className="col-span-1 md:col-span-2">
+//         <Input
+//           {...register("location.streetAddress")}
+//           label={t("address")}
+//           placeholder={t("streetAddressPlaceholder")}
+//           errorMessage={errors.location?.streetAddress?.message}
+//           isInvalid={!!errors.location?.streetAddress}
+//         />
+//       </div>
+
+//       {/* ZIP CODE (Optionnel) */}
+//       <div className="col-span-1">
+//         <Input
+//           {...register("location.zip")}
+//           label={t("zipCode")}
+//           errorMessage={errors.location?.zip?.message}
+//           isInvalid={!!errors.location?.zip}
+//         />
+//       </div>
+
+//       {/* LANDMARK / INFORMATIONS ADDITIONNELLES (Optionnel) */}
+//       <div className="col-span-1">
+//         <Input
+//           {...register("location.landmark")}
+//           label={t("additionalInfo")}
+//           errorMessage={errors.location?.landmark?.message}
+//           isInvalid={!!errors.location?.landmark}
+//         />
+//       </div>
+
+//       {/* 🛑 REMARQUE : Les champs latitude/longitude sont gérés en interne si vous les utilisez pour une carte. 
+//          Si non, ils n'ont pas besoin d'être dans le formulaire. */}
+
+//       <div className="flex flex-col md:flex-row justify-center col-span-1 md:col-span-2 gap-4 mt-4">
+//         <Button
+//           onClick={props.prev}
+//           startContent={<ChevronLeftIcon className="w-6" />}
+//           color="primary"
+//           className="w-full md:w-36"
+//         >
+//           {t("previous")}
+//         </Button>
+//         <Button
+//           onClick={handleNext}
+//           endContent={<ChevronRightIcon className="w-6" />}
+//           color="primary"
+//           className="w-full md:w-36"
+//         >
+//           {t("next")}
+//         </Button>
+//       </div>
+//     </Card>
+//   );
+// };
+
+// export default Location;
+
+
+// 17/12/2025 pour s adapter au nouveau prisma feature/multilingual-countries
+
+"use client";
+
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
+import { Button, Card, Input, cn } from "@nextui-org/react";
+import React from "react";
 import { useFormContext } from "react-hook-form";
 import { AddPropertyInputType } from "./AddPropertyForm";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 
-// Définition de la structure des options traduites (doit correspondre à AddPropertyClient)
 interface TranslatedClientItem {
   id: number;
   code: string;
-  name: string; // Nom traduit (Pays ou Ville)
+  name: string;
 }
 
 interface Props {
   next: () => void;
   prev: () => void;
   className?: string;
-
-  // ⚠️ NOUVEAU : Récupération des listes de Pays/Villes traduits
   countries: TranslatedClientItem[];
   cities: TranslatedClientItem[];
-  // (Note: Ces props doivent être passées depuis AddPropertyForm)
 }
 
 const Location = (props: Props) => {
@@ -2668,134 +2854,98 @@ const Location = (props: Props) => {
     register,
     formState: { errors },
     trigger,
-    getValues, // 🎯 Utiliser getValues
+    getValues,
     watch,
-    control,
   } = useFormContext<AddPropertyInputType>();
 
-  // Surveillance et valeurs initiales RHF
-  const watchedCityId = watch("location.cityId");
+  const watchedCityId = watch("location.cityId" as any);
   const initialCityId = getValues().location?.cityId;
 
-  // 🎯 LOG DE DÉBOGAGE
-  console.log("--- DÉBOGAGE LOCATION.TSX (EDITION) ---");
-  console.log(
-    "1. ID de la ville RHF (attendue: string):",
-    initialCityId,
-    typeof initialCityId
-  );
-  console.log("2. Liste des villes (ID/Nom):", props.cities);
-  console.log("-----------------------------------------");
+  // 1. Récupérez la locale (ajoutez useParams en haut si besoin)
+const params = useParams();
+const currentLocale = (params.locale as string) || "fr";
 
   const handleNext = async () => {
-    // 🎯 Seul cityId est obligatoire selon le schéma Zod corrigé
-    if (await trigger(["location.cityId", "location.streetAddress"])) {
+    // ✅ Déclenchement de la validation sur les chemins exacts du schéma
+    const isValid = await trigger([
+      "location.cityId" as any, 
+      "location.streetAddress" as any,
+      // `location.landmark.${currentLocale}` as any // ✅ Ajoutez landmark à la validation
+    ]);
+    if (isValid) {
       props.next();
-    }
+    } else {
+    console.log("Erreurs Zod détectées :", errors.location);
+  }
   };
 
-  // Les autres champs (streetAddress, zip, landmark) sont gérés par RHF Register.
-
   return (
-    <Card
-      className={cn(
-        "p-4 grid grid-cols-1 md:grid-cols-2 gap-4",
-        props.className
-      )}
-    >
-      {/* 🛑 Ancienne logique Google Maps supprimée (trop complexe avec les IDs) 🛑 */}
-
-      {/* SÉLECTION DE LA VILLE (OBLIGATOIRE DANS ZOD) */}
-      {/* <div className="col-span-1 md:col-span-2">
-        <Select
-          {...register("location.cityId", {
-            setValueAs: (v: any) => v.toString(),
-          })}
-          errorMessage={errors.location?.cityId?.message}
-          isInvalid={!!errors.location?.cityId}
-          label={t("city")}
-          placeholder={t("chooseCity")}
-          selectionMode="single"
-          name="location.cityId"
-          // defaultSelectedKeys={[currentCityId ? currentCityId.toString() : ""]}
-          selectedKeys={currentCityId ? [currentCityId] : []}
-        >
-          {props.cities.map((item) => (
-            <SelectItem key={item.id.toString()} value={item.id.toString()}>
-              {item.name}
-            </SelectItem>
-          ))}
-        </Select>
-      </div> */}
-
-      {/* ✅ NOUVEAU : SÉLECTION DE LA VILLE (cityId) en Select HTML Natif */}
+    <Card className={cn("p-4 grid grid-cols-1 md:grid-cols-2 gap-4", props.className)}>
+      
+      {/* SÉLECTION DE LA VILLE */}
       <div className="col-span-1 md:col-span-2 flex flex-col gap-2">
         <label className="text-sm font-medium text-gray-700">{t("city")}</label>
         <select
-          // 🎯 Utiliser register directement sur le select natif
-          {...register("location.cityId", {
+          {...register("location.cityId" as any, {
             setValueAs: (v) => v.toString(),
           })}
           className={cn(
-            "p-3 border rounded-lg bg-gray-50 appearance-none",
-            "focus:border-blue-500 focus:ring-blue-500",
-            { "border-red-500": !!errors.location?.cityId }
+            "p-3 border rounded-lg bg-gray-50 appearance-none focus:border-blue-500 focus:ring-blue-500",
+            { "border-red-500": !!(errors.location as any)?.cityId }
           )}
-          name="location.cityId"
-          // Utiliser la valeur RHF pour l'initialisation (qui est la string ID)
           defaultValue={watchedCityId || initialCityId || ""}
         >
           <option value="" disabled>
             {t("chooseCity") || "Choisir une ville"}
           </option>
-
-          {/* S'assurer que props.cities n'est pas undefined avant le map */}
           {(props.cities || []).map((item) => (
             <option key={item.id} value={item.id.toString()}>
               {item.name}
             </option>
           ))}
         </select>
-        {errors.location?.cityId && (
+        {(errors.location as any)?.cityId && (
           <p className="text-red-500 text-xs mt-1">
-            {errors.location.cityId.message}
+            {(errors.location as any).cityId.message}
           </p>
         )}
       </div>
 
-      {/* STREET ADDRESS (Obligatoire/Optionnel dans Zod) */}
+      {/* ADRESSE (Rue) */}
       <div className="col-span-1 md:col-span-2">
         <Input
-          {...register("location.streetAddress")}
+          {...register("location.streetAddress" as any)}
           label={t("address")}
           placeholder={t("streetAddressPlaceholder")}
-          errorMessage={errors.location?.streetAddress?.message}
-          isInvalid={!!errors.location?.streetAddress}
+          errorMessage={(errors.location as any)?.streetAddress?.message}
+          isInvalid={!!(errors.location as any)?.streetAddress}
+          defaultValue={getValues().location?.streetAddress}
         />
       </div>
 
-      {/* ZIP CODE (Optionnel) */}
+      {/* CODE POSTAL */}
       <div className="col-span-1">
         <Input
-          {...register("location.zip")}
+          {...register("location.zip" as any)}
           label={t("zipCode")}
-          errorMessage={errors.location?.zip?.message}
-          isInvalid={!!errors.location?.zip}
+          errorMessage={(errors.location as any)?.zip?.message}
+          isInvalid={!!(errors.location as any)?.zip}
         />
       </div>
 
-      {/* LANDMARK / INFORMATIONS ADDITIONNELLES (Optionnel) */}
-      <div className="col-span-1">
-        <Input
-          {...register("location.landmark")}
-          label={t("additionalInfo")}
-          errorMessage={errors.location?.landmark?.message}
-          isInvalid={!!errors.location?.landmark}
-        />
-      </div>
-
-      {/* 🛑 REMARQUE : Les champs latitude/longitude sont gérés en interne si vous les utilisez pour une carte. 
-         Si non, ils n'ont pas besoin d'être dans le formulaire. */}
+      {/* LANDMARK / INFORMATIONS ADDITIONNELLES */}
+<div className="col-span-1">
+ <Input
+  // On enregistre uniquement dans la langue actuelle du formulaire
+  {...register(`location.landmark.${currentLocale}` as any)}
+  label={t("additionalInfo")}
+  placeholder={t("landmarkPlaceholder")}
+  // On s'assure que la valeur par défaut est bien une chaîne de caractères
+  defaultValue={(getValues().location?.landmark as any)?.[currentLocale] || ""}
+  errorMessage={(errors.location as any)?.landmark?.[currentLocale]?.message}
+  isInvalid={!!(errors.location as any)?.landmark?.[currentLocale]}
+/>
+</div>
 
       <div className="flex flex-col md:flex-row justify-center col-span-1 md:col-span-2 gap-4 mt-4">
         <Button
