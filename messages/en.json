@@ -780,7 +780,10 @@
       "phone": "Phone",
       "email": "Email",
       "previous": "Previous",
-      "save": "Save"
+      "save": "Save",
+      "namePlaceholder": "Enter the contact name",
+      "phonePlaceholder": "+244 ...",
+      "emailPlaceholder": "Enter the contact email"
     }
   },
   "HeaderProperties": {

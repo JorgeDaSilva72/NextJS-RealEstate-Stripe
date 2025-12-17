@@ -784,7 +784,10 @@
       "phone": "Téléphone",
       "email": "Email",
       "previous": "Précédent",
-      "save": "Sauvegarder"
+      "save": "Sauvegarder",
+      "namePlaceholder": "Entrez le nom du contact",
+      "phonePlaceholder": "+244 ...",
+      "emailPlaceholder": "Entrez l'adresse email"
     }
   },
   "HeaderProperties": {
