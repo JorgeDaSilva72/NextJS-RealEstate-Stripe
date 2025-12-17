@@ -68,7 +68,7 @@ import FooterWrapper from "./components/FooterWrapper";
 import Script from "next/script";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { LanguageProvider } from "./context/LanguageContext ";
 
@@ -80,36 +80,71 @@ export async function generateMetadata({
 }: {
   params: { locale: string };
 }): Promise<Metadata> {
-  let locale = "fr";
-  try {
-    locale = params?.locale || "fr";
-  } catch (error) {
-    console.error("Error extracting locale in generateMetadata:", error);
-    locale = "fr";
-  }
+
+  // 1. On attend les params (important pour Next.js 15+)
+  const { locale } = await params;
+
+  // 2. On récupère les traductions pour les métadonnées
+  const t = await getTranslations({ locale, namespace: "Metadata" });
 
   try {
     return {
-      title: locale === "fr" ? "AFRIQUE AVENIR IMMO" : "AFRIQUE AVENIR IMMO",
-      description:
-        locale === "fr"
-          ? "Site d'annonces immobilières pour l'AFRIQUE"
-          : "Real estate listings site for AFRICA",
+      title: t("title"),
+      description: t("description"),
       icons: {
         icon: "/favicon.ico",
+      },
+      verification: {
+        google: "EL6U91JBl-D7I_8j_S1OAyC2vuLGOgHSrEyj3xqL1TI",
+      },
+      // Optionnel mais recommandé : 
+      alternates: {
+        languages: {
+          'fr-FR': '/fr',
+          'en-US': '/en',
+        },
       },
     };
   } catch (error) {
     console.error("Error generating metadata:", error);
-    // Return default metadata on error
     return {
       title: "AFRIQUE AVENIR IMMO",
-      description: "Site d'annonces immobilières pour l'AFRIQUE",
-      icons: {
-        icon: "/favicon.ico",
+      verification: {
+        google: "EL6U91JBl-D7I_8j_S1OAyC2vuLGOgHSrEyj3xqL1TI",
       },
     };
   }
+
+  // let locale = "fr";
+  // try {
+  //   locale = params?.locale || "fr";
+  // } catch (error) {
+  //   console.error("Error extracting locale in generateMetadata:", error);
+  //   locale = "fr";
+  // }
+
+  // try {
+  //   return {
+  //     title: locale === "fr" ? "AFRIQUE AVENIR IMMO" : "AFRIQUE AVENIR IMMO",
+  //     description:
+  //       locale === "fr"
+  //         ? "Site d'annonces immobilières pour l'AFRIQUE"
+  //         : "Real estate listings site for AFRICA",
+  //     icons: {
+  //       icon: "/favicon.ico",
+  //     },
+  //   };
+  // } catch (error) {
+  //   console.error("Error generating metadata:", error);
+  //   // Return default metadata on error
+  //   return {
+  //     title: "AFRIQUE AVENIR IMMO",
+  //     description: "Site d'annonces immobilières pour l'AFRIQUE",
+  //     icons: {
+  //       icon: "/favicon.ico",
+  //     },
+  //   };
+  // }
 }
 
 export default async function RootLayout({

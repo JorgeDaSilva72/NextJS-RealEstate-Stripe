@@ -973,6 +973,10 @@
     "propertyDeletedSuccessfully": "Property deleted successfully.",
     "errorDeletingProperty": "Error deleting property."
   },
+  "Metadata": {
+    "title": "AFRIQUE AVENIR IMMO",
+    "description": "Real estate listings site for AFRICA"
+  },
   "Common": {
     "for_sale": "For Sale",
     "for_rent": "For Rent",

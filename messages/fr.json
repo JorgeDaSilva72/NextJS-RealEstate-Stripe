@@ -977,6 +977,10 @@
     "propertyDeletedSuccessfully": "Annonce supprimée avec succès.",
     "errorDeletingProperty": "Erreur lors de la suppression de l'annonce."
   },
+  "Metadata": {
+    "title": "AFRIQUE AVENIR IMMO",
+    "description": "Site d'annonces immobilières pour l'AFRIQUE"
+  },
   "Common": {
     "for_sale": "À Vendre",
     "for_rent": "À Louer",
