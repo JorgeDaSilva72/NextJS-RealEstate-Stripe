@@ -2,6 +2,7 @@ import HeartSVG from "../app/[locale]/assets/svg/HeartSVG";
 import LogoutSVG from "../app/[locale]/assets/svg/LogoutSVG";
 import PropertySVG from "../app/[locale]/assets/svg/PropertySVG";
 import UserSVG from "../app/[locale]/assets/svg/UserSVG";
+import WhatsAppSVG from "../app/[locale]/assets/svg/WhatsAppSVG";
 import { NavBarsType } from "./navbars";
 
 export const userOptions: NavBarsType = [
@@ -19,6 +20,11 @@ export const userOptions: NavBarsType = [
     url: "/user/properties",
     name: "Mes Annonces",
     svg: <PropertySVG width="25" height="25" />,
+  },
+  {
+    url: "/user/whatsapp",
+    name: "WhatsApp",
+    svg: <WhatsAppSVG width="25" height="25" />,
   },
   {
     url: "/logout",

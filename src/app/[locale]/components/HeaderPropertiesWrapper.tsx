@@ -45,8 +45,13 @@ const HeaderPropertiesWrapper = () => {
           <h2 className="text-white text-xl font-semibold px-2">
             {t("myListings")}
           </h2>
-          <Button color="secondary">
-            <Link href="/user/properties/add">{t("createListing")}</Link>
+          <Button color="secondary" className="[&_a]:no-underline [&_a:hover]:no-underline [&_a:focus]:no-underline [&_a:active]:no-underline [&_a:visited]:no-underline [&_a]:focus:outline-none [&_a]:focus:ring-0">
+            <Link 
+              href="/user/properties/add" 
+              className="no-underline hover:no-underline focus:no-underline active:no-underline visited:no-underline focus:outline-none focus:ring-0"
+            >
+              {t("createListing")}
+            </Link>
           </Button>
         </div>
       )}

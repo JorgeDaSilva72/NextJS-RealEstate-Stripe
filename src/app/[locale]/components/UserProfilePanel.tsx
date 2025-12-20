@@ -39,17 +39,28 @@ const UserProfilePanel = ({ user }: Props) => {
   };
 
   useEffect(() => {
-    // Vérification de l'avatar utilisateur uniquement après le montage côté client
-    if (user.avatarUrl) {
-      (async () => {
-        const avatarFileName = user.avatarUrl?.split("/").at(-1);
-        if (avatarFileName) {
-          const isAvatar = await checkFileExists("avatars", avatarFileName);
-          setIsAvatar(isAvatar);
-        }
-      })();
+    // Initialize avatar state - if avatarUrl exists and is a valid URL, set to true
+    if (user?.avatarUrl) {
+      // Accept Supabase URLs and HTTP URLs directly
+      if (user.avatarUrl.includes('supabase') || user.avatarUrl.startsWith('http') || user.avatarUrl.startsWith('/')) {
+        setIsAvatar(true);
+      } else {
+        // For other cases, check if file exists (optional verification)
+        (async () => {
+          try {
+            const avatarFileName = user.avatarUrl?.split("/").at(-1);
+            if (avatarFileName) {
+              const exists = await checkFileExists("avatars", avatarFileName);
+              setIsAvatar(exists);
+            }
+          } catch (error) {
+            // If check fails, still try to show the avatar (browser will handle error)
+            setIsAvatar(true);
+          }
+        })();
+      }
     }
-  }, [user.avatarUrl]);
+  }, [user?.avatarUrl]);
 
   // Gestion de la largeur de fenêtre
   // Ce useEffect est déclenché une fois que le composant est monté côté client
@@ -94,6 +105,10 @@ const UserProfilePanel = ({ user }: Props) => {
         ? "hover:bg-[#e685c2d4]"
         : url === "/user/properties"
           ? "hover:bg-blue-500"
+          : url === "/user/profile"
+          ? "hover:bg-orange-500"
+          : url === "/user/whatsapp"
+          ? "hover:bg-green-500"
           : "hover:bg-gray-600"
     }`;
 
@@ -119,12 +134,8 @@ const UserProfilePanel = ({ user }: Props) => {
           }`}
       >
         <Avatar
-          // src={isAvatar && user.avatarUrl ? user.avatarUrl : "/user.png"}
-          src={user?.avatarUrl && isAvatar ? user.avatarUrl : "/user.png"}
-          // onError={(e) => (e.currentTarget.src = "/user.png")}
+          src={user?.avatarUrl || "/user.png"}
           alt="Image profil"
-          // width={40}
-          // height={40}
           className="w-full h-full object-cover rounded-full"
         />
       </div>
@@ -178,9 +189,16 @@ const UserProfilePanel = ({ user }: Props) => {
               >
                 {option.svg}
                 <span>
-                  {option.url == "/user/profile"
-                    ? `${getLocalizedText((user as any)?.firstname, locale)} ${getLocalizedText((user as any)?.lastname, locale)?.[0]?.toUpperCase() || ""
-                    }`
+                  {option.url === "/user/profile"
+                    ? (() => {
+                        const firstName = getLocalizedText((user as any)?.firstname, locale);
+                        const lastName = getLocalizedText((user as any)?.lastname, locale);
+                        const lastNameInitial = lastName?.[0]?.toUpperCase() || "";
+                        const displayName = firstName && lastNameInitial 
+                          ? `${firstName} ${lastNameInitial}.`
+                          : option.name;
+                        return displayName;
+                      })()
                     : option.name}
                 </span>
               </Link>

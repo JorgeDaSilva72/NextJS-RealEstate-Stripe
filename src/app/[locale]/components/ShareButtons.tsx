@@ -92,7 +92,12 @@ interface ShareButtonsProps {
   description?: string;
 }
 
-const ShareButtons: React.FC<ShareButtonsProps> = ({ url, title }) => {
+const ShareButtons: React.FC<ShareButtonsProps> = ({ url, title, description }) => {
+  // Enhanced WhatsApp share message with description
+  const whatsappMessage = description 
+    ? `${title}\n\n${description}\n\n🔗 ${url}`
+    : `${title}\n\n🔗 ${url}`;
+
   const shareLinks = {
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
       url
@@ -100,9 +105,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({ url, title }) => {
     twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
       url
     )}&text=${encodeURIComponent(title)}`,
-    whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(
-      `${title} - ${url}`
-    )}`,
+    whatsapp: `https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`,
     linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
       url
     )}&title=${encodeURIComponent(title)}`,

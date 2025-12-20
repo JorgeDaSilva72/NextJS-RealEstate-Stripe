@@ -57,34 +57,37 @@ export async function GET(request: NextRequest) {
       cityWhereClause.isFeatured = true;
     }
 
-    // 3. Récupérer les villes et les traductions
-    const cities = await prisma.city.findMany({
+    // 3. This section is now handled in step 4 below
+
+    // 4. Récupérer les villes avec leur countryId
+    const citiesWithCountry = await prisma.city.findMany({
       where: cityWhereClause,
       select: {
-        id: true, // L'ID de la ville
+        id: true,
+        countryId: true, // Include countryId
         translations: {
-          where: { languageId: language.id }, // Filtrer par la langue trouvée
-          select: { name: true }, // Sélectionner uniquement le nom traduit
+          where: { languageId: language.id },
+          select: { name: true },
         },
       },
       orderBy: {
-        isFeatured: "desc", // Mettre les villes 'featured' en haut
+        isFeatured: "desc",
       },
     });
 
-    // 4. Formater la réponse pour le hook useFilterDatas
-    const formattedCities = cities
+    // 5. Formater la réponse
+    const formattedCities = citiesWithCountry
       .map((city) => {
         const translation = city.translations[0]?.name;
-        // Si aucune traduction n'est trouvée, utiliser un fallback ou ignorer
         if (!translation) return null;
 
         return {
           id: city.id,
           value: translation,
+          countryId: city.countryId, // Include countryId in response
         };
       })
-      .filter((item) => item !== null) as { id: number; value: string }[];
+      .filter((item) => item !== null) as { id: number; value: string; countryId: number }[];
 
     return NextResponse.json(formattedCities);
   } catch (error) {

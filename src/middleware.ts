@@ -309,9 +309,10 @@ const nextIntlMiddleware = createMiddleware({
 export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // 1) HARD SKIP: API & internal paths must NEVER go through i18n/auth
+  // 1) HARD SKIP: API, auth routes & internal paths must NEVER go through i18n/auth
   if (
     pathname.startsWith("/api") ||
+    pathname.startsWith("/auth") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/_vercel") ||
     pathname.match(/\.[^/]+$/) // static files like /favicon.ico, *.png, etc.
@@ -336,13 +337,13 @@ export default async function middleware(request: NextRequest) {
   return nextIntlMiddleware(request);
 }
 
-// Matcher: do NOT match /api, only match normal page routes
+// Matcher: do NOT match /api or /auth, only match normal page routes
 export const config = {
   matcher: [
     // Authenticated user routes (pages)
     "/user/:path*",
-    // i18n routes, excluding api/_next/_vercel/static (enforced again above)
-    "/((?!api|oauth2callback|_next|_vercel|.*\\..*).*)",
+    // i18n routes, excluding api/auth/oauth2callback/_next/_vercel/static (enforced again above)
+    "/((?!api|auth|oauth2callback|_next|_vercel|.*\\..*).*)",
     "/(fr|en|pt|ar)/:path*",
   ],
 };

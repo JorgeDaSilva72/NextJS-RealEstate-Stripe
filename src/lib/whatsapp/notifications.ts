@@ -302,6 +302,75 @@ export class WhatsAppNotificationService {
   }
 
   /**
+   * Send notification to property owner about new appointment
+   */
+  async sendOwnerAppointmentNotification(
+    appointmentId: number,
+    ownerPhone: string,
+    locale: string = 'fr'
+  ) {
+    try {
+      const appointment = await prisma.appointment.findUnique({
+        where: { id: appointmentId },
+        include: {
+          user: true,
+          property: {
+            include: {
+              location: true,
+            },
+          },
+        },
+      });
+
+      if (!appointment) {
+        throw new Error('Appointment not found');
+      }
+
+      const appointmentDate = moment(appointment.start).format('DD/MM/YYYY');
+      const appointmentTime = moment(appointment.start).format('HH:mm');
+      const visitorName = `${appointment.user.firstname || ''} ${appointment.user.lastname || ''}`.trim() || 'Un visiteur';
+      const propertyName = typeof appointment.property.name === 'string' 
+        ? appointment.property.name 
+        : JSON.stringify(appointment.property.name);
+
+      // Get or create conversation
+      const conversationId = await this.messageService.getOrCreateConversation(
+        ownerPhone,
+        appointment.propertyId
+      );
+
+      // Build message
+      const messages = {
+        fr: `🔔 Nouveau rendez-vous de visite\n\nBonjour,\n\nVous avez reçu une nouvelle demande de visite:\n\n👤 Visiteur: ${visitorName}\n📅 Date: ${appointmentDate}\n🕐 Heure: ${appointmentTime}\n🏠 Propriété: ${propertyName}\n\nMerci de confirmer ou contacter le visiteur si nécessaire.`,
+        en: `🔔 New visit appointment\n\nHello,\n\nYou have received a new visit request:\n\n👤 Visitor: ${visitorName}\n📅 Date: ${appointmentDate}\n🕐 Time: ${appointmentTime}\n🏠 Property: ${propertyName}\n\nPlease confirm or contact the visitor if needed.`,
+      };
+
+      const message = messages[locale as keyof typeof messages] || messages.fr;
+
+      // Send notification
+      const result = await this.messageService.sendText(conversationId, {
+        to: ownerPhone,
+        message,
+      });
+
+      if (result.success) {
+        console.log(`[Notifications] Owner appointment notification sent: ${appointmentId}`);
+      }
+
+      return result;
+    } catch (error) {
+      console.error('[Notifications] Send owner appointment notification error:', error);
+      return {
+        success: false,
+        error: {
+          code: 500,
+          message: error instanceof Error ? error.message : 'Failed to send notification',
+        },
+      };
+    }
+  }
+
+  /**
    * Send appointment reminder (24 hours before)
    */
   async sendAppointmentReminder(appointmentId: number, locale: string = 'fr') {

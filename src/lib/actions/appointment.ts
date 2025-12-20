@@ -3,6 +3,7 @@
 import { AppointmentEvent } from "@/app/[locale]/property/[id]/appointment/page";
 import prisma from "../prisma";
 import { AppointmentState } from "@prisma/client";
+import { createNotificationService } from "@/lib/whatsapp/notifications";
 
 export const createAppointment = async (appointment: AppointmentEvent) => {
   if (!appointment?.userId) {
@@ -46,6 +47,42 @@ export const createAppointment = async (appointment: AppointmentEvent) => {
     const allAppointmentsByProperty = await getAppointmentsByProperty(
       appointment.propertyId
     );
+
+    // Send WhatsApp notification if enabled
+    try {
+      const account = await prisma.whatsAppAccount.findFirst({
+        where: { isActive: true, isVerified: true },
+      });
+
+      if (account) {
+        const notificationService = createNotificationService(account.id);
+        // Get user locale from property or default to 'fr'
+        const property = await prisma.property.findUnique({
+          where: { id: appointment.propertyId },
+          include: { user: true },
+        });
+        const locale = 'fr'; // TODO: Get from user preferences or property locale
+        
+        // Send confirmation to visitor
+        await notificationService.sendAppointmentConfirmation(result.id, locale).catch((err) => {
+          console.error('[Appointment] Failed to send WhatsApp confirmation:', err);
+        });
+
+        // Send notification to property owner
+        if (property?.contact?.phone) {
+          await notificationService.sendOwnerAppointmentNotification(
+            result.id,
+            property.contact.phone,
+            locale
+          ).catch((err) => {
+            console.error('[Appointment] Failed to send owner notification:', err);
+          });
+        }
+      }
+    } catch (error) {
+      console.error('[Appointment] WhatsApp notification error:', error);
+      // Don't fail the appointment creation if notification fails
+    }
 
     console.log("Rendez-vous sauvegarder ", { result });
     return {

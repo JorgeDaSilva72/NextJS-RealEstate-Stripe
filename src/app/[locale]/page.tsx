@@ -1,308 +1,204 @@
-// "use client";
+import HomeNavbar from "./components/HomeNavbar";
+import SearchBar from "./components/SearchBar";
+import HomeFooter from "./components/HomeFooter";
+import HomePageClient from "./_components/HomePageClient";
+import HeroSection from "./components/HeroSection";
+import prisma from "@/lib/prisma";
+import { getLanguageIdByCode } from "@/lib/utils";
+import { Prisma } from "@prisma/client";
 
-// import { useState, useEffect } from "react";
-// import SearchForm from "./components/SearchForm";
-// import dynamic from "next/dynamic";
-// import { cn } from "@nextui-org/theme";
-// import Link from "next/link";
-
-// interface Image {
-//   url: string;
-// }
-
-// const ImagesSlider = dynamic(() => import("./components/ImageSlider"), {
-//   ssr: false,
-//   loading: () => <div className="animate-pulse bg-gray-300 h-full w-full" />,
-// });
-
-// const Hero: React.FC = () => {
-//   const [isLoaded, setIsLoaded] = useState(false);
-
-//   const images: Image[] = [
-//     { url: "/Hero1.jpg" },
-//     { url: "/Hero2.jpg" },
-//     { url: "/Hero3.jpg" },
-//     { url: "/Hero4.jpg" },
-//   ];
-
-//   // Animation d'entrée
-//   useEffect(() => {
-//     setIsLoaded(true);
-//   }, []);
-
-//   return (
-//     <section
-//       id="hero"
-//       className={cn(
-//         "relative min-h-screen w-full flex items-center justify-center overflow-hidden",
-//         "transition-opacity duration-700 ease-in-out",
-//         !isLoaded ? "opacity-0" : "opacity-100"
-//       )}
-//     >
-//       {/* Conteneur du slider */}
-//       <div className="absolute inset-0 z-0">
-//         <ImagesSlider
-//           className="z-50 h-full w-full object-cover"
-//           direction="down"
-//           overlay={false}
-//           autoplay={true}
-//           overlayClassName=""
-//           images={images.map((img) => img.url)}
-//         />
-//         {/* Overlay amélioré avec gradient */}
-//         <div
-//           className={cn(
-//             "absolute inset-0",
-//             "bg-gradient-to-b from-black/40 via-black/30 to-black/50",
-//             "backdrop-blur-[2px]"
-//           )}
-//         />
-//       </div>
-
-//       {/* Contenu principal */}
-//       <div
-//         className={cn(
-//           "relative z-10 w-full max-w-4xl mx-auto",
-//           "px-6 py-8 md:py-12",
-//           "flex flex-col items-center justify-center",
-//           "text-center text-white",
-//           "bg-black/20 backdrop-blur-sm rounded-xl",
-//           "transition-transform duration-700 ease-out",
-//           isLoaded ? "translate-y-0" : "translate-y-10"
-//         )}
-//       >
-//         <h1
-//           className={cn(
-//             "text-2xl sm:text-3xl md:text-4xl lg:text-5xl",
-//             "font-extrabold tracking-wide leading-tight",
-//             "mb-4 md:mb-6",
-//             "animate-fade-in"
-//           )}
-//         >
-//           Trouvez la propriété de vos rêves
-//         </h1>
-
-//         <p
-//           className={cn(
-//             "text-base md:text-lg lg:text-xl",
-//             "mb-8 max-w-2xl",
-//             "font-medium",
-//             "opacity-90",
-//             "hidden lg:block"
-//           )}
-//         >
-//           Parcourez des centaines d&apos;annonces pour trouver l&apos;endroit
-//           parfait où vivre
-//         </p>
-
-//         {/* SearchForm avec animation
-//         <div
-//           className={cn(
-//             "w-full max-w-2xl",
-//             "transition-all duration-700 delay-300",
-//             isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-//           )}
-//         >
-//           <SearchForm />
-//         </div> */}
-
-//         {/* Boutons */}
-//         <div
-//           className={cn(
-//             "w-full max-w-2xl flex flex-col sm:flex-row justify-center gap-4",
-//             "transition-all duration-700 delay-300",
-//             isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-//           )}
-//         >
-//           <Link
-//             href="/user/properties/add"
-//             className={cn(
-//               "w-full sm:w-auto px-6 py-3 text-lg font-semibold",
-//               "bg-black/20 hover:bg-black/40 text-white",
-//               "rounded-lg shadow-md transition-transform transform hover:scale-105"
-//             )}
-//           >
-//             Déposer une annonce
-//           </Link>
-//           <Link
-//             href="/result"
-//             className={cn(
-//               "w-full sm:w-auto px-6 py-3 text-lg font-semibold",
-//               "bg-black/20 hover:bg-black/40 text-white",
-//               "rounded-lg shadow-md transition-transform transform hover:scale-105"
-//             )}
-//           >
-//             Rechercher une annonce
-//           </Link>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default Hero;
-"use client";
-
-import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
-import { cn } from "@nextui-org/theme";
-import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/routing";
-import PropertyCategoriesSlider from "@/components/ui/PropertyCategoriesSlider";
-import FeaturedPropertiesSlider from "./components/FeaturedPropertiesSlider";
-import { FooterSection } from "./components/footer";
-import SectionHeader from "@/components/ui/SectionHeader";
-import SearchFormWrapper from "@/components/ui/SearchFormWrapper";
-
-interface Image {
-  url: string;
+interface Props {
+  params: { locale: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-const ImagesSlider = dynamic(() => import("./components/ImageSlider"), {
-  ssr: false,
-  loading: () => <div className="animate-pulse bg-gray-300 h-full w-full" />,
-});
+export default async function HomePage({ params, searchParams }: Props) {
+  const locale = params.locale || "fr";
 
-const Hero: React.FC = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const t = useTranslations("hero");
+  // Get language ID for translations
+  let languageId: number | null = null;
+  try {
+    const language = await prisma.language.findFirst({
+      where: { code: locale },
+    });
+    languageId = language?.id || null;
+    if (!languageId) {
+      const fallbackLang = await prisma.language.findFirst({
+        where: { code: "fr" },
+      });
+      languageId = fallbackLang?.id || null;
+    }
+  } catch (error) {
+    console.error("Error fetching language ID:", error);
+  }
 
-  const images: Image[] = [
-    { url: "/Hero1.jpg" },
-    { url: "/Hero2.jpg" },
-    { url: "/Hero3.jpg" },
-    { url: "/Hero4.jpg" },
-  ];
+  // Extract search parameters
+  const cityId = searchParams.cityId
+    ? Number(searchParams.cityId)
+    : undefined;
+  const typeId = searchParams.typeId
+    ? Number(searchParams.typeId)
+    : undefined;
+  const maxPrice = searchParams.maxPrice
+    ? Number(searchParams.maxPrice)
+    : undefined;
 
-  // Animation d'entrée
-  useEffect(() => {
-    setIsLoaded(true);
-  }, []);
+  // Build where clause with filters
+  const buildWhereClause = (): Prisma.PropertyWhereInput => {
+    const where: Prisma.PropertyWhereInput = {
+      isActive: true,
+      publishedAt: {
+        not: null,
+        lte: new Date(),
+      },
+      user: {
+        subscriptions: {
+          some: {
+            endDate: {
+              gt: new Date(),
+            },
+            status: "ACTIVE",
+          },
+        },
+      },
+    };
 
-  return (
-    <>
-      <section
-        id="hero"
-        className={cn(
-          "relative min-h-screen w-full flex items-center justify-center overflow-hidden",
-          "transition-opacity duration-700 ease-in-out",
-          !isLoaded ? "opacity-0" : "opacity-100"
-        )}
-      >
-        {/* Conteneur du slider */}
-        <div className="absolute inset-0 z-0">
-          <ImagesSlider
-            className="z-50 h-full w-full object-cover"
-            direction="down"
-            overlay={false}
-            autoplay={true}
-            overlayClassName=""
-            images={images.map((img) => img.url)}
-          />
-          {/* Overlay amélioré avec gradient */}
-          <div
-            className={cn(
-              "absolute inset-0",
-              "bg-gradient-to-b from-black/40 via-black/30 to-black/50",
-              "backdrop-blur-[2px]"
-            )}
-          />
-        </div>
+    // Filter by city
+    if (cityId !== undefined && !isNaN(cityId)) {
+      where.location = { cityId: cityId };
+    }
 
-        {/* Contenu principal */}
-        <div
-          className={cn(
-            "relative z-10 w-full max-w-4xl mx-auto",
-            "px-6 py-8 md:py-12",
-            "flex flex-col items-center justify-center",
-            "text-center text-white",
-            "bg-black/20 backdrop-blur-sm rounded-xl",
-            "transition-transform duration-700 ease-out",
-            isLoaded ? "translate-y-0" : "translate-y-10"
-          )}
-        >
-          <h1
-            className={cn(
-              "text-2xl sm:text-3xl md:text-4xl lg:text-5xl",
-              "font-extrabold tracking-wide leading-tight",
-              "mb-4 md:mb-6",
-              "animate-fade-in"
-            )}
-          >
-            {t("title")}
-          </h1>
+    // Filter by property type
+    if (typeId !== undefined && !isNaN(typeId)) {
+      where.typeId = typeId;
+    }
 
-          <p
-            className={cn(
-              "text-base md:text-lg lg:text-xl",
-              "mb-8 max-w-2xl",
-              "font-medium",
-              "opacity-90",
-              "hidden lg:block"
-            )}
-          >
-            {t("description")}
-          </p>
+    // Filter by max price
+    if (maxPrice !== undefined && !isNaN(maxPrice) && maxPrice > 0) {
+      where.price = {
+        lte: maxPrice,
+      };
+    }
 
-          {/* Boutons */}
-          <div
-            className={cn(
-              "w-full max-w-2xl flex flex-col sm:flex-row justify-center gap-4",
-              "transition-all duration-700 delay-300",
-              isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            )}
-          >
-            <Link
-              href="/user/properties/add"
-              className={cn(
-                "w-full sm:w-auto px-6 py-3 text-lg font-semibold",
-                "bg-black/20 hover:bg-black/40 text-white",
-                "rounded-lg shadow-md transition-transform transform hover:scale-105"
-              )}
-            >
-              {t("postButton")}
-            </Link>
-            <Link
-              href="/result"
-              className={cn(
-                "w-full sm:w-auto px-6 py-3 text-lg font-semibold",
-                "bg-black/20 hover:bg-black/40 text-white",
-                "rounded-lg shadow-md transition-transform transform hover:scale-105"
-              )}
-            >
-              {t("searchButton")}
-            </Link>
+    return where;
+  };
+
+  const whereClause = buildWhereClause();
+
+  // Fetch published properties with active subscriptions and filters
+  try {
+    const properties = await prisma.property.findMany({
+      where: whereClause,
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        currency: true,
+        images: {
+          orderBy: [
+            { isMain: "desc" },
+            { displayOrder: "asc" },
+            { createdAt: "asc" },
+          ],
+          select: {
+            url: true,
+            isMain: true,
+          },
+          take: 1,
+        },
+        location: {
+          select: {
+            city: {
+              select: {
+                translations: languageId
+                  ? {
+                      where: { languageId },
+                      select: {
+                        name: true,
+                      },
+                      take: 1,
+                    }
+                  : {
+                      select: {
+                        name: true,
+                      },
+                      take: 1,
+                    },
+              },
+            },
+            latitude: true,
+            longitude: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 50, // Increased limit for better results
+    });
+
+    // Transform properties to include coordinates
+    const propertiesWithCoordinates = properties.map((prop) => {
+      const lat = prop.location?.latitude
+        ? typeof prop.location.latitude === "number"
+          ? prop.location.latitude
+          : Number(prop.location.latitude)
+        : null;
+      const lng = prop.location?.longitude
+        ? typeof prop.location.longitude === "number"
+          ? prop.location.longitude
+          : Number(prop.location.longitude)
+        : null;
+
+      return {
+        ...prop,
+        coordinates:
+          lat !== null && lng !== null
+            ? {
+                lat,
+                lng,
+              }
+            : undefined,
+      };
+    });
+
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+        {/* Navbar */}
+        <HomeNavbar />
+
+        {/* Hero Section with Search Bar */}
+        <HeroSection>
+          <div className="mt-8">
+            <SearchBar />
           </div>
-        </div>
-      </section>
+        </HeroSection>
 
-      {/* <section
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8"
-        aria-labelledby="search-title"
-      >
-        <SectionHeader
-          id="search-title"
-          title="Affinez votre recherche immobilière"
+        {/* Main Content - Map and Properties */}
+        <HomePageClient
+          properties={propertiesWithCoordinates}
+          locale={locale}
         />
-        <div className="px-4">
-          <SearchFormWrapper
-            defaultValues={{
-              ville: "",
-              categorie: "Appartement",
-              budget: "",
-              chambres: "",
-            }}
-            defaultActiveTab={"Location meublée"}
-            backgroundColor="bg-black"
-          />
-        </div>
-      </section> */}
 
-      {/* <PropertyCategoriesSlider /> */}
-      {/* <FeaturedPropertiesSlider /> */}
-      {/* <FooterSection /> */}
-    </>
-  );
-};
+        {/* Footer */}
+        <HomeFooter />
+      </div>
+    );
+  } catch (error) {
+    console.error("Error fetching properties:", error);
 
-export default Hero;
+    // Return page with empty state on error
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+        <HomeNavbar />
+        <HeroSection>
+          <div className="mt-8">
+            <SearchBar />
+          </div>
+        </HeroSection>
+        <HomePageClient properties={[]} locale={locale} />
+        <HomeFooter />
+      </div>
+    );
+  }
+}

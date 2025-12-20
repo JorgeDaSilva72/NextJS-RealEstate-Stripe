@@ -41,6 +41,42 @@ export function formatPhoneNumber(phone: string): string {
 }
 
 /**
+ * Normalize phone number by adding country code if missing
+ * @param phone - Phone number to normalize
+ * @param countryPhonePrefix - Country phone prefix (e.g., "+212", "+221")
+ * @returns Normalized phone number with country code
+ */
+export function normalizePhoneNumber(
+  phone: string,
+  countryPhonePrefix?: string
+): string {
+  if (!phone) return phone;
+  
+  // Remove spaces, dashes, and parentheses
+  let cleaned = phone.replace(/[\s\-\(\)]/g, '');
+  
+  // If already starts with +, return as is
+  if (cleaned.startsWith('+')) {
+    return cleaned;
+  }
+  
+  // If country prefix is provided, add it
+  if (countryPhonePrefix) {
+    // Remove + from prefix if present (we'll add it)
+    const prefix = countryPhonePrefix.replace(/^\+/, '');
+    // Remove leading 0 if present (common in local numbers)
+    if (cleaned.startsWith('0')) {
+      cleaned = cleaned.substring(1);
+    }
+    return `+${prefix}${cleaned}`;
+  }
+  
+  // If no country prefix and doesn't start with +, return as is
+  // (validation will catch it)
+  return cleaned;
+}
+
+/**
  * Validate message content
  * @param content - Message text
  * @param maxLength - Maximum length (default: 4096 for WhatsApp)

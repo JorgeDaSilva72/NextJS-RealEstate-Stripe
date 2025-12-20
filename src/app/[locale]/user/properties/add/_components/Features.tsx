@@ -716,14 +716,14 @@ const Features = (props: Props) => {
   } = useFormContext<AddPropertyInputType>();
 
   const handleNext = async () => {
-    if (
-      await trigger([
-        "feature.area",
-        "feature.bathrooms",
-        "feature.bedrooms",
-        "feature.parkingSpots",
-      ])
-    ) {
+    // Valider tous les champs de feature
+    const isValid = await trigger([
+      "feature.area",
+      "feature.bathrooms",
+      "feature.bedrooms",
+      "feature.parkingSpots",
+    ]);
+    if (isValid) {
       props.next();
     }
   };

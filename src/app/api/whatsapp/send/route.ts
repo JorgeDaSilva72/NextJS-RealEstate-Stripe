@@ -8,9 +8,27 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { PrismaClient } from '@prisma/client';
 import { createMessageService } from '@/lib/whatsapp/message-service';
-import { isValidPhoneNumber, validateMessageContent } from '@/lib/whatsapp/validators';
+import { isValidPhoneNumber, validateMessageContent, normalizePhoneNumber } from '@/lib/whatsapp/validators';
 
 const prisma = new PrismaClient();
+
+/**
+ * Helper function to handle token expired errors
+ */
+function handleTokenExpiredError(to: string, message?: string) {
+  return NextResponse.json(
+    {
+      success: false,
+      error: {
+        code: 190,
+        message: 'WhatsApp access token has expired. Please use wa.me link instead.',
+        isTokenExpired: true,
+        fallbackUrl: `https://wa.me/${to.replace(/[^0-9]/g, '')}${message ? `?text=${encodeURIComponent(message)}` : ''}`,
+      },
+    },
+    { status: 401 }
+  );
+}
 
 /**
  * POST - Send a WhatsApp message
@@ -52,12 +70,54 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!isValidPhoneNumber(to)) {
+    // Normalize phone number: if propertyId is provided, get country code from property
+    let normalizedPhone = to;
+    if (propertyId && !to.startsWith('+')) {
+      try {
+        const property = await prisma.property.findUnique({
+          where: { id: propertyId },
+          select: {
+            countryId: true,
+            country: {
+              select: {
+                phonePrefix: true,
+              },
+            },
+          },
+        });
+
+        if (property?.country?.phonePrefix) {
+          normalizedPhone = normalizePhoneNumber(to, property.country.phonePrefix);
+        } else if (property?.countryId) {
+          // Fallback: try to get country from countryId if direct relation failed
+          const country = await prisma.country.findUnique({
+            where: { id: property.countryId },
+            select: { phonePrefix: true },
+          });
+          if (country?.phonePrefix) {
+            normalizedPhone = normalizePhoneNumber(to, country.phonePrefix);
+          }
+        }
+      } catch (error) {
+        console.error('[Send API] Error fetching property for phone normalization:', error);
+        // Continue with original phone number
+      }
+    }
+
+    // Validate phone number format
+    if (!isValidPhoneNumber(normalizedPhone)) {
       return NextResponse.json(
-        { error: 'Invalid phone number format' },
+        { 
+          error: 'Invalid phone number format. Phone number must include country code (e.g., +212 for Morocco, +221 for Senegal)',
+          received: to,
+          normalized: normalizedPhone !== to ? normalizedPhone : undefined
+        },
         { status: 400 }
       );
     }
+
+    // Use normalized phone number for the rest of the process
+    const phoneToUse = normalizedPhone;
 
     // Get WhatsApp account
     const account = await prisma.whatsAppAccount.findFirst({
@@ -78,7 +138,7 @@ export async function POST(request: NextRequest) {
     let conversationIdToUse = conversationId;
     if (!conversationIdToUse) {
       conversationIdToUse = await messageService.getOrCreateConversation(
-        to,
+        phoneToUse,
         propertyId
       );
     }
@@ -104,9 +164,14 @@ export async function POST(request: NextRequest) {
         }
 
         result = await messageService.sendText(conversationIdToUse, {
-          to,
+          to: phoneToUse,
           message,
         });
+
+        // If token expired, return specific error for fallback handling
+        if (!result.success && result.error?.isTokenExpired) {
+          return handleTokenExpiredError(phoneToUse, message);
+        }
         break;
 
       case 'image':
@@ -118,11 +183,16 @@ export async function POST(request: NextRequest) {
         }
 
         result = await messageService.sendImage(conversationIdToUse, {
-          to,
+          to: phoneToUse,
           mediaUrl,
           mediaId,
           caption,
         });
+
+        // If token expired, return specific error for fallback handling
+        if (!result.success && result.error?.isTokenExpired) {
+          return handleTokenExpiredError(phoneToUse, caption || 'Image');
+        }
         break;
 
       case 'video':
@@ -134,11 +204,16 @@ export async function POST(request: NextRequest) {
         }
 
         result = await messageService.sendVideo(conversationIdToUse, {
-          to,
+          to: phoneToUse,
           mediaUrl,
           mediaId,
           caption,
         });
+
+        // If token expired, return specific error for fallback handling
+        if (!result.success && result.error?.isTokenExpired) {
+          return handleTokenExpiredError(phoneToUse, caption || 'Video');
+        }
         break;
 
       case 'document':
@@ -150,11 +225,16 @@ export async function POST(request: NextRequest) {
         }
 
         result = await messageService.sendDocument(conversationIdToUse, {
-          to,
+          to: phoneToUse,
           mediaUrl,
           mediaId,
           caption,
         });
+
+        // If token expired, return specific error for fallback handling
+        if (!result.success && result.error?.isTokenExpired) {
+          return handleTokenExpiredError(phoneToUse, caption || 'Document');
+        }
         break;
 
       case 'template':
@@ -165,12 +245,17 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        result = await messageService.sendTemplate(conversationIdToUse, to, {
-          to,
+        result = await messageService.sendTemplate(conversationIdToUse, phoneToUse, {
+          to: phoneToUse,
           templateName,
           languageCode,
           components: templateComponents,
         });
+
+        // If token expired, return specific error for fallback handling
+        if (!result.success && result.error?.isTokenExpired) {
+          return handleTokenExpiredError(phoneToUse);
+        }
         break;
 
       default:

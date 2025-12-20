@@ -1,1104 +1,90 @@
-// // "use client";
-
-// // import React, { ReactNode, useEffect, useState } from "react";
-// // import {
-// //   Navbar,
-// //   NavbarContent,
-// //   NavbarMenuToggle,
-// //   NavbarBrand,
-// //   NavbarItem,
-// //   Button,
-// //   NavbarMenu,
-// //   NavbarMenuItem,
-// //   DropdownTrigger,
-// //   DropdownItem,
-// //   Dropdown,
-// //   DropdownMenu,
-// // } from "@nextui-org/react";
-// // import { usePathname } from "next/navigation";
-// // import Image from "next/image";
-// // import Link from "next/link";
-// // // import { navigationItems } from "../../data/navigationData";
-// // import { CountrySelector } from "./CountrySelector";
-// // import PlusSVG from "../assets/svg/PlusSVG";
-// // import { navigationItems } from "@/data/navigationData";
-// // import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
-
-// // interface Props {
-// //   children: ReactNode;
-// // }
-
-// // const Appbar = ({ children }: Props) => {
-// //   const [isMenuOpen, setIsMenuOpen] = useState(false);
-// //   const [isScrolled, setIsScrolled] = useState(false);
-// //   const pathname = usePathname();
-
-// //   useEffect(() => {
-// //     const handleScroll = () => {
-// //       const heroElement = document.getElementById("hero");
-// //       if (heroElement) {
-// //         const heroHeight = heroElement.offsetHeight;
-// //         const scrolled = window.scrollY > 0;
-// //         setIsScrolled(scrolled);
-// //       }
-// //     };
-
-// //     window.addEventListener("scroll", handleScroll);
-// //     handleScroll();
-// //     return () => window.removeEventListener("scroll", handleScroll);
-// //   }, []);
-
-// //   const isHomePage = pathname === "/";
-// //   // const navbarBackground = isHomePage
-// //   //   ? isScrolled
-// //   //     ? "bg-white/90 backdrop-blur-md"
-// //   //     : "bg-transparent"
-// //   //   : "bg-white";
-
-// //   const navbarBackground = isHomePage
-// //     ? "fixed bg-transparent backdrop-blur-md"
-// //     : "sticky bg-white";
-
-// //   const textColor = isHomePage && !isScrolled ? "text-white" : "text-primary";
-
-// //   const renderDropdownButton = (label: string) => (
-// //     <Button
-// //       disableRipple
-// //       className={`p-0 bg-transparent data-[hover=true]:bg-transparent ${textColor} font-medium`}
-// //       endContent={
-// //         <svg
-// //           className={`w-4 h-4 ${textColor}`}
-// //           fill="none"
-// //           strokeWidth="2"
-// //           stroke="currentColor"
-// //           viewBox="0 0 24 24"
-// //         >
-// //           <path d="M19 9l-7 7-7-7" />
-// //         </svg>
-// //       }
-// //       radius="sm"
-// //       variant="light"
-// //     >
-// //       {label}
-// //     </Button>
-// //   );
-
-// //   useEffect(() => {
-// //     setIsMenuOpen(false); // Fermer le menu lors d'un changement de route
-// //   }, [pathname]);
-
-// //   return (
-// //     <Navbar
-// //       isMenuOpen={isMenuOpen}
-// //       className={`${navbarBackground}   top-0 left-0 right-0 h-16 transition-all duration-300 shadow-sm z-50`}
-// //       onMenuOpenChange={setIsMenuOpen}
-// //     >
-// //       <NavbarContent className="flex items-center">
-// //         <NavbarMenuToggle
-// //           aria-label={isMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
-// //           className="sm:hidden"
-// //           // onClick={() => setIsMenuOpen((prev) => !prev)} // Toggle de l'état
-// //         />
-// //         <NavbarBrand>
-// //           <Link href="/" className="flex items-center gap-2">
-// //             <Image
-// //               src="/logo-topaz-enhance-coupe.jpeg"
-// //               alt="Logo Afrique Avenir"
-// //               width={40}
-// //               height={40}
-// //               className="rounded-lg"
-// //             />
-// //             <div className="hidden md:block">
-// //               <p
-// //                 className={`${textColor} text-xs sm:text-sm md:text-sm lg:text-lg xl:text-xl font-medium tracking-wide whitespace-nowrap`}
-// //               >
-// //                 AFRIQUE AVENIR IMMO
-// //               </p>
-// //             </div>
-// //           </Link>
-// //         </NavbarBrand>
-// //       </NavbarContent>
-
-// //       <NavbarContent className="hidden sm:flex gap-6" justify="center">
-// //         {navigationItems.map((item) => (
-// //           <Dropdown key={item.label}>
-// //             <NavbarItem>
-// //               <DropdownTrigger>
-// //                 {renderDropdownButton(item.label)}
-// //               </DropdownTrigger>
-// //             </NavbarItem>
-// //             <DropdownMenu
-// //               aria-label={item.label}
-// //               className="w-[340px]"
-// //               itemClasses={{
-// //                 base: "gap-4",
-// //               }}
-// //             >
-// //               {item.dropdownItems.map((dropdownItem) => (
-// //                 <DropdownItem
-// //                   key={dropdownItem.key}
-// //                   description={dropdownItem.description}
-// //                   as={Link}
-// //                   href={dropdownItem.href}
-// //                 >
-// //                   {dropdownItem.title}
-// //                 </DropdownItem>
-// //               ))}
-// //             </DropdownMenu>
-// //           </Dropdown>
-// //         ))}
-// //         <NavbarItem>
-// //           {/* <CountrySelector
-// //             currentCountry="MA"
-// //             lang="fr"
-// //             color="primary"
-// //             variant="bordered"
-// //             size="lg"
-// //             isRequired
-// //             onSelectionChange={(country) => console.log(country)}
-// //             customNavigationPath={(lang, country) => `/${lang}/${country}`}
-// //             containerClassName="w-full max-w-md"
-// //             errorMessage="Veuillez sélectionner un pays"
-// //           /> */}
-// //           <LanguageSwitcher />
-// //         </NavbarItem>
-// //       </NavbarContent>
-
-// //       <NavbarContent justify="end">
-// //         <Button
-// //           as={Link}
-// //           href="/user/properties/add"
-// //           className="ml-4 flex items-center gap-2 bg-primary text-white hover:bg-primary/90 p-2 md:px-4 rounded-lg"
-// //           radius="sm"
-// //         >
-// //           {/* <svg
-// //             xmlns="http://www.w3.org/2000/svg"
-// //             fill="none"
-// //             viewBox="0 0 24 24"
-// //             strokeWidth="2"
-// //             stroke="currentColor"
-// //             className="w-5 h-5"
-// //           >
-// //             <path
-// //               strokeLinecap="round"
-// //               strokeLinejoin="round"
-// //               d="M12 4v16m8-8H4"
-// //             />
-// //           </svg> */}
-// //           <PlusSVG />
-// //           <span className="hidden sm:block">Publier une annonce</span>
-// //         </Button>
-// //         {children}
-// //       </NavbarContent>
-
-// //       <NavbarMenu className="pt-6 gap-6">
-// //         {navigationItems.map((item) => (
-// //           <NavbarMenuItem key={item.label}>
-// //             <div className="flex flex-col gap-2">
-// //               <p className="font-medium text-primary text-sm">{item.label}</p>
-// //               {item.dropdownItems.map((dropdownItem) => (
-// //                 <Link
-// //                   key={dropdownItem.key}
-// //                   href={dropdownItem.href}
-// //                   className="text-foreground/70 hover:text-foreground pl-4"
-// //                   onClick={() => setIsMenuOpen(false)} // Fermer le menu
-// //                 >
-// //                   {dropdownItem.title}
-// //                 </Link>
-// //               ))}
-// //             </div>
-// //           </NavbarMenuItem>
-// //         ))}
-// //       </NavbarMenu>
-// //     </Navbar>
-// //   );
-// // };
-
-// // export default Appbar;
-// // "use client";
-
-// // import React, { ReactNode, useEffect, useState } from "react";
-// // import {
-// //   Navbar,
-// //   NavbarContent,
-// //   NavbarMenuToggle,
-// //   NavbarBrand,
-// //   NavbarItem,
-// //   Button,
-// //   NavbarMenu,
-// //   NavbarMenuItem,
-// //   DropdownTrigger,
-// //   DropdownItem,
-// //   Dropdown,
-// //   DropdownMenu,
-// // } from "@nextui-org/react";
-// // // import { usePathname } from "next/navigation";
-// // import Image from "next/image";
-// // // import Link from "next/link";
-// // import { useLocale, useTranslations } from "next-intl";
-// // import { useNavigationItems } from "@/data/navigationData";
-// // import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
-// // import PlusSVG from "../assets/svg/PlusSVG";
-// // import { Link, usePathname } from "@/i18n/routing";
-
-// // interface Props {
-// //   children: ReactNode;
-// // }
-
-// // const Appbar = ({ children }: Props) => {
-// //   const [isMenuOpen, setIsMenuOpen] = useState(false);
-// //   const [isScrolled, setIsScrolled] = useState(false);
-// //   const pathname = usePathname();
-// //   const locale = useLocale(); // Récupérer la langue actuelle
-// //   const t = useTranslations("appbar");
-// //   const navigationItems = useNavigationItems(); // Charge les éléments traduits
-// //   useEffect(() => {
-// //     const handleScroll = () => {
-// //       const scrolled = window.scrollY > 0;
-// //       setIsScrolled(scrolled);
-// //     };
-// //     window.addEventListener("scroll", handleScroll);
-// //     return () => window.removeEventListener("scroll", handleScroll);
-// //   }, []);
-
-// //   const isHomePage = pathname === "/";
-// //   const navbarBackground = isHomePage
-// //     ? "fixed bg-transparent backdrop-blur-md"
-// //     : "sticky bg-white";
-// //   const textColor =
-// //     isHomePage && !isScrolled ? "text-red" : "text-primary";
-
-// //   const renderDropdownButton = (label: string) => (
-// //     <Button
-// //       disableRipple
-// //       className={`p-0 bg-transparent data-[hover=true]:bg-transparent ${textColor} font-medium`}
-// //       endContent={
-// //         <svg
-// //           className={`w-4 h-4 ${textColor}`}
-// //           fill="none"
-// //           strokeWidth="2"
-// //           stroke="currentColor"
-// //           viewBox="0 0 24 24"
-// //         >
-// //           <path d="M19 9l-7 7-7-7" />
-// //         </svg>
-// //       }
-// //       radius="sm"
-// //       variant="light"
-// //     >
-// //       {label}
-// //     </Button>
-// //   );
-
-// //   useEffect(() => {
-// //     setIsMenuOpen(false);
-// //   }, [pathname]);
-
-// //   return (
-// //     <Navbar
-// //       isMenuOpen={isMenuOpen}
-// //       className={`${navbarBackground} top-0 left-0 right-0 h-16 transition-all duration-300 shadow-sm z-50`}
-// //       onMenuOpenChange={setIsMenuOpen}
-// //     >
-// //       <NavbarContent className="flex items-center">
-// //         <NavbarMenuToggle
-// //           aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
-// //           className="lg:hidden"
-// //         />
-// //         <NavbarBrand>
-// //           <Link href="/" className="flex items-center gap-2">
-// //             <Image
-// //               src="/logo-topaz-enhance-coupe.jpeg"
-// //               alt="Logo Afrique Avenir"
-// //               width={32}
-// //               height={32}
-// //               className="rounded-lg"
-// //             />
-// //             <div className="hidden sm:block">
-// //               <p
-// //                 className={`${textColor} text-xs sm:text-sm md:text-md   font-medium tracking-wide whitespace-nowrap`}
-// //               >
-// //                 {t("siteTitle")}
-// //               </p>
-// //             </div>
-// //           </Link>
-// //         </NavbarBrand>
-// //       </NavbarContent>
-
-// //       <NavbarContent className="hidden lg:flex gap-6" justify="center">
-// //         {navigationItems.map((item) => (
-// //           <Dropdown key={item.label}>
-// //             <NavbarItem>
-// //               <DropdownTrigger>
-// //                 {renderDropdownButton(item.label)}
-// //               </DropdownTrigger>
-// //             </NavbarItem>
-// //             <DropdownMenu
-// //               key={locale} // Forcer le re-render si la langue change
-// //               aria-label={item.label}
-// //               className="w-[340px]"
-// //               itemClasses={{ base: "gap-4" }}
-// //             >
-// //               {item.dropdownItems.map((dropdownItem) => (
-// //                 <DropdownItem
-// //                   key={dropdownItem.key}
-// //                   description={dropdownItem.description}
-// //                   as={Link}
-// //                   href={dropdownItem.href}
-// //                 >
-// //                   {dropdownItem.title}
-// //                 </DropdownItem>
-// //               ))}
-// //             </DropdownMenu>
-// //           </Dropdown>
-// //         ))}
-// //         <NavbarItem>
-// //           <LanguageSwitcher />
-// //         </NavbarItem>
-// //       </NavbarContent>
-
-// //       <NavbarContent justify="end">
-// //         <Button
-// //           as={Link}
-// //           // href={`/${locale}/user/properties/add`}
-// //           href={`/user/properties/add`}
-// //           className="ml-4 flex items-center gap-2 bg-primary text-white hover:bg-primary/90 p-2 md:px-4 rounded-lg"
-// //           radius="sm"
-// //         >
-// //           <PlusSVG />
-// //           <span className="hidden sm:block">{t("publishAd")}</span>
-// //         </Button>
-// //         {children}
-// //       </NavbarContent>
-
-// //       <NavbarMenu className="pt-6 gap-6">
-// //         <div className="flex flex-col gap-6">
-// //           <NavbarBrand>
-// //             <Link href="/" className="flex  items-center gap-2">
-// //               <Image
-// //                 src="/logo-topaz-enhance-coupe.jpeg"
-// //                 alt="Logo Afrique Avenir"
-// //                 width={40}
-// //                 height={40}
-// //                 className="rounded-lg"
-// //               />
-// //               <div className="">
-// //                 <p
-// //                   className={`${textColor} text-sm  md:text-md   font-medium tracking-wide whitespace-nowrap`}
-// //                 >
-// //                   {t("siteTitle")}
-// //                 </p>
-// //               </div>
-// //             </Link>
-// //           </NavbarBrand>
-
-// //           {navigationItems.map((item) => (
-// //             <NavbarMenuItem key={item.label}>
-// //               <div className="flex flex-col gap-2">
-// //                 <p className="font-medium text-primary text-sm">{item.label}</p>
-// //                 {item.dropdownItems.map((dropdownItem) => (
-// //                   <Link
-// //                     key={dropdownItem.key}
-// //                     href={dropdownItem.href}
-// //                     className="text-foreground/70 hover:text-foreground pl-4"
-// //                     onClick={() => setIsMenuOpen(false)}
-// //                   >
-// //                     {dropdownItem.title}
-// //                   </Link>
-// //                 ))}
-// //               </div>
-// //             </NavbarMenuItem>
-// //           ))}
-// //           <LanguageSwitcher />
-// //         </div>
-// //       </NavbarMenu>
-// //     </Navbar>
-// //   );
-// // };
-
-// // export default Appbar;
-
-// // "use client";
-
-// // import React, { ReactNode, useEffect, useState } from "react";
-// // import {
-// //   Navbar,
-// //   NavbarContent,
-// //   NavbarMenuToggle,
-// //   NavbarBrand,
-// //   NavbarItem,
-// //   Button,
-// //   NavbarMenu,
-// //   NavbarMenuItem,
-// //   DropdownTrigger,
-// //   DropdownItem,
-// //   Dropdown,
-// //   DropdownMenu,
-// // } from "@nextui-org/react";
-// // import Image from "next/image";
-// // import { useLocale, useTranslations } from "next-intl";
-// // import { useNavigationItems } from "@/data/navigationData";
-// // import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
-// // import PlusSVG from "../assets/svg/PlusSVG";
-// // import { Link, usePathname } from "@/i18n/routing";
-
-// // interface Props {
-// //   children: ReactNode;
-// // }
-
-// // interface DropdownItem {
-// //   key: string;
-// //   title: string;
-// //   href: string;
-// //   description?: string;
-// // }
-
-// // interface NavigationItem {
-// //   label: string;
-// //   dropdownItems: DropdownItem[];
-// // }
-
-// // const Appbar = ({ children }: Props) => {
-// //   const [isMenuOpen, setIsMenuOpen] = useState(false);
-// //   const [isScrolled, setIsScrolled] = useState(false);
-// //   const pathname = usePathname();
-// //   const locale = useLocale();
-// //   const t = useTranslations("appbar");
-// //   const navigationItems = useNavigationItems();
-
-// //   useEffect(() => {
-// //     const handleScroll = () => {
-// //       setIsScrolled(window.scrollY > 0);
-// //     };
-// //     window.addEventListener("scroll", handleScroll);
-// //     return () => window.removeEventListener("scroll", handleScroll);
-// //   }, []);
-
-// //   const isHomePage = pathname === "/";
-// //   const navbarBackground = isHomePage
-// //     ? "fixed bg-transparent backdrop-blur-md"
-// //     : "sticky bg-white";
-// //   const textColor = isHomePage && !isScrolled ? "text-white" : "text-primary";
-
-// //   // Menu principal regroupé
-// //   const mainMenuItems = {
-// //     achat: navigationItems.filter(
-// //       (item) =>
-// //         item.label.toLowerCase().includes("acheter") ||
-// //         item.label.toLowerCase().includes("vendre")
-// //     ),
-// //     location: navigationItems.filter((item) =>
-// //       item.label.toLowerCase().includes("louer")
-// //     ),
-// //     other: navigationItems.filter(
-// //       (item) =>
-// //         !item.label.toLowerCase().includes("acheter") &&
-// //         !item.label.toLowerCase().includes("vendre") &&
-// //         !item.label.toLowerCase().includes("louer")
-// //     ),
-// //   };
-
-// //   const renderDropdownContent = (items: typeof mainMenuItems.other) => {
-// //     return items.flatMap((item) =>
-// //       item.dropdownItems.map((dropItem) => (
-// //         <DropdownItem key={dropItem.key} href={dropItem.href} as={Link}>
-// //           {dropItem.title}
-// //         </DropdownItem>
-// //       ))
-// //     );
-// //   };
-
-// //   return (
-// //     <Navbar
-// //       isMenuOpen={isMenuOpen}
-// //       className={`${navbarBackground} top-0 left-0 right-0 h-16 transition-all duration-300 shadow-sm z-50`}
-// //       onMenuOpenChange={setIsMenuOpen}
-// //     >
-// //       {/* Logo et marque */}
-// //       <NavbarContent className="flex items-center">
-// //         <NavbarMenuToggle
-// //           aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
-// //           className="md:hidden"
-// //         />
-// //         <NavbarBrand>
-// //           <Link href="/" className="flex items-center gap-1">
-// //             <Image
-// //               src="/logo-topaz-enhance-coupe.jpeg"
-// //               alt="Logo Afrique Avenir"
-// //               width={32}
-// //               height={32}
-// //               className="rounded-lg"
-// //             />
-// //             <span
-// //               className={`${textColor} text-sm font-medium hidden md:block`}
-// //             >
-// //               AFRIQUE AVENIR IMMO
-// //             </span>
-// //           </Link>
-// //         </NavbarBrand>
-// //       </NavbarContent>
-
-// //       {/* Navigation principale */}
-// //       <NavbarContent className="hidden md:flex gap-2" justify="center">
-// //         {/* Menu Acheter/Vendre */}
-// //         <Dropdown>
-// //           <NavbarItem>
-// //             <DropdownTrigger>
-// //               <Button
-// //                 className={`px-2 min-w-unit-16 h-unit-8 ${textColor}`}
-// //                 variant="light"
-// //                 radius="sm"
-// //               >
-// //                 Acheter
-// //               </Button>
-// //             </DropdownTrigger>
-// //           </NavbarItem>
-// //           <DropdownMenu aria-label="Acheter/Vendre">
-// //             {mainMenuItems.achat.map((item) =>
-// //               item.dropdownItems.map((dropItem) => (
-// //                 <DropdownItem key={dropItem.key} as={Link} href={dropItem.href}>
-// //                   {dropItem.title}
-// //                 </DropdownItem>
-// //               ))
-// //             )}
-// //           </DropdownMenu>
-// //         </Dropdown>
-
-// //         {/* Menu Location */}
-// //         <Dropdown>
-// //           <NavbarItem>
-// //             <DropdownTrigger>
-// //               <Button
-// //                 className={`px-2 min-w-unit-16 h-unit-8 ${textColor}`}
-// //                 variant="light"
-// //                 radius="sm"
-// //               >
-// //                 Louer
-// //               </Button>
-// //             </DropdownTrigger>
-// //           </NavbarItem>
-// //           <DropdownMenu aria-label="Louer">
-// //             {mainMenuItems.location.map((item) =>
-// //               item.dropdownItems.map((dropItem) => (
-// //                 <DropdownItem key={dropItem.key} as={Link} href={dropItem.href}>
-// //                   {dropItem.title}
-// //                 </DropdownItem>
-// //               ))
-// //             )}
-// //           </DropdownMenu>
-// //         </Dropdown>
-
-// //         {/* Menu Plus */}
-// //         <Dropdown>
-// //           <NavbarItem>
-// //             <DropdownTrigger>
-// //               <Button
-// //                 className={`px-2 min-w-unit-16 h-unit-8 ${textColor}`}
-// //                 variant="light"
-// //                 radius="sm"
-// //               >
-// //                 Services
-// //               </Button>
-// //             </DropdownTrigger>
-// //           </NavbarItem>
-// //           <DropdownMenu
-// //             aria-label="Plus"
-// //             // Utilisation de la fonction renderDropdownContent
-// //             items={mainMenuItems.other}
-// //           >
-// //             {renderDropdownContent(mainMenuItems.other)}
-// //           </DropdownMenu>
-// //         </Dropdown>
-// //       </NavbarContent>
-
-// //       {/* Actions à droite */}
-// //       <NavbarContent justify="end" className="gap-2">
-// //         <NavbarItem className="hidden sm:flex">
-// //           <LanguageSwitcher />
-// //         </NavbarItem>
-// //         <Button
-// //           as={Link}
-// //           href="/user/properties/add"
-// //           className="bg-primary text-white h-unit-8 px-2"
-// //           radius="sm"
-// //           startContent={<PlusSVG />}
-// //         >
-// //           <span className="hidden sm:block text-sm">{t("publishAd")}</span>
-// //         </Button>
-// //         {children}
-// //       </NavbarContent>
-
-// //       {/* Menu mobile */}
-// //       <NavbarMenu className="pt-6 gap-6">
-// //         {navigationItems.map((item) => (
-// //           <NavbarMenuItem key={item.label}>
-// //             <div className="flex flex-col gap-2">
-// //               <p className="font-medium text-primary text-sm">{item.label}</p>
-// //               {item.dropdownItems.map((dropdownItem) => (
-// //                 <Link
-// //                   key={dropdownItem.key}
-// //                   href={dropdownItem.href}
-// //                   className="text-foreground/70 hover:text-foreground pl-4"
-// //                   onClick={() => setIsMenuOpen(false)}
-// //                 >
-// //                   {dropdownItem.title}
-// //                 </Link>
-// //               ))}
-// //             </div>
-// //           </NavbarMenuItem>
-// //         ))}
-// //         <LanguageSwitcher />
-// //       </NavbarMenu>
-// //     </Navbar>
-// //   );
-// // };
-
-// // export default Appbar;
-
-// // "use client";
-
-// // import React, { ReactNode, useEffect, useState } from "react";
-// // import {
-// //   Navbar,
-// //   NavbarContent,
-// //   NavbarMenuToggle,
-// //   NavbarBrand,
-// //   NavbarItem,
-// //   Button,
-// //   NavbarMenu,
-// //   NavbarMenuItem,
-// //   DropdownTrigger,
-// //   DropdownItem,
-// //   Dropdown,
-// //   DropdownMenu,
-// // } from "@nextui-org/react";
-// // import Image from "next/image";
-// // import { useLocale, useTranslations } from "next-intl";
-// // import { useNavigationItems } from "@/data/navigationData";
-// // import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
-// // import PlusSVG from "../assets/svg/PlusSVG";
-// // import { Link, usePathname } from "@/i18n/routing";
-
-// // interface Props {
-// //   children: ReactNode;
-// // }
-
-// // const Appbar = ({ children }: Props) => {
-// //   const [isMenuOpen, setIsMenuOpen] = useState(false);
-// //   const [isScrolled, setIsScrolled] = useState(false);
-// //   const pathname = usePathname();
-// //   const locale = useLocale();
-// //   const t = useTranslations("appbar");
-// //   const navigationItems = useNavigationItems();
-
-// //   useEffect(() => {
-// //     const handleScroll = () => {
-// //       const scrolled = window.scrollY > 0;
-// //       setIsScrolled(scrolled);
-// //     };
-// //     window.addEventListener("scroll", handleScroll);
-// //     return () => window.removeEventListener("scroll", handleScroll);
-// //   }, []);
-
-// //   const isHomePage = pathname === "/";
-// //   const navbarBackground = isHomePage
-// //     ? "fixed bg-transparent backdrop-blur-md"
-// //     : "sticky bg-white";
-// //   const textColor = isHomePage && !isScrolled ? "text-white" : "text-primary";
-// //   const textShadow = isHomePage && !isScrolled ? "text-shadow" : ""; // Ajouter une ombre portée sur la page d'accueil
-
-// //   const renderDropdownButton = (label: string) => (
-// //     <Button
-// //       disableRipple
-// //       className={`p-0 bg-transparent data-[hover=true]:bg-transparent ${textColor} ${textShadow} font-medium`}
-// //       endContent={
-// //         <svg
-// //           className={`w-4 h-4 ${textColor} ${textShadow}`}
-// //           fill="none"
-// //           strokeWidth="2"
-// //           stroke="currentColor"
-// //           viewBox="0 0 24 24"
-// //         >
-// //           <path d="M19 9l-7 7-7-7" />
-// //         </svg>
-// //       }
-// //       radius="sm"
-// //       variant="light"
-// //     >
-// //       {label}
-// //     </Button>
-// //   );
-
-// //   useEffect(() => {
-// //     setIsMenuOpen(false);
-// //   }, [pathname]);
-
-// //   return (
-// //     <Navbar
-// //       isMenuOpen={isMenuOpen}
-// //       className={`${navbarBackground} top-0 left-0 right-0 h-16 transition-all duration-300 shadow-sm z-50`}
-// //       onMenuOpenChange={setIsMenuOpen}
-// //     >
-// //       <NavbarContent className="flex items-center">
-// //         <NavbarMenuToggle
-// //           aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
-// //           className="lg:hidden"
-// //         />
-// //         <NavbarBrand>
-// //           <Link href="/" className="flex items-center gap-2">
-// //             <Image
-// //               src="/logo-topaz-enhance-coupe.jpeg"
-// //               alt="Logo Afrique Avenir"
-// //               width={32}
-// //               height={32}
-// //               className="rounded-lg"
-// //             />
-// //             <div className="hidden sm:block">
-// //               <p
-// //                 className={`${textColor} ${textShadow} text-xs sm:text-sm md:text-md font-medium tracking-wide whitespace-nowrap`}
-// //               >
-// //                 {t("siteTitle")}
-// //               </p>
-// //             </div>
-// //           </Link>
-// //         </NavbarBrand>
-// //       </NavbarContent>
-
-// //       <NavbarContent className="hidden lg:flex gap-6" justify="center">
-// //         {navigationItems.map((item) => (
-// //           <Dropdown key={item.label}>
-// //             <NavbarItem>
-// //               <DropdownTrigger>
-// //                 {renderDropdownButton(item.label)}
-// //               </DropdownTrigger>
-// //             </NavbarItem>
-// //             <DropdownMenu
-// //               key={locale}
-// //               aria-label={item.label}
-// //               className="w-[340px]"
-// //               itemClasses={{ base: "gap-4" }}
-// //             >
-// //               {item.dropdownItems.map((dropdownItem) => (
-// //                 <DropdownItem
-// //                   key={dropdownItem.key}
-// //                   description={dropdownItem.description}
-// //                   as={Link}
-// //                   href={dropdownItem.href}
-// //                 >
-// //                   {dropdownItem.title}
-// //                 </DropdownItem>
-// //               ))}
-// //             </DropdownMenu>
-// //           </Dropdown>
-// //         ))}
-// //         <NavbarItem>
-// //           <LanguageSwitcher />
-// //         </NavbarItem>
-// //       </NavbarContent>
-
-// //       <NavbarContent justify="end">
-// //         <Button
-// //           as={Link}
-// //           href={`/user/properties/add`}
-// //           className="ml-4 flex items-center gap-2 bg-primary text-white hover:bg-primary/90 p-2 md:px-4 rounded-lg"
-// //           radius="sm"
-// //         >
-// //           <PlusSVG />
-// //           <span className="hidden sm:block">{t("publishAd")}</span>
-// //         </Button>
-// //         {children}
-// //       </NavbarContent>
-
-// //       <NavbarMenu className="pt-6 gap-6">
-// //         <div className="flex flex-col gap-6">
-// //           <NavbarBrand>
-// //             <Link href="/" className="flex items-center gap-2">
-// //               <Image
-// //                 src="/logo-topaz-enhance-coupe.jpeg"
-// //                 alt="Logo Afrique Avenir"
-// //                 width={40}
-// //                 height={40}
-// //                 className="rounded-lg"
-// //               />
-// //               <div className="">
-// //                 <p
-// //                   className={`${textColor} text-sm md:text-md font-medium tracking-wide whitespace-nowrap`}
-// //                 >
-// //                   {t("siteTitle")}
-// //                 </p>
-// //               </div>
-// //             </Link>
-// //           </NavbarBrand>
-
-// //           {navigationItems.map((item) => (
-// //             <NavbarMenuItem key={item.label}>
-// //               <div className="flex flex-col gap-2">
-// //                 <p className="font-medium text-primary text-sm">{item.label}</p>
-// //                 {item.dropdownItems.map((dropdownItem) => (
-// //                   <Link
-// //                     key={dropdownItem.key}
-// //                     href={dropdownItem.href}
-// //                     className="text-foreground/70 hover:text-foreground pl-4"
-// //                     onClick={() => setIsMenuOpen(false)}
-// //                   >
-// //                     {dropdownItem.title}
-// //                   </Link>
-// //                 ))}
-// //               </div>
-// //             </NavbarMenuItem>
-// //           ))}
-// //           <LanguageSwitcher />
-// //         </div>
-// //       </NavbarMenu>
-// //     </Navbar>
-// //   );
-// // };
-
-// // export default Appbar;
-
-// "use client";
-
-// import React, { ReactNode, useEffect, useState } from "react";
-// import {
-//   Navbar,
-//   NavbarContent,
-//   NavbarMenuToggle,
-//   NavbarBrand,
-//   NavbarItem,
-//   Button,
-//   NavbarMenu,
-//   NavbarMenuItem,
-//   DropdownTrigger,
-//   DropdownItem,
-//   Dropdown,
-//   DropdownMenu,
-// } from "@nextui-org/react";
-// import Image from "next/image";
-// import { useLocale, useTranslations } from "next-intl";
-// import { useNavigationItems } from "@/data/navigationData";
-// import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
-// import PlusSVG from "../assets/svg/PlusSVG";
-// import { Link, usePathname } from "@/i18n/routing";
-
-// interface Props {
-//   children: ReactNode;
-// }
-
-// const Appbar = ({ children }: Props) => {
-//   const [isMenuOpen, setIsMenuOpen] = useState(false);
-//   const [isScrolled, setIsScrolled] = useState(false);
-//   const pathname = usePathname();
-//   const locale = useLocale();
-//   const t = useTranslations("appbar");
-//   const navigationItems = useNavigationItems();
-
-//   useEffect(() => {
-//     const handleScroll = () => {
-//       const scrolled = window.scrollY > 0;
-//       setIsScrolled(scrolled);
-//     };
-//     window.addEventListener("scroll", handleScroll);
-//     return () => window.removeEventListener("scroll", handleScroll);
-//   }, []);
-
-//   const isHomePage = pathname === "/";
-
-//   // Mise à jour des styles pour améliorer la visibilité
-//   const navbarBackground = isHomePage
-//     ? isScrolled
-//       ? "fixed bg-white/90 backdrop-blur-md"
-//       : "fixed bg-black/20 backdrop-blur-sm"
-//     : "sticky bg-white";
-
-//   // Ajout d'une classe de texte avec un contour subtil pour la page d'accueil
-//   const textColor =
-//     isHomePage && !isScrolled
-//       ? "text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]"
-//       : "text-primary";
-
-//   const renderDropdownButton = (label: string) => (
-//     <Button
-//       disableRipple
-//       className={`p-0 bg-transparent data-[hover=true]:bg-transparent ${textColor} font-medium transition-colors duration-300`}
-//       endContent={
-//         <svg
-//           className={`w-4 h-4 ${textColor} transition-colors duration-300`}
-//           fill="none"
-//           strokeWidth="2"
-//           stroke="currentColor"
-//           viewBox="0 0 24 24"
-//         >
-//           <path d="M19 9l-7 7-7-7" />
-//         </svg>
-//       }
-//       radius="sm"
-//       variant="light"
-//     >
-//       {label}
-//     </Button>
-//   );
-
-//   useEffect(() => {
-//     setIsMenuOpen(false);
-//   }, [pathname]);
-
-//   return (
-//     <Navbar
-//       isMenuOpen={isMenuOpen}
-//       className={`${navbarBackground} top-0 left-0 right-0 h-16 transition-all duration-300 shadow-sm z-50`}
-//       onMenuOpenChange={setIsMenuOpen}
-//     >
-//       <NavbarContent className="flex items-center">
-//         <NavbarMenuToggle
-//           aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
-//           className={`lg:hidden ${textColor}`}
-//         />
-//         <NavbarBrand>
-//           <Link href="/" className="flex items-center gap-2">
-//             <Image
-//               src="/logo-topaz-enhance-coupe.jpeg"
-//               alt="Logo Afrique Avenir"
-//               width={32}
-//               height={32}
-//               className="rounded-lg"
-//             />
-//             <div className="hidden sm:block">
-//               <p
-//                 className={`${textColor} text-xs sm:text-sm md:text-md font-medium tracking-wide whitespace-nowrap transition-colors duration-300`}
-//               >
-//                 {t("siteTitle")}
-//               </p>
-//             </div>
-//           </Link>
-//         </NavbarBrand>
-//       </NavbarContent>
-
-//       <NavbarContent className="hidden lg:flex gap-6" justify="center">
-//         {navigationItems.map((item) => (
-//           <Dropdown key={item.label}>
-//             <NavbarItem>
-//               <DropdownTrigger>
-//                 {renderDropdownButton(item.label)}
-//               </DropdownTrigger>
-//             </NavbarItem>
-//             <DropdownMenu
-//               key={locale}
-//               aria-label={item.label}
-//               className="w-[340px]"
-//               itemClasses={{ base: "gap-4" }}
-//             >
-//               {item.dropdownItems.map((dropdownItem) => (
-//                 <DropdownItem
-//                   key={dropdownItem.key}
-//                   description={dropdownItem.description}
-//                   as={Link}
-//                   href={dropdownItem.href}
-//                 >
-//                   {dropdownItem.title}
-//                 </DropdownItem>
-//               ))}
-//             </DropdownMenu>
-//           </Dropdown>
-//         ))}
-//         <NavbarItem>
-//           <LanguageSwitcher />
-//         </NavbarItem>
-//       </NavbarContent>
-
-//       <NavbarContent justify="end">
-//         <Button
-//           as={Link}
-//           href={`/user/properties/add`}
-//           className="ml-4 flex items-center gap-2 bg-primary text-white hover:bg-primary/90 p-2 md:px-4 rounded-lg transition-colors duration-300"
-//           radius="sm"
-//         >
-//           <PlusSVG />
-//           <span className="hidden sm:block">{t("publishAd")}</span>
-//         </Button>
-//         {children}
-//       </NavbarContent>
-
-//       <NavbarMenu className="pt-6 gap-6">
-//         <div className="flex flex-col gap-6">
-//           <NavbarBrand>
-//             <Link href="/" className="flex items-center gap-2">
-//               <Image
-//                 src="/logo-topaz-enhance-coupe.jpeg"
-//                 alt="Logo Afrique Avenir"
-//                 width={40}
-//                 height={40}
-//                 className="rounded-lg"
-//               />
-//               <div>
-//                 <p
-//                   className={`${textColor} text-sm md:text-md font-medium tracking-wide whitespace-nowrap transition-colors duration-300`}
-//                 >
-//                   {t("siteTitle")}
-//                 </p>
-//               </div>
-//             </Link>
-//           </NavbarBrand>
-
-//           {navigationItems.map((item) => (
-//             <NavbarMenuItem key={item.label}>
-//               <div className="flex flex-col gap-2">
-//                 <p className="font-medium text-primary text-sm">{item.label}</p>
-//                 {item.dropdownItems.map((dropdownItem) => (
-//                   <Link
-//                     key={dropdownItem.key}
-//                     href={dropdownItem.href}
-//                     className="text-foreground/70 hover:text-foreground pl-4"
-//                     onClick={() => setIsMenuOpen(false)}
-//                   >
-//                     {dropdownItem.title}
-//                   </Link>
-//                 ))}
-//               </div>
-//             </NavbarMenuItem>
-//           ))}
-//           <LanguageSwitcher />
-//         </div>
-//       </NavbarMenu>
-//     </Navbar>
-//   );
-// };
-
-// export default Appbar;
 "use client";
 
 import React, { ReactNode, useEffect, useState } from "react";
-import {
-  Navbar,
-  NavbarContent,
-  NavbarMenuToggle,
-  NavbarBrand,
-  NavbarItem,
-  Button,
-  NavbarMenu,
-  NavbarMenuItem,
-  DropdownTrigger,
-  DropdownItem,
-  Dropdown,
-  DropdownMenu,
-} from "@nextui-org/react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { useNavigationItems } from "@/data/navigationData";
-import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
-import PlusSVG from "../assets/svg/PlusSVG";
-import { Link, usePathname } from "@/i18n/routing";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { useKindeBrowserClient, LoginLink } from "@kinde-oss/kinde-auth-nextjs";
+import { Button } from "@/components/ui/button";
+import { useSearchParams } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Menu } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import UserMenu from "./UserMenu";
+import NavbarLanguageSwitcher from "./NavbarLanguageSwitcher";
+import { cn } from "@/lib/utils";
 
 interface Props {
   children: ReactNode;
 }
 
+// Client-only login button to avoid hydration mismatch
+const ClientLoginButton = ({ 
+  className, 
+  onLoginClick 
+}: { 
+  className?: string;
+  onLoginClick?: () => void;
+}) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <Button variant="outline" size="sm" className={className} disabled>
+        Se Connecter
+      </Button>
+    );
+  }
+
+  const currentUrl = typeof window !== "undefined" ? window.location.href : "";
+  const redirectUrl = `${window.location.origin}/api/auth/success?redirect_url=${encodeURIComponent(currentUrl)}`;
+
+  return (
+    <LoginLink postLoginRedirectURL={redirectUrl}>
+      <Button 
+        variant="outline" 
+        size="sm" 
+        className={className}
+        onClick={onLoginClick}
+      >
+        Se Connecter
+      </Button>
+    </LoginLink>
+  );
+};
+
 const Appbar = ({ children }: Props) => {
+  // ✅ ALL HOOKS AT THE TOP - UNCONDITIONAL
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [forceRefresh, setForceRefresh] = useState(0);
+  const [mounted, setMounted] = useState(false);
+  const [authState, setAuthState] = useState<{
+    isAuthenticated: boolean;
+    isLoading: boolean;
+  }>({ isAuthenticated: false, isLoading: true });
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("appbar");
-  const navigationItems = useNavigationItems();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { isAuthenticated: kindeAuth, isLoading: kindeLoading, user } =
+    useKindeBrowserClient();
+
+  // ✅ ALL useEffect HOOKS AT THE TOP
+  // Mark component as mounted to avoid hydration issues
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -1109,236 +95,261 @@ const Appbar = ({ children }: Props) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const isHomePage = pathname === "/";
-
-  // Mise à jour des styles pour améliorer la visibilité
-  const navbarBackground = isHomePage
-    ? isScrolled
-      ? "fixed bg-white/90 backdrop-blur-md"
-      : "fixed bg-black/20 backdrop-blur-sm"
-    : "sticky bg-white";
-
-  // Ajout d'une classe de texte avec un contour subtil pour la page d'accueil
-  const textColor =
-    isHomePage && !isScrolled
-      ? "text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]"
-      : "text-primary";
-
-  const renderDropdownButton = (label: string) => (
-    <Button
-      disableRipple
-      className={`p-0 bg-transparent data-[hover=true]:bg-transparent ${textColor} font-medium transition-colors duration-300`}
-      endContent={
-        <svg
-          className={`w-4 h-4 ${textColor} transition-colors duration-300`}
-          fill="none"
-          strokeWidth="2"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path d="M19 9l-7 7-7-7" />
-        </svg>
-      }
-      radius="sm"
-      variant="light"
-    >
-      {label}
-    </Button>
-  );
-
   useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname]);
 
+  // Sync Kinde auth state with local state
+  useEffect(() => {
+    if (mounted) {
+      setAuthState({
+        isAuthenticated: kindeAuth,
+        isLoading: kindeLoading,
+      });
+    }
+  }, [kindeAuth, kindeLoading, mounted]);
+
+  // Periodic auth check to catch any auth state changes (only when not authenticated)
+  // This helps catch auth state changes that might be missed by the hook
+  useEffect(() => {
+    // Only poll if we're not authenticated and not loading
+    // This helps catch when auth state changes externally
+    if (!authState.isAuthenticated && !authState.isLoading) {
+      const checkAuth = async () => {
+        try {
+          const response = await fetch("/api/auth/check", {
+            cache: "no-store",
+          });
+          const data = await response.json();
+          
+          // Only update if auth state changed
+          if (data.isAuthenticated && !authState.isAuthenticated) {
+            setAuthState({
+              isAuthenticated: true,
+              isLoading: false,
+            });
+            router.refresh();
+            setForceRefresh((prev) => prev + 1);
+          }
+        } catch (error) {
+          console.error("Error checking auth:", error);
+        }
+      };
+
+      // Check every 3 seconds when not authenticated
+      const interval = setInterval(checkAuth, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [authState.isAuthenticated, authState.isLoading, router]);
+
+  // Force refresh after login redirect with polling
+  useEffect(() => {
+    if (!mounted) return;
+
+    const fromAuth = searchParams?.get("from_auth");
+    if (fromAuth === "true") {
+      // Remove the query param first
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete("from_auth");
+      window.history.replaceState({}, "", newUrl.toString());
+
+      // Immediately check auth status
+      const checkAuth = async () => {
+        try {
+          const response = await fetch("/api/auth/check", {
+            cache: "no-store",
+            credentials: "include",
+          });
+          const data = await response.json();
+
+          if (data.isAuthenticated) {
+            // Auth confirmed, refresh router and update state
+            router.refresh();
+            setAuthState({ isAuthenticated: true, isLoading: false });
+            setForceRefresh((prev) => prev + 1);
+          }
+        } catch (error) {
+          console.error("Error checking auth status:", error);
+        }
+      };
+
+      // Check immediately
+      checkAuth();
+
+      // Poll auth status until authenticated or timeout
+      let pollCount = 0;
+      const maxPolls = 10; // 5 seconds max (10 * 500ms)
+      const pollInterval = setInterval(async () => {
+        pollCount++;
+        try {
+          const response = await fetch("/api/auth/check", {
+            cache: "no-store",
+            credentials: "include",
+          });
+          const data = await response.json();
+
+          if (data.isAuthenticated) {
+            // Auth confirmed, refresh router and update state
+            router.refresh();
+            setAuthState({ isAuthenticated: true, isLoading: false });
+            setForceRefresh((prev) => prev + 1);
+            clearInterval(pollInterval);
+          } else if (pollCount >= maxPolls) {
+            // Timeout, stop polling
+            clearInterval(pollInterval);
+            setAuthState({ isAuthenticated: false, isLoading: false });
+          }
+        } catch (error) {
+          console.error("Error polling auth status:", error);
+          if (pollCount >= maxPolls) {
+            clearInterval(pollInterval);
+          }
+        }
+      }, 500); // Poll every 500ms
+
+      // Cleanup
+      return () => clearInterval(pollInterval);
+    }
+  }, [searchParams, router, mounted]);
+
+  // ✅ CONDITIONAL LOGIC AFTER ALL HOOKS
+  const isHomePage = pathname === "/";
+
+  // Hide Appbar on home page (using new HomeNavbar instead)
+  if (isHomePage) {
+    return null;
+  }
+
+  const navbarBackground = "sticky bg-white shadow-sm";
+  const textColor = "text-gray-900";
+
+  // Navigation items for left side
+  const leftNavItems = [
+    { label: "Acheter", href: "/buy" },
+    { label: "Louer", href: "/rent" },
+    { label: "Services", href: "/services" },
+  ];
+
   return (
-    <Navbar
-      isMenuOpen={isMenuOpen}
-      className={`${navbarBackground} top-0 left-0 right-0 h-16 transition-all duration-300 shadow-sm z-50`}
-      onMenuOpenChange={setIsMenuOpen}
+    <nav
+      className={cn(
+        navbarBackground,
+        "top-0 left-0 right-0 h-16 transition-all duration-300 z-50"
+      )}
     >
-      <NavbarContent className="flex items-center">
-        <NavbarMenuToggle
-          aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
-          className={`lg:hidden ${textColor}`}
-        />
-        <NavbarBrand>
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/logo-topaz-enhance-coupe.jpeg"
-              alt="Logo Afrique Avenir"
-              width={32}
-              height={32}
-              className="rounded-lg"
-            />
-            <div className="hidden sm:block">
-              <p
-                className={`${textColor} text-xs sm:text-sm md:text-md font-medium tracking-wide whitespace-nowrap transition-colors duration-300`}
-              >
-                {t("siteTitle")}
-              </p>
-            </div>
-          </Link>
-        </NavbarBrand>
-      </NavbarContent>
-
-      <NavbarContent className="hidden lg:flex gap-8 ml-16" justify="center">
-        {navigationItems.map((item) => (
-          <Dropdown key={item.label}>
-            <NavbarItem>
-              <DropdownTrigger>
-                {renderDropdownButton(item.label)}
-              </DropdownTrigger>
-            </NavbarItem>
-            <DropdownMenu
-              key={locale}
-              aria-label={item.label}
-              className="w-[340px]"
-              itemClasses={{ base: "gap-4" }}
-            >
-              {item.dropdownItems.map((dropdownItem) => (
-                <DropdownItem
-                  key={dropdownItem.key}
-                  description={dropdownItem.description}
-                  as={Link}
-                  href={dropdownItem.href}
-                >
-                  {dropdownItem.title}
-                </DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
-        ))}
-        <NavbarItem>
-          <LanguageSwitcher />
-        </NavbarItem>
-      </NavbarContent>
-
-      <NavbarContent justify="end">
-        <Button
-          as={Link}
-          href={`/analytics/dashboard`}
-          className="flex items-center gap-2 bg-transparent text-foreground hover:bg-default-100 p-2 md:px-4 rounded-lg transition-colors duration-300"
-          radius="sm"
-          variant="light"
-        >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            strokeWidth="2"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"
-            />
-          </svg>
-          <span className="hidden sm:block">{t("analytics")}</span>
-        </Button>
-        <Button
-          as={Link}
-          href={`/user/properties/add`}
-          className="ml-4 flex items-center gap-2 bg-primary text-white hover:bg-primary/90 p-2 md:px-4 rounded-lg transition-colors duration-300"
-          radius="sm"
-        >
-          <PlusSVG />
-          <span className="hidden sm:block">{t("publishAd")}</span>
-        </Button>
-        {children}
-      </NavbarContent>
-
-      {/* Modifications du menu mobile pour améliorer la visibilité */}
-      <NavbarMenu className="pt-4 pb-8 px-4 overflow-y-auto max-h-[90vh]">
-        <div className="flex flex-col gap-6 w-full">
-          {/* Logo et titre en haut du menu mobile */}
-          <NavbarBrand className="mb-4">
-            <Link
-              href="/"
-              className="flex items-center gap-2"
-              onClick={() => setIsMenuOpen(false)}
-            >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+        <div className="flex items-center justify-between h-full">
+          {/* Left: Logo + Navigation */}
+          <div className="flex items-center gap-8">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2">
               <Image
                 src="/logo-topaz-enhance-coupe.jpeg"
                 alt="Logo Afrique Avenir"
-                width={40}
-                height={40}
+                width={32}
+                height={32}
                 className="rounded-lg"
               />
-              <p className="text-primary text-sm md:text-md font-medium tracking-wide whitespace-nowrap">
+              <span className="hidden sm:block text-sm font-semibold text-gray-900">
                 {t("siteTitle")}
-              </p>
+              </span>
             </Link>
-          </NavbarBrand>
 
-          {/* Items de navigation avec un meilleur espacement */}
-          <div className="flex flex-col gap-6 w-full pb-16">
-            {navigationItems.map((item) => (
-              <div
-                key={item.label}
-                className="w-full border-b border-gray-100 pb-4"
-              >
-                <p className="font-medium text-primary text-base mb-2">
+            {/* Desktop Navigation - Left */}
+            <div className="hidden lg:flex items-center gap-6">
+              {leftNavItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "text-sm font-medium transition-colors",
+                    textColor,
+                    "hover:text-orange-500"
+                  )}
+                >
                   {item.label}
-                </p>
-                <div className="flex flex-col gap-3">
-                  {item.dropdownItems.map((dropdownItem) => (
-                    <Link
-                      key={dropdownItem.key}
-                      href={dropdownItem.href}
-                      className="text-foreground/70 hover:text-foreground pl-4 py-1"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {dropdownItem.title}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Bouton pour publier une annonce et language switcher en bas */}
-          <div className="flex flex-col gap-4 mt-4 sticky bottom-4">
-            <Button
-              as={Link}
-              href={`/analytics/dashboard`}
-              className="w-full flex items-center justify-center gap-2 bg-default-100 text-foreground hover:bg-default-200 p-3 rounded-lg"
-              radius="sm"
-              variant="light"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                strokeWidth="2"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"
-                />
-              </svg>
-              <span>{t("analytics")}</span>
-            </Button>
-            <Button
-              as={Link}
-              href={`/user/properties/add`}
-              className="w-full flex items-center justify-center gap-2 bg-primary text-white hover:bg-primary/90 p-3 rounded-lg"
-              radius="sm"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <PlusSVG />
-              <span>{t("publishAd")}</span>
-            </Button>
-            <div className="w-full flex justify-center">
-              <LanguageSwitcher />
+                </Link>
+              ))}
             </div>
           </div>
+
+          {/* Center: Language Switcher (Desktop) */}
+          <div className="hidden lg:flex items-center">
+            <NavbarLanguageSwitcher />
+          </div>
+
+          {/* Right: Post Ad Button + Auth */}
+          <div className="flex items-center gap-4">
+            {/* Post Ad Button */}
+            <Button
+              asChild
+              className="bg-orange-500 hover:bg-orange-600 text-white"
+            >
+              <Link href="/user/properties/add">
+                <span className="hidden sm:inline">{t("publishAd")}</span>
+                <span className="sm:hidden">+</span>
+              </Link>
+            </Button>
+
+            {/* Auth Section */}
+            {!mounted || authState.isLoading ? (
+              <div className="h-10 w-10 flex items-center justify-center">
+                <div className="h-4 w-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : authState.isAuthenticated ? (
+              <UserMenu key={`user-menu-${authState.isAuthenticated}-${forceRefresh}`} />
+            ) : (
+              <ClientLoginButton />
+            )}
+
+            {/* Mobile Menu */}
+            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+              <SheetTrigger asChild className="lg:hidden">
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px]">
+                <div className="flex flex-col gap-6 mt-8">
+                  {/* Mobile Navigation */}
+                  {leftNavItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="text-base font-medium text-gray-900 hover:text-orange-500"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+
+                  {/* Mobile Language Switcher */}
+                  <div className="pt-4 border-t">
+                    <NavbarLanguageSwitcher />
+                  </div>
+
+                  {/* Mobile Auth */}
+                  {!mounted || authState.isLoading ? (
+                    <div className="w-full flex items-center justify-center py-2">
+                      <div className="h-4 w-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+                    </div>
+                  ) : authState.isAuthenticated ? (
+                    <div className="w-full">
+                      <UserMenu key={`user-menu-mobile-${authState.isAuthenticated}-${forceRefresh}`} />
+                    </div>
+                  ) : (
+                    <ClientLoginButton
+                      className="w-full"
+                      onLoginClick={() => setIsMenuOpen(false)}
+                    />
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
-      </NavbarMenu>
-    </Navbar>
+      </div>
+    </nav>
   );
 };
 

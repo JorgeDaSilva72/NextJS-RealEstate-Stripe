@@ -1320,15 +1320,15 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
         price: props.property?.price ? String(props.property.price) : "0", 
         currency: props.property?.currency ?? "XOF",
         
-        // Champs Multilingues (DB JSON -> Form String)
-        // Nous devons extraire la valeur pour la locale actuelle
-        name: { 
-            [locale]: getLocalizedText(props.property?.name, locale) || "",
-            // Ajouter d'autres locales vides pour le Zod si nécessaire, sinon le Zod devra s'adapter
-        } as any, // ⚠️ Le typage direct peut être difficile, `as any` est temporaire ici
-        description: { 
-            [locale]: getLocalizedText(props.property?.description, locale) || "",
-        } as any,
+        // Champs Multilingues (DB JSON -> Form String pour nouvelle propriété, Objet pour édition)
+        // Pour une nouvelle propriété, on utilise une string simple qui sera transformée par Zod
+        // Pour l'édition, on extrait la valeur pour la locale actuelle
+        name: props.property 
+            ? getLocalizedText(props.property.name, locale) || ""
+            : "",
+        description: props.property 
+            ? getLocalizedText(props.property.description, locale) || ""
+            : "",
         
         // Relations Imbriquées :
         contact: {
@@ -1342,6 +1342,9 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
         location: {
             ...props.property?.location,
             cityId: props.property?.location?.cityId ? String(props.property.location.cityId) : "",
+            countryId: props.property?.location?.countryId ? String(props.property.location.countryId) : "",
+            latitude: props.property?.location?.latitude ? Number(props.property.location.latitude) : undefined,
+            longitude: props.property?.location?.longitude ? Number(props.property.location.longitude) : undefined,
             landmark: { 
                  [locale]: getLocalizedText(props.property?.location?.landmark, locale) || "",
             } as any,
@@ -1350,23 +1353,33 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
         // Caractéristiques (Features) : DB Number/Boolean -> Form Number/Boolean
         feature: {
             ...props.property?.feature,
-            // Les valeurs nulles de la DB peuvent nécessiter une valeur par défaut ici (ex: 0, false)
+            // Les valeurs par défaut doivent respecter les contraintes du schéma Zod
+            // bedrooms: min(1), bathrooms: min(1), area: min(10), parkingSpots: min(0)
             bedrooms: props.property?.feature?.bedrooms ?? 1,
             bathrooms: props.property?.feature?.bathrooms ?? 1,
-            area: props.property?.feature?.area ?? 0,
+            area: props.property?.feature?.area ?? 10, // Minimum 10 selon le schéma Zod
+            parkingSpots: props.property?.feature?.parkingSpots ?? 0,
             hasSwimmingPool: props.property?.feature?.hasSwimmingPool ?? false,
-            // ... autres features
+            hasGardenYard: props.property?.feature?.hasGardenYard ?? false,
+            hasBalcony: props.property?.feature?.hasBalcony ?? false,
         } as any,
         
         // Médias (Les URL DB sont gérées par les states locaux savedImagesUrl/savedVideosUrl)
-        images: [{ url: "", caption: "", isMain: false, displayOrder: 0 }], // Valeur par défaut pour RHF
+        // Ne pas inclure images dans les valeurs par défaut car elles sont gérées par les states
+        images: [], // Les images seront validées après assemblage
         videos: [],
     };
 
 
+    // Create a schema without images validation for the form resolver
+    // Images are validated manually after upload in onSubmit
+    const formSchema = PropertyFormSchema.omit({ images: true }).extend({
+        images: z.array(z.any()).optional(), // Allow empty array during form validation
+    });
+
     const methods = useForm<PropertyFormInputType>({
-        // ⚠️ Utiliser PropertyFormSchema directement (la validation par Server Action est plus stricte)
-        resolver: zodResolver(PropertyFormSchema), 
+        // Use schema without images validation - images are validated manually after upload
+        resolver: zodResolver(formSchema), 
         defaultValues: defaultValues as PropertyFormInputType,
     });
 
@@ -1389,11 +1402,58 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
 
     // --- GESTION DE LA SOUMISSION AVEC SERVER ACTION ---
     const onSubmit: SubmitHandler<PropertyFormInputType> = async (data) => {
-
-        //  S'assurer que les données sont transformées (strings -> numbers)
-    const transformedData = PropertyFormSchema.parse(data);
         if (!user?.id) {
             toast.error(t("authRequired"));
+            return;
+        }
+        
+        // Valider les données avec Zod avant de continuer (sans les images pour l'instant)
+        // Les images seront validées après leur assemblage
+        let transformedData;
+        try {
+            // Créer un schéma temporaire sans la validation des images
+            const schemaWithoutImages = PropertyFormSchema.omit({ images: true });
+            transformedData = schemaWithoutImages.parse(data);
+        } catch (validationError: any) {
+            console.error("Validation error (Zod):", validationError);
+            // Si c'est une erreur Zod, afficher les erreurs de validation
+            if (validationError.errors && Array.isArray(validationError.errors)) {
+                const errorMessages: string[] = [];
+                
+                validationError.errors.forEach((err: any) => {
+                    const fieldPath = err.path.join(".");
+                    const errorMessage = err.message || "Champ invalide";
+                    errorMessages.push(errorMessage);
+                    
+                    methods.setError(fieldPath as any, {
+                        type: "validation",
+                        message: errorMessage,
+                    });
+                });
+                
+                // Afficher le premier message d'erreur spécifique
+                if (errorMessages.length > 0) {
+                    toast.error(errorMessages[0]);
+                } else {
+                    toast.error(t("validationError"));
+                }
+                
+                // Trouver l'étape correspondante au premier champ en erreur
+                const firstErrorPath = validationError.errors[0]?.path?.[0];
+                console.log("First error path:", firstErrorPath, "Full error:", validationError.errors[0]);
+                
+                if (firstErrorPath === "location") {
+                    setStep(1);
+                } else if (firstErrorPath === "feature") {
+                    setStep(2);
+                } else if (firstErrorPath === "contact") {
+                    setStep(4);
+                } else if (firstErrorPath === "name" || firstErrorPath === "description" || firstErrorPath === "typeId" || firstErrorPath === "statusId" || firstErrorPath === "price") {
+                    setStep(0);
+                }
+            } else {
+                toast.error(t("validationError"));
+            }
             return;
         }
         
@@ -1408,16 +1468,22 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
 
 // Définition d'un type qui autorise l'accès par chaîne
 type MultilingualObject = { [key: string]: string | undefined | null };
-// Caster les champs pour l'indexation
-const nameObj = data.name as MultilingualObject;
-const descriptionObj = data.description as MultilingualObject;
-const landmarkObj = data.location?.landmark as MultilingualObject | undefined;
+
+// Fonction helper pour extraire la valeur française d'un champ multilingue
+const getFrenchValue = (value: string | MultilingualObject | undefined): string => {
+    if (!value) return "";
+    if (typeof value === "string") return value;
+    if (typeof value === "object" && !Array.isArray(value)) {
+        return (value.fr || value[locale] || Object.values(value)[0] || "") as string;
+    }
+    return "";
+};
 
 // 1. TRADUCTION DES CHAMPS FR vers MULTILINGUE (Client-Side)
-            const nameFR = nameObj[locale] || "";
-const descriptionFR = descriptionObj[locale] || "";
-// Vérifier l'objet avant d'accéder
-const landmarkFR = landmarkObj?.[locale] || "";
+// Les champs peuvent être des strings (nouvelle propriété) ou des objets (après transformation Zod)
+const nameFR = getFrenchValue(data.name as string | MultilingualObject);
+const descriptionFR = getFrenchValue(data.description as string | MultilingualObject);
+const landmarkFR = getFrenchValue(data.location?.landmark as string | MultilingualObject | undefined);
             
             // Lancer les traductions en parallèle
             const [
@@ -1493,12 +1559,22 @@ const landmarkFR = landmarkObj?.[locale] || "";
                 ...videos.map(url => ({ url }))
             ];
             
+            // Vérifier qu'il y a au moins une image valide
+            const validImages = finalImages.filter(img => img.url && img.url.trim() !== "");
+            if (validImages.length === 0) {
+                toast.error("Au moins une image est requise");
+                setStep(3); // Retourner à l'onglet Photos
+                setIsSubmitting(false);
+                setProgress(0);
+                return;
+            }
+
             // Payload Final pour la Server Action
             const finalPayload = {
                 ...multilingualData, // Contient déjà typeId, statusId, price (string), et les objets multilingues
                 
-                // On passe les images et vidéos finales
-                images: finalImages,
+                // On passe les images et vidéos finales (avec au moins une image valide)
+                images: validImages,
                 videos: finalVideos,
             };
 
@@ -1570,17 +1646,70 @@ const landmarkFR = landmarkObj?.[locale] || "";
                 <form
                     className="mt-3 p-2"
                     onSubmit={methods.handleSubmit(onSubmit, (errors) => {
-                        console.log("Validation errors:", errors);
-                        // Afficher une erreur générique en cas d'échec de validation client
-                        toast.error(t("validationError"));
-                        // Revenir à l'étape du premier champ en erreur (optionnel)
-                        const firstErrorField = Object.keys(errors).find(key => errors[key as keyof PropertyFormInputType]);
-                        if (firstErrorField) {
-                            // Implémenter la logique pour changer `step` en fonction du champ
-                            // Exemple : si l'erreur est dans 'location', setStep(1)
-                            if (firstErrorField.startsWith("location")) setStep(1);
-                            else if (firstErrorField.startsWith("feature")) setStep(2);
-                            // ...
+                        console.log("Validation errors (client-side):", errors);
+                        console.log("Form values:", methods.getValues());
+                        
+                        // Trouver tous les champs en erreur et leurs messages
+                        const errorFields: string[] = [];
+                        const errorMessages: string[] = [];
+                        
+                        const collectErrors = (obj: any, prefix = ""): void => {
+                            if (!obj || typeof obj !== "object") return;
+                            
+                            Object.keys(obj).forEach((key) => {
+                                const fullPath = prefix ? `${prefix}.${key}` : key;
+                                const error = obj[key];
+                                
+                                if (error?.message) {
+                                    errorFields.push(fullPath);
+                                    errorMessages.push(error.message);
+                                    console.log(`Error in field "${fullPath}":`, error.message);
+                                } else if (error && typeof error === "object" && !error.message) {
+                                    // Erreur imbriquée (ex: location.cityId)
+                                    collectErrors(error, fullPath);
+                                }
+                            });
+                        };
+                        
+                        collectErrors(errors);
+                        
+                        console.log("Collected error fields:", errorFields);
+                        console.log("Collected error messages:", errorMessages);
+                        
+                        // Afficher le premier message d'erreur spécifique avec le nom du champ
+                        if (errorMessages.length > 0) {
+                            const firstField = errorFields[0];
+                            const firstMessage = errorMessages[0];
+                            console.log(`Showing error for field "${firstField}": ${firstMessage}`);
+                            toast.error(`${firstField}: ${firstMessage}`);
+                        } else {
+                            console.log("No specific error messages found, showing generic error");
+                            toast.error(t("validationError"));
+                        }
+                        
+                        // Naviguer vers l'onglet contenant le premier champ en erreur
+                        if (errorFields.length > 0) {
+                            const firstErrorField = errorFields[0];
+                            console.log("Navigating to step for field:", firstErrorField);
+                            
+                            if (firstErrorField.startsWith("location")) {
+                                console.log("Setting step to 1 (Location)");
+                                setStep(1);
+                            } else if (firstErrorField.startsWith("feature")) {
+                                console.log("Setting step to 2 (Features)");
+                                setStep(2);
+                            } else if (firstErrorField.startsWith("contact")) {
+                                console.log("Setting step to 4 (Contact)");
+                                setStep(4);
+                            } else if (firstErrorField.startsWith("images")) {
+                                console.log("Setting step to 3 (Photos)");
+                                setStep(3);
+                            } else if (firstErrorField === "name" || firstErrorField === "description" || firstErrorField === "typeId" || firstErrorField === "statusId" || firstErrorField === "price") {
+                                console.log("Setting step to 0 (Basic)");
+                                setStep(0);
+                            } else {
+                                console.log("Unknown field, keeping current step");
+                            }
                         }
                     })}
                 >
@@ -1593,7 +1722,7 @@ const landmarkFR = landmarkObj?.[locale] || "";
                     />
                     {/* ÉTAPE LOCATION */}
                     <Location
-                        next={() => methods.trigger(["location.countryId", "location.cityId", "location.streetAddress"]).then(isValid => isValid && setStep(2))}
+                        next={() => methods.trigger(["location.cityId", "location.streetAddress"]).then(isValid => isValid && setStep(2))}
                         prev={() => setStep((prev) => prev - 1)}
                         className={cn({ hidden: step !== 1 })}
                         countries={props.countries || []} 
@@ -1601,7 +1730,7 @@ const landmarkFR = landmarkObj?.[locale] || "";
                     />
                     {/* ÉTAPE FEATURES */}
                     <Features
-                        next={() => methods.trigger("feature").then(isValid => isValid && setStep(3))}
+                        next={() => methods.trigger(["feature.area", "feature.bathrooms", "feature.bedrooms", "feature.parkingSpots"]).then(isValid => isValid && setStep(3))}
                         prev={() => setStep((prev) => prev - 1)}
                         className={cn({ hidden: step !== 2 })}
                     />
@@ -1614,7 +1743,25 @@ const landmarkFR = landmarkObj?.[locale] || "";
                         // Props pour l'édition de médias
                         {...(props.property && {
                             savedImagesUrl: savedImagesUrl,
-                            setSavedImageUrl: setSavedImagesUrl,
+                            setSavedImageUrl: (newSavedImages) => {
+                                setSavedImagesUrl(newSavedImages);
+                                // Update form state when saved images change
+                                const allImagePlaceholders = [
+                                    ...newSavedImages.map(img => ({
+                                        url: img.url,
+                                        caption: img.caption || "",
+                                        isMain: img.isMain,
+                                        displayOrder: img.displayOrder,
+                                    })),
+                                    ...images.map((_, index) => ({
+                                        url: `placeholder-${index}`,
+                                        caption: "",
+                                        isMain: false,
+                                        displayOrder: newSavedImages.length + index,
+                                    })),
+                                ];
+                                methods.setValue("images", allImagePlaceholders as any, { shouldValidate: false });
+                            },
                             savedVideosUrl: savedVideosUrl,
                             setSavedVideoUrl: setSavedVideosUrl,
                         })}
@@ -1628,6 +1775,26 @@ const landmarkFR = landmarkObj?.[locale] || "";
                                 return;
                             }
                             setImages(newImages);
+                            // Update form state to reflect images (for validation)
+                            // Create a dummy array with placeholder objects to satisfy schema
+                            // The actual validation happens in onSubmit with finalImages
+                            const imagePlaceholders = newImages.map((_, index) => ({
+                                url: `placeholder-${index}`,
+                                caption: "",
+                                isMain: false,
+                                displayOrder: index,
+                            }));
+                            // Also include saved images
+                            const allImagePlaceholders = [
+                                ...savedImagesUrl.map(img => ({
+                                    url: img.url,
+                                    caption: img.caption || "",
+                                    isMain: img.isMain,
+                                    displayOrder: img.displayOrder,
+                                })),
+                                ...imagePlaceholders,
+                            ];
+                            methods.setValue("images", allImagePlaceholders as any, { shouldValidate: false });
                         }}
                         maxImages={props.photoLimit}
                         isPremium={

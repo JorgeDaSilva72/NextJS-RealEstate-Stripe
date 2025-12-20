@@ -67,8 +67,21 @@ export const saveSubscription = async ({
   endDate,
 }: SubscriptionDataType) => {
   try {
-    await prisma.subscriptions.create({
-      data: {
+    // Use upsert to handle cases where paymentID already exists
+    // This prevents duplicate key errors if user clicks multiple times or payment is retried
+    await prisma.subscriptions.upsert({
+      where: {
+        paymentID: paymentId,
+      },
+      update: {
+        // Update existing subscription if paymentID exists
+        startDate: startDate,
+        endDate: endDate,
+        planId: planId,
+        userId: userId,
+        updatedAt: new Date(),
+      },
+      create: {
         paymentID: paymentId,
         startDate: startDate,
         endDate: endDate,
@@ -90,12 +103,9 @@ export const saveSubscription = async ({
       message: "Abonnement enregistré avec succès",
     };
   } catch (e) {
-    // return {
-    //   success: false,
-    //   message: e.message,
-    // };
     const error =
       e instanceof Error ? e : new Error("Une erreur inconnue s'est produite");
+    console.error('[saveSubscription] Error:', error);
     return { success: false, message: error.message };
   }
 };

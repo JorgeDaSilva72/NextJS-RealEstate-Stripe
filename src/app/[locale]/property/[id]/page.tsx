@@ -652,6 +652,8 @@ import DescriptionCard from "../../components/DescriptionCard ";
 import { Link } from "@/i18n/routing";
 import { getLanguageIdByCode } from "@/lib/utils"; // 🚨 AJOUT : Utilitaire pour récupérer l'ID de langue
 import { getLocalizedText, LocalizedText } from "@/lib/utils/translation-utils";
+import WhatsAppContactButton from "../../components/WhatsAppContactButton";
+import WhatsAppQuickActions from "../../components/WhatsAppQuickActions";
 
 export interface Props {
   params: {
@@ -779,6 +781,12 @@ const PropertyPage = async ({ params }: Props) => {
       contact: true,
       images: true,
       videos: true,
+      // Include country for phone number normalization
+      country: {
+        select: {
+          phonePrefix: true,
+        },
+      },
       // Note: name, description, price, currency, landmark sont sélectionnés implicitement
       // car ils sont des champs directs dans le modèle Property et PropertyLocation.
     },
@@ -1018,6 +1026,31 @@ const PropertyPage = async ({ params }: Props) => {
                   label={t("phone")}
                   value={property.contact?.phone}
                 />
+                
+                {/* WhatsApp Contact Button & Quick Actions */}
+                {property.contact?.phone && (
+                  <div className="pt-3 border-t space-y-3">
+                    <WhatsAppContactButton
+                      phoneNumber={property.contact.phone}
+                      propertyId={property.id}
+                      propertyName={property.name}
+                      propertyPrice={property.price ? `${formatPrice(property.price)} ${property.currency || 'EUR'}` : undefined}
+                      propertyUrl={`${process.env.NEXT_PUBLIC_BASE_URL || 'https://afriqueavenirimmobilier.com'}/${locale}/property/${property.id}`}
+                      variant="button"
+                      size="md"
+                      className="w-full"
+                      buttonType="contact_agent"
+                      requireGDPRConsent={true}
+                    />
+                    <WhatsAppQuickActions
+                      phoneNumber={property.contact.phone}
+                      propertyId={property.id}
+                      propertyName={property.name}
+                      propertyUrl={`${process.env.NEXT_PUBLIC_BASE_URL || 'https://afriqueavenirimmobilier.com'}/${locale}/property/${property.id}`}
+                      propertyPrice={property.price ? `${formatPrice(property.price)} ${property.currency || 'EUR'}` : undefined}
+                    />
+                  </div>
+                )}
               </div>
             </Card>
             {property.videos.length > 0 && (

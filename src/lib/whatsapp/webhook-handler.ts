@@ -14,6 +14,7 @@ import {
   MessageStatus,
 } from './types';
 import { validateWebhookSignature } from './validators';
+import { createBotService } from './bot-service';
 
 const prisma = new PrismaClient();
 
@@ -168,6 +169,7 @@ export class WhatsAppWebhookHandler {
       // Parse message content based on type
       const messageType = this.mapMessageType(message.type);
       const content = this.extractMessageContent(message);
+      const messageText = typeof content === 'string' ? content : content?.text || '';
 
       // Store message in database
       const account = await prisma.whatsAppAccount.findUnique({
@@ -204,8 +206,19 @@ export class WhatsAppWebhookHandler {
 
       console.log('[Webhook] Incoming message processed:', message.id);
 
+      // Initialize bot service and check if welcome message needed
+      const botService = createBotService(accountId);
+      const hasWelcome = await botService.hasWelcomeBeenSent(conversation.id);
+      
+      if (!hasWelcome) {
+        // Send welcome message with interactive buttons
+        await botService.sendWelcomeMessage(message.from, conversation.id);
+      } else if (messageText) {
+        // Process user response for lead qualification
+        await botService.processUserResponse(message.from, messageText, conversation.id);
+      }
+
       // TODO: Trigger notification to admin/agent
-      // TODO: Auto-reply logic (if configured)
     } catch (error) {
       console.error('[Webhook] Handle incoming message error:', error);
       throw error;

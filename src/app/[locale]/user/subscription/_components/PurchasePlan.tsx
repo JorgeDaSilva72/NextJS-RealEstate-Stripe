@@ -403,7 +403,7 @@
 // import ModalCity from "./ModalCity";
 // import useModalOpen from "@/app/[locale]/hooks/useModalOpen";
 // import { toast } from "react-toastify";
-// import { useRouter } from "next/navigation";
+// import { useRouter } from "@/i18n/routing";
 // import {
 //   saveFreeSubscription,
 //   saveSubscription,
@@ -705,7 +705,7 @@ import { createPaymentIntent } from "@/lib/actions/payment";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import {
   saveFreeSubscription,
   saveSubscription,
@@ -942,9 +942,10 @@ const PurchasePlan = ({
       <button
         aria-label={t("subscribeToPlan", { planName: plan.namePlan })}
         onClick={handleSubscribe}
-        className={`w-full bg-primary hover:bg-primary/80 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration-300 ${buttonClassName}`}
+        disabled={isLoading}
+        className={`w-full text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration-300 ${buttonClassName} ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
-        {t("subscribe")}
+        {isLoading ? "Chargement..." : t("subscribe")}
       </button>
 
       {showCheckout && renderCheckout()}

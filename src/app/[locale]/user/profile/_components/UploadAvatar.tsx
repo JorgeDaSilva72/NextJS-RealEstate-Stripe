@@ -227,8 +227,12 @@ const UploadAvatar = ({
 
   return (
     <div>
-      <button onClick={onOpen}>
-        <PencilIcon className="w-6 text-slate-400 hover:text-primary transition-colors" />
+      <button 
+        onClick={onOpen}
+        className="p-2 bg-white hover:bg-gray-100 rounded-full shadow-md transition-all duration-200 hover:scale-110"
+        aria-label="Changer l'avatar"
+      >
+        <PencilIcon className="w-5 h-5 text-gray-600" />
       </button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>

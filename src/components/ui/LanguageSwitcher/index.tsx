@@ -663,7 +663,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "@/i18n/routing";
 import { Select, SelectItem } from "@nextui-org/react";
 
 const FrFlag = () => (
@@ -755,10 +755,32 @@ const LanguageSwitcher = () => {
     if (newLocale === locale) {
       return;
     }
-    // Sinon, naviguer vers la nouvelle langue
-    if (pathname) {
-      router.push(`/${newLocale}${pathname.slice(3)}`);
+    
+    // The usePathname hook from next-intl should return pathname without locale prefix
+    // But we'll clean it to prevent any locale stacking issues
+    let cleanPath = pathname || "/";
+    
+    // Remove any locale prefixes that might exist (handles stacked locales like /fr/en)
+    // This regex matches /fr, /en, /pt, /ar at the start of the path and removes them
+    const localePrefixPattern = /^\/(?:fr|en|pt|ar)(\/|$)/i;
+    while (localePrefixPattern.test(cleanPath)) {
+      cleanPath = cleanPath.replace(localePrefixPattern, "/");
     }
+    
+    // Ensure we have a leading slash
+    if (!cleanPath.startsWith("/")) {
+      cleanPath = "/" + cleanPath;
+    }
+    
+    // Remove any double slashes that might have been created
+    cleanPath = cleanPath.replace(/\/+/g, "/");
+    
+    // Build the final path with the new locale
+    // For root path, just use the locale; otherwise prepend locale to the clean path
+    const finalPath = cleanPath === "/" ? `/${newLocale}` : `/${newLocale}${cleanPath}`;
+    
+    // Navigate to the new path
+    router.push(finalPath);
   };
 
   const currentLanguage = languages.find((lang) => lang.code === locale);

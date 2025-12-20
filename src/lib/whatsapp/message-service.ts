@@ -40,6 +40,11 @@ export class WhatsAppMessageService {
       // Send message via WhatsApp API
       const result = await this.client.sendTextMessage(options);
 
+      // If token expired, return immediately without storing
+      if (!result.success && result.error?.isTokenExpired) {
+        return result;
+      }
+
       if (result.success && result.data) {
         // Store message in database
         await this.storeOutboundMessage({
@@ -77,6 +82,11 @@ export class WhatsAppMessageService {
   ): Promise<ApiResponse<SendMessageResponse>> {
     try {
       const result = await this.client.sendImageMessage(options);
+
+      // If token expired, return immediately without storing
+      if (!result.success && result.error?.isTokenExpired) {
+        return result;
+      }
 
       if (result.success && result.data) {
         await this.storeOutboundMessage({
@@ -118,6 +128,11 @@ export class WhatsAppMessageService {
     try {
       const result = await this.client.sendVideoMessage(options);
 
+      // If token expired, return immediately without storing
+      if (!result.success && result.error?.isTokenExpired) {
+        return result;
+      }
+
       if (result.success && result.data) {
         await this.storeOutboundMessage({
           conversationId,
@@ -157,6 +172,11 @@ export class WhatsAppMessageService {
   ): Promise<ApiResponse<SendMessageResponse>> {
     try {
       const result = await this.client.sendDocumentMessage(options);
+
+      // If token expired, return immediately without storing
+      if (!result.success && result.error?.isTokenExpired) {
+        return result;
+      }
 
       if (result.success && result.data) {
         await this.storeOutboundMessage({
@@ -202,6 +222,11 @@ export class WhatsAppMessageService {
         ...options,
         to: toPhone,
       });
+
+      // If token expired, return immediately without storing
+      if (!result.success && result.error?.isTokenExpired) {
+        return result;
+      }
 
       if (result.success && result.data) {
         // Get template from database

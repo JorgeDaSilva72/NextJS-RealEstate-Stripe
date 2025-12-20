@@ -1,12 +1,5 @@
 import { saveSubscription } from "@/lib/actions/subscription";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-} from "@nextui-org/react";
 import { SubscriptionPlan } from "@prisma/client";
 import {
   AddressElement,
@@ -14,9 +7,17 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import React, { FormEvent, useState } from "react";
 import { toast } from "react-toastify";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   show: boolean;
@@ -37,12 +38,18 @@ const CheckoutForm = (props: Props) => {
       setLoading(true);
       if (!elements || !stripe) return;
 
+      // Get current locale from URL
+      const currentLocale = typeof window !== "undefined" 
+        ? window.location.pathname.split('/')[1] || 'fr'
+        : 'fr';
+      const baseUrl = typeof window !== "undefined" 
+        ? window.location.origin 
+        : "http://localhost:3000";
+
       const result = await stripe?.confirmPayment({
         elements,
         confirmParams: {
-          // return_url: "https://afrique-avenir.vercel.app/user/profile",
-
-          return_url: "http://localhost:3000/user/profile",
+          return_url: `${baseUrl}/${currentLocale}/user/profile`,
         },
         redirect: "if_required",
       });
@@ -59,15 +66,20 @@ const CheckoutForm = (props: Props) => {
         endDate.setMonth(endDate.getMonth() + 12); // Ajouter un mois
         // const endDateISOString = endDate.toISOString();
 
-        await saveSubscription({
+        const subscriptionResult = await saveSubscription({
           paymentId: result.paymentIntent.id,
           planId: props.plan.id,
           userId: user?.id,
           startDate: startDate,
           endDate: endDate,
         });
-        toast.success("Merci pour votre abonnement.");
-        router.push("/user/profile");
+
+        if (subscriptionResult.success) {
+          toast.success("Merci pour votre abonnement.");
+          router.push("/user/profile");
+        } else {
+          toast.error(subscriptionResult.message || "Erreur lors de l'enregistrement de l'abonnement.");
+        }
       }
     } catch (e) {
       console.error(e);
@@ -76,35 +88,38 @@ const CheckoutForm = (props: Props) => {
     }
   };
   return (
-    <Modal isOpen={props.show}>
-      <ModalContent>
-        <ModalHeader>Finalisez votre achat d&apos;abonnement</ModalHeader>
-        <ModalBody>
-          <form onSubmit={handleSubmit}>
+    <Dialog open={props.show} onOpenChange={props.setShow}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Finalisez votre achat d&apos;abonnement</DialogTitle>
+          <DialogDescription>
+            Complétez votre paiement pour activer votre plan {props.plan.namePlan}
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="py-4">
             <PaymentElement />
-            {/* <AddressElement
-              options={{
-                mode: "shipping",
-                allowedCountries: ["US"],
-              }}
-            /> */}
-            <div className="flex justify-center gap-4">
-              <Button
-                isDisabled={isLoading}
-                onClick={() => props.setShow(false)}
-                color="danger"
-                variant="light"
-              >
-                Annuler
-              </Button>
-              <Button isLoading={isLoading} color="primary" type="submit">
-                Payer
-              </Button>
-            </div>
-          </form>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+          </div>
+          <div className="flex justify-end gap-4 pt-4 border-t">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => props.setShow(false)}
+              disabled={isLoading}
+            >
+              Annuler
+            </Button>
+            <Button 
+              type="submit" 
+              disabled={isLoading}
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+            >
+              {isLoading ? "Traitement..." : "Payer maintenant"}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
 

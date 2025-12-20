@@ -26,15 +26,6 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    // Définissez l'URL de redirection en fonction de l'environnement
-    const baseUrl =
-      process.env.NODE_ENV === "production"
-        ? "https://afriqueavenirimmobilier.com/"
-        : "http://localhost:3000/";
-
-    // A essqyer
-    //const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000/";
-
     // Si l'utilisateur n'existe pas, créez-le
     if (!dbUser) {
       // Validate required fields
@@ -51,17 +42,62 @@ export async function GET(req: NextRequest) {
           avatarUrl: generateAvatarUrl(user.id),
         },
       });
-      // return NextResponse.json({
-      //   message: "User created successfully",
-      //   user: newUser,
-      // });
       console.log("User created:", newUser);
-      // Redirigez vers la page d'accueil après la création de l'utilisateur
-      // return NextResponse.redirect(baseUrl);
     }
 
-    // Si l'utilisateur existe déjà, redirigez également
-    return NextResponse.redirect(baseUrl);
+    // Get redirect URL from query params
+    const redirectUrl = req.nextUrl.searchParams.get("redirect_url");
+    
+    // Determine base URL
+    const baseUrl =
+      process.env.NODE_ENV === "production"
+        ? "https://afriqueavenirimmobilier.com"
+        : "http://localhost:3000";
+
+    // Extract locale from redirect URL or use default
+    let finalRedirect: string;
+    let locale = "fr"; // Default locale
+    
+    if (redirectUrl) {
+      try {
+        const decodedUrl = decodeURIComponent(redirectUrl);
+        
+        // Extract locale from URL (e.g., /fr/..., /en/...)
+        const localeMatch = decodedUrl.match(/\/(fr|en|pt|ar)(?:\/|$)/);
+        if (localeMatch) {
+          locale = localeMatch[1];
+        }
+        
+        // Use the provided redirect URL if it's absolute
+        if (decodedUrl.startsWith("http")) {
+          finalRedirect = decodedUrl;
+        } else {
+          // Make it absolute
+          finalRedirect = `${baseUrl}${decodedUrl.startsWith("/") ? "" : "/"}${decodedUrl}`;
+        }
+        
+        // Add query param to trigger refresh in Appbar
+        // Handle both absolute URLs and relative paths
+        try {
+          const url = new URL(finalRedirect);
+          url.searchParams.set("from_auth", "true");
+          finalRedirect = url.toString();
+        } catch {
+          // If URL parsing fails, append query param manually
+          const separator = finalRedirect.includes("?") ? "&" : "?";
+          finalRedirect = `${finalRedirect}${separator}from_auth=true`;
+        }
+      } catch {
+        // If decode fails, use default
+        finalRedirect = `${baseUrl}/${locale}?from_auth=true`;
+      }
+    } else {
+      // Default: redirect to home page with default locale
+      finalRedirect = `${baseUrl}/${locale}?from_auth=true`;
+    }
+
+    console.log("[Auth Success] Redirecting to:", finalRedirect);
+    return NextResponse.redirect(finalRedirect);
   } catch (error) {
     // Gérez les erreurs et retournez une réponse d'erreur
     console.error("Error in GET handler:", error);

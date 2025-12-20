@@ -64,13 +64,13 @@ import SignInPanel from "./components/signInPanel";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FavoriteProvider } from "./context/FavoriteContext";
-import FooterWrapper from "./components/FooterWrapper";
 import Script from "next/script";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { LanguageProvider } from "./context/LanguageContext ";
+import WhatsAppWidgetProvider from "./components/WhatsAppWidgetProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -228,11 +228,11 @@ export default async function RootLayout({
                   {/* Contenu principal */}
                   <main className="flex-grow">{safeChildren}</main>
 
-                  {/* FooterWrapper conditionne l'affichage du Footer */}
-                  <FooterWrapper />
-
                   {/* Toast notifications */}
                   <ToastContainer />
+
+                  {/* WhatsApp Floating Widget */}
+                  <WhatsAppWidgetProvider />
                 </Providers>
               </FavoriteProvider>
             </LanguageProvider>

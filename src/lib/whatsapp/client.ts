@@ -451,19 +451,26 @@ export class WhatsAppClient {
   /**
    * Format error for API response
    */
-  private formatError(error: any): { code: number; message: string; details?: any } {
+  private formatError(error: any): { code: number; message: string; details?: any; isTokenExpired?: boolean } {
     if (axios.isAxiosError(error)) {
       const data: any = error.response?.data;
+      const errorCode = data?.error?.code || error.response?.status || 500;
+      const isTokenExpired = errorCode === 190 || 
+                            (data?.error?.message?.includes('expired') || 
+                             data?.error?.message?.includes('Session has expired'));
+
       return {
-        code: error.response?.status || 500,
+        code: errorCode,
         message: data?.error?.message || error.message,
         details: data?.error,
+        isTokenExpired,
       };
     }
 
     return {
       code: 500,
       message: error instanceof Error ? error.message : 'Unknown error occurred',
+      isTokenExpired: false,
     };
   }
 }
