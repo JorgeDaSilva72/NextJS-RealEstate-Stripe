@@ -74,6 +74,15 @@
       "ar": "Árabe"
     }
   },
+  "Navbar": {
+    "buy": "Comprar",
+    "rent": "Alugar",
+    "properties": "Propriedades",
+    "services": "Serviços",
+    "blog": "Blog",
+    "login": "Entrar",
+    "publishAd": "Publicar Anúncio"
+  },
   "Footer": {
     "logoAlt": "Ícone",
     "companyName": "AFRIQUE AVENIR",
@@ -86,7 +95,25 @@
     "feedbackSuccess": "Seu feedback foi enviado com sucesso! Obrigado.",
     "contactSuccess": "Sua mensagem foi enviada com sucesso! Responderemos em breve.",
     "sendError": "Erro ao enviar a mensagem",
-    "generalError": "Ocorreu um erro. Por favor, tente novamente."
+    "generalError": "Ocorreu um erro. Por favor, tente novamente.",
+    "about": "Sobre",
+    "ourTeam": "Nossa Equipe",
+    "careers": "Carreiras",
+    "press": "Imprensa",
+    "buy": "Comprar",
+    "rent": "Alugar",
+    "properties": "Propriedades",
+    "sell": "Vender",
+    "estimation": "Estimativa",
+    "faq": "FAQ",
+    "guide": "Guia",
+    "services": "Serviços",
+    "support": "Suporte",
+    "legalNotice": "Aviso Legal",
+    "terms": "Termos",
+    "privacy": "Privacidade",
+    "cookies": "Cookies",
+    "copyright": "© 2024 Afrique Avenir Imobiliário. Todos os direitos reservados."
   },
   "faq": {
     "title": "Perguntas Frequentes",
@@ -290,9 +317,18 @@
     "purchasedOn": "Comprado em",
     "expiresOn": "Expira em",
     "noSubscription": "Nenhuma assinatura encontrada!",
-    "buySubscription": "Compre sua assinatura"
+    "buySubscription": "Compre sua assinatura",
+    "subscriptionStatus": "Status da Assinatura",
+    "active": "Ativo",
+    "inactive": "Inativo",
+    "memberSince": "Membro desde",
+    "property": "propriedade",
+    "properties": "propriedades"
   },
   "BuyPage": {
+    "title": "Comprar uma Propriedade",
+    "propertiesAvailable": "propriedades disponíveis",
+    "forSale": "À venda",
     "heroTitle": "Encontre seu imóvel no Marrocos",
     "heroSubtitle": "Propriedades excepcionais nas cidades mais bonitas do reino",
     "benefitsTitle": "Por que comprar no Marrocos?",
@@ -344,7 +380,26 @@
       "fetchTypes": "Falha ao recuperar os tipos de imóvel"
     }
   },
+  "SearchBar": {
+    "locationPlaceholder": "Localização",
+    "allCities": "Todas as cidades",
+    "propertyTypePlaceholder": "Tipo de propriedade",
+    "allTypes": "Todos os tipos",
+    "minPricePlaceholder": "Preço mín.",
+    "maxPricePlaceholder": "Preço máx.",
+    "searchButton": "Pesquisar",
+    "bedroomsLabel": "Quartos",
+    "bedroomsPlaceholder": "Número de quartos",
+    "bathroomsLabel": "Banheiros",
+    "bathroomsPlaceholder": "Número de banheiros",
+    "minAreaLabel": "Área mín. (m²)",
+    "minAreaPlaceholder": "Área mínima",
+    "all": "Todos"
+  },
   "RentPage": {
+    "title": "Alugar uma Propriedade",
+    "propertiesAvailable": "propriedades disponíveis",
+    "forRent": "Para alugar",
     "heroTitle": "Alugue seu imóvel no Marrocos",
     "heroSubtitle": "Locais de qualidade nas cidades mais bonitas do reino",
     "benefitsTitle": "Por que alugar no Marrocos?",
@@ -799,7 +854,17 @@
     "details": "Detalhes",
     "edit": "Editar",
     "delete": "Excluir",
-    "appointment": "Reunião"
+    "appointment": "Reunião",
+    "myProperties": "Minhas Propriedades",
+    "properties": "propriedades",
+    "property": "propriedade",
+    "addProperty": "+ Adicionar propriedade",
+    "view": "Ver",
+    "noProperties": "Nenhuma propriedade",
+    "noPropertiesDescription": "Você ainda não adicionou nenhuma propriedade. Comece adicionando seu primeiro anúncio.",
+    "addFirstProperty": "Adicionar minha primeira propriedade",
+    "previous": "Anterior",
+    "next": "Próximo"
   },
   "DeletePropertyPage": {
     "confirmDelete": "Tem certeza de que deseja excluir este anúncio?",
@@ -821,9 +886,18 @@
     "closeModal": "Fechar a janela de filtros"
   },
   "filters": {
+    "searchProperties": "Pesquisar Propriedades",
+    "activeFilters": "filtros ativos",
+    "showFilters": "Filtros",
+    "hideFilters": "Ocultar",
+    "searchPlaceholder": "Pesquisar por nome, descrição...",
     "allPropertyTypes": "Todos os tipos de imóveis",
     "allOperations": "Todas as operações",
     "allCountries": "Todos os países",
+    "allCities": "Todas as cidades",
+    "allTypes": "Todos os tipos",
+    "city": "Cidade",
+    "type": "Tipo",
     "operation": "Operação",
     "chooseOperation": "Escolher a operação",
     "propertyType": "Tipo de imóvel",
@@ -834,6 +908,8 @@
     "noSorting": "Sem ordenação",
     "priceAsc": "Preço crescente",
     "priceDesc": "Preço decrescente",
+    "priceLowToHigh": "Preço crescente",
+    "priceHighToLow": "Preço decrescente",
     "surfaceAsc": "Área crescente",
     "surfaceDesc": "Área decrescente",
     "oldest": "Mais antigo",
@@ -843,7 +919,9 @@
     "bedrooms": "Quartos",
     "bathrooms": "Banheiros",
     "fetchErrorStatuses": "Erro ao recuperar os status:",
-    "fetchErrorTypes": "Erro ao recuperar os tipos:"
+    "fetchErrorTypes": "Erro ao recuperar os tipos:",
+    "fetchErrorCountries": "Erro ao buscar países:",
+    "fetchErrorCities": "Erro ao buscar cidades:"
   },
   "PropertyCard": {
     "imageNotAvailable": "Imagem não disponível",

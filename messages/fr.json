@@ -74,6 +74,15 @@
       "ar": "Arabe"
     }
   },
+  "Navbar": {
+    "buy": "Acheter",
+    "rent": "Louer",
+    "properties": "Propriétés",
+    "services": "Services",
+    "blog": "Blog",
+    "login": "Se Connecter",
+    "publishAd": "Publier une annonce"
+  },
   "Footer": {
     "logoAlt": "Icône",
     "companyName": "AFRIQUE AVENIR",
@@ -86,7 +95,25 @@
     "feedbackSuccess": "Votre feedback a été envoyé avec succès ! Merci.",
     "contactSuccess": "Votre message a été envoyé avec succès ! Nous vous répondrons bientôt.",
     "sendError": "Erreur lors de l'envoi du message",
-    "generalError": "Une erreur est survenue. Veuillez réessayer."
+    "generalError": "Une erreur est survenue. Veuillez réessayer.",
+    "about": "À Propos",
+    "ourTeam": "Notre équipe",
+    "careers": "Carrières",
+    "press": "Presse",
+    "buy": "Acheter",
+    "rent": "Louer",
+    "properties": "Propriétés",
+    "sell": "Vendre",
+    "estimation": "Estimation",
+    "faq": "FAQ",
+    "guide": "Guide",
+    "services": "Services",
+    "support": "Support",
+    "legalNotice": "Mentions légales",
+    "terms": "CGU",
+    "privacy": "Confidentialité",
+    "cookies": "Cookies",
+    "copyright": "© 2024 Afrique Avenir Immobilier. Tous droits réservés."
   },
   "faq": {
     "title": "Questions Fréquentes",
@@ -290,9 +317,18 @@
     "purchasedOn": "Acheté le",
     "expiresOn": "Expire le",
     "noSubscription": "Aucun abonnement trouvé !",
-    "buySubscription": "Achetez votre abonnement"
+    "buySubscription": "Achetez votre abonnement",
+    "subscriptionStatus": "Statut Abonnement",
+    "active": "Actif",
+    "inactive": "Inactif",
+    "memberSince": "Membre depuis",
+    "property": "propriété",
+    "properties": "propriétés"
   },
   "BuyPage": {
+    "title": "Acheter une Propriété",
+    "propertiesAvailable": "propriétés disponibles",
+    "forSale": "À vendre",
     "heroTitle": "Trouvez votre bien immobilier au Maroc",
     "heroSubtitle": "Des propriétés exceptionnelles dans les plus belles villes du royaume",
     "benefitsTitle": "Pourquoi acheter au Maroc ?",
@@ -345,6 +381,9 @@
     }
   },
   "RentPage": {
+    "title": "Louer une Propriété",
+    "propertiesAvailable": "propriétés disponibles",
+    "forRent": "À louer",
     "heroTitle": "Louez votre bien immobilier au Maroc",
     "heroSubtitle": "Des locations de qualité dans les plus belles villes du royaume",
     "benefitsTitle": "Pourquoi louer au Maroc ?",
@@ -728,12 +767,16 @@
       "transactionType": "Type de transaction",
       "transactionTypePlaceholder": "Sélectionnez un type de transaction",
       "priceInEuros": "Prix en euros",
+      "titlePlaceholder": "Titre de l'annonce",
+      "descriptionPlaceholder": "Description détaillée de la propriété",
       "previous": "Précédent",
       "next": "Suivant"
     },
     "Location": {
+      "title": "Emplacement",
       "address": "Adresse",
       "zipCode": "Code postal",
+      "zipCodePlaceholder": "Code postal",
       "city": "Ville",
       "chooseCity": "Choisissez une ville",
       "streetAddressPlaceholder": "Entrez l'adresse de la rue",
@@ -743,8 +786,14 @@
       "selectCountry": "Sélectionnez un pays",
       "chooseCountry": "Choisissez un pays",
       "searchAddress": "Rechercher une adresse",
-      "searchAddressPlaceholder": "Rechercher une adresse",
+      "searchAddressPlaceholder": "Tapez une adresse...",
+      "searchAddressHint": "Recherchez une adresse ou cliquez/déplacez le marqueur sur la carte",
+      "map": "Carte interactive",
+      "mapHint": "Cliquez sur la carte pour sélectionner l'emplacement exact",
+      "complementaryInfo": "Informations complémentaires",
+      "landmarkPlaceholder": "Points de repère, instructions spéciales...",
       "selectCountryFirst": "Veuillez d'abord sélectionner un pays",
+      "loading": "Chargement...",
       "addressUpdateError": "Erreur lors de la mise à jour de l'adresse",
       "noAddressDetails": "Aucun détail disponible pour cette adresse",
       "googleMapsError": "Erreur de chargement de Google Maps. Veuillez réessayer ultérieurement.",
@@ -752,10 +801,12 @@
       "next": "Suivant"
     },
     "Features": {
+      "title": "Caractéristiques",
       "bedrooms": "Chambre(s)",
       "bathrooms": "Salle(s) de bain",
       "parkingSpots": "Place(s) de stationnement",
       "area": "Surface habitable en m²",
+      "amenities": "Équipements et commodités",
       "hasSwimmingPool": "Possède une piscine",
       "hasGardenYard": "Possède un jardin/une cour",
       "hasBalcony": "Possède un balcon/terrasse",
@@ -763,13 +814,17 @@
       "next": "Suivant"
     },
     "Picture": {
+      "title": "Photos et vidéos",
+      "images": "Images",
+      "preview": "Aperçu des images",
+      "dropHere": "Déposez les images ici",
       "maxImagesError": "Vous ne pouvez pas télécharger plus de {count} images.",
       "invalidFilesError": "Certains fichiers ne sont pas des images valides.",
       "fileSizeError": "Certains fichiers sont plus grand que {size}Mo.",
       "premiumOnlyError": "Seuls les utilisateurs avec le PACK ELITE DIAMANT peuvent ajouter une vidéo.",
       "invalidYoutubeLink": "Lien YouTube non valide.",
       "maxVideosError": "Vous ne pouvez pas ajouter plus de {count} vidéos.",
-      "clickToAddImages": "Cliquer ici pour ajouter des images",
+      "clickToAddImages": "Cliquez pour sélectionner ou glissez-déposez",
       "acceptedFormats": "Formats acceptés : JPG, JPEG, WEBP (max. 2 Mo par fichier)",
       "addYoutubeVideo": "Ajouter une vidéo YouTube",
       "note": "Note",
@@ -780,9 +835,16 @@
       "next": "Suivant"
     },
     "Contact": {
+      "title": "Informations de contact",
       "name": "Nom du contact",
       "phone": "Téléphone",
       "email": "Email",
+      "namePlaceholder": "Nom complet",
+      "phonePlaceholder": "+33 6 12 34 56 78",
+      "emailPlaceholder": "email@example.com",
+      "autoFillAvailable": "Remplir automatiquement depuis votre profil",
+      "autoFillHint": "Cliquez pour remplir les champs avec vos informations",
+      "autoFill": "Remplir",
       "previous": "Précédent",
       "save": "Sauvegarder"
     }
@@ -800,7 +862,17 @@
     "details": "Détails",
     "edit": "Éditer",
     "delete": "Supprimer",
-    "appointment": "Rendez-vous"
+    "appointment": "Rendez-vous",
+    "myProperties": "Mes Propriétés",
+    "properties": "propriétés",
+    "property": "propriété",
+    "addProperty": "+ Ajouter une propriété",
+    "view": "Voir",
+    "noProperties": "Aucune propriété",
+    "noPropertiesDescription": "Vous n'avez pas encore ajouté de propriétés. Commencez par ajouter votre première annonce.",
+    "addFirstProperty": "Ajouter ma première propriété",
+    "previous": "Précédent",
+    "next": "Suivant"
   },
   "DeletePropertyPage": {
     "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette annonce ?",
@@ -813,8 +885,32 @@
     "message": "Désolé, nous n'avons trouvé aucune annonce correspondant à votre recherche. Essayez d'ajuster vos critères.",
     "buttonText": "Modifier la recherche"
   },
+  "ResultPage": {
+    "title": "Résultats de recherche",
+    "propertiesFound": "propriétés trouvées",
+    "all": "Tous",
+    "buy": "Acheter",
+    "rent": "Louer"
+  },
+  "SearchBar": {
+    "locationPlaceholder": "Localisation",
+    "allCities": "Toutes les villes",
+    "propertyTypePlaceholder": "Type de bien",
+    "allTypes": "Tous les types",
+    "minPricePlaceholder": "Prix min.",
+    "maxPricePlaceholder": "Prix max.",
+    "searchButton": "Rechercher",
+    "bedroomsLabel": "Chambres",
+    "bedroomsPlaceholder": "Nombre de chambres",
+    "bathroomsLabel": "Salles de bain",
+    "bathroomsPlaceholder": "Nombre de salles de bain",
+    "minAreaLabel": "Surface min. (m²)",
+    "minAreaPlaceholder": "Surface minimale",
+    "all": "Toutes"
+  },
   "Search": {
     "searchPlaceholder": "Rechercher une annonce...",
+    "searchButton": "Rechercher",
     "cityPlaceholder": "Ville",
     "filters": "Filtres",
     "accept": "Accepter",
@@ -822,9 +918,18 @@
     "closeModal": "Fermer la fenêtre de filtres"
   },
   "filters": {
+    "searchProperties": "Rechercher des propriétés",
+    "activeFilters": "filtres actifs",
+    "showFilters": "Filtres",
+    "hideFilters": "Masquer",
+    "searchPlaceholder": "Rechercher par nom, description...",
     "allPropertyTypes": "Tout Type de bien",
     "allOperations": "Toute opération",
     "allCountries": "Tous les pays",
+    "allCities": "Toutes les villes",
+    "allTypes": "Tous les types",
+    "city": "Ville",
+    "type": "Type",
     "operation": "Opération",
     "chooseOperation": "Choisir l'opération",
     "propertyType": "Type de bien",
@@ -835,6 +940,8 @@
     "noSorting": "Aucun tri",
     "priceAsc": "Prix croissant",
     "priceDesc": "Prix décroissant",
+    "priceLowToHigh": "Prix croissant",
+    "priceHighToLow": "Prix décroissant",
     "surfaceAsc": "Surface croissante",
     "surfaceDesc": "Surface décroissante",
     "oldest": "Plus ancien",
@@ -844,7 +951,9 @@
     "bedrooms": "Chambres",
     "bathrooms": "Salles de bain",
     "fetchErrorStatuses": "Erreur lors de la récupération des statuts:",
-    "fetchErrorTypes": "Erreur lors de la récupération des types:"
+    "fetchErrorTypes": "Erreur lors de la récupération des types:",
+    "fetchErrorCountries": "Erreur lors de la récupération des pays:",
+    "fetchErrorCities": "Erreur lors de la récupération des villes:"
   },
   "PropertyCard": {
     "imageNotAvailable": "Image non disponible",

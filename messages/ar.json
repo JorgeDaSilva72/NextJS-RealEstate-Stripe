@@ -74,6 +74,15 @@
       "ar": "العربية"
     }
   },
+  "Navbar": {
+    "buy": "شراء",
+    "rent": "إيجار",
+    "properties": "العقارات",
+    "services": "الخدمات",
+    "blog": "المدونة",
+    "login": "تسجيل الدخول",
+    "publishAd": "نشر إعلان"
+  },
   "Footer": {
     "logoAlt": "أيقونة",
     "companyName": "AFRIQUE AVENIR",
@@ -86,7 +95,25 @@
     "feedbackSuccess": "تم إرسال ملاحظاتك بنجاح! شكراً لك.",
     "contactSuccess": "تم إرسال رسالتك بنجاح! سنرد عليك قريباً.",
     "sendError": "حدث خطأ أثناء إرسال الرسالة",
-    "generalError": "حدث خطأ. يرجى المحاولة مرة أخرى."
+    "generalError": "حدث خطأ. يرجى المحاولة مرة أخرى.",
+    "about": "حول",
+    "ourTeam": "فريقنا",
+    "careers": "الوظائف",
+    "press": "الصحافة",
+    "buy": "شراء",
+    "rent": "إيجار",
+    "properties": "العقارات",
+    "sell": "بيع",
+    "estimation": "التقدير",
+    "faq": "الأسئلة الشائعة",
+    "guide": "الدليل",
+    "services": "الخدمات",
+    "support": "الدعم",
+    "legalNotice": "إشعار قانوني",
+    "terms": "الشروط",
+    "privacy": "الخصوصية",
+    "cookies": "ملفات تعريف الارتباط",
+    "copyright": "© 2024 أفريقيا أفينير للعقارات. جميع الحقوق محفوظة."
   },
   "faq": {
     "title": "الأسئلة الشائعة",
@@ -290,9 +317,18 @@
     "purchasedOn": "تم الشراء في",
     "expiresOn": "تنتهي في",
     "noSubscription": "لم يتم العثور على اشتراك!",
-    "buySubscription": "اشترِ اشتراكك"
+    "buySubscription": "اشترِ اشتراكك",
+    "subscriptionStatus": "حالة الاشتراك",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "memberSince": "عضو منذ",
+    "property": "عقار",
+    "properties": "عقارات"
   },
   "BuyPage": {
+    "title": "شراء عقار",
+    "propertiesAvailable": "عقارات متاحة",
+    "forSale": "للبيع",
     "heroTitle": "ابحث عن عقارك في المغرب",
     "heroSubtitle": "عقارات استثنائية في أجمل مدن المملكة",
     "benefitsTitle": "لماذا تشتري في المغرب؟",
@@ -345,6 +381,9 @@
     }
   },
   "RentPage": {
+    "title": "استئجار عقار",
+    "propertiesAvailable": "عقارات متاحة",
+    "forRent": "للإيجار",
     "heroTitle": "استأجر عقارك في المغرب",
     "heroSubtitle": "عقارات للإيجار في أجمل مدن المملكة",
     "benefitsTitle": "لماذا تستأجر في المغرب؟",
@@ -799,7 +838,17 @@
     "details": "التفاصيل",
     "edit": "تحرير",
     "delete": "حذف",
-    "appointment": "موعد"
+    "appointment": "موعد",
+    "myProperties": "عقاراتي",
+    "properties": "عقارات",
+    "property": "عقار",
+    "addProperty": "+ إضافة عقار",
+    "view": "عرض",
+    "noProperties": "لا توجد عقارات",
+    "noPropertiesDescription": "لم تقم بإضافة أي عقارات بعد. ابدأ بإضافة إعلانك الأول.",
+    "addFirstProperty": "إضافة عقاري الأول",
+    "previous": "السابق",
+    "next": "التالي"
   },
   "DeletePropertyPage": {
     "confirmDelete": "هل أنت متأكد أنك تريد حذف هذا الإعلان؟",
@@ -812,8 +861,42 @@
     "message": "عذرًا، لم نعثر على أي إعلانات تطابق بحثك. حاول تعديل معايير البحث.",
     "buttonText": "تعديل البحث"
   },
+  "ResultPage": {
+    "title": "نتائج البحث",
+    "propertiesFound": "عقار موجود",
+    "all": "الكل",
+    "buy": "شراء",
+    "rent": "إيجار"
+  },
+  "BuyPage": {
+    "title": "شراء عقار",
+    "propertiesAvailable": "عقارات متاحة للبيع",
+    "forSale": "للبيع"
+  },
+  "RentPage": {
+    "title": "إيجار عقار",
+    "propertiesAvailable": "عقارات متاحة للإيجار",
+    "forRent": "للإيجار"
+  },
+  "SearchBar": {
+    "locationPlaceholder": "الموقع",
+    "allCities": "كل المدن",
+    "propertyTypePlaceholder": "نوع العقار",
+    "allTypes": "كل الأنواع",
+    "minPricePlaceholder": "الحد الأدنى للسعر",
+    "maxPricePlaceholder": "الحد الأقصى للسعر",
+    "searchButton": "بحث",
+    "bedroomsLabel": "الغرف",
+    "bedroomsPlaceholder": "عدد الغرف",
+    "bathroomsLabel": "الحمامات",
+    "bathroomsPlaceholder": "عدد الحمامات",
+    "minAreaLabel": "الحد الأدنى للمساحة (م²)",
+    "minAreaPlaceholder": "الحد الأدنى للمساحة",
+    "all": "الكل"
+  },
   "Search": {
     "searchPlaceholder": "ابحث عن إعلان...",
+    "searchButton": "بحث",
     "cityPlaceholder": "المدينة",
     "filters": "الفلاتر",
     "accept": "قبول",
@@ -821,9 +904,18 @@
     "closeModal": "إغلاق نافذة الفلاتر"
   },
   "filters": {
+    "searchProperties": "البحث عن العقارات",
+    "activeFilters": "فلاتر نشطة",
+    "showFilters": "الفلاتر",
+    "hideFilters": "إخفاء",
+    "searchPlaceholder": "البحث بالاسم، الوصف...",
     "allPropertyTypes": "كل أنواع العقارات",
     "allOperations": "كل العمليات",
     "allCountries": "كل البلدان",
+    "allCities": "كل المدن",
+    "allTypes": "كل الأنواع",
+    "city": "المدينة",
+    "type": "النوع",
     "operation": "العملية",
     "chooseOperation": "اختر العملية",
     "propertyType": "نوع العقار",
@@ -834,6 +926,8 @@
     "noSorting": "بدون ترتيب",
     "priceAsc": "السعر تصاعدي",
     "priceDesc": "السعر تنازلي",
+    "priceLowToHigh": "السعر من الأقل للأعلى",
+    "priceHighToLow": "السعر من الأعلى للأقل",
     "surfaceAsc": "المساحة تصاعدي",
     "surfaceDesc": "المساحة تنازلي",
     "oldest": "الأقدم",
@@ -843,7 +937,9 @@
     "bedrooms": "غرف النوم",
     "bathrooms": "الحمامات",
     "fetchErrorStatuses": "خطأ أثناء جلب الحالات:",
-    "fetchErrorTypes": "خطأ أثناء جلب الأنواع:"
+    "fetchErrorTypes": "خطأ أثناء جلب الأنواع:",
+    "fetchErrorCountries": "خطأ أثناء جلب البلدان:",
+    "fetchErrorCities": "خطأ أثناء جلب المدن:"
   },
   "PropertyCard": {
     "imageNotAvailable": "الصورة غير متاحة",
