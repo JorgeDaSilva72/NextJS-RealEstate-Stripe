@@ -1,187 +1,340 @@
-// next-intl avec deepseek
+import prisma from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
+import { getLanguageIdByCode } from "@/lib/utils";
+import RentPageClient from "./RentPageClient";
+import PropertySearchForm from "../components/PropertySearchForm";
+import HeroSection from "../components/HeroSection";
+import { Metadata } from "next";
 
-// "use client";
+const PAGE_SIZE = 12;
 
-// import React, { useEffect, useState } from "react";
-// import { Card, CardBody, CardFooter } from "@nextui-org/react";
-// import Image from "next/image";
-// import Link from "next/link";
-// import { buildUrl } from "@/lib/utils";
-// import ContactSection from "@/components/ui/ContactSection";
-// import HeroBanner from "@/components/ui/HeroBanner";
-// import { BenefitProps } from "@/components/ui/BenefitsSection/BenefitCard";
-// import BenefitsSection from "@/components/ui/BenefitsSection";
-// import SearchFormWrapper from "@/components/ui/SearchFormWrapper";
-// import SectionHeader from "@/components/ui/SectionHeader";
-// import { CitiesGridSkeleton } from "@/components/ui/CityCardSkeleton";
-// import { useTranslations } from "next-intl";
-// import { useLocale } from "next-intl";
+interface Props {
+  params: { locale: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+}
 
-// interface CityDetails {
-//   name: string;
-//   image: string;
-//   description: string;
-//   propertyCount: number;
-//   averagePrice: string;
-// }
+type SortOrder =
+  | "price-asc"
+  | "price-desc"
+  | "date-asc"
+  | "date-desc"
+  | "surface-asc"
+  | "surface-desc";
 
-// const RentPage = () => {
-//   const [cities, setCities] = useState<CityDetails[]>([]);
-//   const [isLoading, setIsLoading] = useState(true);
-//   const [error, setError] = useState<string | null>(null);
-//   const t = useTranslations("RentPage");
-//   const locale = useLocale(); // Récupère la locale active (ex: "fr" ou "en")
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const locale = params.locale || "fr";
+  return {
+    title: locale === "fr" 
+      ? "Louer une Propriété - Afrique Avenir Immobilier"
+      : "Rent a Property - Afrique Avenir Immobilier",
+    description: locale === "fr"
+      ? "Découvrez nos propriétés à louer en Afrique"
+      : "Discover our properties for rent in Africa",
+  };
+}
 
-//   // Traduire les avantages
-//   const benefits: BenefitProps[] = t.raw("benefits").map((benefit: any) => ({
-//     title: benefit.title,
-//     description: benefit.description,
-//   }));
+export default async function RentPage({ params, searchParams }: Props) {
+  const pagenum = searchParams.pagenum ?? 1;
+  const query = searchParams.query ?? "";
+  const locale = params.locale || "fr";
+  const languageId = await getLanguageIdByCode(locale);
 
-//   const CityCard = ({ city }: { city: CityDetails }) => (
-//     <Link href={buildUrl(city.name, "Location")}>
-//       <Card className="h-full hover:scale-105 transition-transform duration-200">
-//         <CardBody className="p-0">
-//           <div className="relative h-48 w-full">
-//             <Image
-//               src={city.image}
-//               alt={city.name}
-//               fill
-//               className="object-cover rounded-t-xl"
-//             />
-//           </div>
-//           <div className="p-6">
-//             <h3 className="text-2xl font-bold mb-2">{city.name}</h3>
-//             <p className="text-gray-600 mb-4">{city.description}</p>
-//             <div className="flex flex-col gap-1">
-//               <p className="text-sm">
-//                 {t("cityCard.availableProperties", {
-//                   count: city.propertyCount,
-//                 })}
-//               </p>
-//               <p className="text-sm">
-//                 {t("cityCard.averageRent", {
-//                   price: city.averagePrice || "N/A",
-//                 })}
-//               </p>
-//             </div>
-//           </div>
-//         </CardBody>
-//         <CardFooter className="bg-gray-50">
-//           <p className="text-primary w-full text-center">
-//             {t("cityCard.viewProperties")}
-//           </p>
-//         </CardFooter>
-//       </Card>
-//     </Link>
-//   );
+  // Get status ID for "for_rent" (Louer)
+  const rentStatus = await prisma.propertyStatus.findUnique({
+    where: { code: "for_rent" },
+  });
 
-//   useEffect(() => {
-//     const fetchCityDetails = async () => {
-//       try {
-//         setIsLoading(true);
-//         const response = await fetch(
-//           `/api/cityDetailsForRent?locale=${locale}`
-//         );
+  if (!rentStatus) {
+    return (
+      <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-600">Status 'for_rent' not found in database</p>
+      </div>
+    );
+  }
 
-//         if (!response.ok) {
-//           throw new Error(t("error.fetchError"));
-//         }
+  // Convert search params to numbers
+  const typeId = searchParams.queryType
+    ? Number(searchParams.queryType)
+    : undefined;
+  const cityIdParam = searchParams.cityId as string | undefined;
+  const cityId =
+    cityIdParam && cityIdParam.toLowerCase() !== "none"
+      ? Number(cityIdParam)
+      : undefined;
+  const countryId = searchParams.country
+    ? Number(searchParams.country)
+    : undefined;
 
-//         const data = await response.json();
-//         setCities(data);
-//       } catch (error) {
-//         console.error("Error:", error);
-//         setError(t("error.fetchError"));
-//       } finally {
-//         setIsLoading(false);
-//       }
-//     };
+  const minPrice = searchParams.minPrice
+    ? Number(searchParams.minPrice)
+    : undefined;
+  const maxPrice = searchParams.maxPrice
+    ? Number(searchParams.maxPrice)
+    : undefined;
+  const minArea = searchParams.minArea
+    ? Number(searchParams.minArea)
+    : undefined;
+  const maxArea = searchParams.maxArea
+    ? Number(searchParams.maxArea)
+    : undefined;
+  const minBedrooms = searchParams.minBedrooms
+    ? Number(searchParams.minBedrooms)
+    : undefined;
+  const maxBedrooms = searchParams.maxBedrooms
+    ? Number(searchParams.maxBedrooms)
+    : undefined;
+  const minBathrooms = searchParams.minBathrooms
+    ? Number(searchParams.minBathrooms)
+    : undefined;
+  const maxBathrooms = searchParams.maxBathrooms
+    ? Number(searchParams.maxBathrooms)
+    : undefined;
 
-//     fetchCityDetails();
-//   }, [t, locale]);
+  // Sort order
+  const sortOrder = (
+    Array.isArray(searchParams.sortOrder)
+      ? searchParams.sortOrder[0]
+      : searchParams.sortOrder
+  ) as SortOrder;
 
-//   return (
-//     <div className="min-h-screen bg-gray-50">
-//       <HeroBanner
-//         imageSrc="/Maroc/maroc_to_rent.jpg"
-//         imageAlt={t("heroTitle")}
-//         title={t("heroTitle")}
-//         subtitle={t("heroSubtitle")}
-//         imageQuality={95}
-//         height="h-[60vh]"
-//         overlayOpacity={20}
-//         blurIntensity={2}
-//         isPriority={true}
-//         titleClassName="text-4xl md:text-6xl font-bold text-center mb-4"
-//         subtitleClassName="text-xl md:text-2xl text-center max-w-3xl"
-//       />
+  const orderBy: Prisma.PropertyOrderByWithRelationInput[] = [];
 
-//       <div className="max-w-7xl mx-auto px-4 py-16 space-y-16">
-//         {/* Benefits Section */}
-//         <BenefitsSection title={t("benefitsTitle")} benefits={benefits} />
+  if (typeof sortOrder === "string" && sortOrder.startsWith("price")) {
+    orderBy.push({
+      price: sortOrder.endsWith("asc") ? "asc" : "desc",
+    });
+  } else if (typeof sortOrder === "string" && sortOrder.startsWith("surface")) {
+    orderBy.push({
+      feature: {
+        area: sortOrder.endsWith("asc") ? "asc" : "desc",
+      },
+    });
+  } else if (typeof sortOrder === "string" && sortOrder.startsWith("date")) {
+    orderBy.push({
+      createdAt: sortOrder.endsWith("asc") ? "asc" : "desc",
+    });
+  }
 
-//         {/* Cities Section */}
-//         <section>
-//           <h2 className="text-3xl font-bold mb-8 text-center">
-//             {t("citiesTitle")}
-//           </h2>
+  if (orderBy.length === 0) {
+    orderBy.push({ createdAt: "desc" });
+  }
 
-//           {error ? (
-//             <div className="text-center py-8">
-//               <p className="text-red-500">{error}</p>
-//               <button
-//                 onClick={() => window.location.reload()}
-//                 className="mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark"
-//               >
-//                 {t("error.retry")}
-//               </button>
-//             </div>
-//           ) : isLoading ? (
-//             <CitiesGridSkeleton />
-//           ) : (
-//             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-//               {cities.map((city) => (
-//                 <CityCard key={city.name} city={city} />
-//               ))}
-//             </div>
-//           )}
-//         </section>
+  // Build where clause - ALWAYS filter by for_rent status
+  const buildWhereClause = (): Prisma.PropertyWhereInput => {
+    const where: Prisma.PropertyWhereInput = {
+      isActive: true,
+      publishedAt: {
+        not: null,
+        lte: new Date(),
+      },
+      statusId: rentStatus.id, // Filter by for_rent status
+      user: {
+        subscriptions: {
+          some: {
+            endDate: {
+              gt: new Date(),
+            },
+            status: "ACTIVE",
+          },
+        },
+      },
+    };
 
-//         {/* Search Form */}
-//         <section className="w-full" aria-labelledby="search-title">
-//           <SectionHeader id="search-title" title={t("searchTitle")} />
-//           <div className="px-4">
-//             <SearchFormWrapper
-//               defaultValues={{
-//                 ville: "",
-//                 categorie: "Appartement",
-//                 budget: "",
-//                 chambres: "",
-//               }}
-//               defaultActiveTab="Location"
-//               backgroundColor="bg-black"
-//             />
-//           </div>
-//         </section>
+    // Search query
+    if (!!query) {
+      where.AND = [
+        {
+          OR: [
+            {
+              name: {
+                path: [locale],
+                string_contains: String(query),
+                mode: "insensitive",
+              } as any,
+            },
+            {
+              description: {
+                path: [locale],
+                string_contains: String(query),
+                mode: "insensitive",
+              } as any,
+            },
+          ],
+        },
+      ];
+    }
 
-//         {/* Contact Section */}
-//         <ContactSection />
-//       </div>
-//     </div>
-//   );
-// };
+    // Filters
+    if (typeId !== undefined && !isNaN(typeId)) {
+      where.typeId = typeId;
+    }
 
-// export default RentPage;
+    if (countryId !== undefined && !isNaN(countryId)) {
+      where.countryId = countryId;
+    }
 
-// 09-12-2025 provisoire le code précédent doit être retouché pour qu il fonctionne avec la nouvelle structure de la base de données mais comme cette page n a pas été bien défini on ne va pas plus loin
-import UnderConstruction from "../components/Underonstruction";
+    if (cityId !== undefined && !isNaN(cityId)) {
+      where.location = { cityId: cityId };
+    }
 
-export default function MyWIPPage() {
+    // Price range
+    if (minPrice !== undefined || maxPrice !== undefined) {
+      where.price = {
+        ...(minPrice !== undefined && !isNaN(minPrice) && { gte: minPrice }),
+        ...(maxPrice !== undefined && !isNaN(maxPrice) && { lte: maxPrice }),
+      };
+    }
+
+    // Feature filters
+    const featureWhere: Prisma.PropertyFeatureWhereInput = {};
+    let hasFeatureFilter = false;
+
+    if (minArea !== undefined || maxArea !== undefined) {
+      featureWhere.area = {
+        ...(minArea !== undefined && { gte: minArea }),
+        ...(maxArea !== undefined && { lte: maxArea }),
+      };
+      hasFeatureFilter = true;
+    }
+
+    if (minBedrooms !== undefined || maxBedrooms !== undefined) {
+      featureWhere.bedrooms = {
+        ...(minBedrooms !== undefined && { gte: minBedrooms }),
+        ...(maxBedrooms !== undefined && { lte: maxBedrooms }),
+      };
+      hasFeatureFilter = true;
+    }
+
+    if (minBathrooms !== undefined || maxBathrooms !== undefined) {
+      featureWhere.bathrooms = {
+        ...(minBathrooms !== undefined && { gte: minBathrooms }),
+        ...(maxBathrooms !== undefined && { lte: maxBathrooms }),
+      };
+      hasFeatureFilter = true;
+    }
+
+    if (hasFeatureFilter) {
+      where.feature = featureWhere;
+    }
+
+    return where;
+  };
+
+  const whereClause = buildWhereClause();
+
+  const propertiesPromise = prisma.property.findMany({
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      price: true,
+      currency: true,
+      contact: {
+        select: {
+          phone: true,
+          email: true,
+          name: true,
+        },
+      },
+      images: {
+        orderBy: [
+          { isMain: "desc" },
+          { displayOrder: "asc" },
+          { createdAt: "asc" },
+        ],
+        select: {
+          url: true,
+          isMain: true,
+        },
+        take: 1,
+      },
+      location: {
+        select: {
+          latitude: true,
+          longitude: true,
+          neighborhood: true,
+          streetAddress: true,
+          city: {
+            select: {
+              id: true,
+              countryId: true,
+              translations: {
+                select: {
+                  name: true,
+                },
+                where: {
+                  languageId: languageId || undefined,
+                },
+                take: 1,
+              },
+            },
+          },
+        },
+      },
+      feature: {
+        select: {
+          area: true,
+          bedrooms: true,
+          bathrooms: true,
+          parkingSpots: true,
+          hasSwimmingPool: true,
+          hasGardenYard: true,
+          hasBalcony: true,
+        },
+      },
+      status: { select: { code: true } },
+      type: { select: { code: true } },
+    },
+    where: whereClause,
+    orderBy,
+    skip: (+pagenum - 1) * PAGE_SIZE,
+    take: PAGE_SIZE,
+  });
+
+  const totalPropertiesPromise = prisma.property.count({
+    where: whereClause,
+  });
+
+  const [properties, totalProperties] = await Promise.all([
+    propertiesPromise,
+    totalPropertiesPromise,
+  ]);
+
+  // Transform properties to convert Decimal to number for coordinates
+  const transformedProperties = properties.map((property) => ({
+    ...property,
+    location: property.location
+      ? {
+          ...property.location,
+          latitude: property.location.latitude
+            ? Number(property.location.latitude)
+            : null,
+          longitude: property.location.longitude
+            ? Number(property.location.longitude)
+            : null,
+        }
+      : null,
+  }));
+
+  const totalPages = Math.ceil(totalProperties / PAGE_SIZE);
+
   return (
-    <div className="min-h-screen pt-20">
-      {/* Le composant affichera le texte en français ou en anglais selon la locale active */}
-      <UnderConstruction className="mt-10" />
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+      {/* Hero Section with Search Form */}
+      <HeroSection>
+        <div className="mt-8">
+          <PropertySearchForm defaultMode="rent" />
+        </div>
+      </HeroSection>
+
+      {/* Properties List */}
+      <RentPageClient
+        properties={transformedProperties}
+        totalPages={totalPages}
+        currentPage={+pagenum}
+        totalProperties={totalProperties}
+        locale={locale}
+      />
     </div>
   );
 }

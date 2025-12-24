@@ -1,185 +1,340 @@
-// import React from "react";
-// import { getCityStatsData } from "./actions";
-// import { CityGrid } from "./components/CityGrid";
-// import SearchFormWrapper from "../../../components/ui/SearchFormWrapper";
-// import HeroBanner from "@/components/ui/HeroBanner";
-// import ContactSection from "@/components/ui/ContactSection";
-// import BenefitsSection from "@/components/ui/BenefitsSection";
-// import { BenefitProps } from "@/components/ui/BenefitsSection/BenefitCard";
-// import SectionHeader from "@/components/ui/SectionHeader";
+import prisma from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
+import { getLanguageIdByCode } from "@/lib/utils";
+import BuyPageClient from "./BuyPageClient";
+import PropertySearchForm from "../components/PropertySearchForm";
+import HeroSection from "../components/HeroSection";
+import { Metadata } from "next";
 
-// const benefits: BenefitProps[] = [
-//   {
-//     title: "Marché Dynamique",
-//     description:
-//       "Un secteur immobilier en constante évolution avec des opportunités d'investissement attractives",
-//   },
-//   {
-//     title: "Cadre de Vie",
-//     description:
-//       "Un climat agréable, une riche culture et une hospitalité légendaire",
-//   },
-//   {
-//     title: "Infrastructure Moderne",
-//     description:
-//       "Des villes en plein développement avec des infrastructures de qualité",
-//   },
-// ];
+const PAGE_SIZE = 12;
 
-// const BuyPage: React.FC = async () => {
-//   const citiesWithStats = await getCityStatsData();
+interface Props {
+  params: { locale: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+}
 
-//   return (
-//     <div className="min-h-screen bg-gray-50">
-//       <HeroBanner
-//         imageSrc="/Maroc/maroc_to_buy.jpg"
-//         imageAlt="Luxury properties in Morocco"
-//         title="Trouvez votre bien immobilier au Maroc"
-//         subtitle="Des propriétés exceptionnelles dans les plus belles villes du royaume"
-//         imageQuality={95}
-//         height="h-[60vh]"
-//         overlayOpacity={20}
-//         blurIntensity={2}
-//         isPriority={true}
-//         titleClassName="text-4xl md:text-6xl font-bold text-center mb-4"
-//         subtitleClassName="text-xl md:text-2xl text-center max-w-3xl"
-//       >
-//         {/* <button className="mt-8">Call to Action</button> */}
-//       </HeroBanner>
+type SortOrder =
+  | "price-asc"
+  | "price-desc"
+  | "date-asc"
+  | "date-desc"
+  | "surface-asc"
+  | "surface-desc";
 
-//       <main className="max-w-7xl mx-auto px-4 py-16 space-y-16">
-//         {/* Benefits Section */}
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const locale = params.locale || "fr";
+  return {
+    title: locale === "fr" 
+      ? "Acheter une Propriété - Afrique Avenir Immobilier"
+      : "Buy a Property - Afrique Avenir Immobilier",
+    description: locale === "fr"
+      ? "Découvrez nos propriétés à vendre en Afrique"
+      : "Discover our properties for sale in Africa",
+  };
+}
 
-//         <BenefitsSection
-//           title="Pourquoi acheter au Maroc ?"
-//           benefits={benefits}
-//         />
+export default async function BuyPage({ params, searchParams }: Props) {
+  const pagenum = searchParams.pagenum ?? 1;
+  const query = searchParams.query ?? "";
+  const locale = params.locale || "fr";
+  const languageId = await getLanguageIdByCode(locale);
 
-//         {/* Cities Section */}
-//         <section aria-labelledby="cities-title">
-//           <SectionHeader
-//             id="cities-title"
-//             title="Découvrez nos propriétés par ville"
-//           />
+  // Get status ID for "for_sale" (Acheter)
+  const saleStatus = await prisma.propertyStatus.findUnique({
+    where: { code: "for_sale" },
+  });
 
-//           <CityGrid cities={citiesWithStats} />
-//         </section>
+  if (!saleStatus) {
+    return (
+      <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-600">Status 'for_sale' not found in database</p>
+      </div>
+    );
+  }
 
-//         {/* Search Form Section */}
+  // Convert search params to numbers
+  const typeId = searchParams.queryType
+    ? Number(searchParams.queryType)
+    : undefined;
+  const cityIdParam = searchParams.cityId as string | undefined;
+  const cityId =
+    cityIdParam && cityIdParam.toLowerCase() !== "none"
+      ? Number(cityIdParam)
+      : undefined;
+  const countryId = searchParams.country
+    ? Number(searchParams.country)
+    : undefined;
 
-//         <section className="w-full" aria-labelledby="search-title">
-//           <SectionHeader
-//             id="search-title"
-//             title="Affinez votre recherche immobilière"
-//           />
-//           <div className="px-4">
-//             <SearchFormWrapper
-//               defaultValues={{
-//                 ville: "",
-//                 categorie: "Appartement",
-//                 budget: "",
-//                 chambres: "",
-//               }}
-//               defaultActiveTab="Vente"
-//               backgroundColor="bg-black"
-//             />
-//           </div>
-//         </section>
-//         {/* Contact Section */}
+  const minPrice = searchParams.minPrice
+    ? Number(searchParams.minPrice)
+    : undefined;
+  const maxPrice = searchParams.maxPrice
+    ? Number(searchParams.maxPrice)
+    : undefined;
+  const minArea = searchParams.minArea
+    ? Number(searchParams.minArea)
+    : undefined;
+  const maxArea = searchParams.maxArea
+    ? Number(searchParams.maxArea)
+    : undefined;
+  const minBedrooms = searchParams.minBedrooms
+    ? Number(searchParams.minBedrooms)
+    : undefined;
+  const maxBedrooms = searchParams.maxBedrooms
+    ? Number(searchParams.maxBedrooms)
+    : undefined;
+  const minBathrooms = searchParams.minBathrooms
+    ? Number(searchParams.minBathrooms)
+    : undefined;
+  const maxBathrooms = searchParams.maxBathrooms
+    ? Number(searchParams.maxBathrooms)
+    : undefined;
 
-//         <ContactSection />
-//       </main>
-//     </div>
-//   );
-// };
+  // Sort order
+  const sortOrder = (
+    Array.isArray(searchParams.sortOrder)
+      ? searchParams.sortOrder[0]
+      : searchParams.sortOrder
+  ) as SortOrder;
 
-// export default BuyPage;
+  const orderBy: Prisma.PropertyOrderByWithRelationInput[] = [];
 
-// next-intl with deepseek
+  if (typeof sortOrder === "string" && sortOrder.startsWith("price")) {
+    orderBy.push({
+      price: sortOrder.endsWith("asc") ? "asc" : "desc",
+    });
+  } else if (typeof sortOrder === "string" && sortOrder.startsWith("surface")) {
+    orderBy.push({
+      feature: {
+        area: sortOrder.endsWith("asc") ? "asc" : "desc",
+      },
+    });
+  } else if (typeof sortOrder === "string" && sortOrder.startsWith("date")) {
+    orderBy.push({
+      createdAt: sortOrder.endsWith("asc") ? "asc" : "desc",
+    });
+  }
 
-// 09-12-2025 on commente tout ce code car demande une adaptation et pas sûr de le garder
-// import React from "react";
-// import { getCityStatsData } from "./actions";
-// import { CityGrid } from "./components/CityGrid";
-// import SearchFormWrapper from "../../../components/ui/SearchFormWrapper";
-// import HeroBanner from "@/components/ui/HeroBanner";
-// import ContactSection from "@/components/ui/ContactSection";
-// import BenefitsSection from "@/components/ui/BenefitsSection";
-// import { BenefitProps } from "@/components/ui/BenefitsSection/BenefitCard";
-// import SectionHeader from "@/components/ui/SectionHeader";
-// import { getTranslations } from "next-intl/server";
+  if (orderBy.length === 0) {
+    orderBy.push({ createdAt: "desc" });
+  }
 
-// const BuyPage: React.FC = async () => {
-//   const t = await getTranslations("BuyPage");
-//   const citiesWithStats = await getCityStatsData();
+  // Build where clause - ALWAYS filter by for_sale status
+  const buildWhereClause = (): Prisma.PropertyWhereInput => {
+    const where: Prisma.PropertyWhereInput = {
+      isActive: true,
+      publishedAt: {
+        not: null,
+        lte: new Date(),
+      },
+      statusId: saleStatus.id, // Filter by for_sale status
+      user: {
+        subscriptions: {
+          some: {
+            endDate: {
+              gt: new Date(),
+            },
+            status: "ACTIVE",
+          },
+        },
+      },
+    };
 
-//   // Récupérer les avantages traduits
-//   const benefits: BenefitProps[] = t.raw("benefits").map((benefit: any) => ({
-//     title: benefit.title,
-//     description: benefit.description,
-//   }));
+    // Search query
+    if (!!query) {
+      where.AND = [
+        {
+          OR: [
+            {
+              name: {
+                path: [locale],
+                string_contains: String(query),
+                mode: "insensitive",
+              } as any,
+            },
+            {
+              description: {
+                path: [locale],
+                string_contains: String(query),
+                mode: "insensitive",
+              } as any,
+            },
+          ],
+        },
+      ];
+    }
 
-//   return (
-//     <div className="min-h-screen bg-gray-50">
-//       <HeroBanner
-//         imageSrc="/Maroc/maroc_to_buy.jpg"
-//         imageAlt="Luxury properties in Morocco"
-//         title={t("heroTitle")}
-//         subtitle={t("heroSubtitle")}
-//         imageQuality={95}
-//         height="h-[60vh]"
-//         overlayOpacity={20}
-//         blurIntensity={2}
-//         isPriority={true}
-//         titleClassName="text-4xl md:text-6xl font-bold text-center mb-4"
-//         subtitleClassName="text-xl md:text-2xl text-center max-w-3xl"
-//       >
-//         {/* <button className="mt-8">Call to Action</button> */}
-//       </HeroBanner>
+    // Filters
+    if (typeId !== undefined && !isNaN(typeId)) {
+      where.typeId = typeId;
+    }
 
-//       <main className="max-w-7xl mx-auto px-4 py-16 space-y-16">
-//         {/* Benefits Section */}
-//         <BenefitsSection title={t("benefitsTitle")} benefits={benefits} />
+    if (countryId !== undefined && !isNaN(countryId)) {
+      where.countryId = countryId;
+    }
 
-//         {/* Cities Section */}
-//         <section aria-labelledby="cities-title">
-//           <SectionHeader id="cities-title" title={t("citiesTitle")} />
-//           <CityGrid cities={citiesWithStats} />
-//         </section>
+    if (cityId !== undefined && !isNaN(cityId)) {
+      where.location = { cityId: cityId };
+    }
 
-//         {/* Search Form Section */}
-//         <section className="w-full" aria-labelledby="search-title">
-//           <SectionHeader id="search-title" title={t("searchTitle")} />
-//           <div className="px-4">
-//             <SearchFormWrapper
-//               defaultValues={{
-//                 ville: "",
-//                 categorie: "Appartement",
-//                 budget: "",
-//                 chambres: "",
-//               }}
-//               defaultActiveTab="Vente"
-//               backgroundColor="bg-black"
-//             />
-//           </div>
-//         </section>
+    // Price range
+    if (minPrice !== undefined || maxPrice !== undefined) {
+      where.price = {
+        ...(minPrice !== undefined && !isNaN(minPrice) && { gte: minPrice }),
+        ...(maxPrice !== undefined && !isNaN(maxPrice) && { lte: maxPrice }),
+      };
+    }
 
-//         {/* Contact Section */}
-//         <ContactSection />
-//       </main>
-//     </div>
-//   );
-// };
+    // Feature filters
+    const featureWhere: Prisma.PropertyFeatureWhereInput = {};
+    let hasFeatureFilter = false;
 
-// export default BuyPage;
+    if (minArea !== undefined || maxArea !== undefined) {
+      featureWhere.area = {
+        ...(minArea !== undefined && { gte: minArea }),
+        ...(maxArea !== undefined && { lte: maxArea }),
+      };
+      hasFeatureFilter = true;
+    }
 
-import UnderConstruction from "../components/Underonstruction";
+    if (minBedrooms !== undefined || maxBedrooms !== undefined) {
+      featureWhere.bedrooms = {
+        ...(minBedrooms !== undefined && { gte: minBedrooms }),
+        ...(maxBedrooms !== undefined && { lte: maxBedrooms }),
+      };
+      hasFeatureFilter = true;
+    }
 
-export default function MyWIPPage() {
+    if (minBathrooms !== undefined || maxBathrooms !== undefined) {
+      featureWhere.bathrooms = {
+        ...(minBathrooms !== undefined && { gte: minBathrooms }),
+        ...(maxBathrooms !== undefined && { lte: maxBathrooms }),
+      };
+      hasFeatureFilter = true;
+    }
+
+    if (hasFeatureFilter) {
+      where.feature = featureWhere;
+    }
+
+    return where;
+  };
+
+  const whereClause = buildWhereClause();
+
+  const propertiesPromise = prisma.property.findMany({
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      price: true,
+      currency: true,
+      contact: {
+        select: {
+          phone: true,
+          email: true,
+          name: true,
+        },
+      },
+      images: {
+        orderBy: [
+          { isMain: "desc" },
+          { displayOrder: "asc" },
+          { createdAt: "asc" },
+        ],
+        select: {
+          url: true,
+          isMain: true,
+        },
+        take: 1,
+      },
+      location: {
+        select: {
+          latitude: true,
+          longitude: true,
+          neighborhood: true,
+          streetAddress: true,
+          city: {
+            select: {
+              id: true,
+              countryId: true,
+              translations: {
+                select: {
+                  name: true,
+                },
+                where: {
+                  languageId: languageId || undefined,
+                },
+                take: 1,
+              },
+            },
+          },
+        },
+      },
+      feature: {
+        select: {
+          area: true,
+          bedrooms: true,
+          bathrooms: true,
+          parkingSpots: true,
+          hasSwimmingPool: true,
+          hasGardenYard: true,
+          hasBalcony: true,
+        },
+      },
+      status: { select: { code: true } },
+      type: { select: { code: true } },
+    },
+    where: whereClause,
+    orderBy,
+    skip: (+pagenum - 1) * PAGE_SIZE,
+    take: PAGE_SIZE,
+  });
+
+  const totalPropertiesPromise = prisma.property.count({
+    where: whereClause,
+  });
+
+  const [properties, totalProperties] = await Promise.all([
+    propertiesPromise,
+    totalPropertiesPromise,
+  ]);
+
+  // Transform properties to convert Decimal to number for coordinates
+  const transformedProperties = properties.map((property) => ({
+    ...property,
+    location: property.location
+      ? {
+          ...property.location,
+          latitude: property.location.latitude
+            ? Number(property.location.latitude)
+            : null,
+          longitude: property.location.longitude
+            ? Number(property.location.longitude)
+            : null,
+        }
+      : null,
+  }));
+
+  const totalPages = Math.ceil(totalProperties / PAGE_SIZE);
+
   return (
-    <div className="min-h-screen pt-20">
-      {/* Le composant affichera le texte en français ou en anglais selon la locale active */}
-      <UnderConstruction className="mt-10" />
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+      {/* Hero Section with Search Form */}
+      <HeroSection>
+        <div className="mt-8">
+          <PropertySearchForm defaultMode="buy" />
+        </div>
+      </HeroSection>
+
+      {/* Properties List */}
+      <BuyPageClient
+        properties={transformedProperties}
+        totalPages={totalPages}
+        currentPage={+pagenum}
+        totalProperties={totalProperties}
+        locale={locale}
+      />
     </div>
   );
 }

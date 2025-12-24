@@ -59,7 +59,10 @@ export const createAppointment = async (appointment: AppointmentEvent) => {
         // Get user locale from property or default to 'fr'
         const property = await prisma.property.findUnique({
           where: { id: appointment.propertyId },
-          include: { user: true },
+          include: { 
+            user: true,
+            contact: true,
+          },
         });
         const locale = 'fr'; // TODO: Get from user preferences or property locale
         

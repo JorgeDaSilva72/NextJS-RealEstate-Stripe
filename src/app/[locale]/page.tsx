@@ -1,6 +1,4 @@
-import HomeNavbar from "./components/HomeNavbar";
-import SearchBar from "./components/SearchBar";
-import HomeFooter from "./components/HomeFooter";
+import HomeSearchForm from "./components/HomeSearchForm";
 import HomePageClient from "./_components/HomePageClient";
 import HeroSection from "./components/HeroSection";
 import prisma from "@/lib/prisma";
@@ -39,8 +37,20 @@ export default async function HomePage({ params, searchParams }: Props) {
   const typeId = searchParams.typeId
     ? Number(searchParams.typeId)
     : undefined;
+  const minPrice = searchParams.minPrice
+    ? Number(searchParams.minPrice)
+    : undefined;
   const maxPrice = searchParams.maxPrice
     ? Number(searchParams.maxPrice)
+    : undefined;
+  const bedrooms = searchParams.bedrooms
+    ? Number(searchParams.bedrooms)
+    : undefined;
+  const bathrooms = searchParams.bathrooms
+    ? Number(searchParams.bathrooms)
+    : undefined;
+  const minArea = searchParams.minArea
+    ? Number(searchParams.minArea)
     : undefined;
 
   // Build where clause with filters
@@ -73,11 +83,32 @@ export default async function HomePage({ params, searchParams }: Props) {
       where.typeId = typeId;
     }
 
-    // Filter by max price
-    if (maxPrice !== undefined && !isNaN(maxPrice) && maxPrice > 0) {
-      where.price = {
-        lte: maxPrice,
-      };
+    // Filter by price range
+    if (minPrice !== undefined || maxPrice !== undefined) {
+      where.price = {};
+      if (minPrice !== undefined && !isNaN(minPrice) && minPrice > 0) {
+        where.price.gte = minPrice;
+      }
+      if (maxPrice !== undefined && !isNaN(maxPrice) && maxPrice > 0) {
+        where.price.lte = maxPrice;
+      }
+    }
+
+    // Build feature filters
+    const featureFilters: any = {};
+    if (bedrooms !== undefined && !isNaN(bedrooms) && bedrooms > 0) {
+      featureFilters.bedrooms = { gte: bedrooms };
+    }
+    if (bathrooms !== undefined && !isNaN(bathrooms) && bathrooms > 0) {
+      featureFilters.bathrooms = { gte: bathrooms };
+    }
+    if (minArea !== undefined && !isNaN(minArea) && minArea > 0) {
+      featureFilters.area = { gte: minArea };
+    }
+
+    // Apply feature filters if any exist
+    if (Object.keys(featureFilters).length > 0) {
+      where.feature = featureFilters;
     }
 
     return where;
@@ -130,14 +161,22 @@ export default async function HomePage({ params, searchParams }: Props) {
             longitude: true,
           },
         },
+        feature: {
+          select: {
+            bedrooms: true,
+            bathrooms: true,
+            area: true,
+          },
+        },
       },
-      orderBy: {
-        createdAt: "desc",
-      },
-      take: 50, // Increased limit for better results
+      orderBy: [
+        { isFeatured: "desc" }, // Featured properties first
+        { createdAt: "desc" },
+      ],
+      take: 4, // Show only 4 featured properties on homepage
     });
 
-    // Transform properties to include coordinates
+    // Transform properties to include coordinates and convert Decimal to numbers
     const propertiesWithCoordinates = properties.map((prop) => {
       const lat = prop.location?.latitude
         ? typeof prop.location.latitude === "number"
@@ -151,7 +190,20 @@ export default async function HomePage({ params, searchParams }: Props) {
         : null;
 
       return {
-        ...prop,
+        id: prop.id,
+        name: prop.name,
+        price: prop.price,
+        currency: prop.currency,
+        images: prop.images,
+        location: prop.location?.city && prop.location.city.translations
+          ? {
+              city: {
+                translations: Array.isArray(prop.location.city.translations)
+                  ? prop.location.city.translations
+                  : [],
+              },
+            }
+          : null,
         coordinates:
           lat !== null && lng !== null
             ? {
@@ -164,24 +216,19 @@ export default async function HomePage({ params, searchParams }: Props) {
 
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-        {/* Navbar */}
-        <HomeNavbar />
-
-        {/* Hero Section with Search Bar */}
+        {/* Hero Section with Search Form */}
         <HeroSection>
           <div className="mt-8">
-            <SearchBar />
+            <HomeSearchForm />
           </div>
         </HeroSection>
 
-        {/* Main Content - Map and Properties */}
+        {/* Main Content - Featured Properties */}
         <HomePageClient
           properties={propertiesWithCoordinates}
           locale={locale}
+          showViewAll={true}
         />
-
-        {/* Footer */}
-        <HomeFooter />
       </div>
     );
   } catch (error) {
@@ -190,14 +237,14 @@ export default async function HomePage({ params, searchParams }: Props) {
     // Return page with empty state on error
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-        <HomeNavbar />
+        {/* Hero Section with Search Form */}
         <HeroSection>
           <div className="mt-8">
-            <SearchBar />
+            <HomeSearchForm />
           </div>
         </HeroSection>
-        <HomePageClient properties={[]} locale={locale} />
-        <HomeFooter />
+        {/* Main Content - Map and Properties */}
+        <HomePageClient properties={[]} locale={locale} showViewAll={true} />
       </div>
     );
   }

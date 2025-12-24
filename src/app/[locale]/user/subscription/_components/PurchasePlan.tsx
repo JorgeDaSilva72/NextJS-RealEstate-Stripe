@@ -697,7 +697,7 @@ import { useTranslations } from "next-intl";
 import { ShoppingBagIcon } from "@heroicons/react/16/solid";
 import { Button } from "@nextui-org/react";
 import { SubscriptionPlan } from "@prisma/client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CheckoutForm from "./CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -720,12 +720,14 @@ type Props = {
   plan: SubscriptionPlan;
   buttonClassName?: string;
   defaultPaymentProvider?: "paypal" | "stripe";
+  hidePaymentProviderSelection?: boolean;
 };
 
 const PurchasePlan = ({
   plan,
   buttonClassName,
   defaultPaymentProvider = "paypal",
+  hidePaymentProviderSelection = false,
 }: Props) => {
   const t = useTranslations("PurchasePlan");
   const [showCheckout, setShowCheckout] = useState(false);
@@ -737,6 +739,22 @@ const PurchasePlan = ({
 
   const { user } = useKindeBrowserClient();
   const router = useRouter();
+
+  // Sync payment provider with defaultPaymentProvider when it changes
+  useEffect(() => {
+    setPaymentProvider(defaultPaymentProvider);
+  }, [defaultPaymentProvider]);
+
+  // Helper function to convert plan.price to number (handles Prisma Decimal)
+  const getNumericPrice = (price: any): number => {
+    if (typeof price === "number") return price;
+    if (typeof price === "string") return parseFloat(price);
+    // Handle Prisma Decimal type
+    if (price && typeof price === "object" && "toNumber" in price) {
+      return (price as any).toNumber();
+    }
+    return Number(price) || 0;
+  };
 
   if (
     (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
@@ -751,11 +769,7 @@ const PurchasePlan = ({
   const initiateStripePayment = async () => {
     setIsLoading(true);
     try {
-      const numericPrice =
-        typeof plan.price === "number"
-          ? plan.price
-          : (plan.price as any).toNumber?.() ?? Number(plan.price);
-
+      const numericPrice = getNumericPrice(plan.price);
       const paymentIntent = await createPaymentIntent(
         numericPrice * 100,
         `Payment of the user ${user?.given_name} ${user?.family_name} for buying ${plan.namePlan}.`
@@ -829,13 +843,14 @@ const PurchasePlan = ({
               label: "paypal",
             }}
             createOrder={(data, actions) => {
+              const numericPrice = getNumericPrice(plan.price);
               return actions.order.create({
                 intent: "CAPTURE",
                 purchase_units: [
                   {
                     amount: {
                       currency_code: "EUR",
-                      value: plan.price.toFixed(2),
+                      value: numericPrice.toFixed(2),
                     },
                     description: `Payment of the user ${user?.given_name} ${user?.family_name} for buying ${plan.namePlan}.`,
                   },
@@ -889,10 +904,7 @@ const PurchasePlan = ({
     }
   };
 
-  const numericPrice =
-    typeof plan.price === "number"
-      ? plan.price
-      : (plan.price as any).toNumber?.() ?? Number(plan.price);
+  const numericPrice = getNumericPrice(plan.price);
 
   if (numericPrice === 0) {
     return (
@@ -925,19 +937,21 @@ const PurchasePlan = ({
 
   return (
     <div>
-      <div className="flex items-center space-x-2 mb-2">
-        <span className="text-primary">{t("payWith")}</span>
-        <button
-          className={`border-2 border-primary rounded-md px-4 py-2 transition-colors ${
-            paymentProvider === "paypal"
-              ? "bg-primary text-white"
-              : "hover:bg-primary/10"
-          }`}
-          onClick={() => setPaymentProvider("paypal")}
-        >
-          {t("paypal")}
-        </button>
-      </div>
+      {!hidePaymentProviderSelection && (
+        <div className="flex items-center space-x-2 mb-2">
+          <span className="text-primary">{t("payWith")}</span>
+          <button
+            className={`border-2 border-primary rounded-md px-4 py-2 transition-colors ${
+              paymentProvider === "paypal"
+                ? "bg-primary text-white"
+                : "hover:bg-primary/10"
+            }`}
+            onClick={() => setPaymentProvider("paypal")}
+          >
+            {t("paypal")}
+          </button>
+        </div>
+      )}
 
       <button
         aria-label={t("subscribeToPlan", { planName: plan.namePlan })}

@@ -51,6 +51,7 @@ export async function GET(request: NextRequest) {
       where: { isActive: true },
       select: {
         id: true, // L'ID du statut (pour la valeur du filtre)
+        code: true, // Include code for filtering
         translations: {
           where: { languageId: language.id }, // Filtrer par la langue trouvée
           select: { value: true }, // Sélectionner uniquement le nom traduit
@@ -71,10 +72,11 @@ export async function GET(request: NextRequest) {
 
         return {
           id: status.id,
+          code: status.code, // Include code
           value: translation,
         };
       })
-      .filter((item) => item !== null) as { id: number; value: string }[];
+      .filter((item) => item !== null) as { id: number; code: string; value: string }[];
 
     return NextResponse.json(formattedStatuses);
   } catch (error) {

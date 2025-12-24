@@ -67,6 +67,8 @@ export async function createPropertyAction(
         name: name as any,         // JSONB: Pas besoin de stringify, Prisma le gère
         description: description as any, // JSONB
         countryId: location.countryId,
+        isActive: true, // Set to true by default
+        publishedAt: new Date(), // Set publishedAt to current date
 
         // Création des relations imbriquées (Nested Writes)
         location: {
@@ -105,8 +107,13 @@ export async function createPropertyAction(
       }
     });
 
-    // 4. Invalidation du Cache (pour que la nouvelle annonce apparaisse sur la page d'accueil)
+    // 4. Invalidation du Cache (pour que la nouvelle annonce apparaisse sur toutes les pages)
     revalidatePath('/');
+    revalidatePath('/properties');
+    revalidatePath('/user/properties');
+    revalidatePath('/result');
+    revalidatePath('/buy');
+    revalidatePath('/rent');
     
     return { success: true, message: "Annonce créée avec succès !" };
 

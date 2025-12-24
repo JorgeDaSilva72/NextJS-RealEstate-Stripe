@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Link } from "@/i18n/routing";
+import { Link, usePathname } from "@/i18n/routing";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -14,13 +14,7 @@ import {
 import { LoginLink, useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import UserMenu from "./UserMenu";
 import NavbarLanguageSwitcher from "./NavbarLanguageSwitcher";
-
-const navigationItems = [
-  { label: "Acheter", href: "/buy", active: true },
-  { label: "Louer", href: "/rent" },
-  { label: "Services", href: "/services" },
-  { label: "Blog", href: "/blog" },
-];
+import { useTranslations } from "next-intl";
 
 // Client-only login button to avoid hydration mismatch
 const ClientLoginButton = ({ 
@@ -31,6 +25,7 @@ const ClientLoginButton = ({
   onLoginClick?: () => void;
 }) => {
   const [mounted, setMounted] = useState(false);
+  const t = useTranslations("Navbar");
 
   useEffect(() => {
     setMounted(true);
@@ -39,7 +34,7 @@ const ClientLoginButton = ({
   if (!mounted) {
     return (
       <Button className={className} disabled>
-        Se Connecter
+        {t("login")}
       </Button>
     );
   }
@@ -53,7 +48,7 @@ const ClientLoginButton = ({
         className={className}
         onClick={onLoginClick}
       >
-        Se Connecter
+        {t("login")}
       </Button>
     </LoginLink>
   );
@@ -63,10 +58,29 @@ export default function HomeNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { isAuthenticated, isLoading } = useKindeBrowserClient();
+  const t = useTranslations("Navbar");
+  const pathname = usePathname();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Show loading state only briefly, then show button (even if still loading)
+  const showLoadingState = mounted && isLoading && isAuthenticated === undefined;
+
+  // Check if a route is active
+  const isActive = (href: string) => {
+    if (href === "/") {
+      return pathname === "/";
+    }
+    return pathname?.startsWith(href) || false;
+  };
+
+  const navigationItems = [
+    { label: t("properties"), href: "/search-results" },
+    { label: t("services"), href: "/services" },
+    { label: t("blog"), href: "/blog" },
+  ];
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
@@ -74,14 +88,15 @@ export default function HomeNavbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="relative w-8 h-8">
+            <span className="relative inline-block w-8 h-8">
               <Image
                 src="/logo-topaz-enhance-coupe.jpeg"
                 alt="AFRIQUE AVENIR IMMOBILIER"
                 fill
+                sizes="32px"
                 className="rounded-lg object-cover"
               />
-            </div>
+            </span>
             <span className="hidden sm:block text-white font-semibold text-sm md:text-base">
               AFRIQUE AVENIR IMMOBILIER
             </span>
@@ -95,7 +110,7 @@ export default function HomeNavbar() {
                 href={item.href}
                 className={cn(
                   "text-sm font-medium transition-colors",
-                  item.active
+                  isActive(item.href)
                     ? "text-orange-500"
                     : "text-gray-300 hover:text-white"
                 )}
@@ -111,23 +126,23 @@ export default function HomeNavbar() {
             <NavbarLanguageSwitcher />
 
             {/* Post Ad Button (visible for authenticated users) */}
-            {!mounted || isLoading ? null : isAuthenticated ? (
+            {mounted && !showLoadingState && isAuthenticated ? (
               <Button
                 asChild
                 className="bg-orange-500 hover:bg-orange-600 text-white"
               >
                 <Link href="/user/properties/add">
-                  Publier une annonce
+                  {t("publishAd")}
                 </Link>
               </Button>
             ) : null}
 
             {/* Auth Section */}
-            {!mounted || isLoading ? (
+            {showLoadingState ? (
               <Button className="bg-orange-500 hover:bg-orange-600 text-white" disabled>
-                Se Connecter
+                {t("login")}
               </Button>
-            ) : isAuthenticated ? (
+            ) : mounted && isAuthenticated ? (
               <UserMenu />
             ) : (
               <ClientLoginButton className="bg-orange-500 hover:bg-orange-600 text-white" />
@@ -150,7 +165,7 @@ export default function HomeNavbar() {
                     onClick={() => setIsOpen(false)}
                     className={cn(
                       "text-base font-medium transition-colors py-2",
-                      item.active
+                      isActive(item.href)
                         ? "text-orange-500"
                         : "text-gray-300 hover:text-white"
                     )}
@@ -165,26 +180,26 @@ export default function HomeNavbar() {
                 </div>
 
                 {/* Mobile Post Ad Button (visible for authenticated users) */}
-                {!mounted || isLoading ? null : isAuthenticated ? (
+                {mounted && !showLoadingState && isAuthenticated ? (
                   <Button
                     asChild
                     className="bg-orange-500 hover:bg-orange-600 text-white w-full"
                   >
                     <Link href="/user/properties/add" onClick={() => setIsOpen(false)}>
-                      Publier une annonce
+                      {t("publishAd")}
                     </Link>
                   </Button>
                 ) : null}
 
                 {/* Mobile Auth */}
-                {!mounted || isLoading ? (
+                {showLoadingState ? (
                   <Button
                     className="bg-orange-500 hover:bg-orange-600 text-white mt-4 w-full"
                     disabled
                   >
-                    Se Connecter
+                    {t("login")}
                   </Button>
-                ) : isAuthenticated ? (
+                ) : mounted && isAuthenticated ? (
                   <div className="mt-4 w-full">
                     <UserMenu />
                   </div>

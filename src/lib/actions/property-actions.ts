@@ -42,9 +42,9 @@ export async function createPropertyAction(
         typeId: typeId,
         statusId: Number(statusId), // ID numérique attendu par Prisma
         price: Number(price), // convertir la string en number pour Prisma
-        isActive: false, // Par défaut, en attente de modération ou paiement
+        isActive: true, // Set to true by default - can be changed later for moderation
         isFeatured: false,
-        publishedAt: new Date(),
+        publishedAt: new Date(), // Set publishedAt to current date
 
         // Champs JSON (Cast explicite souvent nécessaire pour TS avec Prisma Json)
         name: name as any,
@@ -98,7 +98,11 @@ export async function createPropertyAction(
     });
 
     // 7. Revalidation du cache (pour mettre à jour la liste des annonces)
-    revalidatePath("/properties");
+    revalidatePath("/properties"); // Public properties page
+    revalidatePath("/user/properties"); // User's own properties page
+    revalidatePath("/result"); // Search results page
+    revalidatePath("/buy"); // Buy page
+    revalidatePath("/rent"); // Rent page
 
     return { success: true, propertyId: newProperty.id };
   } catch (error) {

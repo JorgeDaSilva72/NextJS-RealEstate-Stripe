@@ -1,5 +1,3 @@
-import HomeNavbar from "../components/HomeNavbar";
-import HomeFooter from "../components/HomeFooter";
 import HeroSection from "../components/HeroSection";
 import { Link } from "@/i18n/routing";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -243,9 +241,6 @@ export default function ServicesPage({ params }: ServicesPageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      {/* Navbar */}
-      <HomeNavbar />
-
       {/* Hero Section */}
       <HeroSection title={pageTitle} description={pageDescription} />
 
@@ -350,9 +345,6 @@ export default function ServicesPage({ params }: ServicesPageProps) {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <HomeFooter />
     </div>
   );
 }

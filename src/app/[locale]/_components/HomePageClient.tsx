@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { Link } from "@/i18n/routing";
 import PropertyCard from "../components/PropertyCard";
 import PropertyDialog from "../components/PropertyDialog";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import Map from "@/components/ui/Map";
 
 interface Property {
@@ -26,9 +28,10 @@ interface Property {
 interface HomePageClientProps {
   properties: Property[];
   locale: string;
+  showViewAll?: boolean;
 }
 
-export default function HomePageClient({ properties, locale }: HomePageClientProps) {
+export default function HomePageClient({ properties, locale, showViewAll = false }: HomePageClientProps) {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -58,6 +61,20 @@ export default function HomePageClient({ properties, locale }: HomePageClientPro
       }));
   }, [properties, locale]);
 
+  // Helper to validate and get image URL
+  const getValidImageUrl = (url: string | undefined | null): string => {
+    if (!url) return "/Hero1.jpg";
+    try {
+      // Validate URL format
+      if (url.startsWith("http") || url.startsWith("/")) {
+        return url;
+      }
+      return "/Hero1.jpg";
+    } catch {
+      return "/Hero1.jpg";
+    }
+  };
+
   // Prepare properties for display
   const displayProperties = useMemo(() => {
     return properties.map((prop) => ({
@@ -65,11 +82,19 @@ export default function HomePageClient({ properties, locale }: HomePageClientPro
       title: getLocalizedText(prop.name, locale),
       price: prop.price,
       currency: prop.currency || "EUR",
-      image: prop.images?.[0]?.url || "/Hero1.jpg",
+      image: getValidImageUrl(prop.images?.[0]?.url),
       location: {
         city: prop.location?.city?.translations?.[0]?.name || "Unknown",
-        country: "Morocco", // You might want to get this from the property
+        country: "Morocco",
       },
+      characteristics: {
+        bedrooms: 0,
+        bathrooms: 0,
+        rooms: 0,
+        area: 0,
+      },
+      description: "",
+      coordinates: prop.coordinates || { lat: 0, lng: 0 },
     }));
   }, [properties, locale]);
 
@@ -101,31 +126,51 @@ export default function HomePageClient({ properties, locale }: HomePageClientPro
 
           {/* Right Side - Property Grid */}
           <div className="order-1 lg:order-2">
-            <div className="mb-4">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Propriétés disponibles
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">
-                {displayProperties.length} {displayProperties.length === 1 ? "propriété trouvée" : "propriétés trouvées"}
-              </p>
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {showViewAll ? "Propriétés en vedette" : "Propriétés disponibles"}
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400 mt-1">
+                  {displayProperties.length} {displayProperties.length === 1 ? "propriété trouvée" : "propriétés trouvées"}
+                </p>
+              </div>
+              {showViewAll && displayProperties.length > 0 && (
+                <Button asChild variant="outline" className="hidden md:flex">
+                  <Link href={`/${locale}/search-results`}>
+                    {locale === "fr" ? "Voir tout" : "See all"}
+                  </Link>
+                </Button>
+              )}
             </div>
             {displayProperties.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {displayProperties.map((property) => (
-                  <PropertyCard
-                    key={property.id}
-                    property={property}
-                    onClick={() => {
-                      const fullProperty = properties.find(
-                        (p) => p.id.toString() === property.id
-                      );
-                      if (fullProperty) {
-                        handlePropertyClick(fullProperty);
-                      }
-                    }}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {displayProperties.map((property) => (
+                    <PropertyCard
+                      key={property.id}
+                      property={property}
+                      onClick={() => {
+                        const fullProperty = properties.find(
+                          (p) => p.id.toString() === property.id
+                        );
+                        if (fullProperty) {
+                          handlePropertyClick(fullProperty);
+                        }
+                      }}
+                    />
+                  ))}
+                </div>
+                {showViewAll && displayProperties.length > 0 && (
+                  <div className="mt-6 flex justify-center md:hidden">
+                    <Button asChild variant="outline" className="w-full">
+                      <Link href={`/${locale}/search-results`}>
+                        {locale === "fr" ? "Voir tout" : "See all"}
+                      </Link>
+                    </Button>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="flex flex-col items-center justify-center py-12 text-center">
                 <p className="text-gray-500 dark:text-gray-400 text-lg mb-2">
@@ -159,7 +204,7 @@ export default function HomePageClient({ properties, locale }: HomePageClientPro
               area: 0,
             },
             description: "",
-            coordinates: selectedProperty.coordinates,
+            coordinates: selectedProperty.coordinates || { lat: 0, lng: 0 },
           }}
           open={isDialogOpen}
           onOpenChange={setIsDialogOpen}

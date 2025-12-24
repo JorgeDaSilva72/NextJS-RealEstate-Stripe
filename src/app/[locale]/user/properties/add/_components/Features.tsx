@@ -692,11 +692,14 @@
 
 import React from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
-import { Button, Card, Checkbox, cn } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { Controller, useFormContext } from "react-hook-form";
 import NumberInput from "./NumberInput";
 import { AddPropertyInputType } from "./AddPropertyForm";
 import { useTranslations } from "next-intl";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 interface Props {
   next: () => void;
@@ -767,65 +770,84 @@ const Features = (props: Props) => {
   ];
 
   return (
-    <Card
-      className={cn(
-        "p-2 grid grid-cols-1 md:grid-cols-2 gap-3",
-        props.className
-      )}
-    >
-      {features.map((feature) => (
-        <NumberInput
-          key={feature.name}
-          label={feature.label}
-          value={getValues(`feature.${feature.name}`) || 0}
-          onChange={(value) => {
-            setValue(`feature.${feature.name}`, value, {
-              shouldValidate: true,
-            });
-          }}
-          errorMessage={errors.feature?.[feature.name]?.message}
-          isInvalid={!!errors.feature?.[feature.name]}
-          min={feature.min}
-        />
-      ))}
+    <Card className={cn("w-full", props.className)}>
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold">{t("title") || "Caractéristiques"}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Numeric Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {features.map((feature) => (
+            <NumberInput
+              key={feature.name}
+              label={feature.label}
+              value={getValues(`feature.${feature.name}`) || 0}
+              onChange={(value) => {
+                setValue(`feature.${feature.name}`, value, {
+                  shouldValidate: true,
+                });
+              }}
+              errorMessage={errors.feature?.[feature.name]?.message}
+              isInvalid={!!errors.feature?.[feature.name]}
+              min={feature.min}
+            />
+          ))}
+        </div>
 
-      <div className="flex flex-col items-start gap-2 md:flex-row justify-around md:col-span-2">
-        {checkboxFeatures.map((feature) => (
-          <Controller
-            key={feature.name}
-            control={control}
-            name={`feature.${feature.name}`}
-            render={({ field }) => (
-              <Checkbox
-                isSelected={field.value || false}
-                onChange={field.onChange}
-                className="mr-2"
-              >
-                {feature.label}
-              </Checkbox>
-            )}
-          />
-        ))}
-      </div>
+        {/* Checkbox Features */}
+        <div className="space-y-2 pt-4 border-t">
+          <Label className="text-sm font-medium">
+            {t("amenities") || "Équipements et commodités"}
+          </Label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {checkboxFeatures.map((feature) => (
+              <Controller
+                key={feature.name}
+                control={control}
+                name={`feature.${feature.name}`}
+                render={({ field }) => (
+                  <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                    <input
+                      type="checkbox"
+                      id={feature.name}
+                      checked={field.value || false}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                      className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                    />
+                    <Label
+                      htmlFor={feature.name}
+                      className="text-sm font-normal cursor-pointer flex-1"
+                    >
+                      {feature.label}
+                    </Label>
+                  </div>
+                )}
+              />
+            ))}
+          </div>
+        </div>
 
-      <div className="flex flex-col md:flex-row justify-center col-span-1 md:col-span-2 gap-3 mt-4">
-        <Button
-          onClick={props.prev}
-          startContent={<ChevronLeftIcon className="w-6" />}
-          color="primary"
-          className="w-full md:w-36"
-        >
-          {t("previous")}
-        </Button>
-        <Button
-          onClick={handleNext}
-          endContent={<ChevronRightIcon className="w-6" />}
-          color="primary"
-          className="w-full md:w-36"
-        >
-          {t("next")}
-        </Button>
-      </div>
+        {/* Navigation Buttons */}
+        <div className="flex flex-col md:flex-row justify-end gap-3 pt-4 border-t">
+          <Button
+            onPress={props.prev}
+            startContent={<ChevronLeftIcon className="w-5 h-5" />}
+            color="primary"
+            className="w-full md:w-auto"
+          >
+            {t("previous")}
+          </Button>
+          <Button
+            onPress={handleNext}
+            endContent={<ChevronRightIcon className="w-5 h-5" />}
+            color="primary"
+            className="w-full md:w-auto"
+          >
+            {t("next")}
+          </Button>
+        </div>
+      </CardContent>
     </Card>
   );
 };

@@ -59,8 +59,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./components/providers";
-import Appbar from "./components/Appbar";
-import SignInPanel from "./components/signInPanel";
+import HomeNavbar from "./components/HomeNavbar";
+import HomeFooter from "./components/HomeFooter";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FavoriteProvider } from "./context/FavoriteContext";
@@ -220,13 +220,14 @@ export default async function RootLayout({
             <LanguageProvider>
               <FavoriteProvider>
                 <Providers>
-                  {/* Appbar */}
-                  <Appbar>
-                    <SignInPanel />
-                  </Appbar>
+                  {/* HomeNavbar - consistent across all pages */}
+                  <HomeNavbar />
 
                   {/* Contenu principal */}
-                  <main className="flex-grow">{safeChildren}</main>
+                  <main className="flex-grow pt-16">{safeChildren}</main>
+
+                  {/* HomeFooter - consistent across all pages */}
+                  <HomeFooter />
 
                   {/* Toast notifications */}
                   <ToastContainer />

@@ -616,8 +616,12 @@
 import prisma from "@/lib/prisma";
 import Search from "../components/Search";
 import PropertyContainer from "../components/PropertyContainer";
-import PropertyCard from "../components/PropertyCard";
+import PropertyCardResult from "../components/PropertyCardResult";
 import NoPropertiesFound from "./_components/noPropertiesFound";
+import PropertiesMapView from "../components/PropertiesMapView";
+import ViewToggle from "../components/ViewToggle";
+import BackToTop from "../components/BackToTop";
+import ResultPageClient from "./ResultPageClient";
 import { Prisma } from "@prisma/client";
 import { getLanguageIdByCode } from "@/lib/utils";
 
@@ -637,7 +641,13 @@ type SortOrder =
   | "surface-asc"
   | "surface-desc";
 
-export default async function Home({ params, searchParams }: Props) {
+export default async function ResultPage({ params, searchParams }: Props) {
+  // Fix duplicate locale in params (e.g., if locale is "fr/fr", use "fr")
+  let locale = params.locale || "fr";
+  if (typeof locale === 'string' && locale.includes('/')) {
+    locale = locale.split('/')[0];
+  }
+  
   // 1. Extraction et Conversion des Paramètres de Recherche
   const pagenum = searchParams.pagenum ?? 1;
   const query = searchParams.query ?? "";
@@ -697,9 +707,8 @@ export default async function Home({ params, searchParams }: Props) {
     ? Number(searchParams.maxBathrooms)
     : undefined;
 
-  // 1. DÉTERMINER LA LOCALE
-  // Utilisez params.locale, et non searchParams.locale
-  const locale = params.locale || "fr";
+  // 1. DÉTERMINER LA LOCALE (already set above)
+  // locale is already extracted from params above
 
   // 2. Déterminer l'ID de la langue (doit être fait avant la requête)
   const languageId = await getLanguageIdByCode(locale);
@@ -743,25 +752,31 @@ export default async function Home({ params, searchParams }: Props) {
 
   // 2. Fonction de construction de la clause WHERE (AVEC AMÉLIORATIONS)
   const buildWhereClause = (): Prisma.PropertyWhereInput => {
-    const where: Prisma.PropertyWhereInput = {
-      // Afficher uniquement les propriétés actives et publiées
-      isActive: true,
-      publishedAt: {
-        not: null, // Vérifie que la propriété a été publiée
-        lte: new Date(), // Et qu'elle est déjà passée
-      },
-      // Filtre d'Abonnement Actif du Vendeur (inchangé)
-      user: {
-        subscriptions: {
-          some: {
-            endDate: {
-              gt: new Date(),
+    const andConditions: Prisma.PropertyWhereInput[] = [
+      {
+        OR: [
+          {
+            user: {
+              subscriptions: {
+                some: {
+                  endDate: {
+                    gt: new Date(),
+                  },
+                  status: "ACTIVE", // AJOUT: pour s'assurer que l'abonnement est ACTIF
+                },
+              },
             },
-            status: "ACTIVE", // AJOUT: pour s'assurer que l'abonnement est ACTIF
           },
-        },
+          // Allow properties created in the last 24 hours to be visible even if subscription check fails
+          // This handles edge cases where subscription might not be immediately available
+          {
+            createdAt: {
+              gte: new Date(Date.now() - 24 * 60 * 60 * 1000), // Last 24 hours
+            },
+          },
+        ],
       },
-    };
+    ];
 
     // --- RECHERCHE GLOBALE (OR) ---
     if (!!query) {
@@ -772,30 +787,39 @@ export default async function Home({ params, searchParams }: Props) {
       // le mieux est de créer un filtre qui injecte le SQL:
 
       // La façon la plus simple et la plus sûre de filtrer sur une LOCALE spécifique dans un champ JSONB (name/description) :
-      where.AND = [
-        // Ajoutez ce filtre à la clause AND pour que la recherche se combine avec les autres filtres (ville, prix, etc.)
-        {
-          OR: [
-            {
-              // Recherche floue sur le nom traduit (name->>'locale')
-              name: {
-                path: [locale], // Cible la clé 'fr', 'en', etc.
-                string_contains: String(query),
-                mode: "insensitive",
-              } as any, // Forçage de type car Prisma ne supporte pas cela directement dans where
-            },
-            {
-              // Recherche floue sur la description traduite (description->>'locale')
-              description: {
-                path: [locale],
-                string_contains: String(query),
-                mode: "insensitive",
-              } as any,
-            },
-          ],
-        },
-      ];
+      andConditions.push({
+        OR: [
+          {
+            // Recherche floue sur le nom traduit (name->>'locale')
+            name: {
+              path: [locale], // Cible la clé 'fr', 'en', etc.
+              string_contains: String(query),
+              mode: "insensitive",
+            } as any, // Forçage de type car Prisma ne supporte pas cela directement dans where
+          },
+          {
+            // Recherche floue sur la description traduite (description->>'locale')
+            description: {
+              path: [locale],
+              string_contains: String(query),
+              mode: "insensitive",
+            } as any,
+          },
+        ],
+      });
     }
+
+    const where: Prisma.PropertyWhereInput = {
+      // Afficher uniquement les propriétés actives et publiées
+      isActive: true,
+      publishedAt: {
+        not: null, // Vérifie que la propriété a été publiée
+        lte: new Date(), // Et qu'elle est déjà passée
+      },
+      // Filtre d'Abonnement Actif du Vendeur avec fallback pour nouvelles propriétés
+      // Use AND condition to combine subscription check with other filters
+      AND: andConditions,
+    };
 
     // --- FILTRES DE SÉLECTION (AND) ---
 
@@ -868,11 +892,19 @@ export default async function Home({ params, searchParams }: Props) {
   const whereClause = buildWhereClause();
 
   const propertiesPromise = prisma.property.findMany({
-    select: {
+      select: {
       id: true,
       name: true, // Ceci récupère l'objet JSON {fr: '...', en: '...'}
+      description: true, // Add description
       price: true, // Récupère le type Decimal
       currency: true, // Ajoutez la devise, c'est utile
+      contact: {
+        select: {
+          phone: true,
+          email: true,
+          name: true,
+        },
+      },
       // country: { select: { code: true } }, // Vous pouvez inclure le code du pays pour l'affichage
 
       images: {
@@ -900,6 +932,10 @@ export default async function Home({ params, searchParams }: Props) {
       },
       location: {
         select: {
+          latitude: true,
+          longitude: true,
+          neighborhood: true,
+          streetAddress: true,
           city: {
             select: {
               id: true,
@@ -927,6 +963,9 @@ export default async function Home({ params, searchParams }: Props) {
           bedrooms: true,
           bathrooms: true,
           parkingSpots: true,
+          hasSwimmingPool: true,
+          hasGardenYard: true,
+          hasBalcony: true,
         },
       },
       status: { select: { code: true } }, // Sélection du code (pour PropertyCard)
@@ -947,21 +986,67 @@ export default async function Home({ params, searchParams }: Props) {
     totalPropertiesPromise,
   ]);
 
-  // 4. Calcul de la Pagination et Rendu
+  // 4. Transform properties to match client component type
+  // Convert Decimal to number and ensure location structure matches
+  const transformedProperties = properties.map((prop) => {
+    // Only process location if it exists and has a city
+    let location: {
+      latitude: number | null;
+      longitude: number | null;
+      city: {
+        id: number;
+        countryId: number;
+        translations: Array<{ name: string }>;
+      };
+    } | null = null;
+
+    if (prop.location && prop.location.city) {
+      const lat = prop.location.latitude
+        ? typeof prop.location.latitude === "number"
+          ? prop.location.latitude
+          : Number(prop.location.latitude)
+        : null;
+      const lng = prop.location.longitude
+        ? typeof prop.location.longitude === "number"
+          ? prop.location.longitude
+          : Number(prop.location.longitude)
+        : null;
+
+      location = {
+        latitude: lat,
+        longitude: lng,
+        city: {
+          id: prop.location.city.id,
+          countryId: prop.location.city.countryId,
+          translations: prop.location.city.translations || [],
+        },
+      };
+    }
+
+    return {
+      id: prop.id,
+      name: prop.name,
+      description: prop.description,
+      price: prop.price,
+      currency: prop.currency,
+      images: prop.images,
+      location: location,
+      feature: prop.feature,
+      status: prop.status,
+      type: prop.type,
+      contact: prop.contact,
+    };
+  });
+
+  // 5. Calcul de la Pagination et Rendu
   const totalPages = Math.ceil(totalProperties / PAGE_SIZE);
 
   return (
-    <div className=" w-full min-h-screen bg-gray-100">
-      <Search />
-      {properties.length > 0 ? (
-        <PropertyContainer totalPages={totalPages} currentPage={+pagenum}>
-          {properties.map((propertyItem) => (
-            <PropertyCard property={propertyItem} key={propertyItem.id} />
-          ))}
-        </PropertyContainer>
-      ) : (
-        <NoPropertiesFound />
-      )}
-    </div>
+    <ResultPageClient
+      properties={transformedProperties as any}
+      totalPages={totalPages}
+      currentPage={+pagenum}
+      locale={locale}
+    />
   );
 }

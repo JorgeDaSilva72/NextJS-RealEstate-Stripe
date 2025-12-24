@@ -10,9 +10,15 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { getTranslations } from 'next-intl/server';
 import prisma from '@/lib/prisma';
 import WhatsAppConversationsClient from './_components/WhatsAppConversationsClient';
+import { getLocalizedText } from '@/lib/utils/translation-utils';
 
-export default async function WhatsAppConversationsPage() {
+interface Props {
+  params: { locale: string };
+}
+
+export default async function WhatsAppConversationsPage({ params }: Props) {
   const t = await getTranslations('WhatsApp');
+  const locale = params.locale || 'fr';
   const { getUser } = await getKindeServerSession();
   const user = await getUser();
 
@@ -65,6 +71,19 @@ export default async function WhatsAppConversationsPage() {
     },
   });
 
+  // Transform conversations to convert JsonValue property.name to string
+  const transformedConversations = conversations.map((conv) => ({
+    ...conv,
+    property: conv.property
+      ? {
+          ...conv.property,
+          name: typeof conv.property.name === 'string' 
+            ? conv.property.name 
+            : getLocalizedText(conv.property.name as any, locale) || '',
+        }
+      : null,
+  }));
+
   // Get WhatsApp account status
   const account = await prisma.whatsAppAccount.findFirst({
     where: { isActive: true },
@@ -78,12 +97,21 @@ export default async function WhatsAppConversationsPage() {
 
   return (
     <WhatsAppConversationsClient
-      conversations={conversations}
+      conversations={transformedConversations}
       account={account}
       userId={user.id}
     />
   );
 }
+
+
+
+
+
+
+
+
+
 
 
 

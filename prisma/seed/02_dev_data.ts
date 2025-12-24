@@ -797,18 +797,23 @@ async function main() {
         create: [
           {
             url: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800",
+            isMain: true, // First image is main
           },
           {
             url: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800",
+            isMain: false,
           },
           {
             url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800",
+            isMain: false,
           },
           {
             url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800",
+            isMain: false,
           },
           {
             url: "https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=800",
+            isMain: false,
           },
         ],
       },
@@ -883,15 +888,19 @@ async function main() {
         create: [
           {
             url: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800",
+            isMain: true, // First image is main
           },
           {
             url: "https://images.unsplash.com/photo-1556912173-46c336c7fd55?w=800",
+            isMain: false,
           },
           {
             url: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800",
+            isMain: false,
           },
           {
             url: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800",
+            isMain: false,
           },
         ],
       },
@@ -959,21 +968,27 @@ async function main() {
         create: [
           {
             url: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800",
+            isMain: true, // First image is main
           },
           {
             url: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800",
+            isMain: false,
           },
           {
             url: "https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=800",
+            isMain: false,
           },
           {
             url: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800",
+            isMain: false,
           },
           {
             url: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800",
+            isMain: false,
           },
           {
             url: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800",
+            isMain: false,
           },
         ],
       },

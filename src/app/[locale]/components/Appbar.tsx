@@ -13,11 +13,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu } from "lucide-react";
+import { Menu, Heart } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import UserMenu from "./UserMenu";
 import NavbarLanguageSwitcher from "./NavbarLanguageSwitcher";
+import CurrencySelector from "@/components/ui/CurrencySelector";
 import { cn } from "@/lib/utils";
+import { useFavorites } from "../hooks/useFavorites";
 
 interface Props {
   children: ReactNode;
@@ -79,6 +81,7 @@ const Appbar = ({ children }: Props) => {
   const searchParams = useSearchParams();
   const { isAuthenticated: kindeAuth, isLoading: kindeLoading, user } =
     useKindeBrowserClient();
+  const { count: favoritesCount } = useFavorites();
 
   // ✅ ALL useEffect HOOKS AT THE TOP
   // Mark component as mounted to avoid hydration issues
@@ -103,8 +106,8 @@ const Appbar = ({ children }: Props) => {
   useEffect(() => {
     if (mounted) {
       setAuthState({
-        isAuthenticated: kindeAuth,
-        isLoading: kindeLoading,
+        isAuthenticated: kindeAuth ?? false,
+        isLoading: kindeLoading ?? false,
       });
     }
   }, [kindeAuth, kindeLoading, mounted]);
@@ -225,10 +228,20 @@ const Appbar = ({ children }: Props) => {
 
   // Navigation items for left side
   const leftNavItems = [
-    { label: "Acheter", href: "/buy" },
-    { label: "Louer", href: "/rent" },
+    { label: t("menu.realEstate") || "Immobilier", href: "/properties" },
+    { label: "A vendre", href: "/status/a-vendre" },
+    { label: "A louer", href: "/status/a-louer" },
     { label: "Services", href: "/services" },
+    { label: "Favoris", href: "/user/favoriteProperties" },
   ];
+
+  // Check if a path is active
+  const isActive = (href: string) => {
+    if (href === "/") {
+      return pathname === "/" || pathname === `/${locale}`;
+    }
+    return pathname.startsWith(href) || pathname === href;
+  };
 
   return (
     <nav
@@ -257,29 +270,52 @@ const Appbar = ({ children }: Props) => {
 
             {/* Desktop Navigation - Left */}
             <div className="hidden lg:flex items-center gap-6">
-              {leftNavItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "text-sm font-medium transition-colors",
-                    textColor,
-                    "hover:text-orange-500"
-                  )}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {leftNavItems.map((item) => {
+                const active = isActive(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "text-sm font-medium transition-colors",
+                      active
+                        ? "text-orange-500 font-semibold"
+                        : cn(textColor, "hover:text-orange-500")
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
             </div>
           </div>
 
-          {/* Center: Language Switcher (Desktop) */}
-          <div className="hidden lg:flex items-center">
+          {/* Center: Language Switcher + Currency Selector (Desktop) */}
+          <div className="hidden lg:flex items-center gap-4">
             <NavbarLanguageSwitcher />
+            <CurrencySelector />
           </div>
 
-          {/* Right: Post Ad Button + Auth */}
+          {/* Right: Favorites + Post Ad Button + Auth */}
           <div className="flex items-center gap-4">
+            {/* Favorites Button */}
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="relative"
+            >
+              <Link href="/user/favoriteProperties" className="flex items-center gap-2">
+                <Heart className="h-4 w-4" />
+                <span className="hidden sm:inline">Favoris</span>
+                {favoritesCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    {favoritesCount > 9 ? "9+" : favoritesCount}
+                  </span>
+                )}
+              </Link>
+            </Button>
+
             {/* Post Ad Button */}
             <Button
               asChild
@@ -311,21 +347,53 @@ const Appbar = ({ children }: Props) => {
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px]">
                 <div className="flex flex-col gap-6 mt-8">
-                  {/* Mobile Navigation */}
-                  {leftNavItems.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setIsMenuOpen(false)}
-                      className="text-base font-medium text-gray-900 hover:text-orange-500"
-                    >
-                      {item.label}
+                  {/* Mobile Favorites Button */}
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="w-full justify-start"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link href="/user/favoriteProperties" className="flex items-center gap-2">
+                      <Heart className="h-4 w-4" />
+                      <span>Favoris</span>
+                      {favoritesCount > 0 && (
+                        <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full px-2 py-0.5">
+                          {favoritesCount > 9 ? "9+" : favoritesCount}
+                        </span>
+                      )}
                     </Link>
-                  ))}
+                  </Button>
 
-                  {/* Mobile Language Switcher */}
-                  <div className="pt-4 border-t">
+                  {/* Mobile Navigation */}
+                  {leftNavItems.map((item) => {
+                    const active = isActive(item.href);
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setIsMenuOpen(false)}
+                        className={cn(
+                          "text-base font-medium transition-colors",
+                          active
+                            ? "text-orange-500 font-semibold"
+                            : "text-gray-900 hover:text-orange-500"
+                        )}
+                      >
+                        {item.label}
+                      </Link>
+                    );
+                  })}
+
+                  {/* Mobile Language Switcher & Currency Selector */}
+                  <div className="pt-4 border-t space-y-4">
                     <NavbarLanguageSwitcher />
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                        Devise
+                      </label>
+                      <CurrencySelector />
+                    </div>
                   </div>
 
                   {/* Mobile Auth */}

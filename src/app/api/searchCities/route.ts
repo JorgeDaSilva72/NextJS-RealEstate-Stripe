@@ -42,22 +42,52 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // 2. Construire la clause WHERE pour filtrer les villes
+    // 3. Construire la clause WHERE pour filtrer les villes
     const cityWhereClause: any = {
       isActive: true,
     };
+
     if (countryId) {
-      // Cas 1: Un pays est sélectionné, on filtre.
+      // Cas 1: Un pays est sélectionné, retourner TOUTES les villes de ce pays
       cityWhereClause.countryId = countryId;
     } else {
-      // Cas 2: AUCUN pays sélectionné (pour permettre le filtrage Ville seul).
-      // Pour éviter de charger des milliers de villes au démarrage, on filtre
-      // par défaut sur les villes mises en avant (isFeatured).
-      // C'est ce qui permet de sélectionner une ville rapidement sans choisir un pays.
-      cityWhereClause.isFeatured = true;
-    }
+      // Cas 2: Aucun pays sélectionné, retourner uniquement les villes qui ont des propriétés
+      const propertiesWhereClause: any = {
+        isActive: true,
+        publishedAt: { not: null },
+        user: {
+          subscriptions: {
+            some: {
+              status: "ACTIVE",
+              endDate: { gt: new Date() },
+            },
+          },
+        },
+        location: { isNot: null },
+      };
 
-    // 3. This section is now handled in step 4 below
+      const citiesWithProperties = await prisma.property.findMany({
+        where: propertiesWhereClause,
+        select: {
+          location: {
+            select: {
+              cityId: true,
+            },
+          },
+        },
+      });
+
+      const cityIds = citiesWithProperties
+        .map((p) => p.location?.cityId)
+        .filter((id): id is number => id !== null && id !== undefined);
+
+      // Si aucune ville n'a de propriétés, retourner un tableau vide
+      if (cityIds.length === 0) {
+        return NextResponse.json([]);
+      }
+
+      cityWhereClause.id = { in: cityIds };
+    }
 
     // 4. Récupérer les villes avec leur countryId
     const citiesWithCountry = await prisma.city.findMany({

@@ -7,16 +7,38 @@ export async function GET(
 ) {
   const { id } = params;
 
+  // Validate ID parameter
+  if (!id || id === 'undefined' || id === 'null') {
+    return NextResponse.json(
+      { message: "ID de propriété requis" },
+      { status: 400 }
+    );
+  }
+
+  // Convert to number and validate
+  const propertyId = parseInt(id, 10);
+  if (isNaN(propertyId) || propertyId <= 0) {
+    return NextResponse.json(
+      { message: "ID de propriété invalide" },
+      { status: 400 }
+    );
+  }
+
   try {
     const property = await prisma.property.findUnique({
-      where: { id: +id }, // Convertir en entier
+      where: { id: propertyId },
       include: {
         status: true,
         type: true,
         feature: true,
         location: true,
         contact: true,
-        images: true,
+        images: {
+          orderBy: [
+            { isMain: "desc" },
+            { displayOrder: "asc" },
+          ],
+        },
         videos: true,
       },
     });

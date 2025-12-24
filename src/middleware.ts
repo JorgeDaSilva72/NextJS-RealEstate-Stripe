@@ -307,7 +307,7 @@ const nextIntlMiddleware = createMiddleware({
 
 // Combined middleware: i18n + auth, but NEVER touch /api routes
 export default async function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
+  let pathname = request.nextUrl.pathname;
 
   // 1) HARD SKIP: API, auth routes & internal paths must NEVER go through i18n/auth
   if (
@@ -323,6 +323,23 @@ export default async function middleware(request: NextRequest) {
   // 2) Allow oauth2callback without locale/auth (Google redirect)
   if (pathname === "/oauth2callback" || pathname === "/oauth2callback/") {
     return NextResponse.next();
+  }
+
+  // 2.5) Fix duplicate locale in pathname (e.g., /fr/fr/result -> /fr/result or /ar/fr/user/properties -> /ar/user/properties)
+  // This prevents redirects caused by malformed URLs
+  // Match both same locale duplicates (/fr/fr/...) and different locale duplicates (/ar/fr/...)
+  const duplicateLocaleMatch = pathname.match(/^\/([a-z]{2})\/([a-z]{2})(\/|$)/);
+  if (duplicateLocaleMatch) {
+    // Use the first locale (the one that should be there)
+    const locale = duplicateLocaleMatch[1];
+    const restOfPath = pathname.split('/').slice(3).filter(Boolean).join('/');
+    const correctedPathname = `/${locale}${restOfPath ? '/' + restOfPath : ''}`;
+    
+    // Redirect to the corrected pathname with query params preserved
+    const correctedUrl = new URL(request.url);
+    correctedUrl.pathname = correctedPathname;
+    // Preserve all query parameters from the original request
+    return NextResponse.redirect(correctedUrl);
   }
 
   // 3) Auth only for /user/* routes (after skipping /api)

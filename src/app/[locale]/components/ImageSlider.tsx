@@ -39,21 +39,51 @@ const ImagesSlider = ({
 
   const loadImages = useCallback(() => {
     setLoading(true);
-    const loadPromises = images.map((image) => {
+    
+    // Filter out invalid URLs
+    const validImages = images.filter((img) => {
+      if (!img || img === 'undefined' || img === 'null') return false;
+      try {
+        // Check if it's a valid URL or path
+        if (img.startsWith('http') || img.startsWith('/')) {
+          return true;
+        }
+        return false;
+      } catch {
+        return false;
+      }
+    });
+
+    if (validImages.length === 0) {
+      setLoadedImages(['/Hero1.jpg']);
+      setLoading(false);
+      return;
+    }
+
+    const loadPromises = validImages.map((image) => {
       return new Promise((resolve, reject) => {
         const img = new Image();
         img.src = image;
         img.onload = () => resolve(image);
-        img.onerror = reject;
+        img.onerror = () => {
+          // On error, use fallback image
+          resolve('/Hero1.jpg');
+        };
       });
     });
 
     Promise.all(loadPromises)
       .then((loadedImages) => {
-        setLoadedImages(loadedImages as string[]);
+        // Filter out fallback duplicates
+        const uniqueLoaded = Array.from(new Set(loadedImages as string[]));
+        setLoadedImages(uniqueLoaded.length > 0 ? uniqueLoaded : ['/Hero1.jpg']);
         setLoading(false);
       })
-      .catch((error) => console.error("Failed to load images", error));
+      .catch((error) => {
+        console.error("Failed to load images", error);
+        setLoadedImages(['/Hero1.jpg']);
+        setLoading(false);
+      });
   }, [images]);
 
   useEffect(() => {

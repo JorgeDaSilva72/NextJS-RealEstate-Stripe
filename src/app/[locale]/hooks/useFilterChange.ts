@@ -191,9 +191,52 @@ const useFilterChange = () => {
     const params = new URLSearchParams(searchParams);
 
     const updateRoute = (params: URLSearchParams) => {
+      // Fix: Ensure we route to the correct path
+      // If pathname contains duplicate locale (e.g., /fr/fr), fix it
+      let targetPath = pathName;
+      
+      // Extract locale from pathname at the start
+      const extractLocale = (path: string): string => {
+        const parts = path.split('/').filter(Boolean);
+        return parts[0] && /^[a-z]{2}$/.test(parts[0]) ? parts[0] : 'fr';
+      };
+      
+      const locale = extractLocale(pathName || '');
+      
+      if (!targetPath) {
+        targetPath = `/${locale}/result`;
+      } else {
+        // Fix duplicate locale in path (e.g., /fr/fr -> /fr/result)
+        if (targetPath.match(/^\/[a-z]{2}\/[a-z]{2}/)) {
+          const pathLocale = targetPath.split('/')[1];
+          // Route to result page if on home, otherwise keep current path
+          if (targetPath === `/${pathLocale}` || targetPath === `/${pathLocale}/`) {
+            targetPath = `/${pathLocale}/result`;
+          } else {
+            // Remove duplicate locale
+            targetPath = targetPath.replace(`/${pathLocale}/${pathLocale}`, `/${pathLocale}`);
+          }
+        }
+        
+        // If we're on home page, route to result page for searches
+        if (targetPath.match(/^\/[a-z]{2}$/) || targetPath.match(/^\/[a-z]{2}\/$/)) {
+          const pathLocale = targetPath.replace(/\//g, '') || locale;
+          targetPath = `/${pathLocale}/result`;
+        }
+        
+        // If we're on buy/rent page, stay on that page
+        if (targetPath.includes('/buy') || targetPath.includes('/rent')) {
+          // Stay on current page
+        } else if (!targetPath.includes('/result') && !targetPath.includes('/buy') && !targetPath.includes('/rent')) {
+          // If not on result, buy, or rent page, go to result page
+          const pathLocale = targetPath.split('/')[1] || locale;
+          targetPath = `/${pathLocale}/result`;
+        }
+      }
+
       // AJOUTER UN PARAMÈTRE DE CACHE/CLÉ DYNAMIQUE
       params.set("key_cache", Date.now().toString());
-      router.replace(`${pathName}?${params.toString()}`);
+      router.replace(`${targetPath}?${params.toString()}`);
       // N'oubliez pas le refresh pour forcer le Server Component à refetcher
       router.refresh();
     };

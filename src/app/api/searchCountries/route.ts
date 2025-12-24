@@ -27,9 +27,37 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // 2. Récupérer tous les pays actifs et inclure la traduction
+    // 2. Récupérer uniquement les pays qui ont des propriétés actives et publiées
+    // D'abord, trouver tous les countryIds qui ont des propriétés
+    const countriesWithProperties = await prisma.property.findMany({
+      where: {
+        isActive: true,
+        publishedAt: { not: null },
+        user: {
+          subscriptions: {
+            some: {
+              status: "ACTIVE",
+              endDate: { gt: new Date() },
+            },
+          },
+        },
+      },
+      select: {
+        countryId: true,
+      },
+      distinct: ["countryId"],
+    });
+
+    const countryIds = countriesWithProperties
+      .map((p) => p.countryId)
+      .filter((id): id is number => id !== null);
+
+    // 3. Récupérer les pays actifs qui ont des propriétés et inclure la traduction
     const countries = await prisma.country.findMany({
-      where: { isActive: true },
+      where: {
+        isActive: true,
+        id: { in: countryIds },
+      },
       select: {
         id: true, // L'ID du pays (pour la valeur du filtre)
         translations: {

@@ -13,13 +13,14 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "@/i18n/routing";
 import { useLocale } from "next-intl";
-import { Heart, FileText, LogOut } from "lucide-react";
+import { Heart, FileText, LogOut, Crown } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function UserMenu() {
   // ✅ ALL HOOKS AT THE TOP - UNCONDITIONAL
   const { isAuthenticated, user, isLoading } = useKindeBrowserClient();
   const [userData, setUserData] = useState<any>(null);
+  const [currentSubscription, setCurrentSubscription] = useState<any>(null);
   const [mounted, setMounted] = useState(false);
   const locale = useLocale();
 
@@ -28,13 +29,16 @@ export default function UserMenu() {
     setMounted(true);
   }, []);
 
-  // Fetch user data from database
+  // Fetch user data and subscription from database
   useEffect(() => {
     if (isAuthenticated && user?.id && mounted) {
-      // Fetch user data from database
+      // Fetch user data from database with caching
       fetch(`/api/user/${user.id}`, { 
-        cache: "no-store",
+        cache: "force-cache",
         credentials: "include",
+        headers: {
+          'Cache-Control': 'max-age=300', // Cache for 5 minutes
+        },
       })
         .then((res) => {
           if (res.ok) {
@@ -44,23 +48,53 @@ export default function UserMenu() {
         })
         .then((data) => {
           setUserData(data);
+          // If Google picture is available, it will be prioritized in avatarUrl calculation
         })
         .catch(() => {
           // Fallback to Kinde user data
+          // Note: We don't set avatarUrl here because we prioritize user.picture (Google image) from Kinde
           setUserData({
             firstname: user.given_name || "",
             lastname: user.family_name || "",
-            avatarUrl: user.picture || "/user.png",
+            // avatarUrl will use user.picture from Kinde (Google account image) instead
           });
+        });
+
+      // Fetch current subscription
+      fetch(`/api/user/${user.id}/subscription`, {
+        cache: "no-store",
+        credentials: "include",
+      })
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+          return null;
+        })
+        .then((data) => {
+          if (data && data.subscription) {
+            setCurrentSubscription(data.subscription);
+          }
+        })
+        .catch(() => {
+          // Silently fail if subscription fetch fails
         });
     } else if (!isAuthenticated) {
       // Clear user data when logged out
       setUserData(null);
+      setCurrentSubscription(null);
     }
-  }, [isAuthenticated, user, mounted]);
+  }, [isAuthenticated, user?.id, mounted]);
 
-  // Don't render anything while loading, not mounted, or if not authenticated
-  if (!mounted || isLoading || !isAuthenticated || !user) {
+  // Show loading state briefly, but don't block rendering
+  if (!mounted) {
+    return (
+      <div className="h-10 w-10 rounded-full bg-gray-700 animate-pulse" />
+    );
+  }
+
+  // Don't render if not authenticated (after mounted)
+  if (!isAuthenticated || !user) {
     return null;
   }
 
@@ -70,7 +104,9 @@ export default function UserMenu() {
       user.email?.split("@")[0] ||
       "User";
 
-  const avatarUrl = userData?.avatarUrl || user.picture || "/user.png";
+  // Prioritize Google account image (from Kinde user.picture) over database avatarUrl
+  // user.picture from Kinde contains Google profile photo if user signed in with Google
+  const avatarUrl = user.picture || userData?.avatarUrl || "/user.png";
   const initials = fullName
     .split(" ")
     .map((n) => n[0])
@@ -114,6 +150,20 @@ export default function UserMenu() {
           >
             <FileText className="mr-2 h-4 w-4" />
             Mes annonces
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/user/subscription" className="cursor-pointer">
+            <Crown className="mr-2 h-4 w-4" />
+            <div className="flex flex-col">
+              <span>Mon abonnement</span>
+              {currentSubscription?.plan && (
+                <span className="text-xs text-gray-500 mt-0.5">
+                  {currentSubscription.plan.namePlan}
+                </span>
+              )}
+            </div>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />

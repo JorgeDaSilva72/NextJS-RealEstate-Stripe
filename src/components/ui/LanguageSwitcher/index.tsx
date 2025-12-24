@@ -756,31 +756,36 @@ const LanguageSwitcher = () => {
       return;
     }
     
-    // The usePathname hook from next-intl should return pathname without locale prefix
-    // But we'll clean it to prevent any locale stacking issues
-    let cleanPath = pathname || "/";
+    // usePathname from next-intl returns pathname WITHOUT locale prefix
+    // So if we're on /fr/user/properties, pathname will be /user/properties
+    let currentPath = pathname || "/";
     
-    // Remove any locale prefixes that might exist (handles stacked locales like /fr/en)
-    // This regex matches /fr, /en, /pt, /ar at the start of the path and removes them
-    const localePrefixPattern = /^\/(?:fr|en|pt|ar)(\/|$)/i;
-    while (localePrefixPattern.test(cleanPath)) {
-      cleanPath = cleanPath.replace(localePrefixPattern, "/");
+    // Handle edge case: if pathname is empty or just "/", use root
+    if (!currentPath || currentPath === "/") {
+      currentPath = "/";
     }
     
     // Ensure we have a leading slash
-    if (!cleanPath.startsWith("/")) {
-      cleanPath = "/" + cleanPath;
+    if (!currentPath.startsWith("/")) {
+      currentPath = "/" + currentPath;
     }
     
-    // Remove any double slashes that might have been created
-    cleanPath = cleanPath.replace(/\/+/g, "/");
+    // Remove trailing slash (except for root)
+    if (currentPath !== "/" && currentPath.endsWith("/")) {
+      currentPath = currentPath.slice(0, -1);
+    }
     
     // Build the final path with the new locale
-    // For root path, just use the locale; otherwise prepend locale to the clean path
-    const finalPath = cleanPath === "/" ? `/${newLocale}` : `/${newLocale}${cleanPath}`;
+    // For root, just use the locale; otherwise prepend locale to the path
+    const finalPath = currentPath === "/" ? `/${newLocale}` : `/${newLocale}${currentPath}`;
     
-    // Navigate to the new path
-    router.push(finalPath);
+    // Use window.location for a full page reload to ensure locale change takes effect
+    if (typeof window !== "undefined") {
+      window.location.href = finalPath;
+    } else {
+      // Fallback for SSR
+      router.push(finalPath);
+    }
   };
 
   const currentLanguage = languages.find((lang) => lang.code === locale);

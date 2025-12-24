@@ -984,6 +984,14 @@ model Subscriptions {
   id        Int    @id @default(autoincrement())
   paymentID String @unique // AJOUT: unique
   status SubscriptionStatus @default(ACTIVE) // Changement : String -> SubscriptionStatus
+  paymentProvider String? // Primer, Stripe, PayPal, Flutterwave, Paystack
+  
+  // Multi-currency support
+  baseAmount      Decimal? // Amount in base currency (EUR/USD)
+  baseCurrency    String? // Base currency code (EUR or USD)
+  paidAmount      Decimal? // Amount actually paid
+  paidCurrency    String? // Currency code used for payment
+  exchangeRate    Decimal? // Exchange rate at time of payment
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1000,6 +1008,7 @@ model Subscriptions {
   @@index([planId])
   @@index([endDate]) // AJOUT: pour vérifier les expirations
   @@index([status]) // AJOUT
+  @@index([paymentProvider]) // AJOUT
  
 }
 

@@ -2,6 +2,7 @@ export interface Property {
   id: string;
   title: string;
   price: number;
+  currency?: string;
   location: {
     city: string;
     country: string;
@@ -167,6 +168,15 @@ export const mockProperties: Property[] = [
     },
   },
 ];
+
+
+
+
+
+
+
+
+
 
 
 

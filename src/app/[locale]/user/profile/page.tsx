@@ -23,8 +23,6 @@ import {
   AlertCircle
 } from "lucide-react";
 import UploadAvatar from "./_components/UploadAvatar";
-import HomeNavbar from "../../components/HomeNavbar";
-import HomeFooter from "../../components/HomeFooter";
 
 const ProfilePage = async () => {
   const t = await getTranslations("ProfilePage");
@@ -83,9 +81,6 @@ const ProfilePage = async () => {
 
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-        {/* Navbar */}
-        <HomeNavbar />
-
         {/* Hero Section */}
         <section className="relative pt-24 pb-12 bg-gradient-to-b from-gray-900 to-gray-800">
           <div className="absolute inset-0 bg-[url('/Hero1.jpg')] bg-cover bg-center opacity-20" />
@@ -93,7 +88,7 @@ const ProfilePage = async () => {
             <Link href="/">
               <Button variant="ghost" className="text-white hover:text-white hover:bg-white/10 mb-6">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Retour à l'accueil
+                {t("backToHome")}
               </Button>
             </Link>
             <div className="flex flex-col items-center text-center">
@@ -297,9 +292,9 @@ const ProfilePage = async () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Statut Abonnement</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t("subscriptionStatus")}</p>
                     <p className={`text-2xl font-bold ${userSubscription && !isSubscriptionExpired ? 'text-green-600' : 'text-red-600'}`}>
-                      {userSubscription && !isSubscriptionExpired ? "Actif" : "Inactif"}
+                      {userSubscription && !isSubscriptionExpired ? t("active") : t("inactive")}
                     </p>
                   </div>
                   <div className={`p-3 rounded-full ${userSubscription && !isSubscriptionExpired ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
@@ -317,7 +312,7 @@ const ProfilePage = async () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Membre depuis</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t("memberSince")}</p>
                     <p className="text-2xl font-bold text-gray-900 dark:text-white">
                       {new Date(dbUser?.createdAt).getFullYear()}
                     </p>
@@ -330,9 +325,6 @@ const ProfilePage = async () => {
             </Card>
           </div>
         </section>
-
-        {/* Footer */}
-        <HomeFooter />
       </div>
     );
   } catch (error) {

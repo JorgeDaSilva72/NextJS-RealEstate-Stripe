@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import HomeNavbar from "../../../../components/HomeNavbar";
-import HomeFooter from "../../../../components/HomeFooter";
 import HeroSection from "../../../../components/HeroSection";
 import { SubscriptionPlan } from "@prisma/client";
 import AddPropertyForm from "./AddPropertyForm";
@@ -68,9 +66,6 @@ const AddPropertyClient: React.FC<AddPropertyClientProps> = ({
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      {/* Navbar */}
-      <HomeNavbar />
-
       {/* Hero Section */}
       <HeroSection
         title="Publier une annonce"
@@ -107,9 +102,6 @@ const AddPropertyClient: React.FC<AddPropertyClientProps> = ({
           shortVideoLimit={shortVideoLimit}
         />
       </section>
-
-      {/* Footer */}
-      <HomeFooter />
     </div>
   );
 };

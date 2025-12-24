@@ -816,7 +816,7 @@ const useFilterDatas = () => {
   const citiesWithNoneOption = React.useMemo(
     () => [
       { id: "none", value: t("allCities") },
-      ...cities.map((item) => ({ id: item.id.toString(), value: item.value })),
+      ...(Array.isArray(cities) ? cities.map((item) => ({ id: item.id.toString(), value: item.value })) : []),
     ],
     [cities, t]
   );
@@ -824,10 +824,10 @@ const useFilterDatas = () => {
   const countriesWithNoneOption = useMemo(
     () => [
       { id: "none", value: t("allCountries") },
-      ...countries.map((item) => ({
+      ...(Array.isArray(countries) ? countries.map((item) => ({
         id: item.id.toString(),
         value: item.value,
-      })),
+      })) : []),
     ],
     [countries, t]
   );

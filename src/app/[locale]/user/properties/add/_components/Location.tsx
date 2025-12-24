@@ -1,14 +1,26 @@
 "use client";
 
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
-import { Button, Card, Input, Textarea, cn } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, Controller } from "react-hook-form";
 import { AddPropertyInputType } from "./AddPropertyForm";
 import { useTranslations, useLocale } from "next-intl";
 import { useJsApiLoader, GoogleMap, Marker } from "@react-google-maps/api";
 import { MapPin, Search } from "lucide-react";
 import { GOOGLE_MAPS_LIBRARIES } from "@/lib/google-maps/config";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 // Définition de la structure des options traduites
 interface TranslatedClientItem {
@@ -29,6 +41,7 @@ interface Props {
 const Location = (props: Props) => {
   const t = useTranslations("PropertyForm.Location");
   const locale = useLocale();
+  const methods = useFormContext<AddPropertyInputType>();
   const {
     register,
     formState: { errors },
@@ -36,7 +49,29 @@ const Location = (props: Props) => {
     setValue,
     getValues,
     watch,
-  } = useFormContext<AddPropertyInputType>();
+    control,
+  } = methods;
+
+  // Suppress Google Maps deprecation warnings (they're just warnings, not errors)
+  useEffect(() => {
+    const originalWarn = console.warn;
+    console.warn = (...args: any[]) => {
+      if (
+        typeof args[0] === "string" &&
+        (args[0].includes("google.maps.places.Autocomplete") ||
+         args[0].includes("google.maps.Marker") ||
+         args[0].includes("deprecated"))
+      ) {
+        // Suppress deprecation warnings
+        return;
+      }
+      originalWarn.apply(console, args);
+    };
+
+    return () => {
+      console.warn = originalWarn;
+    };
+  }, []);
 
   // Google Maps API loader
   const { isLoaded, loadError } = useJsApiLoader({
@@ -62,11 +97,237 @@ const Location = (props: Props) => {
   
   const searchInputRef = useRef<HTMLInputElement>(null);
   const mapRef = useRef<HTMLDivElement>(null);
+  const availableCitiesRef = useRef<TranslatedClientItem[]>(props.cities);
+  
+  // Keep ref in sync with state
+  useEffect(() => {
+    availableCitiesRef.current = availableCities;
+  }, [availableCities]);
 
   // Default center (Casablanca, Morocco)
   const defaultCenter = { lat: 33.5731, lng: -7.5898 };
   const [center, setCenter] = useState(defaultCenter);
   const [zoom, setZoom] = useState(12);
+
+  // Helper function to extract and fill all address components
+  const fillAddressFromComponents = useCallback(async (
+    addressComponents: google.maps.GeocoderResult["address_components"] | google.maps.places.PlaceResult["address_components"] | undefined,
+    formattedAddress: string,
+    lat: number,
+    lng: number
+  ) => {
+    if (!addressComponents || addressComponents.length === 0) {
+      // At least set coordinates even if no address components
+      setValue("location.latitude", lat, { shouldValidate: true });
+      setValue("location.longitude", lng, { shouldValidate: true });
+      setValue("location.streetAddress", formattedAddress || "", {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      setSearchValue(formattedAddress || "");
+      return;
+    }
+
+    let countryName = "";
+    let countryCode = "";
+    let cityName = "";
+    let zipCode = "";
+    let streetNumber = "";
+    let route = "";
+    let landmark = "";
+
+    // Extract all address components
+    addressComponents.forEach((component) => {
+      const types = component.types;
+
+      if (types.includes("country")) {
+        countryName = component.long_name;
+        countryCode = component.short_name;
+      }
+      if (types.includes("locality") || types.includes("administrative_area_level_2")) {
+        cityName = component.long_name;
+      }
+      if (types.includes("postal_code")) {
+        zipCode = component.long_name;
+      }
+      if (types.includes("street_number")) {
+        streetNumber = component.long_name;
+      }
+      if (types.includes("route")) {
+        route = component.long_name;
+      }
+      if (types.includes("neighborhood") || types.includes("sublocality")) {
+        landmark = component.long_name;
+      }
+    });
+
+    // Update coordinates
+    setValue("location.latitude", lat, { shouldValidate: true });
+    setValue("location.longitude", lng, { shouldValidate: true });
+
+    // Update street address
+    const fullStreetAddress = formattedAddress || (streetNumber && route ? `${streetNumber} ${route}` : route || formattedAddress);
+    setValue("location.streetAddress", fullStreetAddress, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+    setSearchValue(fullStreetAddress);
+
+    // Update zip code
+    if (zipCode) {
+      setValue("location.zip", zipCode, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
+
+    // Update landmark
+    if (landmark) {
+      setValue("location.landmark", landmark, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
+
+    // Try to match and set country
+    if (countryName || countryCode) {
+      const matchedCountry = props.countries.find(
+        (country) => {
+          const countryNameLower = country.name.toLowerCase();
+          const searchName = countryName.toLowerCase();
+          const searchCode = countryCode.toLowerCase();
+          return countryNameLower.includes(searchName) ||
+                 searchName.includes(countryNameLower) ||
+                 country.code?.toLowerCase() === searchCode ||
+                 countryNameLower === searchName;
+        }
+      );
+
+      if (matchedCountry) {
+        setSelectedCountryId(String(matchedCountry.id));
+        setValue("location.countryId", String(matchedCountry.id), {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+
+        // Fetch cities for the matched country
+        if (matchedCountry.id) {
+          setIsLoadingCities(true);
+          try {
+            const response = await fetch(
+              `/api/searchCities?lang=${locale}&countryId=${matchedCountry.id}`
+            );
+            if (response.ok) {
+              const cities = await response.json();
+              const fetchedCities = cities.map((city: { id: number; value: string; countryId?: number }) => ({
+                id: city.id,
+                code: "",
+                name: city.value,
+                countryId: city.countryId,
+              }));
+              setAvailableCities(fetchedCities);
+              availableCitiesRef.current = fetchedCities;
+
+              // Try to match city after cities are loaded
+              if (cityName && fetchedCities.length > 0) {
+                const matchedCity = fetchedCities.find(
+                  (city: TranslatedClientItem) => {
+                    const cityNameLower = cityName.toLowerCase();
+                    const dbCityNameLower = city.name.toLowerCase();
+                    return cityNameLower.includes(dbCityNameLower) ||
+                           dbCityNameLower.includes(cityNameLower) ||
+                           cityNameLower === dbCityNameLower;
+                  }
+                );
+
+                if (matchedCity) {
+                  setSelectedCityId(String(matchedCity.id));
+                  setValue("location.cityId", String(matchedCity.id), {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+                }
+              }
+            }
+          } catch (error) {
+            console.error("Error fetching cities:", error);
+          } finally {
+            setIsLoadingCities(false);
+          }
+        }
+      }
+    } else if (cityName && selectedCountryId) {
+      // If country is already selected, try to match city
+      // Use ref to get current availableCities to avoid stale closure
+      const currentCities = availableCitiesRef.current;
+      if (currentCities.length > 0) {
+        const matchedCity = currentCities.find(
+          (city) => {
+            const cityNameLower = cityName.toLowerCase();
+            const dbCityNameLower = city.name.toLowerCase();
+            return cityNameLower.includes(dbCityNameLower) ||
+                   dbCityNameLower.includes(cityNameLower) ||
+                   cityNameLower === dbCityNameLower;
+          }
+        );
+
+        if (matchedCity) {
+          setSelectedCityId(String(matchedCity.id));
+          setValue("location.cityId", String(matchedCity.id), {
+            shouldValidate: true,
+            shouldDirty: true,
+          });
+        }
+      } else {
+        // If no cities loaded yet, fetch them for the selected country
+        setIsLoadingCities(true);
+        fetch(`/api/searchCities?lang=${locale}&countryId=${selectedCountryId}`)
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error("Failed to fetch cities");
+          })
+          .then((cities) => {
+            const fetchedCities = cities.map((city: { id: number; value: string; countryId?: number }) => ({
+              id: city.id,
+              code: "",
+              name: city.value,
+              countryId: city.countryId,
+            }));
+            setAvailableCities(fetchedCities);
+            availableCitiesRef.current = fetchedCities;
+
+            // Try to match city after cities are loaded
+            if (cityName && fetchedCities.length > 0) {
+              const matchedCity = fetchedCities.find(
+                (city: TranslatedClientItem) => {
+                  const cityNameLower = cityName.toLowerCase();
+                  const dbCityNameLower = city.name.toLowerCase();
+                  return cityNameLower.includes(dbCityNameLower) ||
+                         dbCityNameLower.includes(cityNameLower) ||
+                         cityNameLower === dbCityNameLower;
+                }
+              );
+
+              if (matchedCity) {
+                setSelectedCityId(String(matchedCity.id));
+                setValue("location.cityId", String(matchedCity.id), {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+              }
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching cities:", error);
+          })
+          .finally(() => {
+            setIsLoadingCities(false);
+          });
+      }
+    }
+  }, [setValue, props.countries, locale]);
 
   // Initialize Google Maps Places Autocomplete
   useEffect(() => {
@@ -91,66 +352,17 @@ const Location = (props: Props) => {
       const lat = place.geometry.location.lat();
       const lng = place.geometry.location.lng();
 
-      // Update form values
-      setValue("location.latitude", lat, { shouldValidate: true });
-      setValue("location.longitude", lng, { shouldValidate: true });
-      setValue("location.streetAddress", place.formatted_address || "", {
-        shouldValidate: true,
-        shouldDirty: true,
-      });
-
       // Update map center and marker
       setCenter({ lat, lng });
       setZoom(16);
 
-        // Try to match city from address components
-        if (place.address_components) {
-          let cityName = "";
-          let countryName = "";
-
-          place.address_components.forEach((component) => {
-            if (component.types.includes("locality") || component.types.includes("administrative_area_level_2")) {
-              cityName = component.long_name;
-            }
-            if (component.types.includes("country")) {
-              countryName = component.long_name;
-            }
-          });
-
-          // Try to find matching city in our database
-          if (cityName && availableCities.length > 0) {
-            const matchedCity = availableCities.find(
-              (city) => {
-                const cityNameLower = cityName.toLowerCase();
-                const dbCityNameLower = city.name.toLowerCase();
-                return cityNameLower.includes(dbCityNameLower) || 
-                       dbCityNameLower.includes(cityNameLower) ||
-                       cityNameLower === dbCityNameLower;
-              }
-            );
-
-            if (matchedCity) {
-              setSelectedCityId(String(matchedCity.id));
-              setValue("location.cityId", String(matchedCity.id), {
-                shouldValidate: true,
-                shouldDirty: true,
-              });
-
-              // Set countryId from city if available
-              if (matchedCity.countryId) {
-                setSelectedCountryId(String(matchedCity.countryId));
-                setValue("location.countryId", String(matchedCity.countryId), {
-                  shouldValidate: true,
-                  shouldDirty: true,
-                });
-              }
-            }
-            // Note: If no match found, user must manually select city from dropdown
-            // This is acceptable as Google Maps city names may differ from our DB
-          }
-        }
-
-      setSearchValue(place.formatted_address || "");
+      // Fill all address fields
+      fillAddressFromComponents(
+        place.address_components,
+        place.formatted_address || "",
+        lat,
+        lng
+      );
     });
 
     setAutocomplete(autocompleteInstance);
@@ -160,7 +372,7 @@ const Location = (props: Props) => {
         google.maps.event.clearInstanceListeners(autocompleteInstance);
       }
     };
-  }, [isLoaded, setValue, availableCities, props.countries]);
+  }, [isLoaded, fillAddressFromComponents]);
 
   // Update marker position when center changes
   useEffect(() => {
@@ -182,20 +394,41 @@ const Location = (props: Props) => {
           const lat = position.lat();
           const lng = position.lng();
           setCenter({ lat, lng });
-          setValue("location.latitude", lat, { shouldValidate: true });
-          setValue("location.longitude", lng, { shouldValidate: true });
 
-          // Reverse geocode to get address
+          // Reverse geocode to get full address details
           const geocoder = new google.maps.Geocoder();
-          geocoder.geocode({ location: { lat, lng } }, (results, status) => {
-            if (status === "OK" && results && results[0]) {
-              setValue("location.streetAddress", results[0].formatted_address, {
-                shouldValidate: true,
-                shouldDirty: true,
-              });
-              setSearchValue(results[0].formatted_address);
+          geocoder.geocode(
+            { location: { lat, lng } },
+            async (results, status) => {
+              if (status === "OK" && results && results.length > 0) {
+                const result = results[0];
+                // Fill all address fields from geocoding result
+                try {
+                  await fillAddressFromComponents(
+                    result.address_components,
+                    result.formatted_address || "",
+                    lat,
+                    lng
+                  );
+                } catch (error) {
+                  console.error("Error filling address components:", error);
+                  // At least set coordinates and address
+                  setValue("location.latitude", lat, { shouldValidate: true });
+                  setValue("location.longitude", lng, { shouldValidate: true });
+                  setValue("location.streetAddress", result.formatted_address || "", {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+                  setSearchValue(result.formatted_address || "");
+                }
+              } else {
+                console.warn("Geocoding failed:", status);
+                // If geocoding fails, at least set coordinates
+                setValue("location.latitude", lat, { shouldValidate: true });
+                setValue("location.longitude", lng, { shouldValidate: true });
+              }
             }
-          });
+          );
         }
       });
 
@@ -289,19 +522,18 @@ const Location = (props: Props) => {
   }
 
   return (
-    <Card
-      className={cn(
-        "p-4 grid grid-cols-1 gap-4",
-        props.className
-      )}
-    >
+    <Card className={cn("w-full", props.className)}>
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold">{t("title") || "Emplacement"}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
       {/* Google Maps Search */}
-      <div className="col-span-1 md:col-span-2">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">
           {t("searchAddress") || "Rechercher une adresse"}
-        </label>
+          </Label>
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
           <Input
             ref={searchInputRef}
             value={searchValue}
@@ -311,15 +543,18 @@ const Location = (props: Props) => {
             disabled={!isLoaded}
           />
         </div>
-        <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500">
           {t("searchAddressHint") || "Recherchez une adresse ou cliquez/déplacez le marqueur sur la carte"}
         </p>
       </div>
 
       {/* Google Map */}
       {isLoaded && (
-        <div className="col-span-1 md:col-span-2">
-          <div ref={mapRef} className="w-full h-96 rounded-lg overflow-hidden border border-gray-300">
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">
+              {t("map") || "Carte interactive"}
+            </Label>
+            <div ref={mapRef} className="w-full h-96 rounded-lg overflow-hidden border border-gray-300 shadow-md">
             <GoogleMap
               mapContainerStyle={{ width: "100%", height: "100%" }}
               center={center}
@@ -330,20 +565,41 @@ const Location = (props: Props) => {
                   const lat = e.latLng.lat();
                   const lng = e.latLng.lng();
                   setCenter({ lat, lng });
-                  setValue("location.latitude", lat, { shouldValidate: true });
-                  setValue("location.longitude", lng, { shouldValidate: true });
 
-                  // Reverse geocode
+                  // Reverse geocode to get full address details
                   const geocoder = new google.maps.Geocoder();
-                  geocoder.geocode({ location: { lat, lng } }, (results, status) => {
-                    if (status === "OK" && results && results[0]) {
-                      setValue("location.streetAddress", results[0].formatted_address, {
-                        shouldValidate: true,
-                        shouldDirty: true,
-                      });
-                      setSearchValue(results[0].formatted_address);
+                  geocoder.geocode(
+                    { location: { lat, lng } },
+                    async (results, status) => {
+                      if (status === "OK" && results && results.length > 0) {
+                        const result = results[0];
+                        // Fill all address fields from geocoding result
+                        try {
+                          await fillAddressFromComponents(
+                            result.address_components,
+                            result.formatted_address || "",
+                            lat,
+                            lng
+                          );
+                        } catch (error) {
+                          console.error("Error filling address components:", error);
+                          // At least set coordinates and address
+                          setValue("location.latitude", lat, { shouldValidate: true });
+                          setValue("location.longitude", lng, { shouldValidate: true });
+                          setValue("location.streetAddress", result.formatted_address || "", {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          });
+                          setSearchValue(result.formatted_address || "");
+                        }
+                      } else {
+                        console.warn("Geocoding failed:", status);
+                        // If geocoding fails, at least set coordinates
+                        setValue("location.latitude", lat, { shouldValidate: true });
+                        setValue("location.longitude", lng, { shouldValidate: true });
+                      }
                     }
-                  });
+                  );
                 }
               }}
               options={{
@@ -356,116 +612,174 @@ const Location = (props: Props) => {
               {marker && <Marker position={center} draggable />}
             </GoogleMap>
           </div>
+            <p className="text-xs text-gray-500">
+              {t("mapHint") || "Cliquez sur la carte pour sélectionner l'emplacement exact"}
+            </p>
         </div>
       )}
 
+        {/* Complementary Information Fields - Always Visible Below Map */}
+        <div className="space-y-4 pt-4 border-t">
+          <h3 className="text-lg font-semibold text-gray-800">
+            {t("complementaryInfo") || "Informations complémentaires"}
+          </h3>
+          
+          {/* Country and City Selection in Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {/* Country Selection */}
-      <div className="col-span-1 md:col-span-2">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="space-y-2">
+              <Label htmlFor="country" className="text-sm font-medium">
           {t("country") || "Pays"} <span className="text-red-500">*</span>
-        </label>
-        <select
+              </Label>
+              <Select
           value={selectedCountryId}
-          onChange={(e) => handleCountryChange(e.target.value)}
+                onValueChange={handleCountryChange}
+              >
+                <SelectTrigger
+                  id="country"
           className={cn(
-            "w-full p-3 border rounded-lg bg-gray-50 appearance-none",
-            "focus:border-blue-500 focus:ring-blue-500",
-            { "border-red-500": !!errors.location?.countryId }
+                    "w-full",
+                    errors.location?.countryId && "border-red-500 focus:ring-red-500"
           )}
         >
-          <option value="">{t("chooseCountry") || "Choisir un pays"}</option>
+                  <SelectValue placeholder={t("chooseCountry") || "Choisir un pays"} />
+                </SelectTrigger>
+                <SelectContent>
           {props.countries.map((country) => (
-            <option key={country.id} value={country.id.toString()}>
+                    <SelectItem key={country.id} value={country.id.toString()}>
               {country.name}
-            </option>
+                    </SelectItem>
           ))}
-        </select>
+                </SelectContent>
+              </Select>
         {errors.location?.countryId && (
-          <p className="text-red-500 text-xs mt-1">
+                <p className="text-sm text-red-500 mt-1">
             {errors.location.countryId.message}
           </p>
         )}
       </div>
 
       {/* City Selection */}
-      <div className="col-span-1 md:col-span-2">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="space-y-2">
+              <Label htmlFor="city" className="text-sm font-medium">
           {t("city") || "Ville"} <span className="text-red-500">*</span>
-        </label>
-        <select
-          {...register("location.cityId", {
-            setValueAs: (v) => (v === "" ? "" : String(v).trim()),
-          })}
-          value={selectedCityId}
-          onChange={(e) => handleCityChange(e.target.value)}
+              </Label>
+              <Controller
+                name="location.cityId"
+                control={methods.control}
+                render={({ field }) => (
+                  <Select
+                    value={typeof field.value === 'string' && field.value ? field.value : ""}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      handleCityChange(value);
+                    }}
           disabled={!selectedCountryId && availableCities.length === 0}
+                  >
+                    <SelectTrigger
+                      id="city"
           className={cn(
-            "w-full p-3 border rounded-lg bg-gray-50 appearance-none",
-            "focus:border-blue-500 focus:ring-blue-500",
-            {
-              "border-red-500": !!errors.location?.cityId,
-              "opacity-50 cursor-not-allowed": !selectedCountryId && availableCities.length === 0,
-            }
-          )}
-          name="location.cityId"
-        >
-          <option value="" disabled>
-            {isLoadingCities
+                        "w-full",
+                        errors.location?.cityId && "border-red-500 focus:ring-red-500",
+                        (!selectedCountryId && availableCities.length === 0) && "opacity-50 cursor-not-allowed"
+                      )}
+                    >
+                      <SelectValue 
+                        placeholder={
+                          isLoadingCities
               ? t("loading") || "Chargement..."
               : selectedCountryId
               ? t("chooseCity") || "Choisir une ville"
-              : t("selectCountryFirst") || "Sélectionnez d'abord un pays"}
-          </option>
+                            : t("selectCountryFirst") || "Sélectionnez d'abord un pays"
+                        } 
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
           {availableCities.map((city) => (
-            <option key={city.id} value={city.id.toString()}>
+                        <SelectItem key={city.id} value={city.id.toString()}>
               {city.name}
-            </option>
+                        </SelectItem>
           ))}
-        </select>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
         {errors.location?.cityId && (
-          <p className="text-red-500 text-xs mt-1">
+                <p className="text-sm text-red-500 mt-1">
             {errors.location.cityId.message}
           </p>
         )}
+            </div>
       </div>
 
       {/* Street Address */}
-      <div className="col-span-1 md:col-span-2">
+          <div className="space-y-2">
+            <Label htmlFor="streetAddress" className="text-sm font-medium">
+              {t("address") || "Adresse"} <span className="text-red-500">*</span>
+            </Label>
         <Input
+              id="streetAddress"
           {...register("location.streetAddress", {
             setValueAs: (v) => (typeof v === "string" ? v.trim() : v),
           })}
-          label={t("address") || "Adresse"}
           placeholder={t("streetAddressPlaceholder") || "Adresse complète"}
-          errorMessage={errors.location?.streetAddress?.message}
-          isInvalid={!!errors.location?.streetAddress}
-        />
+              className={cn(
+                "w-full",
+                errors.location?.streetAddress && "border-red-500 focus-visible:ring-red-500"
+              )}
+            />
+            {errors.location?.streetAddress && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.location.streetAddress.message}
+              </p>
+            )}
       </div>
 
       {/* ZIP Code */}
-      <div className="col-span-1">
+          <div className="space-y-2">
+            <Label htmlFor="zip" className="text-sm font-medium">
+              {t("zipCode") || "Code postal"}
+            </Label>
         <Input
+              id="zip"
           {...register("location.zip", {
             setValueAs: (v) => (typeof v === "string" && v.trim().length > 0 ? v.trim() : undefined),
           })}
-          label={t("zipCode") || "Code postal"}
-          errorMessage={errors.location?.zip?.message}
-          isInvalid={!!errors.location?.zip}
-        />
+              placeholder={t("zipCodePlaceholder") || "Code postal"}
+              className={cn(
+                "w-full",
+                errors.location?.zip && "border-red-500 focus-visible:ring-red-500"
+              )}
+            />
+            {errors.location?.zip && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.location.zip.message}
+              </p>
+            )}
       </div>
 
       {/* Landmark / Additional Info */}
-      <div className="col-span-1 md:col-span-2">
+          <div className="space-y-2">
+            <Label htmlFor="landmark" className="text-sm font-medium">
+              {t("additionalInfo") || "Informations complémentaires"}
+            </Label>
         <Textarea
+              id="landmark"
           {...register("location.landmark", {
             setValueAs: (v) => (typeof v === "string" && v.trim().length > 0 ? v.trim() : undefined),
           })}
-          label={t("additionalInfo") || "Informations complémentaires"}
-          errorMessage={errors.location?.landmark?.message}
-          isInvalid={!!errors.location?.landmark}
-          minRows={3}
           placeholder={t("landmarkPlaceholder") || "Points de repère, instructions spéciales..."}
-        />
+              className={cn(
+                "w-full min-h-[100px]",
+                errors.location?.landmark && "border-red-500 focus-visible:ring-red-500"
+              )}
+            />
+            {errors.location?.landmark && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.location.landmark.message}
+              </p>
+            )}
+          </div>
       </div>
 
       {/* Hidden fields for coordinates */}
@@ -489,24 +803,25 @@ const Location = (props: Props) => {
       />
 
       {/* Navigation Buttons */}
-      <div className="flex flex-col md:flex-row justify-center col-span-1 md:col-span-2 gap-4 mt-4">
+        <div className="flex flex-col md:flex-row justify-end gap-3 pt-4 border-t">
         <Button
-          onClick={props.prev}
-          startContent={<ChevronLeftIcon className="w-6" />}
+            onPress={props.prev}
+            startContent={<ChevronLeftIcon className="w-5 h-5" />}
           color="primary"
-          className="w-full md:w-36"
+            className="w-full md:w-auto"
         >
           {t("previous") || "Précédent"}
         </Button>
         <Button
-          onClick={handleNext}
-          endContent={<ChevronRightIcon className="w-6" />}
+            onPress={handleNext}
+            endContent={<ChevronRightIcon className="w-5 h-5" />}
           color="primary"
-          className="w-full md:w-36"
+            className="w-full md:w-auto"
         >
           {t("next") || "Suivant"}
         </Button>
       </div>
+      </CardContent>
     </Card>
   );
 };

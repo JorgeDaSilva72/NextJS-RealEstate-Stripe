@@ -1,6 +1,6 @@
 // import HeaderPropertiesWrapper from "@/app/components/HeaderPropertiesWrapper";
 import React, { ReactNode } from "react";
-import HeaderPropertiesWrapper from "../../components/HeaderPropertiesWrapper";
+// import HeaderPropertiesWrapper from "../../components/HeaderPropertiesWrapper";
 
 interface Props {
   children: ReactNode;
@@ -9,7 +9,7 @@ interface Props {
 const PropertiesLayout = ({ children, modalDelete }: Props) => {
   return (
     <div>
-      <HeaderPropertiesWrapper />
+      {/* <HeaderPropertiesWrapper /> */}
       {children}
       <div>{modalDelete}</div>
     </div>

@@ -82,37 +82,37 @@ export default function NavbarLanguageSwitcher() {
   const switchLanguage = (newLocale: string) => {
     if (newLocale === locale) return;
 
-    // The usePathname hook from next-intl should return pathname without locale prefix
-    // But we'll clean it to prevent any locale stacking issues
-    let cleanPath = pathname || "/";
+    // usePathname from next-intl returns pathname WITHOUT locale prefix
+    // So if we're on /fr/user/properties, pathname will be /user/properties
+    let currentPath = pathname || "/";
     
-    // Remove any locale prefixes that might exist (handles stacked locales like /fr/en)
-    // This regex matches /fr, /en, /pt, /ar at the start of the path and removes them
-    // Use a loop to handle multiple stacked locales
-    const localePrefixPattern = /^\/(?:fr|en|pt|ar)(\/|$)/i;
-    while (localePrefixPattern.test(cleanPath)) {
-      cleanPath = cleanPath.replace(localePrefixPattern, "/");
+    // Handle edge case: if pathname is empty or just "/", use root
+    if (!currentPath || currentPath === "/") {
+      currentPath = "/";
     }
     
     // Ensure we have a leading slash
-    if (!cleanPath.startsWith("/")) {
-      cleanPath = "/" + cleanPath;
+    if (!currentPath.startsWith("/")) {
+      currentPath = "/" + currentPath;
     }
     
-    // Remove any double slashes that might have been created
-    cleanPath = cleanPath.replace(/\/+/g, "/");
-    
-    // Ensure cleanPath ends with a single slash if it's root, or preserve the path
-    if (cleanPath !== "/" && !cleanPath.endsWith("/")) {
-      // Keep as is
+    // Remove trailing slash (except for root)
+    if (currentPath !== "/" && currentPath.endsWith("/")) {
+      currentPath = currentPath.slice(0, -1);
     }
     
     // Build the final path with the new locale
-    // For root path, just use the locale; otherwise prepend locale to the clean path
-    const finalPath = cleanPath === "/" ? `/${newLocale}` : `/${newLocale}${cleanPath}`;
+    // For root, just use the locale; otherwise prepend locale to the path
+    const finalPath = currentPath === "/" ? `/${newLocale}` : `/${newLocale}${currentPath}`;
     
-    // Navigate to the new path
-    router.push(finalPath);
+    // Navigate to the new path - use window.location for full page reload to ensure locale change
+    // This ensures the page reloads with the new locale and all translations update
+    if (typeof window !== "undefined") {
+      window.location.href = finalPath;
+    } else {
+      // Fallback for SSR
+      router.push(finalPath);
+    }
   };
 
   return (
@@ -121,22 +121,26 @@ export default function NavbarLanguageSwitcher() {
         <Button
           variant="ghost"
           size="sm"
-          className="flex items-center gap-2 text-gray-700 hover:text-orange-500 hover:bg-gray-100"
+          className="flex items-center gap-2 text-white hover:text-orange-500 hover:bg-white/10"
         >
           <CurrentFlag />
-          <span className="hidden sm:inline">{currentLanguage?.label}</span>
+          <span className="hidden sm:inline text-white">{currentLanguage?.label}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
         {languages.map((lang) => {
           const FlagComponent = lang.flag;
           return (
             <DropdownMenuItem
               key={lang.code}
-              onClick={() => switchLanguage(lang.code)}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                switchLanguage(lang.code);
+              }}
               className={cn(
-                "cursor-pointer flex items-center gap-2",
-                lang.code === locale && "bg-orange-50 text-orange-600"
+                "cursor-pointer flex items-center gap-2 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700",
+                lang.code === locale && "bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400"
               )}
             >
               <FlagComponent />

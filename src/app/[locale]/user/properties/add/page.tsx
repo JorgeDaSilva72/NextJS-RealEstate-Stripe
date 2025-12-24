@@ -343,14 +343,29 @@ const AddPropertyPage = async () => {
     photoLimit = planDetails?.photosPerAd || photoLimit;
     shortVideoLimit = planDetails?.shortVideosPerAd || shortVideoLimit;
 
+    // Check subscription limits
+    const { canCreateListing, getUpgradeMessage } = await import("@/lib/subscription-limits");
+    const listingCheck = await canCreateListing(user.id);
+    const upgradeMessage = await getUpgradeMessage(user.id);
+
     if (!userSubscription) {
       showModal = true;
       modalMessage = t("subscriptionRequired");
     } else if (isSubscriptionExpired) {
       showModal = true;
       modalMessage = t("subscriptionExpired");
+    } else if (!listingCheck.allowed) {
+      showModal = true;
+      modalMessage = listingCheck.reason || t("limitReached", {
+        limit: listingCheck.limit || currentPlanLimit,
+        plan: planDetails?.namePlan,
+      });
+      if (upgradeMessage) {
+        modalMessage += ` ${upgradeMessage}`;
+      }
     } else if (
       planDetails?.premiumAds &&
+      planDetails.premiumAds !== 999 && // Not unlimited
       totalPropertiesCount >= planDetails.premiumAds
     ) {
       showModal = true;

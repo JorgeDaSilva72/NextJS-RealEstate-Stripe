@@ -516,6 +516,9 @@ export async function saveProperty(
           statusId: propertyData.statusId,
           typeId: propertyData.typeId,
           userId,
+          isActive: true, // Set to true by default
+          publishedAt: new Date(), // Set publishedAt to current date
+          countryId: propertyData.location?.countryId || propertyData.countryId,
           location: {
             create: propertyData.location as any,
           },
@@ -537,6 +540,14 @@ export async function saveProperty(
     });
 
     console.log("saveProperty: succès", { result });
+    
+    // Revalidate cache to update property listings
+    revalidatePath("/properties");
+    revalidatePath("/user/properties");
+    revalidatePath("/result");
+    revalidatePath("/buy");
+    revalidatePath("/rent");
+    
     return result;
   } catch (error) {
     console.error("Erreur lors de l'enregistrement de la propriété:", error);

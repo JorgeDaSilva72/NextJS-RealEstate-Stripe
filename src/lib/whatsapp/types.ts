@@ -492,6 +492,7 @@ export interface ApiError {
   code: number;
   message: string;
   details?: any;
+  isTokenExpired?: boolean;
 }
 
 export interface ApiResponse<T = any> {

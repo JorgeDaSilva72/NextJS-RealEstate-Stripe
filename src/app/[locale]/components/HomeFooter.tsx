@@ -3,35 +3,36 @@
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
-
-const footerLinks = {
-  about: [
-    { label: "À propos", href: "/about" },
-    { label: "Notre équipe", href: "/team" },
-    { label: "Carrières", href: "/careers" },
-    { label: "Presse", href: "/press" },
-  ],
-  services: [
-    { label: "Acheter", href: "/buy" },
-    { label: "Louer", href: "/rent" },
-    { label: "Vendre", href: "/user/properties/add" },
-    { label: "Estimation", href: "/estimation" },
-  ],
-  support: [
-    { label: "FAQ", href: "/faq" },
-    { label: "Contact", href: "/contact" },
-    { label: "Aide", href: "/help" },
-    { label: "Guide", href: "/guide" },
-  ],
-  legal: [
-    { label: "Mentions légales", href: "/legal" },
-    { label: "CGU", href: "/terms" },
-    { label: "Confidentialité", href: "/privacy" },
-    { label: "Cookies", href: "/cookies" },
-  ],
-};
+import { useTranslations } from "next-intl";
 
 export default function HomeFooter() {
+  const t = useTranslations("Footer");
+
+  const footerLinks = {
+    about: [
+      { label: t("about"), href: "/about" },
+      { label: t("ourTeam"), href: "/team" },
+      { label: t("careers"), href: "/careers" },
+      { label: t("press"), href: "/press" },
+    ],
+    services: [
+      { label: t("properties"), href: "/search-results" },
+      { label: t("sell"), href: "/user/properties/add" },
+      { label: t("estimation"), href: "/estimation" },
+    ],
+    support: [
+      { label: t("faq"), href: "/faq" },
+      { label: t("contact"), href: "/contact" },
+      { label: t("help"), href: "/help" },
+      { label: t("guide"), href: "/guide" },
+    ],
+    legal: [
+      { label: t("legalNotice"), href: "/legal" },
+      { label: t("terms"), href: "/terms" },
+      { label: t("privacy"), href: "/privacy" },
+      { label: t("cookies"), href: "/cookies" },
+    ],
+  };
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -45,6 +46,7 @@ export default function HomeFooter() {
                   src="/logo-topaz-enhance-coupe.jpeg"
                   alt="AFRIQUE AVENIR IMMOBILIER"
                   fill
+                  sizes="40px"
                   className="rounded-lg object-cover"
                 />
               </div>
@@ -56,7 +58,7 @@ export default function HomeFooter() {
 
           {/* À Propos */}
           <div>
-            <h3 className="text-white font-semibold mb-4">À Propos</h3>
+            <h3 className="text-white font-semibold mb-4">{t("about")}</h3>
             <ul className="space-y-2">
               {footerLinks.about.map((link) => (
                 <li key={link.href}>
@@ -73,7 +75,7 @@ export default function HomeFooter() {
 
           {/* Services */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Services</h3>
+            <h3 className="text-white font-semibold mb-4">{t("services")}</h3>
             <ul className="space-y-2">
               {footerLinks.services.map((link) => (
                 <li key={link.href}>
@@ -90,7 +92,7 @@ export default function HomeFooter() {
 
           {/* Support */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Support</h3>
+            <h3 className="text-white font-semibold mb-4">{t("support")}</h3>
             <ul className="space-y-2">
               {footerLinks.support.map((link) => (
                 <li key={link.href}>
@@ -111,7 +113,7 @@ export default function HomeFooter() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             {/* Copyright */}
             <p className="text-sm text-gray-400 text-center md:text-left">
-              © 2024 Afrique Avenir Immobilier. Tous droits réservés.
+              {t("copyright")}
             </p>
 
             {/* Social Media */}

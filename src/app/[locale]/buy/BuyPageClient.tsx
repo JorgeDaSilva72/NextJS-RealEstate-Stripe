@@ -28,7 +28,7 @@ interface Property {
       id: number;
       countryId: number;
       translations: Array<{ name: string }>;
-    };
+    } | null;
   } | null;
   feature: {
     area: number | null;
@@ -101,7 +101,7 @@ const BuyPageClient: React.FC<BuyPageClientProps> = ({
 
         {/* View Toggle */}
         <div className="mb-6 flex justify-end">
-          <ViewToggle viewMode={viewMode} onViewChange={setViewMode} />
+          <ViewToggle view={viewMode} onViewChange={setViewMode} />
         </div>
 
         {/* Properties Section */}

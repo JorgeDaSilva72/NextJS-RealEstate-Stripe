@@ -7,11 +7,12 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { isAuthenticated } = await getKindeServerSession();
+    const { isAuthenticated, getUser } = await getKindeServerSession();
     if (!(await isAuthenticated())) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const kindeUser = await getUser();
     const user = await prisma.user.findUnique({
       where: { id: params.id },
       select: {
@@ -27,7 +28,13 @@ export async function GET(
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json(user);
+    // Include Google account image from Kinde if available
+    // Prioritize Google account image (user.picture from Kinde) over database avatarUrl
+    return NextResponse.json({
+      ...user,
+      // Add Google account image from Kinde (if user signed in with Google)
+      googlePicture: kindeUser?.picture || null,
+    });
   } catch (error) {
     console.error("Error fetching user:", error);
     return NextResponse.json(
@@ -36,6 +43,12 @@ export async function GET(
     );
   }
 }
+
+
+
+
+
+
 
 
 

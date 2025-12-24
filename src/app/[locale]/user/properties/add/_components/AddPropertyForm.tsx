@@ -28,7 +28,7 @@
 // import { removeImages, uploadImages } from "@/lib/upload";
 // import { editProperty, saveProperty } from "@/lib/actions/property";
 // import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-// import { useRouter } from "next/navigation";
+// import { useRouter } from "@/i18n/routing";
 // import { toast } from "react-toastify";
 
 // const steps = [
@@ -278,7 +278,7 @@
 // import { removeImages, uploadImages, uploadImagesToWebp } from "@/lib/upload";
 // import { editProperty, saveProperty } from "@/lib/actions/property";
 // import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-// import { useRouter } from "next/navigation";
+// import { useRouter } from "@/i18n/routing";
 // import { toast } from "react-toastify";
 // import fileToBase64 from "@/lib/fileToBase64";
 
@@ -540,7 +540,7 @@
 // import { removeImages, uploadImages, uploadImagesToWebp } from "@/lib/upload";
 // import { editProperty, saveProperty } from "@/lib/actions/property";
 // import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-// import { useRouter } from "next/navigation";
+// import { useRouter } from "@/i18n/routing";
 // import { toast } from "react-toastify";
 // import fileToBase64 from "@/lib/fileToBase64";
 
@@ -786,7 +786,7 @@
 // import { removeImages, uploadImagesToWebp } from "@/lib/upload";
 // import { editProperty, saveProperty } from "@/lib/actions/property";
 // import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-// import { useRouter } from "next/navigation";
+// import { useRouter } from "@/i18n/routing";
 // import { toast } from "react-toastify";
 // import fileToBase64 from "@/lib/fileToBase64";
 // import { translateField } from "@/lib/translation-helper";
@@ -1232,7 +1232,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 // Importations des fonctions d'Upload/Translation existantes
 import { removeImages, uploadImagesToWebp } from "@/lib/upload";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { toast } from "react-toastify";
 import fileToBase64 from "@/lib/fileToBase64";
 import { translateField } from "@/lib/translation-helper";
@@ -1342,7 +1342,6 @@ const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
         location: {
             ...props.property?.location,
             cityId: props.property?.location?.cityId ? String(props.property.location.cityId) : "",
-            countryId: props.property?.location?.countryId ? String(props.property.location.countryId) : "",
             latitude: props.property?.location?.latitude ? Number(props.property.location.latitude) : undefined,
             longitude: props.property?.location?.longitude ? Number(props.property.location.longitude) : undefined,
             landmark: { 
@@ -1608,6 +1607,7 @@ const landmarkFR = getFrenchValue(data.location?.landmark as string | Multilingu
             if (result.success) {
                 toast.success(t(isEdit ? "propertyEdited" : "propertyAdded"));
                 if (!isEdit) methods.reset();
+                // Use i18n router to ensure proper locale handling
                 router.push("/user/properties");
                 router.refresh();
             } else {
@@ -1635,16 +1635,16 @@ const landmarkFR = getFrenchValue(data.location?.landmark as string | Multilingu
 
 
     return (
-        <div>
+        <div className="pt-4 pb-8">
             <Stepper
-                className="m-2"
+                className="mb-4 px-2"
                 items={steps}
                 activeItem={step}
                 setActiveItem={setStep}
             />
             <FormProvider {...methods}>
                 <form
-                    className="mt-3 p-2"
+                    className="px-2"
                     onSubmit={methods.handleSubmit(onSubmit, (errors) => {
                         console.log("Validation errors (client-side):", errors);
                         console.log("Form values:", methods.getValues());

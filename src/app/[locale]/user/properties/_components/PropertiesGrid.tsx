@@ -109,7 +109,22 @@ export default function PropertiesGrid({
 
   const getPropertyImage = (property: Property) => {
     const mainImage = property.images?.find(img => img.isMain);
-    return mainImage?.url || property.images?.[0]?.url || '/Hero1.jpg';
+    const imageUrl = mainImage?.url || property.images?.[0]?.url || '/Hero1.jpg';
+    
+    // Validate URL format
+    if (imageUrl && imageUrl !== '/Hero1.jpg') {
+      try {
+        // If it's a valid URL, return it
+        if (imageUrl.startsWith('http') || imageUrl.startsWith('/')) {
+          return imageUrl;
+        }
+      } catch {
+        // Invalid URL, use default
+        return '/Hero1.jpg';
+      }
+    }
+    
+    return imageUrl;
   };
 
   const getCityName = (property: Property) => {
@@ -202,6 +217,13 @@ export default function PropertiesGrid({
                   alt={propertyName}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    if (target.src !== '/Hero1.jpg') {
+                      target.src = '/Hero1.jpg';
+                    }
+                  }}
+                  unoptimized={imageUrl.startsWith("http")}
                 />
                 {/* Status Badge */}
                 <div className="absolute top-3 left-3">
@@ -360,7 +382,7 @@ export default function PropertiesGrid({
             disabled={currentPage === 1}
             onClick={() => router.push(`/user/properties?pagenum=${currentPage - 1}`)}
           >
-            Précédent
+            {t("previous") || "Précédent"}
           </Button>
           <div className="flex items-center gap-1">
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -381,7 +403,7 @@ export default function PropertiesGrid({
             disabled={currentPage === totalPages}
             onClick={() => router.push(`/user/properties?pagenum=${currentPage + 1}`)}
           >
-            Suivant
+            {t("next") || "Suivant"}
           </Button>
         </div>
       )}

@@ -30,7 +30,7 @@ function checkVariable(name: string, required: boolean = true): ConfigCheck {
     message = `❌ Manquant - Ajoutez ${name} dans .env.local`;
   } else if (!value && !required) {
     message = `⚠️ Optionnel - Non configuré`;
-  } else if (value && value.includes('your_') || value.includes('votre_')) {
+  } else if (value && (value.includes('your_') || value.includes('votre_'))) {
     message = `⚠️ Valeur par défaut détectée - Remplacez par votre vraie valeur`;
   } else {
     message = `✅ Configuré`;

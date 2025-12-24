@@ -819,8 +819,53 @@ const Search = () => {
 
   const handleInputChange = (query: string) => {
     setSearchQuery(query);
-    handleChange(query); // Appel simplifié
+    // Don't auto-search on every keystroke, wait for search button
   };
+
+  // Handle search button click
+  const handleSearch = React.useCallback(() => {
+    const params = new URLSearchParams(searchParams?.toString() || "");
+    if (searchQuery) {
+      params.set("query", searchQuery);
+    } else {
+      params.delete("query");
+    }
+
+    // Get locale from current URL to ensure we use the correct one
+    // Use window.location if available, otherwise extract from pathname
+    let locale = 'fr'; // default
+    if (typeof window !== 'undefined') {
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      // Find the first valid locale code
+      for (const part of pathParts) {
+        if (/^[a-z]{2}$/.test(part) && ['fr', 'en', 'pt', 'ar'].includes(part)) {
+          locale = part;
+          break;
+        }
+      }
+    } else {
+      // Fallback: extract from pathname
+      const pathParts = pathname.split('/').filter(Boolean);
+      const foundLocale = pathParts.find(part => /^[a-z]{2}$/.test(part) && ['fr', 'en', 'pt', 'ar'].includes(part));
+      if (foundLocale) {
+        locale = foundLocale;
+      }
+    }
+    
+    // Always route to result page for searches (never redirect to home)
+    // Construct the path with exactly one locale prefix - no duplicates
+    const targetPath = `/${locale}/result`;
+    
+    // Add key_cache to force re-render and prevent redirect
+    params.set("key_cache", Date.now().toString());
+    
+    // Use replace to update URL without adding to history and prevent redirects
+    // This ensures the page stays on /result and doesn't redirect to home
+    const searchUrl = `${targetPath}?${params.toString()}`;
+    
+    // Prevent any redirect by using replace - this should stay on result page
+    router.replace(searchUrl);
+  }, [pathname, router, searchParams, searchQuery]);
 
   // Les fonctions handleInputCityChange et resetCityQuery ont été supprimées.
   // La logique de la ville est maintenant déléguée à SearchSelect et useFilterDatas.
@@ -838,7 +883,34 @@ const Search = () => {
 
       // La logique de 'city' est gérée par le SearchSelect et useFilterDatas
 
-      router.replace(`${pathname}?${params.toString()}`);
+      // Fix: Ensure we route to the correct path
+      let targetPath = pathname;
+      
+      // Fix duplicate locale in path (e.g., /fr/fr/result -> /fr/result)
+      if (targetPath.match(/^\/[a-z]{2}\/[a-z]{2}\//)) {
+        const locale = targetPath.split('/')[1];
+        const restOfPath = targetPath.split('/').slice(3).join('/');
+        targetPath = `/${locale}/${restOfPath}`;
+      }
+      
+      // If we're on result, buy, or rent page, stay there
+      if (targetPath.includes('/result') || targetPath.includes('/buy') || targetPath.includes('/rent')) {
+        router.replace(`${targetPath}?${params.toString()}`);
+        setLoading(false);
+        return;
+      }
+      
+      // If we're on home page, route to result page for searches
+      if (targetPath.match(/^\/[a-z]{2}$/) || targetPath.match(/^\/[a-z]{2}\/$/)) {
+        const locale = targetPath.replace(/\//g, '') || 'fr';
+        targetPath = `/${locale}/result`;
+      } else if (!targetPath.includes('/result') && !targetPath.includes('/buy') && !targetPath.includes('/rent')) {
+        // If not on result, buy, or rent page, go to result page
+        const locale = targetPath.split('/')[1] || 'fr';
+        targetPath = `/${locale}/result`;
+      }
+
+      router.replace(`${targetPath}?${params.toString()}`);
       setLoading(false);
     },
     [pathname, router, searchParams]
@@ -858,8 +930,10 @@ const Search = () => {
     setSearchQuery("");
     // setCityValue(""); // Ligne supprimée
     setResetKey((prev) => prev + 1);
-    router.replace(pathname);
-    router.refresh();
+    // Extract locale to ensure we stay on result page
+    const locale = pathname.split('/')[1] || 'fr';
+    const resultPath = `/${locale}/result`;
+    router.replace(resultPath);
   };
 
   const resetSearchQuery = () => {
@@ -1019,9 +1093,20 @@ const Search = () => {
               onClear={resetSearchQuery}
               placeholder={t("searchPlaceholder")}
               onChange={(e) => handleInputChange(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSearch();
+                }
+              }}
               className="flex-1 w-full sm:max-w-xl px-4 py-2 shadow-md rounded-lg focus:ring-2 focus:ring-white/50 focus:outline-none"
               value={searchQuery}
             />
+            <button
+              onClick={handleSearch}
+              className="flex flex-row items-center gap-2 px-4 py-2 text-white bg-orange-500 hover:bg-orange-600 rounded-lg shadow-md transition-all duration-200 ease-in-out border border-transparent"
+            >
+              <span className="font-medium">{t("searchButton") || "Rechercher"}</span>
+            </button>
             <button
               onClick={() => handleModalOpen(setOpenModal, "hidden", true)}
               className="flex flex-row items-center gap-2 px-4 py-2 text-white bg-white/20 rounded-lg shadow-md transition-all duration-200 ease-in-out hover:bg-white hover:text-indigo-600 border border-transparent hover:border-white"
