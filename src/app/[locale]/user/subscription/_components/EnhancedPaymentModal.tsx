@@ -322,7 +322,7 @@ export default function EnhancedPaymentModal({
           {/* Plan Summary */}
           <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-blue-200 dark:border-blue-800">
             <CardHeader>
-              <CardTitle className="text-lg">Résumé de l'abonnement</CardTitle>
+              <CardTitle className="text-lg">Résumé de l&apos;abonnement</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
@@ -660,7 +660,7 @@ export default function EnhancedPaymentModal({
                     ) : (
                       <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
                         <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                          PayPal n'est pas configuré. Veuillez contacter le support.
+                          PayPal n&apos;est pas configuré. Veuillez contacter le support.
                         </p>
                       </div>
                     )}

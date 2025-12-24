@@ -47,7 +47,7 @@ export default async function RentPage({ params, searchParams }: Props) {
   if (!rentStatus) {
     return (
       <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-600">Status 'for_rent' not found in database</p>
+        <p className="text-gray-600">Status &apos;for_rent&apos; not found in database</p>
       </div>
     );
   }

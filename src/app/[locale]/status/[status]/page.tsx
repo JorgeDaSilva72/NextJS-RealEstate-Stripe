@@ -75,7 +75,7 @@ export default async function StatusPage({ params, searchParams }: Props) {
   if (!propertyStatus) {
     return (
       <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-600">Status '{statusCode}' not found in database</p>
+        <p className="text-gray-600">Status &apos;{statusCode}&apos; not found in database</p>
       </div>
     );
   }

@@ -258,7 +258,7 @@ const Map: React.FC<MapProps> = ({
               <li>Go to Google Cloud Console</li>
               <li>Navigate to APIs & Services → Credentials</li>
               <li>Edit your API key</li>
-              <li>Under "Application restrictions", select "HTTP referrers"</li>
+              <li>Under &quot;Application restrictions&quot;, select &quot;HTTP referrers&quot;</li>
               <li>Add: <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">http://localhost:3000/*</code></li>
               <li>Save and wait 1-2 minutes</li>
             </ol>

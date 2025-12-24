@@ -30,7 +30,7 @@ export default function HeroSection({
               Bienvenue Sur Afrique-Immo
             </h1>
             <h2 className="text-xl md:text-2xl text-white">
-              Ton guide immobilier pour L'Afrique
+              Ton guide immobilier pour L&apos;Afrique
             </h2>
           </div>
         )}

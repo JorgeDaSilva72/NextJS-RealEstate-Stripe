@@ -68,7 +68,7 @@ const SubscriptionPage = async ({ params }: Props): Promise<JSX.Element> => {
             </Link>
             <div className="text-center">
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                Choisissez votre plan d'abonnement
+                Choisissez votre plan d&apos;abonnement
               </h1>
               <p className="text-xl text-gray-300 max-w-2xl mx-auto">
                 Sélectionnez le plan qui correspond le mieux à vos besoins et bénéficiez de nos offres exclusives
@@ -96,7 +96,7 @@ const SubscriptionPage = async ({ params }: Props): Promise<JSX.Element> => {
                     Pourquoi choisir un abonnement ?
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400">
-                    Nos plans d'abonnement vous offrent une visibilité optimale sur le marché immobilier grâce à une communication professionnelle sur YouTube et les réseaux sociaux. 
+                    Nos plans d&apos;abonnement vous offrent une visibilité optimale sur le marché immobilier grâce à une communication professionnelle sur YouTube et les réseaux sociaux. 
                     Bénéficiez de fonctionnalités premium et augmentez votre portée pour trouver plus rapidement les bons clients.
                   </p>
                 </div>
@@ -117,7 +117,7 @@ const SubscriptionPage = async ({ params }: Props): Promise<JSX.Element> => {
             </CardHeader>
             <CardContent>
               <p className="text-gray-600 dark:text-gray-400">
-                Une erreur est survenue : impossible de charger les plans d'abonnement.
+                Une erreur est survenue : impossible de charger les plans d&apos;abonnement.
                 Veuillez réessayer plus tard.
               </p>
             </CardContent>

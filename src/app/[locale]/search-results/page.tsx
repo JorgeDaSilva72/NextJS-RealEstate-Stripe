@@ -130,7 +130,7 @@ export default async function SearchResultsPage({ params, searchParams }: Props)
     if (!status) {
       return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-24 pb-12 flex items-center justify-center">
-          <p className="text-gray-600">Status '{statusCode}' not found in database</p>
+          <p className="text-gray-600">Status &apos;{statusCode}&apos; not found in database</p>
         </div>
       );
     }
