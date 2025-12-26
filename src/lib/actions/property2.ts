@@ -71,14 +71,14 @@ export async function createPropertyAction(
         // Création des relations imbriquées (Nested Writes)
         location: {
           create: {
-            streetAddress: location.streetAddress,
+            streetAddress: location.streetAddress ?? "",
             cityId: location.cityId,
-            neighborhood: location.neighborhood,
-            zip: location.zip,
+            neighborhood: location.neighborhood ?? null,
+           zip: location.zip ?? null,
             // JSONB
             landmark: location.landmark as any,
-            latitude: location.latitude,
-            longitude: location.longitude,
+           latitude: location.latitude ?? null,
+           longitude: location.longitude ?? null,
           }
         },
         feature: {
@@ -212,7 +212,7 @@ export async function editPropertyAction(
         description: description as any, // JSONB
 
         // 1. Mise à jour des relations de 1 à 1 (Location, Feature, Contact)
-        location: { update: { ...location } },
+        location: { update: { ...location,landmark : location.landmark as any } }, // Force le type JSONB
         feature: { update: { ...feature } },
         contact: { update: { ...contact } },
 

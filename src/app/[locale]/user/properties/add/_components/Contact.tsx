@@ -217,7 +217,9 @@ import { Button, Card, Input, cn } from "@nextui-org/react";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 import { useTranslations } from "next-intl";
-import { AddPropertyInputType } from "./AddPropertyForm";
+// import { AddPropertyInputType } from "./AddPropertyForm";
+import { PropertyFormInputType as AddPropertyInputType } from "@/lib/schemas/property2";
+
 
 interface Props {
   prev: () => void;

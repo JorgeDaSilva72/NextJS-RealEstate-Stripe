@@ -1202,11 +1202,510 @@
 // et nouveau fichier de schéma Zod (src/lib/schemas/property2.ts) et nouveau Server Action (src/lib/actions/property2.ts)
 /////////////////////////////////////////////////
 
+// "use client";
+
+// import React, { useState, useCallback } from "react";
+// import Stepper from "./Stepper";
+// // Importez vos sous-composants existants (Basic, Location, Features, Picture, Contact)
+// import Basic from "./basic"; 
+// import Location from "./Location"; 
+// import Features from "./Features"; 
+// import Picture from "./Picture"; 
+// import Contact from "./Contact"; 
+
+// import { useTranslations, useLocale } from "next-intl";
+// import { Prisma, PropertyImage, PropertyVideo, SubscriptionPlan } from "@prisma/client";
+// import { Button, cn } from "@nextui-org/react";
+// import { z } from "zod";
+
+// // 🚨 NOUVEAU : Importation du schéma et du type de l'action Server
+// import { PropertyFormInputType, PropertyFormSchema } from "@/lib/schemas/property2"; 
+// import { createPropertyAction, editPropertyAction } from "@/lib/actions/property2"; // Assurez-vous d'avoir editPropertyAction
+
+// // ✅ Alias de compatibilité pour l'ancien type utilisé dans d'autres composants
+// export type AddPropertyInputType = PropertyFormInputType;
+// // ⚠️ NOTE : Votre schéma doit être le `PropertyFormSchema` unique (plus de getAddPropertyFormSchema(t))
+
+// import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+// import { zodResolver } from "@hookform/resolvers/zod";
+
+// // Importations des fonctions d'Upload/Translation existantes
+// import { removeImages, uploadImagesToWebp } from "@/lib/upload";
+// import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+// import { useRouter } from "next/navigation";
+// import { toast } from "react-toastify";
+// import fileToBase64 from "@/lib/fileToBase64";
+// import { translateField } from "@/lib/translation-helper";
+// import { Progress } from "@nextui-org/react";
+
+// // --- TYPES MISES À JOUR ---
+
+// // Structure des données traduites (reçues de AddPropertyClient)
+// interface TranslatedClientItem {
+//     id: number;
+//     code: string;
+//     name: string; // Le nom traduit du type/statut/ville/pays
+// }
+
+// // Type de l'objet de propriété complet pour l'édition
+// type PropertyWithRelations = Prisma.PropertyGetPayload<{
+//     include: {
+//         location: true;
+//         contact: true;
+//         feature: true;
+//         images: true;
+//         videos: true;
+//     };
+// }>;
+
+// interface Props {
+//     types: TranslatedClientItem[];
+//     statuses: TranslatedClientItem[];
+//     countries: TranslatedClientItem[];
+//     cities: TranslatedClientItem[];
+//     photoLimit: number;
+//     shortVideoLimit: number;
+    
+//     property?: PropertyWithRelations; // Utilisation du type complet
+//     isEdit?: boolean;
+//     planDetails?: Pick<
+//         SubscriptionPlan,
+//         | "namePlan"
+//         | "premiumAds"
+//         | "photosPerAd"
+//         | "shortVideosPerAd"
+//         | "youtubeVideoDuration"
+//     > | null;
+// }
+
+// // --- COMPOSANT PRINCIPAL ---
+
+// const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
+//     const t = useTranslations("AddPropertyForm");
+//     const router = useRouter();
+//     const locale = useLocale();
+
+//     // Fonction d'aide pour extraire la traduction
+//     const getLocalizedText = useCallback((field: any, locale: string): string => {
+//         if (!field) return "";
+//         if (typeof field === "string") return field;
+//         if (typeof field === "object" && field !== null) {
+//             // Utiliser la locale, sinon 'fr', sinon la première valeur trouvée
+//             return (
+//                 field[locale] || field.fr || field.en || Object.values(field)[0] || ""
+//             );
+//         }
+//         return String(field);
+//     }, []);
+
+//     // Définition des étapes (inchangé)
+//     const steps = [
+//         { label: t("steps.basic") },
+//         { label: t("steps.location") },
+//         { label: t("steps.features") },
+//         { label: t("steps.photos") },
+//         { label: t("steps.contact") },
+//     ];
+
+//     // --- LOGIQUE DE VALEURS PAR DÉFAUT POUR L'ÉDITION ---
+//     // Cette logique est essentielle pour mapper les objets DB (JSON/Number) aux strings du formulaire.
+    
+//     // Remarque : Le `PropertyFormSchema` définit le type d'entrée (`AddPropertyFormInputType`) en strings,
+//     // ce qui est nécessaire pour les champs de sélection et les champs numériques qui peuvent être vides.
+    
+//     const defaultValues: Partial<PropertyFormInputType> = {
+//         // Champs Simples (IDs et Prix) : DB Number -> Form String
+//         typeId: props.property?.typeId ? String(props.property.typeId) : "",
+//         statusId: props.property?.statusId ? String(props.property.statusId) : "",
+//         price: props.property?.price ? String(props.property.price) : "0", 
+//         currency: props.property?.currency ?? "XOF",
+        
+//         // Champs Multilingues (DB JSON -> Form String)
+//         // Nous devons extraire la valeur pour la locale actuelle
+//         name: { 
+//             [locale]: getLocalizedText(props.property?.name, locale) || "",
+//             // Ajouter d'autres locales vides pour le Zod si nécessaire, sinon le Zod devra s'adapter
+//         } as any, // ⚠️ Le typage direct peut être difficile, `as any` est temporaire ici
+//         description: { 
+//             [locale]: getLocalizedText(props.property?.description, locale) || "",
+//         } as any,
+        
+//         // Relations Imbriquées :
+//         contact: {
+//             ...props.property?.contact,
+//             // Si le nom du contact est multilingue dans votre DB, vous devez le localiser ici :
+//             name: getLocalizedText(props.property?.contact?.name, locale) || "", 
+//             // Les autres champs (phone, email) sont des strings simples.
+//         } as any, 
+        
+//         // Localisation
+//         location: {
+//             ...props.property?.location,
+//             cityId: props.property?.location?.cityId ? String(props.property.location.cityId) : "",
+//             landmark: { 
+//                  [locale]: getLocalizedText(props.property?.location?.landmark, locale) || "",
+//             } as any,
+//         } as any,
+        
+//         // Caractéristiques (Features) : DB Number/Boolean -> Form Number/Boolean
+//         feature: {
+//             ...props.property?.feature,
+//             // Les valeurs nulles de la DB peuvent nécessiter une valeur par défaut ici (ex: 0, false)
+//             bedrooms: props.property?.feature?.bedrooms ?? 1,
+//             bathrooms: props.property?.feature?.bathrooms ?? 1,
+//             area: props.property?.feature?.area ?? 0,
+//             hasSwimmingPool: props.property?.feature?.hasSwimmingPool ?? false,
+//             // ... autres features
+//         } as any,
+        
+//         // Médias (Les URL DB sont gérées par les states locaux savedImagesUrl/savedVideosUrl)
+//         images: [{ url: "", caption: "", isMain: false, displayOrder: 0 }], // Valeur par défaut pour RHF
+//         videos: [],
+//     };
+
+
+//     const methods = useForm<PropertyFormInputType>({
+//         // ⚠️ Utiliser PropertyFormSchema directement (la validation par Server Action est plus stricte)
+//         resolver: zodResolver(PropertyFormSchema), 
+//         defaultValues: defaultValues as PropertyFormInputType,
+//     });
+
+//     const [step, setStep] = useState(0);
+//     const [images, setImages] = useState<File[]>([]); // Nouvelles images à uploader
+//     const [videos, setVideos] = useState<string[]>([]); // Nouvelles URLs de vidéos à ajouter
+    
+//     // URLs et IDs déjà enregistrés (pour l'édition)
+//     const [savedImagesUrl, setSavedImagesUrl] = useState<PropertyImage[]>(
+//         props.property?.images ?? []
+//     );
+//     const [savedVideosUrl, setSavedVideosUrl] = useState<PropertyVideo[]>(
+//         props.property?.videos ?? []
+//     );
+    
+//     const [progress, setProgress] = useState(0);
+//     const [isSubmitting, setIsSubmitting] = useState(false);
+//     const { user } = useKindeBrowserClient();
+
+
+//     // --- GESTION DE LA SOUMISSION AVEC SERVER ACTION ---
+//     const onSubmit: SubmitHandler<PropertyFormInputType> = async (data) => {
+
+//         //  S'assurer que les données sont transformées (strings -> numbers)
+//     const transformedData = PropertyFormSchema.parse(data);
+//         if (!user?.id) {
+//             toast.error(t("authRequired"));
+//             return;
+//         }
+        
+//         setIsSubmitting(true);
+//         setProgress(10); // Started
+//         let result: { success: boolean, message?: string, errors?: any }; // Type de retour de Server Action
+        
+//         try {
+            
+          
+            
+
+// // Définition d'un type qui autorise l'accès par chaîne
+// type MultilingualObject = { [key: string]: string | undefined | null };
+// // Caster les champs pour l'indexation
+// const nameObj = data.name as MultilingualObject;
+// const descriptionObj = data.description as MultilingualObject;
+// const landmarkObj = data.location?.landmark as MultilingualObject | undefined;
+
+// // 1. TRADUCTION DES CHAMPS FR vers MULTILINGUE (Client-Side)
+//             const nameFR = nameObj[locale] || "";
+// const descriptionFR = descriptionObj[locale] || "";
+// // Vérifier l'objet avant d'accéder
+// const landmarkFR = landmarkObj?.[locale] || "";
+            
+//             // Lancer les traductions en parallèle
+//             const [
+//                 nameEN, nameAR, namePT,
+//                 descriptionEN, descriptionAR, descriptionPT,
+//                 landmarkEN, landmarkAR, landmarkPT
+//             ] = await Promise.all([
+//                 // NOTE : Il faut s'assurer que `translateField` gère bien les requêtes concurrentes.
+//                 translateField(nameFR, "en"),
+//                 translateField(nameFR, "ar"),
+//                 translateField(nameFR, "pt"),
+//                 translateField(descriptionFR, "en"),
+//                 translateField(descriptionFR, "ar"),
+//                 translateField(descriptionFR, "pt"),
+//                 translateField(landmarkFR, "en"),
+//                 translateField(landmarkFR, "ar"),
+//                 translateField(landmarkFR, "pt"),
+//             ]);
+
+//             setProgress(40); // Translation done
+
+//             // 2. PRÉPARATION DU PAYLOAD MULTILINGUE
+//             const multilingualData = {
+//                 ...data, // Contient les strings des IDs/prix
+//                 name: { fr: nameFR, en: nameEN, ar: nameAR, pt: namePT },
+//                 description: { fr: descriptionFR, en: descriptionEN, ar: descriptionAR, pt: descriptionPT },
+//                 location: {
+//                     ...data.location,
+//                     landmark: { fr: landmarkFR, en: landmarkEN, ar: landmarkAR, pt: landmarkPT }
+//                 } as any, // Nécessaire pour forcer le typage JSONB
+//             };
+
+//             // 3. UPLOAD D'IMAGES (Client-Side)
+//             const totalImages = images.length;
+//             let uploadedCount = 0;
+
+//             const newImageUrls = await Promise.all(
+//                 images.map(async (img) => {
+//                     const base64 = await fileToBase64(img);
+//                     const url = await uploadImagesToWebp(
+//                         base64,
+//                         img.name,
+//                         "propertyImages"
+//                     );
+//                     uploadedCount++;
+//                     // Mise à jour de la progression
+//                     const imageProgress = Math.round((uploadedCount / (totalImages || 1)) * 40);
+//                     setProgress(40 + imageProgress);
+//                     // Retourner l'objet complet attendu par la Server Action
+//                     return { url, caption: "", isMain: false, displayOrder: 0 }; 
+//                 })
+//             );
+            
+//             if (images.length === 0) setProgress(80);
+
+//             // 4. ASSEMBLAGE DU PAYLOAD FINAL (Pour la Server Action)
+//             const finalImages = [
+//                 // Images existantes (doivent être du format PropertyImageSchema)
+//                 ...savedImagesUrl.map(img => ({ 
+//                     url: img.url, 
+//                     caption: img.caption|| undefined, 
+//                     isMain: img.isMain, 
+//                     displayOrder: img.displayOrder 
+//                 })), 
+//                 // Nouvelles images uploadées
+//                 ...newImageUrls, 
+//             ];
+            
+//             const finalVideos = [
+//                 // Vidéos existantes (doivent être du format simple d'URL)
+//                 ...savedVideosUrl.map(v => ({ url: v.url })), 
+//                 // Nouvelles URLs
+//                 ...videos.map(url => ({ url }))
+//             ];
+            
+//             // Payload Final pour la Server Action
+//             const finalPayload = {
+//                 ...multilingualData, // Contient déjà typeId, statusId, price (string), et les objets multilingues
+                
+//                 // On passe les images et vidéos finales
+//                 images: finalImages,
+//                 videos: finalVideos,
+//             };
+
+//             // 5. SAUVEGARDE DB VIA SERVER ACTION
+//             if (isEdit && props.property) {
+//                 // Pour l'édition, nous devons identifier les médias supprimés
+//                 const deletedImageIDs = props.property.images
+//                     .filter(item => !savedImagesUrl.some(saved => saved.id === item.id))
+//                     .map(item => item.id);
+                
+//                 const deletedVideoIDs = props.property.videos
+//                     .filter(item => !savedVideosUrl.some(saved => saved.id === item.id))
+//                     .map(item => item.id);
+                
+//                 // 🚨 Appeler la Server Action d'édition dédiée
+//                 result = await editPropertyAction(
+//                     String(props.property.id), // L'ID de la propriété à éditer
+//                     finalPayload,
+//                     deletedImageIDs,
+//                     deletedVideoIDs
+//                 );
+
+//             } else {
+//                 // Création : Appeler la Server Action de création
+//                 result = await createPropertyAction(finalPayload);
+//             }
+
+//             setProgress(100);
+
+//             // 6. GESTION DU RÉSULTAT
+//             if (result.success) {
+//                 toast.success(t(isEdit ? "propertyEdited" : "propertyAdded"));
+//                 if (!isEdit) methods.reset();
+//                 router.push("/user/properties");
+//                 router.refresh();
+//             } else {
+//                 // Gérer les erreurs de validation Zod retournées par le serveur
+//                 if (result.errors) {
+//                     Object.entries(result.errors as Record<string, string[]>).forEach(([path, messages]: [string, string[]]) => { 
+//                         // Utiliser la fonction setValue ou setError de RHF
+//                         methods.setError(path as keyof PropertyFormInputType, {
+//                             type: "server",
+//                             message: messages[0] || t("validationError"),
+//                         });
+//                     });
+//                 }
+//                 toast.error(result.message || t("error"));
+//             }
+
+//         } catch (error) {
+//             console.error("Erreur générale dans onSubmit:", error);
+//             toast.error(t("error") || "An error occurred");
+//         } finally {
+//             setIsSubmitting(false);
+//             setProgress(0);
+//         }
+//     };
+
+
+//     return (
+//         <div>
+//             <Stepper
+//                 className="m-2"
+//                 items={steps}
+//                 activeItem={step}
+//                 setActiveItem={setStep}
+//             />
+//             <FormProvider {...methods}>
+//                 <form
+//                     className="mt-3 p-2"
+//                     onSubmit={methods.handleSubmit(onSubmit, (errors) => {
+//                         console.log("Validation errors:", errors);
+//                         // Afficher une erreur générique en cas d'échec de validation client
+//                         toast.error(t("validationError"));
+//                         // Revenir à l'étape du premier champ en erreur (optionnel)
+//                         const firstErrorField = Object.keys(errors).find(key => errors[key as keyof PropertyFormInputType]);
+//                         if (firstErrorField) {
+//                             // Implémenter la logique pour changer `step` en fonction du champ
+//                             // Exemple : si l'erreur est dans 'location', setStep(1)
+//                             if (firstErrorField.startsWith("location")) setStep(1);
+//                             else if (firstErrorField.startsWith("feature")) setStep(2);
+//                             // ...
+//                         }
+//                     })}
+//                 >
+//                     {/* ÉTAPE BASIC */}
+//                     <Basic
+//                         className={cn({ hidden: step !== 0 })}
+//                         next={() => methods.trigger(["typeId", "statusId", "price", "name", "description"]).then(isValid => isValid && setStep(1))}
+//                         types={props.types}
+//                         statuses={props.statuses}
+//                     />
+//                     {/* ÉTAPE LOCATION */}
+//                     <Location
+//                         next={() => methods.trigger(["location.countryId", "location.cityId", "location.streetAddress"]).then(isValid => isValid && setStep(2))}
+//                         prev={() => setStep((prev) => prev - 1)}
+//                         className={cn({ hidden: step !== 1 })}
+//                         countries={props.countries || []} 
+//                         cities={props.cities || []} 
+//                     />
+//                     {/* ÉTAPE FEATURES */}
+//                     <Features
+//                         next={() => methods.trigger("feature").then(isValid => isValid && setStep(3))}
+//                         prev={() => setStep((prev) => prev - 1)}
+//                         className={cn({ hidden: step !== 2 })}
+//                     />
+//                     {/* ÉTAPE PICTURE */}
+//                     <Picture
+//                         next={() => setStep((prev) => prev + 1)} // Aucune validation Zod majeure ici
+//                         prev={() => setStep((prev) => prev - 1)}
+//                         className={cn({ hidden: step !== 3 })}
+//                         images={images}
+//                         // Props pour l'édition de médias
+//                         {...(props.property && {
+//                             savedImagesUrl: savedImagesUrl,
+//                             setSavedImageUrl: setSavedImagesUrl,
+//                             savedVideosUrl: savedVideosUrl,
+//                             setSavedVideoUrl: setSavedVideosUrl,
+//                         })}
+//                         setImages={(newImages) => {
+//                             if (newImages.length > props.photoLimit) {
+//                                 toast.error(
+//                                     t("photoLimitExceeded", {
+//                                         limit: props.photoLimit || t("unlimited"),
+//                                     })
+//                                 );
+//                                 return;
+//                             }
+//                             setImages(newImages);
+//                         }}
+//                         maxImages={props.photoLimit}
+//                         isPremium={
+//                             props.planDetails?.namePlan?.toLowerCase() === "diamant" || false
+//                         }
+//                         maxVideos={props.shortVideoLimit}
+//                         setVideos={(newVideos) => {
+//                             if (newVideos.length > props.shortVideoLimit) {
+//                                 toast.error(
+//                                     t("videoLimitExceeded", {
+//                                         limit: props.shortVideoLimit || "0",
+//                                     })
+//                                 );
+//                                 return;
+//                             }
+//                             setVideos(newVideos);
+//                         }}
+//                         videos={videos}
+//                     />
+//                     {/* ÉTAPE CONTACT */}
+//                     <Contact
+//                         prev={() => setStep((prev) => prev - 1)}
+//                         className={cn({ hidden: step !== 4 })}
+//                     />
+                    
+//                     {/* BOUTON SUBMIT FINAL */}
+//                     {step === 4 && (
+//                         <div className="flex justify-end mt-6">
+//                             <Button
+//                                 type="submit"
+//                                 color="primary"
+//                                 size="lg"
+//                                 className="font-semibold px-10"
+//                                 isLoading={isSubmitting}
+//                                 isDisabled={isSubmitting}
+//                             >
+//                                 {t(isEdit ? "saveChanges" : "submitButton")}
+//                             </Button>
+//                         </div>
+//                     )}
+                    
+//                 </form>
+//             </FormProvider>
+
+//             {/* Loading Progress Bar Percentage Overlay (inchangé) */}
+//             {isSubmitting && (
+//                 <div className="fixed inset-0 bg-black/50 z-50 flex flex-col items-center justify-center p-4">
+//                     <div className="bg-white p-6 rounded-xl shadow-2xl max-w-md w-full flex flex-col items-center gap-4">
+//                         <h3 className="text-xl font-bold text-gray-800">
+//                             {t("processing")}
+//                         </h3>
+//                         <p className="text-gray-600 text-center text-sm">
+//                             {progress < 40 ? t("translating") : progress < 80 ? t("uploadingImages") : t("saving")}
+//                         </p>
+//                         <div className="w-full flex flex-col gap-2">
+//                             <Progress
+//                                 size="lg"
+//                                 value={progress}
+//                                 color="primary"
+//                                 showValueLabel={true}
+//                                 className="w-full"
+//                             />
+//                         </div>
+//                     </div>
+//                 </div>
+//             )}
+//         </div>
+//     );
+// };
+
+// export default AddPropertyForm;
+
+// 17-12-2025   
+
 "use client";
 
 import React, { useState, useCallback } from "react";
 import Stepper from "./Stepper";
-// Importez vos sous-composants existants (Basic, Location, Features, Picture, Contact)
 import Basic from "./basic"; 
 import Location from "./Location"; 
 import Features from "./Features"; 
@@ -1215,47 +1714,30 @@ import Contact from "./Contact";
 
 import { useTranslations, useLocale } from "next-intl";
 import { Prisma, PropertyImage, PropertyVideo, SubscriptionPlan } from "@prisma/client";
-import { Button, cn } from "@nextui-org/react";
-import { z } from "zod";
+import { Button, Card, cn, Progress } from "@nextui-org/react";
 
-// 🚨 NOUVEAU : Importation du schéma et du type de l'action Server
 import { PropertyFormInputType, PropertyFormSchema } from "@/lib/schemas/property2"; 
-import { createPropertyAction, editPropertyAction } from "@/lib/actions/property2"; // Assurez-vous d'avoir editPropertyAction
-
-// ✅ Alias de compatibilité pour l'ancien type utilisé dans d'autres composants
-export type AddPropertyInputType = PropertyFormInputType;
-// ⚠️ NOTE : Votre schéma doit être le `PropertyFormSchema` unique (plus de getAddPropertyFormSchema(t))
+import { createPropertyAction, editPropertyAction } from "@/lib/actions/property2"; 
 
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-// Importations des fonctions d'Upload/Translation existantes
-import { removeImages, uploadImagesToWebp } from "@/lib/upload";
+import { uploadImagesToWebp } from "@/lib/upload";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import fileToBase64 from "@/lib/fileToBase64";
 import { translateField } from "@/lib/translation-helper";
-import { Progress } from "@nextui-org/react";
 
-// --- TYPES MISES À JOUR ---
-
-// Structure des données traduites (reçues de AddPropertyClient)
+// --- TYPES ---
 interface TranslatedClientItem {
     id: number;
     code: string;
-    name: string; // Le nom traduit du type/statut/ville/pays
+    name: string;
 }
 
-// Type de l'objet de propriété complet pour l'édition
 type PropertyWithRelations = Prisma.PropertyGetPayload<{
-    include: {
-        location: true;
-        contact: true;
-        feature: true;
-        images: true;
-        videos: true;
-    };
+    include: { location: true; contact: true; feature: true; images: true; videos: true; };
 }>;
 
 interface Props {
@@ -1265,433 +1747,191 @@ interface Props {
     cities: TranslatedClientItem[];
     photoLimit: number;
     shortVideoLimit: number;
-    
-    property?: PropertyWithRelations; // Utilisation du type complet
+    property?: PropertyWithRelations;
     isEdit?: boolean;
-    planDetails?: Pick<
-        SubscriptionPlan,
-        | "namePlan"
-        | "premiumAds"
-        | "photosPerAd"
-        | "shortVideosPerAd"
-        | "youtubeVideoDuration"
-    > | null;
+    planDetails?: any;
 }
-
-// --- COMPOSANT PRINCIPAL ---
 
 const AddPropertyForm = ({ isEdit = false, ...props }: Props) => {
     const t = useTranslations("AddPropertyForm");
     const router = useRouter();
     const locale = useLocale();
+    const { user } = useKindeBrowserClient();
 
-    // Fonction d'aide pour extraire la traduction
-    const getLocalizedText = useCallback((field: any, locale: string): string => {
+    const [step, setStep] = useState(0);
+    const [images, setImages] = useState<File[]>([]);
+    const [videos, setVideos] = useState<string[]>([]);
+    const [savedImagesUrl, setSavedImagesUrl] = useState<PropertyImage[]>(props.property?.images ?? []);
+    const [savedVideosUrl, setSavedVideosUrl] = useState<PropertyVideo[]>(props.property?.videos ?? []);
+    const [progress, setProgress] = useState(0);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const getLocalizedText = useCallback((field: any, currentLocale: string): string => {
         if (!field) return "";
         if (typeof field === "string") return field;
-        if (typeof field === "object" && field !== null) {
-            // Utiliser la locale, sinon 'fr', sinon la première valeur trouvée
-            return (
-                field[locale] || field.fr || field.en || Object.values(field)[0] || ""
-            );
-        }
-        return String(field);
+        return field[currentLocale] || field.fr || field.en || "";
     }, []);
 
-    // Définition des étapes (inchangé)
-    const steps = [
-        { label: t("steps.basic") },
-        { label: t("steps.location") },
-        { label: t("steps.features") },
-        { label: t("steps.photos") },
-        { label: t("steps.contact") },
-    ];
+    const safeTranslate = async (text: string, target: string) => {
+    try {
+        return await translateField(text, target);
+    } catch (error) {
+        console.warn(`Traduction échouée pour ${target}, utilisation du texte original.`);
+        return text; // Retourne le texte source au lieu de faire planter le formulaire
+    }
+};
 
-    // --- LOGIQUE DE VALEURS PAR DÉFAUT POUR L'ÉDITION ---
-    // Cette logique est essentielle pour mapper les objets DB (JSON/Number) aux strings du formulaire.
-    
-    // Remarque : Le `PropertyFormSchema` définit le type d'entrée (`AddPropertyFormInputType`) en strings,
-    // ce qui est nécessaire pour les champs de sélection et les champs numériques qui peuvent être vides.
-    
+    // --- DEFAULT VALUES ---
     const defaultValues: Partial<PropertyFormInputType> = {
-        // Champs Simples (IDs et Prix) : DB Number -> Form String
         typeId: props.property?.typeId ? String(props.property.typeId) : "",
         statusId: props.property?.statusId ? String(props.property.statusId) : "",
-        price: props.property?.price ? String(props.property.price) : "0", 
+        price: props.property?.price ? String(props.property.price) : "0",
         currency: props.property?.currency ?? "XOF",
-        
-        // Champs Multilingues (DB JSON -> Form String)
-        // Nous devons extraire la valeur pour la locale actuelle
-        name: { 
-            [locale]: getLocalizedText(props.property?.name, locale) || "",
-            // Ajouter d'autres locales vides pour le Zod si nécessaire, sinon le Zod devra s'adapter
-        } as any, // ⚠️ Le typage direct peut être difficile, `as any` est temporaire ici
-        description: { 
-            [locale]: getLocalizedText(props.property?.description, locale) || "",
-        } as any,
-        
-        // Relations Imbriquées :
+        name: { [locale]: getLocalizedText(props.property?.name, locale) } as any,
+        description: { [locale]: getLocalizedText(props.property?.description, locale) } as any,
         contact: {
-            ...props.property?.contact,
-            // Si le nom du contact est multilingue dans votre DB, vous devez le localiser ici :
-            name: getLocalizedText(props.property?.contact?.name, locale) || "", 
-            // Les autres champs (phone, email) sont des strings simples.
-        } as any, 
-        
-        // Localisation
+            name: getLocalizedText(props.property?.contact?.name, locale) || "",
+            phone: props.property?.contact?.phone || "",
+            email: props.property?.contact?.email || "",
+        },
         location: {
-            ...props.property?.location,
             cityId: props.property?.location?.cityId ? String(props.property.location.cityId) : "",
-            landmark: { 
-                 [locale]: getLocalizedText(props.property?.location?.landmark, locale) || "",
-            } as any,
+            streetAddress: props.property?.location?.streetAddress || "",
+            zip: props.property?.location?.zip || "",
+            landmark: { [locale]: getLocalizedText(props.property?.location?.landmark, locale) } as any,
         } as any,
-        
-        // Caractéristiques (Features) : DB Number/Boolean -> Form Number/Boolean
         feature: {
-            ...props.property?.feature,
-            // Les valeurs nulles de la DB peuvent nécessiter une valeur par défaut ici (ex: 0, false)
             bedrooms: props.property?.feature?.bedrooms ?? 1,
             bathrooms: props.property?.feature?.bathrooms ?? 1,
+            parkingSpots: props.property?.feature?.parkingSpots ?? 0,
             area: props.property?.feature?.area ?? 0,
             hasSwimmingPool: props.property?.feature?.hasSwimmingPool ?? false,
-            // ... autres features
-        } as any,
-        
-        // Médias (Les URL DB sont gérées par les states locaux savedImagesUrl/savedVideosUrl)
-        images: [{ url: "", caption: "", isMain: false, displayOrder: 0 }], // Valeur par défaut pour RHF
-        videos: [],
+            hasGardenYard: props.property?.feature?.hasGardenYard ?? false,
+            hasBalcony: props.property?.feature?.hasBalcony ?? false,
+        },
     };
 
-
     const methods = useForm<PropertyFormInputType>({
-        // ⚠️ Utiliser PropertyFormSchema directement (la validation par Server Action est plus stricte)
-        resolver: zodResolver(PropertyFormSchema), 
+        resolver: zodResolver(PropertyFormSchema),
         defaultValues: defaultValues as PropertyFormInputType,
     });
 
-    const [step, setStep] = useState(0);
-    const [images, setImages] = useState<File[]>([]); // Nouvelles images à uploader
-    const [videos, setVideos] = useState<string[]>([]); // Nouvelles URLs de vidéos à ajouter
-    
-    // URLs et IDs déjà enregistrés (pour l'édition)
-    const [savedImagesUrl, setSavedImagesUrl] = useState<PropertyImage[]>(
-        props.property?.images ?? []
-    );
-    const [savedVideosUrl, setSavedVideosUrl] = useState<PropertyVideo[]>(
-        props.property?.videos ?? []
-    );
-    
-    const [progress, setProgress] = useState(0);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const { user } = useKindeBrowserClient();
-
-
-    // --- GESTION DE LA SOUMISSION AVEC SERVER ACTION ---
     const onSubmit: SubmitHandler<PropertyFormInputType> = async (data) => {
-
-        //  S'assurer que les données sont transformées (strings -> numbers)
-    const transformedData = PropertyFormSchema.parse(data);
-        if (!user?.id) {
-            toast.error(t("authRequired"));
-            return;
-        }
+        if (!user?.id) return toast.error(t("authRequired"));
         
         setIsSubmitting(true);
-        setProgress(10); // Started
-        let result: { success: boolean, message?: string, errors?: any }; // Type de retour de Server Action
-        
+        setProgress(5);
+
         try {
-            
-          
-            
+            // 1. GESTION DES TRADUCTIONS
+            const nameBase = (data.name as any)?.[locale] || "";
+            const descBase = (data.description as any)?.[locale] || "";
+            const landmarkBase = (data.location?.landmark as any)?.[locale] || "";
 
-// Définition d'un type qui autorise l'accès par chaîne
-type MultilingualObject = { [key: string]: string | undefined | null };
-// Caster les champs pour l'indexation
-const nameObj = data.name as MultilingualObject;
-const descriptionObj = data.description as MultilingualObject;
-const landmarkObj = data.location?.landmark as MultilingualObject | undefined;
+            const [nEn, nAr, nPt, dEn, dAr, dPt, lEn, lAr, lPt] = await Promise.all([
+                translateField(nameBase, "en").catch(() => nameBase), // Utilise le texte original en cas d'erreur
+    translateField(nameBase, "ar").catch(() => nameBase),
+    translateField(nameBase, "pt").catch(() => nameBase),
 
-// 1. TRADUCTION DES CHAMPS FR vers MULTILINGUE (Client-Side)
-            const nameFR = nameObj[locale] || "";
-const descriptionFR = descriptionObj[locale] || "";
-// Vérifier l'objet avant d'accéder
-const landmarkFR = landmarkObj?.[locale] || "";
-            
-            // Lancer les traductions en parallèle
-            const [
-                nameEN, nameAR, namePT,
-                descriptionEN, descriptionAR, descriptionPT,
-                landmarkEN, landmarkAR, landmarkPT
-            ] = await Promise.all([
-                // NOTE : Il faut s'assurer que `translateField` gère bien les requêtes concurrentes.
-                translateField(nameFR, "en"),
-                translateField(nameFR, "ar"),
-                translateField(nameFR, "pt"),
-                translateField(descriptionFR, "en"),
-                translateField(descriptionFR, "ar"),
-                translateField(descriptionFR, "pt"),
-                translateField(landmarkFR, "en"),
-                translateField(landmarkFR, "ar"),
-                translateField(landmarkFR, "pt"),
+    translateField(descBase, "en").catch(() => nameBase), // Utilise le texte original en cas d'erreur
+    translateField(descBase, "ar").catch(() => nameBase),
+    translateField(descBase, "pt").catch(() => nameBase),
+
+    translateField(landmarkBase, "en").catch(() => nameBase), // Utilise le texte original en cas d'erreur
+    translateField(landmarkBase, "ar").catch(() => nameBase),
+    translateField(landmarkBase, "pt").catch(() => nameBase),
             ]);
+            setProgress(30);
 
-            setProgress(40); // Translation done
+            // 2. UPLOAD DES IMAGES
+            const newImageUrls = await Promise.all(images.map(async (img) => {
+                const base64 = await fileToBase64(img);
+                const url = await uploadImagesToWebp(base64, img.name, "propertyImages");
+                return { url, caption: "", isMain: false, displayOrder: 0 };
+            }));
+            setProgress(70);
 
-            // 2. PRÉPARATION DU PAYLOAD MULTILINGUE
-            const multilingualData = {
-                ...data, // Contient les strings des IDs/prix
-                name: { fr: nameFR, en: nameEN, ar: nameAR, pt: namePT },
-                description: { fr: descriptionFR, en: descriptionEN, ar: descriptionAR, pt: descriptionPT },
+            // 3. PRÉPARATION DU PAYLOAD FINAL
+            const finalPayload = {
+                ...data,
+                name: { fr: nameBase, en: nEn, ar: nAr, pt: nPt },
+                description: { fr: descBase, en: dEn, ar: dAr, pt: dPt },
                 location: {
                     ...data.location,
-                    landmark: { fr: landmarkFR, en: landmarkEN, ar: landmarkAR, pt: landmarkPT }
-                } as any, // Nécessaire pour forcer le typage JSONB
+                    streetAddress: data.location?.streetAddress || "", // Sécurité Prisma string
+                    landmark: { fr: landmarkBase, en: lEn, ar: lAr, pt: lPt }
+                },
+                images: [
+                    ...savedImagesUrl.map(img => ({ url: img.url, isMain: img.isMain, displayOrder: img.displayOrder })),
+                    ...newImageUrls
+                ],
+                videos: [
+                    ...savedVideosUrl.map(v => ({ url: v.url })),
+                    ...videos.map(url => ({ url }))
+                ]
             };
 
-            // 3. UPLOAD D'IMAGES (Client-Side)
-            const totalImages = images.length;
-            let uploadedCount = 0;
-
-            const newImageUrls = await Promise.all(
-                images.map(async (img) => {
-                    const base64 = await fileToBase64(img);
-                    const url = await uploadImagesToWebp(
-                        base64,
-                        img.name,
-                        "propertyImages"
-                    );
-                    uploadedCount++;
-                    // Mise à jour de la progression
-                    const imageProgress = Math.round((uploadedCount / (totalImages || 1)) * 40);
-                    setProgress(40 + imageProgress);
-                    // Retourner l'objet complet attendu par la Server Action
-                    return { url, caption: "", isMain: false, displayOrder: 0 }; 
-                })
-            );
-            
-            if (images.length === 0) setProgress(80);
-
-            // 4. ASSEMBLAGE DU PAYLOAD FINAL (Pour la Server Action)
-            const finalImages = [
-                // Images existantes (doivent être du format PropertyImageSchema)
-                ...savedImagesUrl.map(img => ({ 
-                    url: img.url, 
-                    caption: img.caption|| undefined, 
-                    isMain: img.isMain, 
-                    displayOrder: img.displayOrder 
-                })), 
-                // Nouvelles images uploadées
-                ...newImageUrls, 
-            ];
-            
-            const finalVideos = [
-                // Vidéos existantes (doivent être du format simple d'URL)
-                ...savedVideosUrl.map(v => ({ url: v.url })), 
-                // Nouvelles URLs
-                ...videos.map(url => ({ url }))
-            ];
-            
-            // Payload Final pour la Server Action
-            const finalPayload = {
-                ...multilingualData, // Contient déjà typeId, statusId, price (string), et les objets multilingues
-                
-                // On passe les images et vidéos finales
-                images: finalImages,
-                videos: finalVideos,
-            };
-
-            // 5. SAUVEGARDE DB VIA SERVER ACTION
+            // 4. APPEL SERVER ACTION
+            let result;
             if (isEdit && props.property) {
-                // Pour l'édition, nous devons identifier les médias supprimés
-                const deletedImageIDs = props.property.images
-                    .filter(item => !savedImagesUrl.some(saved => saved.id === item.id))
-                    .map(item => item.id);
-                
-                const deletedVideoIDs = props.property.videos
-                    .filter(item => !savedVideosUrl.some(saved => saved.id === item.id))
-                    .map(item => item.id);
-                
-                // 🚨 Appeler la Server Action d'édition dédiée
-                result = await editPropertyAction(
-                    String(props.property.id), // L'ID de la propriété à éditer
-                    finalPayload,
-                    deletedImageIDs,
-                    deletedVideoIDs
-                );
-
+                const delImg = props.property.images.filter(i => !savedImagesUrl.some(s => s.id === i.id)).map(i => i.id);
+                const delVid = props.property.videos.filter(i => !savedVideosUrl.some(s => s.id === i.id)).map(i => i.id);
+                result = await editPropertyAction(String(props.property.id), finalPayload as any, delImg, delVid);
             } else {
-                // Création : Appeler la Server Action de création
-                result = await createPropertyAction(finalPayload);
+                result = await createPropertyAction(finalPayload as any);
             }
 
-            setProgress(100);
-
-            // 6. GESTION DU RÉSULTAT
             if (result.success) {
                 toast.success(t(isEdit ? "propertyEdited" : "propertyAdded"));
-                if (!isEdit) methods.reset();
                 router.push("/user/properties");
                 router.refresh();
             } else {
-                // Gérer les erreurs de validation Zod retournées par le serveur
-                if (result.errors) {
-                    Object.entries(result.errors as Record<string, string[]>).forEach(([path, messages]: [string, string[]]) => { 
-                        // Utiliser la fonction setValue ou setError de RHF
-                        methods.setError(path as keyof PropertyFormInputType, {
-                            type: "server",
-                            message: messages[0] || t("validationError"),
-                        });
-                    });
-                }
                 toast.error(result.message || t("error"));
             }
-
         } catch (error) {
-            console.error("Erreur générale dans onSubmit:", error);
-            toast.error(t("error") || "An error occurred");
+            console.error(error);
+            toast.error(t("error"));
         } finally {
             setIsSubmitting(false);
             setProgress(0);
         }
     };
 
+    const stepsItems = [
+        { label: t("steps.basic") }, { label: t("steps.location") },
+        { label: t("steps.features") }, { label: t("steps.photos") },
+        { label: t("steps.contact") },
+    ];
 
     return (
         <div>
-            <Stepper
-                className="m-2"
-                items={steps}
-                activeItem={step}
-                setActiveItem={setStep}
-            />
+            <Stepper className="m-2" items={stepsItems} activeItem={step} setActiveItem={setStep} />
             <FormProvider {...methods}>
-                <form
-                    className="mt-3 p-2"
-                    onSubmit={methods.handleSubmit(onSubmit, (errors) => {
-                        console.log("Validation errors:", errors);
-                        // Afficher une erreur générique en cas d'échec de validation client
-                        toast.error(t("validationError"));
-                        // Revenir à l'étape du premier champ en erreur (optionnel)
-                        const firstErrorField = Object.keys(errors).find(key => errors[key as keyof PropertyFormInputType]);
-                        if (firstErrorField) {
-                            // Implémenter la logique pour changer `step` en fonction du champ
-                            // Exemple : si l'erreur est dans 'location', setStep(1)
-                            if (firstErrorField.startsWith("location")) setStep(1);
-                            else if (firstErrorField.startsWith("feature")) setStep(2);
-                            // ...
-                        }
-                    })}
-                >
-                    {/* ÉTAPE BASIC */}
-                    <Basic
-                        className={cn({ hidden: step !== 0 })}
-                        next={() => methods.trigger(["typeId", "statusId", "price", "name", "description"]).then(isValid => isValid && setStep(1))}
-                        types={props.types}
-                        statuses={props.statuses}
-                    />
-                    {/* ÉTAPE LOCATION */}
-                    <Location
-                        next={() => methods.trigger(["location.countryId", "location.cityId", "location.streetAddress"]).then(isValid => isValid && setStep(2))}
-                        prev={() => setStep((prev) => prev - 1)}
-                        className={cn({ hidden: step !== 1 })}
-                        countries={props.countries || []} 
-                        cities={props.cities || []} 
-                    />
-                    {/* ÉTAPE FEATURES */}
-                    <Features
-                        next={() => methods.trigger("feature").then(isValid => isValid && setStep(3))}
-                        prev={() => setStep((prev) => prev - 1)}
-                        className={cn({ hidden: step !== 2 })}
-                    />
-                    {/* ÉTAPE PICTURE */}
-                    <Picture
-                        next={() => setStep((prev) => prev + 1)} // Aucune validation Zod majeure ici
-                        prev={() => setStep((prev) => prev - 1)}
-                        className={cn({ hidden: step !== 3 })}
-                        images={images}
-                        // Props pour l'édition de médias
-                        {...(props.property && {
-                            savedImagesUrl: savedImagesUrl,
-                            setSavedImageUrl: setSavedImagesUrl,
-                            savedVideosUrl: savedVideosUrl,
-                            setSavedVideoUrl: setSavedVideosUrl,
-                        })}
-                        setImages={(newImages) => {
-                            if (newImages.length > props.photoLimit) {
-                                toast.error(
-                                    t("photoLimitExceeded", {
-                                        limit: props.photoLimit || t("unlimited"),
-                                    })
-                                );
-                                return;
-                            }
-                            setImages(newImages);
-                        }}
-                        maxImages={props.photoLimit}
-                        isPremium={
-                            props.planDetails?.namePlan?.toLowerCase() === "diamant" || false
-                        }
-                        maxVideos={props.shortVideoLimit}
-                        setVideos={(newVideos) => {
-                            if (newVideos.length > props.shortVideoLimit) {
-                                toast.error(
-                                    t("videoLimitExceeded", {
-                                        limit: props.shortVideoLimit || "0",
-                                    })
-                                );
-                                return;
-                            }
-                            setVideos(newVideos);
-                        }}
-                        videos={videos}
-                    />
-                    {/* ÉTAPE CONTACT */}
-                    <Contact
-                        prev={() => setStep((prev) => prev - 1)}
-                        className={cn({ hidden: step !== 4 })}
-                    />
+                <form className="mt-3 p-2" onSubmit={methods.handleSubmit(onSubmit, (errors) => {
+    // 💡 REGARDEZ CE LOG DANS LA CONSOLE DU NAVIGATEUR (F12)
+    console.log("DÉTAILS DES ERREURS BLOQUANTES :", errors);
+    toast.error("Le formulaire contient des erreurs non visibles.");
+  })}>
+                    <Basic className={cn({ hidden: step !== 0 })} next={() => methods.trigger(["typeId", "statusId", "price", "name", "description"]).then(v => v && setStep(1))} types={props.types} statuses={props.statuses} />
+                    <Location className={cn({ hidden: step !== 1 })} next={() => methods.trigger(["location.cityId"]).then(v => v && setStep(2))} prev={() => setStep(0)} countries={props.countries} cities={props.cities} />
+                    <Features className={cn({ hidden: step !== 2 })} next={() => methods.trigger("feature").then(v => v && setStep(3))} prev={() => setStep(1)} />
+                    <Picture className={cn({ hidden: step !== 3 })} next={() => setStep(4)} prev={() => setStep(2)} images={images} setImages={setImages} savedImagesUrl={savedImagesUrl} setSavedImageUrl={setSavedImagesUrl} maxImages={props.photoLimit} isPremium={props.planDetails?.namePlan === "diamant"} />
+                    <Contact className={cn({ hidden: step !== 4 })} prev={() => setStep(3)} />
                     
-                    {/* BOUTON SUBMIT FINAL */}
                     {step === 4 && (
                         <div className="flex justify-end mt-6">
-                            <Button
-                                type="submit"
-                                color="primary"
-                                size="lg"
-                                className="font-semibold px-10"
-                                isLoading={isSubmitting}
-                                isDisabled={isSubmitting}
-                            >
-                                {t(isEdit ? "saveChanges" : "submitButton")}
-                            </Button>
+                            <Button type="submit" color="primary" size="lg" isLoading={isSubmitting} isDisabled={isSubmitting}>{t(isEdit ? "saveChanges" : "submitButton")}</Button>
                         </div>
                     )}
-                    
                 </form>
             </FormProvider>
 
-            {/* Loading Progress Bar Percentage Overlay (inchangé) */}
             {isSubmitting && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex flex-col items-center justify-center p-4">
-                    <div className="bg-white p-6 rounded-xl shadow-2xl max-w-md w-full flex flex-col items-center gap-4">
-                        <h3 className="text-xl font-bold text-gray-800">
-                            {t("processing")}
-                        </h3>
-                        <p className="text-gray-600 text-center text-sm">
-                            {progress < 40 ? t("translating") : progress < 80 ? t("uploadingImages") : t("saving")}
-                        </p>
-                        <div className="w-full flex flex-col gap-2">
-                            <Progress
-                                size="lg"
-                                value={progress}
-                                color="primary"
-                                showValueLabel={true}
-                                className="w-full"
-                            />
-                        </div>
-                    </div>
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+                    <Card className="p-6 w-full max-w-md flex flex-col items-center gap-4">
+                        <h3 className="text-xl font-bold">{t("processing")}</h3>
+                        <Progress size="lg" value={progress} color="primary" showValueLabel className="w-full" />
+                    </Card>
                 </div>
             )}
         </div>

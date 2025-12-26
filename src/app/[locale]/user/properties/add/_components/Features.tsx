@@ -842,7 +842,9 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
 import { Button, Card, Checkbox, cn } from "@nextui-org/react";
 import { Controller, useFormContext } from "react-hook-form";
 import NumberInput from "./NumberInput";
-import { AddPropertyInputType } from "./AddPropertyForm";
+// import { AddPropertyInputType } from "./AddPropertyForm";
+import { PropertyFormInputType as AddPropertyInputType } from "@/lib/schemas/property2";
+
 import { useTranslations } from "next-intl";
 
 interface Props {

@@ -2830,7 +2830,9 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
 import { Button, Card, Input, cn } from "@nextui-org/react";
 import React from "react";
 import { useFormContext } from "react-hook-form";
-import { AddPropertyInputType } from "./AddPropertyForm";
+// import { AddPropertyInputType } from "./AddPropertyForm";
+import { PropertyFormInputType as AddPropertyInputType } from "@/lib/schemas/property2";
+
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 
